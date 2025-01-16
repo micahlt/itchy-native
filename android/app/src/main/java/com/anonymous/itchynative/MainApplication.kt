@@ -1,4 +1,4 @@
-package com.itchynative
+package com.anonymous.itchynative
 
 import android.app.Application
 import android.content.res.Configuration

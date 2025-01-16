@@ -1,7 +1,18 @@
 {
   "expo": {
-    "name": "itchy-native",
+    "name": "itchy",
     "slug": "itchy-native",
-    "version": "1.0.0"
+    "packageName": "org.scratchclient4.itchy",
+    "version": "1.0.0",
+    "scheme": "itchy",
+    "plugins": ["expo-router"],
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "backgroundColor": "#0082FF"
+    },
+    "android": {
+      "package": "com.anonymous.itchynative"
+    }
   }
 }

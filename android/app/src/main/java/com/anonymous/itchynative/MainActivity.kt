@@ -1,4 +1,4 @@
-package com.itchynative
+package com.anonymous.itchynative
 
 import android.os.Build
 import android.os.Bundle
