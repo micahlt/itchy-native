@@ -16,9 +16,11 @@ export default function LoginScreen() {
 
     const logIn = () => {
         ScratchAPIWrapper.auth.login(username, password).then((d) => {
-            storage.set("token", d.token);
+            storage.set("sessionID", d.sessionToken)
             storage.set("csrfToken", d.csrfToken);
             storage.set("username", d.username);
+            storage.set("cookieSet", d.cookieSet);
+            storage.set("token", d.sessionJSON.user.token);
             setUser(d.sessionJSON.user);
             router.push("/");
         }).catch((e) => {

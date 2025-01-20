@@ -38,7 +38,7 @@ export default function User() {
             {!!profile && (
                 <ScrollView>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0 }}>
-                        <Image source={{ uri: profile.profile.images["90x90"] }} style={{ height: 75, width: 75, borderRadius: 75, marginRight: 25 }} />
+                        <Image source={{ uri: profile.profile.images["90x90"] }} placeholder={require("../../../assets/avatar.png")} placeholderContentFit="cover" style={{ height: 75, width: 75, borderRadius: 75, marginRight: 25 }} />
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginRight: 10, flex: 1 }}>
                             <View style={{ alignItems: "center" }}>
                                 <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{approximateNumber(profile.followers)}</Text>

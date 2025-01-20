@@ -25,7 +25,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="itchy"/>
-        <data android:scheme="com.anonymous.itchynative"/>
+        <data android:scheme="org.scratchclient4.itchy"/>
         <data android:scheme="exp+itchy-native"/>
       </intent-filter>
     </activity>

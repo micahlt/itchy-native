@@ -22,7 +22,9 @@ export default function SettingsScreen() {
                 <View style={{ borderRadius: 10, overflow: 'hidden', backgroundColor: colors.accent, elevation: 5, marginRight: 10, }}>
                     <Pressable onPress={() => {
                         if (username) {
-                            storage.clearAll();
+                            ScratchAPIWrapper.auth.logout(storage.getString("csrfToken"), storage.getString("cookieSet")).then(() => {
+                                storage.clearAll();
+                            }).catch(console.error);
                         } else {
                             router.push("/login");
                         }
@@ -31,10 +33,10 @@ export default function SettingsScreen() {
                     </Pressable>
                 </View>
             </View>
-            <View style={{ backgroundColor: colors.backgroundSecondary, flexDirection: 'row', justifyContent: "flex-start", alignItems: 'center', borderColor: colors.backgroundTertiary, borderTopWidth: 0.5, borderBottomWidth: 0.5 }}>
+            {username && <View style={{ backgroundColor: colors.backgroundSecondary, flexDirection: 'row', justifyContent: "flex-start", alignItems: 'center', borderColor: colors.backgroundTertiary, borderTopWidth: 0.5, borderBottomWidth: 0.5 }}>
                 <TouchableOpacity onPress={() => router.push(`/user/${username}/profile`)}><Text style={{ color: colors.accent, fontSize: 16, paddingVertical: 15, paddingLeft: 10 }}>Open your profile</Text>
                 </TouchableOpacity>
-            </View>
+            </View>}
             <Text style={{ color: colors.textSecondary, fontSize: 12, padding: 10, marginTop: 10 }}>About</Text>
             <View style={{ backgroundColor: colors.backgroundSecondary, borderColor: colors.backgroundTertiary, borderBottomWidth: 0.5, borderTopWidth: 0.5 }}>
                 <Text style={{ color: colors.text, fontSize: 16, paddingVertical: 15, paddingHorizontal: 10 }}>Itchy v{version}</Text>

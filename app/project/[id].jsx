@@ -8,18 +8,47 @@ import WebView from "react-native-webview";
 import Chip from "../../components/Chip";
 import Card from "../../components/Card";
 import approximateNumber from "approximate-number";
+import { useMMKVString } from "react-native-mmkv";
+import storage from "../../utils/storage";
 
 export default function Project() {
     const { id } = useLocalSearchParams();
-    const { colors } = useTheme();
+    const { colors, isDark } = useTheme();
     const { width } = useWindowDimensions();
     const [metadata, setMetadata] = useState(null);
+    const [interactions, setInteractions] = useState({ loved: false, favorited: false });
+    const [username] = useMMKVString("username");
+    const [token] = useMMKVString("token");
     const router = useRouter();
+
     useEffect(() => {
+        if (!id) return;
         ScratchAPIWrapper.project.getProject(id).then((d) => {
             setMetadata(d);
         }).catch(console.error)
+        if (!!username) {
+            ScratchAPIWrapper.project.getInteractions(id, username, token).then((d) => {
+                setInteractions(d);
+            }).catch(console.error);
+        }
     }, [id]);
+
+    const toggleInteraction = (interaction) => {
+        if (interaction == "love") {
+            ScratchAPIWrapper.project.setInteraction("loves", !interactions.loved, id, username, token, storage.getString("csrfToken"), storage.getString("cookieSet")).then((d) => {
+                if (!d.statusChanged) return;
+                setInteractions({ ...interactions, loved: !interactions.loved });
+                setMetadata({ ...metadata, stats: { ...metadata.stats, loves: metadata.stats.loves + (interactions.loved ? -1 : 1) } });
+            });
+        } else if (interaction == "favorite") {
+            ScratchAPIWrapper.project.setInteraction("favorites", !interactions.favorited, id, username, token, storage.getString("csrfToken"), storage.getString("cookieSet")).then((d) => {
+                if (!d.statusChanged) return;
+                setInteractions({ ...interactions, loved: !interactions.favorited });
+                setMetadata({ ...metadata, stats: { ...metadata.stats, favorites: metadata.stats.favorites + (interactions.favorited ? -1 : 1) } });
+            });
+        }
+    }
+
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
             <Stack.Screen
@@ -30,11 +59,11 @@ export default function Project() {
             <ScrollView>
                 <WebView source={{ uri: `https://turbowarp.org/${id}/embed?fullscreen-background=${colors.background}&settings-button` }} style={{ flex: 0, width: width - 20, aspectRatio: 480 / 425, backgroundColor: "transparent", margin: "auto" }} androidLayerType="hardware" renderToHardwareTextureAndroid={true} bounces={false} scrollEnabled={false} overScrollMode="never" allowsFullscreenVideo={true} />
                 {metadata && <ScrollView horizontal contentContainerStyle={{ padding: 10, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
-                    <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/user/${metadata?.author?.username}/profile`)} />
-                    <Chip.Icon icon='favorite' text={approximateNumber(metadata.stats.loves)} color="#ff4750" />
-                    <Chip.Icon icon='star' text={approximateNumber(metadata.stats.favorites)} color="#ddbf37" />
-                    <Chip.Icon icon='sync' text={approximateNumber(metadata.stats.remixes)} color="#47ff9a" />
-                    <Chip.Icon icon='visibility' text={approximateNumber(metadata.stats.views)} color="#47b5ff" />
+                    <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/user/${metadata?.author?.username}/profile`)} textStyle={{ fontWeight: 'bold' }} />
+                    <Chip.Icon icon='favorite' text={approximateNumber(metadata.stats.loves)} color="#ff4750" mode={interactions.loved ? "filled" : "outlined"} onPress={() => toggleInteraction("love")} />
+                    <Chip.Icon icon='star' text={approximateNumber(metadata.stats.favorites)} color="#ddbf37" mode={interactions.favorited ? "filled" : "outlined"} onPress={() => toggleInteraction("favorite")} />
+                    <Chip.Icon icon='sync' text={approximateNumber(metadata.stats.remixes)} color={isDark ? "#32ee87" : "#0ca852"} mode="filled" />
+                    <Chip.Icon icon='visibility' text={approximateNumber(metadata.stats.views)} color="#47b5ff" mode="filled" />
                 </ScrollView>}
                 {metadata?.instructions && <Card style={{ margin: 10, marginTop: 3, padding: 16 }}>
                     <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</Text>

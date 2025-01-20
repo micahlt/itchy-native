@@ -1,4 +1,5 @@
-const UserAgent = "Mozilla/5.0";
+import consts from "./consts";
+
 const APIAuth = {
     login: async (user, pass) => {
         // a lot of this code is taken from
@@ -8,7 +9,7 @@ const APIAuth = {
             "x-requested-with": "XMLHttpRequest",
             Cookie: "scratchcsrftoken=a;scratchlanguage=en;",
             referer: "https://scratch.mit.edu",
-            "User-Agent": UserAgent
+            "User-Agent": consts.UserAgent
         };
         const loginReq = await fetch("https://scratch.mit.edu/login/", {
             method: "POST",
@@ -38,7 +39,7 @@ const APIAuth = {
             method: "GET",
             headers: {
                 Cookie: cookieSet,
-                "User-Agent": UserAgent,
+                "User-Agent": consts.UserAgent,
                 Referer: "https://scratch.mit.edu/",
                 "Cache-Control": "max-age=0, no-cache",
                 "X-Requested-With": "XMLHttpRequest",
@@ -51,7 +52,7 @@ const APIAuth = {
         return {
             username: user,
             csrfToken,
-            token,
+            sessionToken: token,
             cookieSet,
             sessionJSON
         };
@@ -64,7 +65,7 @@ const APIAuth = {
                 body: `csrfmiddlewaretoken=${csrf}`,
                 headers: {
                     Cookie: cookie,
-                    "User-Agent": UserAgent,
+                    "User-Agent": consts.UserAgent,
                     accept: "application/json",
                     Referer: "https://scratch.mit.edu/",
                     Origin: "https://scratch.mit.edu",

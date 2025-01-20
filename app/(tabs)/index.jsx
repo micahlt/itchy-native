@@ -9,7 +9,7 @@ import { useMMKVString } from 'react-native-mmkv';
 export default function HomeScreen() {
     const { colors } = useTheme();
     const [exploreData, setExploreData] = useState(null);
-    const [friendsLoves, setFriendsLoves] = useState(null);
+    const [friendsLoves, setFriendsLoves] = useState([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [username] = useMMKVString("username");
 
@@ -23,7 +23,6 @@ export default function HomeScreen() {
         if (username) {
             const f = await ScratchAPIWrapper.explore.getFriendsLoves(username);
             setFriendsLoves(f);
-            console.log(f);
         }
     }
 
@@ -48,7 +47,7 @@ export default function HomeScreen() {
                     </ScrollView>
                 </>
 
-                {friendsLoves && <>
+                {friendsLoves.length > 0 && <>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
                         <MaterialIcons name='people' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Loved by Friends</Text>

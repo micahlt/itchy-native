@@ -12,7 +12,12 @@
       "backgroundColor": "#0082FF"
     },
     "android": {
-      "package": "com.anonymous.itchynative"
+      "package": "org.scratchclient4.itchy",
+      "packageName": "org.scratchclient4.itchy",
+      "adaptiveIcon": {
+        "backgroundColor": "#0082FF",
+        "foregroundImage": "./assets/icon-foreground.png"
+      }
     }
   }
 }
