@@ -12,8 +12,12 @@ const APIExplore = {
             featuredStudios: data.community_featured_studios
         }
     },
-    getFriendsLoves: async (username) => {
-        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/following/users/loves`);
+    getFriendsLoves: async (username, token) => {
+        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/following/users/loves`, {
+            headers: {
+                "x-token": token
+            }
+        });
         const data = await res.json();
         return data;
     },

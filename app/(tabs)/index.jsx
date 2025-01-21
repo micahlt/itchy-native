@@ -12,6 +12,7 @@ export default function HomeScreen() {
     const [friendsLoves, setFriendsLoves] = useState([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [username] = useMMKVString("username");
+    const [token] = useMMKVString("token");
 
     useEffect(() => {
         load()
@@ -21,7 +22,7 @@ export default function HomeScreen() {
         const d = await ScratchAPIWrapper.explore.getExplore();
         setExploreData(d);
         if (username) {
-            const f = await ScratchAPIWrapper.explore.getFriendsLoves(username);
+            const f = await ScratchAPIWrapper.explore.getFriendsLoves(username, token);
             setFriendsLoves(f);
         }
     }

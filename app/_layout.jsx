@@ -2,14 +2,20 @@ import React, { useEffect, useState } from 'react';
 import Stack from 'expo-router/stack';
 import { ThemeProvider } from '../utils/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useColorScheme } from 'react-native';
+import { Linking, Pressable, useColorScheme, View } from 'react-native';
 import { darkColors, lightColors } from '../utils/theme/colors';
+import { useMMKVObject } from 'react-native-mmkv';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export default function App() {
     const theme = useColorScheme();
     const [colors, setColors] = useState(null);
+    const [twConfig, setTWConfig] = useMMKVObject("twConfig");
     useEffect(() => {
         setColors(theme === "dark" ? darkColors : lightColors);
+        if (!twConfig) {
+            setTWConfig({});
+        }
     }, [theme]);
 
     if (!!colors) {
@@ -41,7 +47,11 @@ export default function App() {
                                 color: colors.text,
                                 fontWeight: "bold"
                             },
-                            headerTintColor: colors.text
+                            headerTintColor: colors.text,
+                            headerRight: (e) => <View style={{ overflow: 'hidden', height: 36, width: 36, borderRadius: 20 }}>
+                                <Pressable onPress={() => { }} style={{ padding: 6 }}>
+                                    <MaterialIcons name='launch' size={24} color={colors.textSecondary} />
+                                </Pressable></View>
                         }} />
                         <Stack.Screen name="user/[username]/about" options={{
                             headerShown: true, presentation: "modal", animation: "fade_from_bottom", headerBackButtonDisplayMode: "default", headerStyle: {

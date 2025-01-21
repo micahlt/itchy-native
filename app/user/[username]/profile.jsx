@@ -1,14 +1,14 @@
-import { View, useWindowDimensions, ScrollView, Text, Pressable } from "react-native";
+import { View, useWindowDimensions, ScrollView, Text, Pressable, Linking } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
-import Card from "../../../components/Card";
 import ProjectCard from "../../../components/ProjectCard";
 import { Image } from "expo-image";
 import approximateNumber from "approximate-number";
 import { MaterialIcons } from "@expo/vector-icons";
+import linkWithFallback from "../../../utils/linkWithFallback";
 
 export default function User() {
     const { username } = useLocalSearchParams();
@@ -28,17 +28,26 @@ export default function User() {
             setFavorites(d);
         }).catch(console.error)
     }, [username]);
+
+    const openProfile = () => {
+        linkWithFallback(`https://scratch.mit.edu/users/${username}`, colors.accent);
+    };
+
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
             <Stack.Screen
                 options={{
-                    title: username
+                    title: username,
+                    headerRight: () => <View style={{ overflow: 'hidden', height: 36, width: 36, borderRadius: 20 }}>
+                        <Pressable onPress={openProfile} style={{ padding: 6 }} android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}>
+                            <MaterialIcons name='launch' size={24} color={colors.textSecondary} />
+                        </Pressable></View>
                 }}
             />
             {!!profile && (
                 <ScrollView>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0 }}>
-                        <Image source={{ uri: profile.profile.images["90x90"] }} placeholder={require("../../../assets/avatar.png")} placeholderContentFit="cover" style={{ height: 75, width: 75, borderRadius: 75, marginRight: 25 }} />
+                        <Image source={{ uri: profile.profile.images["90x90"] }} placeholder={require("../../../assets/avatar.png")} placeholderContentFit="cover" style={{ height: 75, width: 75, borderRadius: 75, marginRight: 25, backgroundColor: "white" }} />
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginRight: 10, flex: 1 }}>
                             <View style={{ alignItems: "center" }}>
                                 <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{approximateNumber(profile.followers)}</Text>

@@ -1,22 +1,58 @@
-import { Text, View } from "react-native";
+import { FlatList, RefreshControl, ScrollView, Text, View } from "react-native";
 import { useTheme } from "../../utils/theme";
 import { useMMKVString } from "react-native-mmkv";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ScratchAPIWrapper from "../../utils/api-wrapper";
+import Message from "../../components/Message";
 
 export default function Messages() {
     const { colors } = useTheme();
     const [username] = useMMKVString("username");
     const [token] = useMMKVString("token");
+    const [messages, setMessages] = useState([]);
+    const [offset, setOffset] = useState(0);
+    const [count, setCount] = useState(0);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!username || !token) return;
-        ScratchAPIWrapper.messages.getMessages(username).then((d) => {
-            setMessageCount(d);
-        });
-    })
+        setOffset(0);
+        loadMessages();
+    }, [username, token]);
 
-    return <View style={{ flex: 1, backgroundColor: colors.background }}>
-        <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, padding: 10 }}>Messages</Text>
-    </View>
+    const loadMessages = () => {
+        setLoading(true);
+        ScratchAPIWrapper.messages.getMessages(username, token, offset).then((d) => {
+            if (offset === 0) {
+                setMessages(d);
+            } else {
+                setMessages(messages.concat(d));
+            }
+            setLoading(false);
+        });
+    }
+
+    useEffect(() => {
+        loadMessages();
+    }, [offset])
+
+    const renderMessage = (m) => {
+        return <Message message={m.item} />
+    };
+
+    return <FlatList
+        data={messages}
+        style={{ flex: 1, backgroundColor: colors.background }}
+        renderItem={renderMessage}
+        keyExtractor={(m) => m.id}
+        onRefresh={() => {
+            setOffset(0);
+            loadMessages();
+        }}
+        refreshing={loading}
+        ListHeaderComponent={<Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, padding: 10, marginBottom: 20 }}>Messages</Text>}
+        onEndReached={() => {
+            if (loading) return;
+            setOffset(messages.length);
+        }} />
 }

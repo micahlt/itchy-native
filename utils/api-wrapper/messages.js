@@ -1,6 +1,19 @@
 const APIMessages = {
-    getMessages: async function (token, username, offset, limit) {
-
+    /**
+     * @param {String} token 
+     * @param {String} username 
+     * @param {Number} offset 
+     * @param {"comments"|"project"|"studios"|"forums"} filter 
+     * @returns 
+     */
+    getMessages: async function (username, token, offset = 0, filter = "") {
+        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/messages?offset=${offset}&filter=${filter}`, {
+            headers: {
+                "x-token": token
+            }
+        });
+        const data = await res.json();
+        return data;
     },
     getMessageCount: async function (username) {
         const res = await fetch(`https://api.scratch.mit.edu/users/${username}/messages/count`);

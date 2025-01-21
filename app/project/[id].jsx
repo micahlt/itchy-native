@@ -10,6 +10,7 @@ import Card from "../../components/Card";
 import approximateNumber from "approximate-number";
 import { useMMKVString } from "react-native-mmkv";
 import storage from "../../utils/storage";
+import useTurbowarpLink from "../../utils/hooks/useTurbowarpLink";
 
 export default function Project() {
     const { id } = useLocalSearchParams();
@@ -20,6 +21,7 @@ export default function Project() {
     const [username] = useMMKVString("username");
     const [token] = useMMKVString("token");
     const router = useRouter();
+    const twLink = useTurbowarpLink(id);
 
     useEffect(() => {
         if (!id) return;
@@ -49,6 +51,12 @@ export default function Project() {
         }
     }
 
+    const twJSInject = `
+    document.documentElement.style.setProperty('--ui-white', '${colors.backgroundSecondary}');
+    document.querySelector("img[title='Open advanced settings']").style.filter = "invert(0.7)";
+    document.querySelector("img[title='Full Screen Control']").style.filter = "contrast(0) brightness(1.4)";
+    `
+
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
             <Stack.Screen
@@ -57,7 +65,7 @@ export default function Project() {
                 }}
             />
             <ScrollView>
-                <WebView source={{ uri: `https://turbowarp.org/${id}/embed?fullscreen-background=${colors.background}&settings-button` }} style={{ flex: 0, width: width - 20, aspectRatio: 480 / 425, backgroundColor: "transparent", margin: "auto" }} androidLayerType="hardware" renderToHardwareTextureAndroid={true} bounces={false} scrollEnabled={false} overScrollMode="never" allowsFullscreenVideo={true} />
+                <WebView source={{ uri: twLink }} containerStyle={{ flex: 0, marginTop: 5, width: width - 20, aspectRatio: 480 / 425, margin: "auto", borderRadius: 10 }} androidLayerType="hardware" renderToHardwareTextureAndroid={true} bounces={false} scrollEnabled={false} overScrollMode="never" allowsFullscreenVideo={true} style={{ backgroundColor: "transparent", }} injectedJavaScript={twJSInject} />
                 {metadata && <ScrollView horizontal contentContainerStyle={{ padding: 10, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
                     <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/user/${metadata?.author?.username}/profile`)} textStyle={{ fontWeight: 'bold' }} />
                     <Chip.Icon icon='favorite' text={approximateNumber(metadata.stats.loves)} color="#ff4750" mode={interactions.loved ? "filled" : "outlined"} onPress={() => toggleInteraction("love")} />

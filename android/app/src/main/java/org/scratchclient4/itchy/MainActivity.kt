@@ -2,7 +2,6 @@ package org.scratchclient4.itchy
 
 import android.os.Build
 import android.os.Bundle
-import org.scratchclient4.itchy.BuildConfig
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
@@ -33,7 +32,7 @@ class MainActivity : ReactActivity() {
   override fun createReactActivityDelegate(): ReactActivityDelegate {
     return ReactActivityDelegateWrapper(
           this,
-        BuildConfig.IS_NEW_ARCHITECTURE_ENABLED,
+          BuildConfig.IS_NEW_ARCHITECTURE_ENABLED,
           object : DefaultReactActivityDelegate(
               this,
               mainComponentName,

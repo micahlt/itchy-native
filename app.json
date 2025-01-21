@@ -1,22 +1,24 @@
 {
   "expo": {
-    "name": "itchy",
+    "name": "Itchy",
     "slug": "itchy-native",
     "packageName": "org.scratchclient4.itchy",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "scheme": "itchy",
+    "newArchEnabled": true,
     "plugins": ["expo-router"],
-    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash.png",
       "backgroundColor": "#0082FF"
     },
     "android": {
+      "versionCode": 30,
       "package": "org.scratchclient4.itchy",
       "packageName": "org.scratchclient4.itchy",
       "adaptiveIcon": {
         "backgroundColor": "#0082FF",
-        "foregroundImage": "./assets/icon-foreground.png"
+        "foregroundImage": "./assets/icon-foreground.png",
+        "monochromeImage": "./assets/icon-monochrome.png"
       }
     }
   }

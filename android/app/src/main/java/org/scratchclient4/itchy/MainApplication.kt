@@ -2,7 +2,6 @@ package org.scratchclient4.itchy
 
 import android.app.Application
 import android.content.res.Configuration
-import org.scratchclient4.itchy.BuildConfig
 
 import com.facebook.react.PackageList
 import com.facebook.react.ReactApplication
