@@ -8,7 +8,6 @@ import ProjectCard from "../../../components/ProjectCard";
 import { Image } from "expo-image";
 import approximateNumber from "approximate-number";
 import { MaterialIcons } from "@expo/vector-icons";
-import { ProgressView } from "@react-native-community/progress-view";
 import linkWithFallback from "../../../utils/linkWithFallback";
 
 export default function User() {
@@ -46,7 +45,6 @@ export default function User() {
                     </View>
                 }}
             />
-            {!profile && <ProgressView isIndeterminate={true} progressTintColor={colors.accent} trackTintColor={colors.accentTransparent} />}
             {!!profile && (
                 <ScrollView>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0 }}>

@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.4",
-    "@react-native-community/progress-view": "^1.5.0",
     "@swan-io/react-native-browser": "^0.4.1",
     "approximate-number": "^2.1.1",
     "country-emoji": "^1.5.6",
