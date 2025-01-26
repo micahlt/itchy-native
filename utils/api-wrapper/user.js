@@ -1,3 +1,5 @@
+import { decode } from "html-entities";
+import { parse } from "node-html-parser";
 const APIUser = {
     getCompleteProfile: async (username) => {
         const res = await fetch(`https://api.scratch.mit.edu/users/${username}`);
@@ -36,7 +38,90 @@ const APIUser = {
         const res = await fetch(`https://api.scratch.mit.edu/users/${username}/favorites`);
         const data = await res.json();
         return data;
-    }
+    },
+    getComments: async (username, page = 1) => {
+        // Algorithm taken from https://github.com/webdev03/meowclient
+        const res = await fetch(`https://scratch.mit.edu/site-api/comments/user/${username}/?page=${page}`);
+        const commentHTML = await res.text();
+        const dom = parse(commentHTML);
+        const items = dom.querySelectorAll(".top-level-reply");
+        let comments = [];
+        for (let elID in items) {
+            const element = items[elID];
+            if (typeof element == "function") break;
+            const commentID = element.querySelector(".comment").id;
+            const commentPoster = element
+                .querySelector(".comment")
+                .getElementsByTagName("a")[0]
+                .getAttribute("data-comment-user");
+            const commentContent = element
+                .querySelector(".comment")
+                .querySelector(".info")
+                .querySelector(".content")
+                .innerHTML.trim();
+            const commentTime = element
+                .querySelector(".time")
+                .getAttribute("title");
+            const posterImage = element
+                .querySelector("img.avatar")
+                .getAttribute("src");
+
+            // get replies
+            let replies = [];
+            let replyList = element
+                .querySelector(".replies")
+                .querySelectorAll(".reply");
+            for (let replyID in replyList) {
+                const reply = replyList[replyID];
+                if (reply.tagName === "A") continue;
+                if (typeof reply === "function") continue;
+                if (typeof reply === "number") continue;
+                const commentID = reply.querySelector(".comment").id;
+                const commentPoster = reply
+                    .querySelector(".comment")
+                    .getElementsByTagName("a")[0]
+                    .getAttribute("data-comment-user");
+
+                // regex here developed at https://scratch.mit.edu/discuss/post/5983094/
+                const commentContent = reply
+                    .querySelector(".comment")
+                    .querySelector(".info")
+                    .querySelector(".content")
+                    .textContent.trim()
+                    .replace(/\n+/gm, "")
+                    .replace(/\s+/gm, " ");
+                const commentTime = reply
+                    .querySelector(".time")
+                    .getAttribute("title");
+                const posterImage = reply
+                    .querySelector("img.avatar")
+                    .getAttribute("src");
+
+                replies.push({
+                    id: commentID,
+                    username: commentPoster,
+                    content: decode(commentContent),
+                    apiID: commentID.substring(9),
+                    avatarURL: `https:${posterImage}`,
+                    time: new Date(commentTime)
+                });
+            }
+
+            comments.push({
+                id: commentID,
+                username: commentPoster,
+                content: decode(commentContent),
+                apiID: commentID.substring(9),
+                replies: replies,
+                avatarURL: `https:${posterImage}`,
+                time: new Date(commentTime)
+            });
+        }
+        if (comments.length == 0) {
+            return [];
+        }
+        return comments;
+    },
 }
 
 export default APIUser;

@@ -7,7 +7,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useMMKVString } from 'react-native-mmkv';
 
 export default function HomeScreen() {
-    const { colors } = useTheme();
+    const { colors, isDark } = useTheme();
     const [exploreData, setExploreData] = useState(null);
     const [friendsLoves, setFriendsLoves] = useState([]);
     const [friendsProjects, setFriendsProjects] = useState([]);
@@ -26,7 +26,6 @@ export default function HomeScreen() {
             const l = await ScratchAPIWrapper.explore.getFriendsLoves(username, token);
             setFriendsLoves(l);
             const p = await ScratchAPIWrapper.explore.getFriendsProjects(username, token);
-            console.log(p)
             setFriendsProjects(p);
         }
     }
@@ -39,7 +38,7 @@ export default function HomeScreen() {
 
     return (
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
-            <ScrollView refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} />}>
+            <ScrollView refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}>
                 <>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
                         <MaterialIcons name='workspace-premium' size={24} color={colors.text} />

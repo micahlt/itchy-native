@@ -6,7 +6,7 @@ import ScratchAPIWrapper from "../../utils/api-wrapper";
 import Message from "../../components/Message";
 
 export default function Messages() {
-    const { colors } = useTheme();
+    const { colors, isDark } = useTheme();
     const [username] = useMMKVString("username");
     const [token] = useMMKVString("token");
     const [messages, setMessages] = useState([]);
@@ -50,6 +50,7 @@ export default function Messages() {
             loadMessages();
         }}
         refreshing={loading}
+        refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}
         ListHeaderComponent={<Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, padding: 10, marginBottom: 20 }}>Messages</Text>}
         onEndReached={() => {
             if (loading) return;

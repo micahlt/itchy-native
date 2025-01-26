@@ -63,6 +63,16 @@ export default function App() {
                             },
                             headerTintColor: colors.text
                         }} />
+                        <Stack.Screen name="user/[username]/comments" options={{
+                            headerShown: true, presentation: "modal", animation: "fade_from_bottom", headerBackButtonDisplayMode: "default", headerStyle: {
+                                backgroundColor: colors.background,
+                            },
+                            headerTitleStyle: {
+                                color: colors.text,
+                                fontWeight: "bold"
+                            },
+                            headerTintColor: colors.text
+                        }} />
                         <Stack.Screen name="login" options={{
                             headerShown: true, presentation: "modal", animation: "fade_from_bottom", headerBackButtonDisplayMode: "default", headerStyle: {
                                 backgroundColor: colors.background,

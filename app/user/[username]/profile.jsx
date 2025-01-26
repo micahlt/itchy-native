@@ -68,8 +68,8 @@ export default function User() {
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>
                         <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
-                            <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => alert("Can't do this yet!")}>
-                                <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold" }}>Follow</Text>
+                            <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/user/${username}/comments`)}>
+                                <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold" }}>Comments</Text>
                             </Pressable>
                         </View>
                         <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>

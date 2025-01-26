@@ -1,20 +1,16 @@
-import { View, useWindowDimensions, ScrollView, Text, Pressable } from "react-native";
+import { View, ScrollView, Text } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import Card from "../../../components/Card";
-import ProjectCard from "../../../components/ProjectCard";
-import { Image } from "expo-image";
-import approximateNumber from "approximate-number";
 import timeago from "time-ago";
 import { flag } from "country-emoji";
 
-export default function User() {
+export default function About() {
     const { username } = useLocalSearchParams();
     const { colors } = useTheme();
-    const { width } = useWindowDimensions();
     const [profile, setProfile] = useState(null);
     useEffect(() => {
         ScratchAPIWrapper.user.getProfile(username).then((d) => {
