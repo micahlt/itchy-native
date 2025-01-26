@@ -10,6 +10,7 @@ export default function HomeScreen() {
     const { colors } = useTheme();
     const [exploreData, setExploreData] = useState(null);
     const [friendsLoves, setFriendsLoves] = useState([]);
+    const [friendsProjects, setFriendsProjects] = useState([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [username] = useMMKVString("username");
     const [token] = useMMKVString("token");
@@ -22,8 +23,11 @@ export default function HomeScreen() {
         const d = await ScratchAPIWrapper.explore.getExplore();
         setExploreData(d);
         if (username) {
-            const f = await ScratchAPIWrapper.explore.getFriendsLoves(username, token);
-            setFriendsLoves(f);
+            const l = await ScratchAPIWrapper.explore.getFriendsLoves(username, token);
+            setFriendsLoves(l);
+            const p = await ScratchAPIWrapper.explore.getFriendsProjects(username, token);
+            console.log(p)
+            setFriendsProjects(p);
         }
     }
 
@@ -57,6 +61,18 @@ export default function HomeScreen() {
                         padding: 20, paddingTop: 10, paddingBottom: 0, columnGap: 10
                     }} showsHorizontalScrollIndicator={false}>
                         {friendsLoves?.map((item, index) => (<ProjectCard key={index} project={item} />))}
+                    </ScrollView>
+                </>}
+
+                {friendsProjects.length > 0 && <>
+                    <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
+                        <MaterialIcons name='people' size={24} color={colors.text} />
+                        <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Created by Friends</Text>
+                    </View>
+                    <ScrollView horizontal contentContainerStyle={{
+                        padding: 20, paddingTop: 10, paddingBottom: 0, columnGap: 10
+                    }} showsHorizontalScrollIndicator={false}>
+                        {friendsProjects?.map((item, index) => (<ProjectCard key={index} project={item} />))}
                     </ScrollView>
                 </>}
 

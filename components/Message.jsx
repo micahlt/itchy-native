@@ -67,13 +67,13 @@ export default function Message({ message }) {
     };
 
     return (
-        <View style={{ paddingHorizontal: 10, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: colors.backgroundTertiary, backgroundColor: colors.backgroundSecondary, flexDirection: "row" }}>
+        <View style={{ paddingHorizontal: 10, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: colors.backgroundTertiary, backgroundColor: colors.background, flexDirection: "row" }}>
             <View style={{ marginRight: 20, borderRadius: 25, overflow: "hidden", height: 36, width: 36 }}>
                 <Pressable android_ripple={{ color: colors.ripple, foreground: true }} onPress={openAuthor}>
                     <Image source={{ uri: pfpLink }} placeholder={require("../assets/avatar.png")} placeholderContentFit="cover" style={{ width: 36, height: 36, backgroundColor: "white" }} />
                 </Pressable>
             </View>
-            <View style={{ maxWidth: "90%" }}>
+            <View style={{ maxWidth: "85%" }}>
                 <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Text style={{ color: colors.text, fontWeight: 'bold' }}>{headerText}</Text>
                     {message.type == "addcomment" && message?.comment_type === 0 && <>

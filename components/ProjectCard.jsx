@@ -17,7 +17,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
                 }} >
                     <Image placeholder={require("../assets/project.png")} placeholderContentFit="cover" source={{ uri: project.thumbnail_url ? `https:${project.thumbnail_url}` : project.image }} style={{ width: width, aspectRatio: "4 / 3", contentFit: "stretch" }} />
                     {project.title && <Text style={{ color: colors.text, padding: 10, paddingBottom: (project.creator || project.label || project.author?.username) ? 0 : 10, fontWeight: "bold", fontSize: 16 }} numberOfLines={1}>{project.title}</Text>}
-                    {(project.creator || project.author?.username) && <TouchableOpacity onPress={() => router.push(`/user/${project.creator}/profile`)}>
+                    {(project.creator || project.author?.username) && <TouchableOpacity onPress={() => router.push(`/user/${project.creator || project.author?.username}/profile`)}>
                         <Text style={{ color: colors.accent, padding: 10, paddingTop: 2, fontSize: 12 }} numberOfLines={1}>{project.creator || project.author?.username}</Text>
                     </TouchableOpacity>}
                     {project.label && <Text style={{ color: colors.text, padding: 10, paddingTop: project.title ? 5 : 10, fontSize: 12, opacity: 0.7 }} numberOfLines={1}>{project.label}</Text>}

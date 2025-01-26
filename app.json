@@ -6,7 +6,7 @@
     "version": "2.0.0",
     "scheme": "itchy",
     "newArchEnabled": true,
-    "plugins": ["expo-router"],
+    "plugins": ["expo-router", "expo-build-properties"],
     "splash": {
       "image": "./assets/splash.png",
       "backgroundColor": "#0082FF"
@@ -21,5 +21,13 @@
         "monochromeImage": "./assets/icon-monochrome.png"
       }
     }
-  }
+  },
+  "plugins": [
+    [
+      "expo-build-properties",
+      {
+        "android": {}
+      }
+    ]
+  ]
 }

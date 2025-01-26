@@ -1,11 +1,12 @@
-import { Linking, Pressable, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native';
+import { Pressable, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { useTheme } from '../../utils/theme';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { version } from "../../package.json";
 import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import storage from '../../utils/storage';
+import linkWithFallback from '../../utils/linkWithFallback';
 
 export default function SettingsScreen() {
     const { colors } = useTheme();
@@ -63,18 +64,18 @@ export default function SettingsScreen() {
                 <Switch thumbColor={twConfig.turbo ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })} style={{ marginRight: 5 }} value={twConfig.turbo} />
             </View>
             <View style={{ backgroundColor: colors.backgroundSecondary, flexDirection: 'row', justifyContent: "flex-start", alignItems: 'center', borderColor: colors.backgroundTertiary, borderBottomWidth: 0.5, }}>
-                <Text style={{ color: colors.text, fontSize: 12, paddingVertical: 15, paddingLeft: 10, opacity: 0.6 }}>Options provided by </Text><TouchableOpacity onPress={() => Linking.openURL("https://turbowarp.org")}><Text style={{ color: colors.accent, fontSize: 12 }}>TurboWarp</Text></TouchableOpacity>
+                <Text style={{ color: colors.text, fontSize: 12, paddingVertical: 15, paddingLeft: 10, opacity: 0.6 }}>Options provided by </Text><TouchableOpacity onPress={() => linkWithFallback("https://turbowarp.org")}><Text style={{ color: colors.accent, fontSize: 12 }}>TurboWarp</Text></TouchableOpacity>
             </View>
             <Text style={{ color: colors.textSecondary, fontSize: 12, padding: 10, marginTop: 10 }}>About</Text>
             <View style={{ backgroundColor: colors.backgroundSecondary, borderColor: colors.backgroundTertiary, borderBottomWidth: 0.5, borderTopWidth: 0.5 }}>
                 <Text style={{ color: colors.text, fontSize: 16, paddingVertical: 15, paddingHorizontal: 10 }}>Itchy v{version}</Text>
             </View>
             <View style={{ backgroundColor: colors.backgroundSecondary, flexDirection: 'row', justifyContent: "flex-start", alignItems: 'center', borderColor: colors.backgroundTertiary, borderBottomWidth: 0.5 }}>
-                <TouchableOpacity onPress={() => Linking.openURL("https://itchy.micahlindley.com/privacy.html")}><Text style={{ color: colors.accent, fontSize: 16, paddingVertical: 15, paddingLeft: 10 }}>Privacy Policy</Text>
+                <TouchableOpacity onPress={() => linkWithFallback("https://itchy.micahlindley.com/privacy.html")}><Text style={{ color: colors.accent, fontSize: 16, paddingVertical: 15, paddingLeft: 10 }}>Privacy Policy</Text>
                 </TouchableOpacity>
             </View>
             <View style={{ backgroundColor: colors.backgroundSecondary, flexDirection: 'row', justifyContent: "flex-start", alignItems: 'center', borderColor: colors.backgroundTertiary, borderBottomWidth: 0.5, }}>
-                <Text style={{ color: colors.text, fontSize: 12, paddingVertical: 15, paddingLeft: 10, opacity: 0.6 }}>Made </Text><TouchableOpacity onPress={() => Linking.openURL("https://github.com/micahlt")}><Text style={{ color: colors.accent, fontSize: 12 }}>open source</Text></TouchableOpacity><Text style={{ color: colors.text, fontSize: 12, paddingVertical: 15, opacity: 0.6 }}> with ❤️</Text>
+                <Text style={{ color: colors.text, fontSize: 12, paddingVertical: 15, paddingLeft: 10, opacity: 0.6 }}>Made </Text><TouchableOpacity onPress={() => linkWithFallback("https://github.com/micahlt")}><Text style={{ color: colors.accent, fontSize: 12 }}>open source</Text></TouchableOpacity><Text style={{ color: colors.text, fontSize: 12, paddingVertical: 15, opacity: 0.6 }}> with ❤️</Text>
             </View>
         </ScrollView>
     );

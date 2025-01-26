@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Stack from 'expo-router/stack';
 import { ThemeProvider } from '../utils/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Linking, Pressable, useColorScheme, View } from 'react-native';
+import { Pressable, useColorScheme, View } from 'react-native';
 import { darkColors, lightColors } from '../utils/theme/colors';
 import { useMMKVObject } from 'react-native-mmkv';
 import { MaterialIcons } from '@expo/vector-icons';
