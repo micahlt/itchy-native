@@ -63,7 +63,7 @@ export default function Message({ message }) {
         const actor = message.type == "admin" || message.actor_username == "systemuser"
             ? "ScratchCat"
             : message.actor_username
-        router.push(`/user/${actor}/profile`);
+        router.push(`/users/${actor}`);
     }, [message]);
 
     const openMessage = useCallback(() => {
@@ -72,16 +72,16 @@ export default function Message({ message }) {
                 openAuthor();
                 break;
             case "loveproject":
-                router.push(`/project/${message.project_id}`);
+                router.push(`/projects/${message.project_id}`);
                 break;
             case "favoriteproject":
-                router.push(`/project/${message.project_id}`);
+                router.push(`/projects/${message.project_id}`);
                 break;
             case "addcomment":
                 if (message?.comment_type === 0) {
-                    router.push(`/project/${message.comment_obj_id}`);
+                    router.push(`/projects/${message.comment_obj_id}`);
                 } else if (message?.comment_type === 1) {
-                    router.push(`/user/${username}/profile`);
+                    router.push(`/users/${username}`);
                 } else if (message?.comment_type === 2) {
                     linkWithFallback(`https://scratch.mit.edu/studios/${message.comment_obj_id}/comments/#comments-${message.comment_id}`, colors.accent);
                 }
@@ -117,13 +117,13 @@ export default function Message({ message }) {
                         <Text style={{ color: colors.text, fontWeight: 'bold' }}>{headerText}</Text>
                         {message.type == "addcomment" && message?.comment_type === 0 && <>
                             <Text style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> on</Text>
-                            <TouchableOpacity onPress={() => router.push(`/project/${comment_obj_id}`)}>
+                            <TouchableOpacity onPress={() => router.push(`/projects/${comment_obj_id}`)}>
                                 <Text style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6, fontWeight: "bold" }}> {message.comment_obj_title}</Text>
                             </TouchableOpacity>
                         </>}
                         {message.type == "addcomment" && message?.comment_type === 1 && <>
                             <Text style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> on</Text>
-                            <TouchableOpacity onPress={() => router.push(`/user/${username}/profile`)}>
+                            <TouchableOpacity onPress={() => router.push(`/users/${username}`)}>
                                 <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 0.6, fontWeight: "bold" }}> your profile</Text>
                             </TouchableOpacity>
                         </>}

@@ -38,11 +38,7 @@ export default function User() {
             <Stack.Screen
                 options={{
                     title: username,
-                    headerRight: () => <View style={{ overflow: 'hidden', height: 36, width: 36, borderRadius: 20 }}>
-                        <Pressable onPress={openProfile} style={{ padding: 8 }} android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}>
-                            <MaterialIcons name='launch' size={22} color={colors.textSecondary} />
-                        </Pressable>
-                    </View>
+                    headerRight: () => <MaterialIcons.Button onPress={openProfile} name='launch' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
                 }}
             />
             {!!profile && (
@@ -66,12 +62,12 @@ export default function User() {
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>
                         <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
-                            <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/user/${username}/comments`)}>
+                            <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/users/${username}/comments`)}>
                                 <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold" }}>Comments</Text>
                             </Pressable>
                         </View>
                         <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
-                            <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/user/${username}/about`)}>
+                            <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/users/${username}/about`)}>
                                 <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold" }}>About</Text>
                             </Pressable>
                         </View>

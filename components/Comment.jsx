@@ -11,7 +11,7 @@ export default function Comment({ comment, isReply = false, isLastReply = false 
     const router = useRouter();
     const hasReplies = useMemo(() => comment.replies && comment.replies.length > 0, [comment]);
     const openAuthor = useCallback(() => {
-        router.push(`/user/${comment.username}/profile`);
+        router.push(`/users/${comment.username}`);
     }, [comment])
 
     return (

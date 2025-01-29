@@ -27,61 +27,47 @@ export default function App() {
                             backgroundColor: colors.background,
                             color: colors.text
                         },
+                        headerShown: true,
+                        headerBackButtonDisplayMode: "default",
+                        headerStyle: {
+                            backgroundColor: colors.background,
+                        },
+                        headerTitleStyle: {
+                            color: colors.text,
+                            fontWeight: "bold"
+                        },
+                        headerTintColor: colors.text
                     }} >
                         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                        <Stack.Screen name="project/[id]" options={{
-                            headerShown: true, presentation: "modal", animation: "fade_from_bottom", headerBackButtonDisplayMode: "default", headerStyle: {
-                                backgroundColor: colors.background,
-                            },
-                            headerTitleStyle: {
-                                color: colors.text,
-                                fontWeight: "bold"
-                            },
-                            headerTintColor: colors.text,
+                        <Stack.Screen name="projects/[id]" options={{
+                            presentation: "modal",
+                            animation: "fade_from_bottom",
+                            headerRight: () =>
+                                <MaterialIcons name='question-answer' size={24} color={colors.textSecondary} />
                         }} />
-                        <Stack.Screen name="user/[username]/profile" options={{
-                            headerShown: true, presentation: "modal", animation: "fade_from_bottom", headerBackButtonDisplayMode: "default", headerStyle: {
-                                backgroundColor: colors.background,
-                            },
-                            headerTitleStyle: {
-                                color: colors.text,
-                                fontWeight: "bold"
-                            },
-                            headerTintColor: colors.text,
-                            headerRight: (e) => <View style={{ overflow: 'hidden', height: 36, width: 36, borderRadius: 20 }}>
-                                <Pressable onPress={() => { }} style={{ padding: 6 }}>
-                                    <MaterialIcons name='launch' size={24} color={colors.textSecondary} />
-                                </Pressable></View>
+                        <Stack.Screen name="projects/[id]/comments" options={{
+                            presentation: "modal",
+                            animation: "fade_from_bottom",
+                            headerRight: () =>
+                                <MaterialIcons name='question-answer' size={24} color={colors.textSecondary} />
+                        }} />
+                        <Stack.Screen name="user/[username]" options={{
+                            presentation: "modal",
+                            animation: "fade_from_bottom",
+                            headerRight: () =>
+                                <MaterialIcons name='launch' size={24} color={colors.textSecondary} />
                         }} />
                         <Stack.Screen name="user/[username]/about" options={{
-                            headerShown: true, presentation: "modal", animation: "fade_from_bottom", headerBackButtonDisplayMode: "default", headerStyle: {
-                                backgroundColor: colors.background,
-                            },
-                            headerTitleStyle: {
-                                color: colors.text,
-                                fontWeight: "bold"
-                            },
-                            headerTintColor: colors.text
+                            presentation: "modal",
+                            animation: "fade_from_bottom",
                         }} />
                         <Stack.Screen name="user/[username]/comments" options={{
-                            headerShown: true, presentation: "modal", animation: "fade_from_bottom", headerBackButtonDisplayMode: "default", headerStyle: {
-                                backgroundColor: colors.background,
-                            },
-                            headerTitleStyle: {
-                                color: colors.text,
-                                fontWeight: "bold"
-                            },
-                            headerTintColor: colors.text
+                            presentation: "modal",
+                            animation: "fade_from_bottom",
                         }} />
                         <Stack.Screen name="login" options={{
-                            headerShown: true, presentation: "modal", animation: "fade_from_bottom", headerBackButtonDisplayMode: "default", headerStyle: {
-                                backgroundColor: colors.background,
-                            },
-                            headerTitleStyle: {
-                                color: colors.text,
-                                fontWeight: "bold"
-                            },
-                            headerTintColor: colors.text,
+                            presentation: "modal",
+                            animation: "fade_from_bottom",
                             title: "Log In"
                         }} />
                     </Stack>

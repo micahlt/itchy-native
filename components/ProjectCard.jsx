@@ -9,11 +9,11 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
     const { colors } = useTheme();
     const router = useRouter();
     const openProject = useCallback(() => {
-        router.push(`/project/${project.id}`);
+        router.push(`/projects/${project.id}`);
     }, [project]);
 
     const openProfile = useCallback(() => {
-        router.push(`/user/${project.creator || project.author?.username}/profile`)
+        router.push(`/users/${project.creator || project.author?.username}`)
     }, [project]);
 
     if (!!project) {

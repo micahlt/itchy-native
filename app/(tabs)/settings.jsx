@@ -39,7 +39,7 @@ export default function SettingsScreen() {
                 </View>
             </View>
             {username && <View style={{ backgroundColor: colors.backgroundSecondary, flexDirection: 'row', justifyContent: "flex-start", alignItems: 'center', borderColor: colors.backgroundTertiary, borderTopWidth: 0.5, borderBottomWidth: 0.5 }}>
-                <TouchableOpacity onPress={() => router.push(`/user/${username}/profile`)}><Text style={{ color: colors.accent, fontSize: 16, paddingVertical: 15, paddingLeft: 10 }}>Open your profile</Text>
+                <TouchableOpacity onPress={() => router.push(`/users/${username}`)}><Text style={{ color: colors.accent, fontSize: 16, paddingVertical: 15, paddingLeft: 10 }}>Open your profile</Text>
                 </TouchableOpacity>
             </View>}
             <Text style={{ color: colors.textSecondary, fontSize: 12, padding: 10, marginTop: 10 }}>Player</Text>

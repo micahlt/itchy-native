@@ -1,16 +1,16 @@
 import { View, Text, useWindowDimensions, ScrollView } from "react-native";
-import { useTheme } from "../../utils/theme";
+import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import ScratchAPIWrapper from "../../utils/api-wrapper";
+import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import WebView from "react-native-webview";
-import Chip from "../../components/Chip";
-import Card from "../../components/Card";
+import Chip from "../../../components/Chip";
+import Card from "../../../components/Card";
 import approximateNumber from "approximate-number";
 import { useMMKVString } from "react-native-mmkv";
-import storage from "../../utils/storage";
-import useTurbowarpLink from "../../utils/hooks/useTurbowarpLink";
+import storage from "../../../utils/storage";
+import useTurbowarpLink from "../../../utils/hooks/useTurbowarpLink";
 
 export default function Project() {
     const { id } = useLocalSearchParams();
@@ -69,7 +69,7 @@ export default function Project() {
             <ScrollView>
                 <WebView source={{ uri: twLink }} containerStyle={{ flex: 0, marginTop: 5, width: width - 20, aspectRatio: 480 / 425, margin: "auto", borderRadius: 10 }} androidLayerType="hardware" renderToHardwareTextureAndroid={true} bounces={false} scrollEnabled={false} overScrollMode="never" allowsFullscreenVideo={true} style={{ backgroundColor: "transparent", }} injectedJavaScript={twJSInject} />
                 {metadata && <ScrollView horizontal contentContainerStyle={{ padding: 10, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
-                    <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/user/${metadata?.author?.username}/profile`)} textStyle={{ fontWeight: 'bold' }} />
+                    <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/users/${metadata?.author?.username}`)} textStyle={{ fontWeight: 'bold' }} />
                     <Chip.Icon icon='favorite' text={approximateNumber(metadata.stats.loves)} color="#ff4750" mode={interactions.loved ? "filled" : "outlined"} onPress={() => toggleInteraction("love")} />
                     <Chip.Icon icon='star' text={approximateNumber(metadata.stats.favorites)} color="#ddbf37" mode={interactions.favorited ? "filled" : "outlined"} onPress={() => toggleInteraction("favorite")} />
                     <Chip.Icon icon='sync' text={approximateNumber(metadata.stats.remixes)} color={isDark ? "#32ee87" : "#0ca852"} mode="filled" />
