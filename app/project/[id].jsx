@@ -26,11 +26,12 @@ export default function Project() {
     useEffect(() => {
         if (!id) return;
         ScratchAPIWrapper.project.getProject(id).then((d) => {
-            console.log(d);
+            if (!!d?.code) return;
             setMetadata(d);
-        }).catch(console.error)
+        }).catch(console.error);
         if (!!username) {
             ScratchAPIWrapper.project.getInteractions(id, username, token).then((d) => {
+                console.log(d)
                 setInteractions(d);
             }).catch(console.error);
         }
