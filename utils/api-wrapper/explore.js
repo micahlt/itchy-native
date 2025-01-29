@@ -1,6 +1,10 @@
 const APIExplore = {
     getExplore: async () => {
-        const res = await fetch("https://api.scratch.mit.edu/proxy/featured");
+        const res = await fetch("https://api.scratch.mit.edu/proxy/featured", {
+            headers: {
+                "Origin": "https://scratch.mit.edu"
+            }
+        });
         const data = await res.json();
         return {
             featured: data.community_featured_projects,

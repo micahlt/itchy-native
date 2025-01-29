@@ -26,6 +26,7 @@ export default function Project() {
     useEffect(() => {
         if (!id) return;
         ScratchAPIWrapper.project.getProject(id).then((d) => {
+            console.log(d);
             setMetadata(d);
         }).catch(console.error)
         if (!!username) {
