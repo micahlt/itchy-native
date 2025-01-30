@@ -99,22 +99,26 @@ const APIUser = {
 
                 replies.push({
                     id: commentID,
-                    username: commentPoster,
                     content: decode(commentContent),
-                    apiID: commentID.substring(9),
-                    avatarURL: `https:${posterImage}`,
-                    time: new Date(commentTime)
+                    author: {
+                        username: commentPoster,
+                        image: `https:${posterImage}`
+                    },
+                    datetime_created: new Date(commentTime),
+                    includesReplies: true
                 });
             }
 
             comments.push({
                 id: commentID,
-                username: commentPoster,
                 content: decode(commentContent),
-                apiID: commentID.substring(9),
                 replies: replies,
-                avatarURL: `https:${posterImage}`,
-                time: new Date(commentTime)
+                author: {
+                    username: commentPoster,
+                    image: `https:${posterImage}`
+                },
+                datetime_created: new Date(commentTime),
+                includesReplies: true
             });
         }
         if (comments.length == 0) {

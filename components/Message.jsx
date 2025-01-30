@@ -79,9 +79,9 @@ export default function Message({ message }) {
                 break;
             case "addcomment":
                 if (message?.comment_type === 0) {
-                    router.push(`/projects/${message.comment_obj_id}`);
+                    router.push(`/projects/${message.comment_obj_id}/comments?comment_id=comments-${message.comment_id}`);
                 } else if (message?.comment_type === 1) {
-                    router.push(`/users/${username}`);
+                    router.push(`/users/${username}/comments?comment_id=comments-${message.comment_id}`);
                 } else if (message?.comment_type === 2) {
                     linkWithFallback(`https://scratch.mit.edu/studios/${message.comment_obj_id}/comments/#comments-${message.comment_id}`, colors.accent);
                 }
@@ -117,8 +117,8 @@ export default function Message({ message }) {
                         <Text style={{ color: colors.text, fontWeight: 'bold' }}>{headerText}</Text>
                         {message.type == "addcomment" && message?.comment_type === 0 && <>
                             <Text style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> on</Text>
-                            <TouchableOpacity onPress={() => router.push(`/projects/${comment_obj_id}`)}>
-                                <Text style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6, fontWeight: "bold" }}> {message.comment_obj_title}</Text>
+                            <TouchableOpacity onPress={() => router.push(`/projects/${message.comment_obj_id}`)}>
+                                <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 0.6, fontWeight: "bold" }}> {message.comment_obj_title}</Text>
                             </TouchableOpacity>
                         </>}
                         {message.type == "addcomment" && message?.comment_type === 1 && <>

@@ -3,30 +3,47 @@ import Chip from "./Chip"
 import { decode } from "html-entities"
 import { useTheme } from "../utils/theme"
 import { useRouter } from "expo-router";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Card from "./Card";
+import ScratchAPIWrapper from "../utils/api-wrapper";
+import timeago from "time-ago";
 
-export default function Comment({ comment, isReply = false, isLastReply = false }) {
+export default function Comment({ comment, isReply = false, isLastReply = false, parentMetadata = {}, selected = 0 }) {
     const { colors } = useTheme();
     const router = useRouter();
-    const hasReplies = useMemo(() => comment.replies && comment.replies.length > 0, [comment]);
+    const [replies, setReplies] = useState([]);
+
     const openAuthor = useCallback(() => {
-        router.push(`/users/${comment.username}`);
+        router.push(`/users/${comment.author.username}`);
     }, [comment])
+
+    const timestamp = useMemo(() => timeago.ago(new Date(comment.datetime_created)), [comment]);
+    const content = useMemo(() => decode(comment.content), [comment]);
+    const replyList = useMemo(() => replies.map((reply) => <Comment comment={reply} isReply={true} key={reply.id} selected={selected} />), [replies]);
+    const isSelected = useMemo(() => selected == comment.id, [selected, comment]);
+
+    useEffect(() => {
+        if (!!comment.includesReplies) {
+            if (!comment.replies) return;
+            if (comment.replies.length == 0) return;
+            setReplies(comment.replies);
+        } else if (!isReply) {
+            ScratchAPIWrapper.project.getCommentReplies(parentMetadata.project, parentMetadata.author, comment.id).then((d) => {
+                setReplies(d);
+            }).catch(console.error);
+        }
+    }, [comment]);
 
     return (
         <View style={{ borderLeftColor: colors.backgroundTertiary, borderLeftWidth: isReply ? 3 : 0, paddingBottom: isLastReply ? 0 : 10, marginLeft: isReply ? 8 : 0 }}>
-            <Card style={{ backgroundColor: colors.backgroundSecondary, padding: 15, borderRadius: 10, marginLeft: isReply ? 10 : 0, marginBottom: hasReplies ? 10 : 0 }}>
+            <Card style={{ backgroundColor: colors.backgroundSecondary, padding: 15, borderRadius: 10, marginLeft: isReply ? 10 : 0, marginBottom: replies.length > 0 ? 10 : 0, borderColor: colors.accent, borderWidth: isSelected ? 2 : 0 }}>
                 <View style={{ flexDirection: "row", alignItems: "top", justifyContent: "space-between" }}>
-                    <Chip.Image text={comment.username} imageURL={comment.avatarURL} mode="outlined" style={{ marginRight: "auto", marginBottom: 8 }} textStyle={{ fontWeight: "bold" }} onPress={openAuthor} />
-                    <Text style={{ color: colors.textSecondary, fontSize: 12, marginTop: 2 }}>{new Date().toLocaleString("en-US", {
-                        timeStyle: "short",
-                        dateStyle: "long"
-                    })}</Text>
+                    <Chip.Image text={comment.author.username} imageURL={comment.author.image} mode="outlined" style={{ marginRight: "auto", marginBottom: 8 }} textStyle={{ fontWeight: "bold" }} onPress={openAuthor} />
+                    <Text style={{ color: colors.textSecondary, fontSize: 12, marginTop: 2 }}>{timestamp}</Text>
                 </View>
-                <Text style={{ color: colors.text }}>{decode(comment.content)}</Text>
+                <Text style={{ color: colors.text }}>{content}</Text>
             </Card>
-            {comment.replies && comment.replies.map((reply, i) => <Comment comment={reply} isReply={true} isLastReply={(i + 1) == comment.replies.length} />)}
+            {!!replies.length > 0 && replyList}
         </View>
     );
 }

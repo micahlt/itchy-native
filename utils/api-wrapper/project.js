@@ -55,6 +55,27 @@ const APIProject = {
         const data = await res.json();
         return data;
     },
+    getComments: async (projectID, author, limit = 20, offset = 0, includeReplies = true) => {
+        const res = await fetch(`https://api.scratch.mit.edu/users/${author}/projects/${projectID}/comments?offset=${offset}&limit=${limit}`);
+        const data = await res.json();
+        if (includeReplies) {
+            let commentArr = [];
+            Promise.allSettled(data.map(async (comment) => {
+                const replies = await APIProject.getCommentReplies(projectID, author, comment.id);
+                comment.replies = replies;
+                comment.includesReplies = true;
+                commentArr.push(comment);
+            }));
+            return commentArr;
+        } else {
+            return data;
+        }
+    },
+    getCommentReplies: async (projectID, author, parentCommentID) => {
+        const res = await fetch(`https://api.scratch.mit.edu/users/${author}/projects/${projectID}/comments/${parentCommentID}/replies`);
+        const data = await res.json();
+        return data;
+    }
 }
 
 export default APIProject;

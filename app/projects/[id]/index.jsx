@@ -11,6 +11,7 @@ import approximateNumber from "approximate-number";
 import { useMMKVString } from "react-native-mmkv";
 import storage from "../../../utils/storage";
 import useTurbowarpLink from "../../../utils/hooks/useTurbowarpLink";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function Project() {
     const { id } = useLocalSearchParams();
@@ -64,6 +65,7 @@ export default function Project() {
             <Stack.Screen
                 options={{
                     title: metadata?.title || "Loading...",
+                    headerRight: () => <MaterialIcons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='question-answer' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
                 }}
             />
             <ScrollView>

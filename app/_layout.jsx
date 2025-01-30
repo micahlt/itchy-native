@@ -39,7 +39,7 @@ export default function App() {
                         headerTintColor: colors.text
                     }} >
                         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                        <Stack.Screen name="projects/[id]" options={{
+                        <Stack.Screen name="projects/[id]/index" options={{
                             presentation: "modal",
                             animation: "fade_from_bottom",
                             headerRight: () =>
@@ -51,17 +51,17 @@ export default function App() {
                             headerRight: () =>
                                 <MaterialIcons name='question-answer' size={24} color={colors.textSecondary} />
                         }} />
-                        <Stack.Screen name="user/[username]" options={{
+                        <Stack.Screen name="users/[username]/index" options={{
                             presentation: "modal",
                             animation: "fade_from_bottom",
                             headerRight: () =>
                                 <MaterialIcons name='launch' size={24} color={colors.textSecondary} />
                         }} />
-                        <Stack.Screen name="user/[username]/about" options={{
+                        <Stack.Screen name="users/[username]/about" options={{
                             presentation: "modal",
                             animation: "fade_from_bottom",
                         }} />
-                        <Stack.Screen name="user/[username]/comments" options={{
+                        <Stack.Screen name="users/[username]/comments" options={{
                             presentation: "modal",
                             animation: "fade_from_bottom",
                         }} />

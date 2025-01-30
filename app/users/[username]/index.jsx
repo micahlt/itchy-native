@@ -38,7 +38,7 @@ export default function User() {
             <Stack.Screen
                 options={{
                     title: username,
-                    headerRight: () => <MaterialIcons.Button onPress={openProfile} name='launch' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
+                    headerRight: () => <MaterialIcons.Button onPressIn={openProfile} name='launch' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
                 }}
             />
             {!!profile && (
