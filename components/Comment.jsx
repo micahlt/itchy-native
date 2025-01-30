@@ -8,7 +8,7 @@ import Card from "./Card";
 import ScratchAPIWrapper from "../utils/api-wrapper";
 import timeago from "time-ago";
 
-export default function Comment({ comment, isReply = false, isLastReply = false, parentMetadata = {}, selected = 0 }) {
+export default function Comment({ comment, isReply = false, isLastReply = false, parentMetadata = {}, selected = 0, partOfSelection = false }) {
     const { colors } = useTheme();
     const router = useRouter();
     const [replies, setReplies] = useState([]);
@@ -19,8 +19,13 @@ export default function Comment({ comment, isReply = false, isLastReply = false,
 
     const timestamp = useMemo(() => timeago.ago(new Date(comment.datetime_created)), [comment]);
     const content = useMemo(() => decode(comment.content), [comment]);
-    const replyList = useMemo(() => replies.map((reply) => <Comment comment={reply} isReply={true} key={reply.id} selected={selected} />), [replies]);
     const isSelected = useMemo(() => selected == comment.id, [selected, comment]);
+    const partOfSelected = useMemo(() => {
+        if (replies.findIndex((r) => r.id == selected) !== -1) {
+            return true;
+        }
+    }, [replies, selected]);
+    const replyList = useMemo(() => replies.map((reply) => <Comment comment={reply} isReply={true} key={reply.id} selected={selected} partOfSelection={partOfSelected} />), [replies, partOfSelected]);
 
     useEffect(() => {
         if (!!comment.includesReplies) {
@@ -35,7 +40,7 @@ export default function Comment({ comment, isReply = false, isLastReply = false,
     }, [comment]);
 
     return (
-        <View style={{ borderLeftColor: colors.backgroundTertiary, borderLeftWidth: isReply ? 3 : 0, paddingBottom: isLastReply ? 0 : 10, marginLeft: isReply ? 8 : 0 }}>
+        <View style={{ borderLeftColor: (isSelected || partOfSelection) ? colors.accent : colors.backgroundTertiary, borderLeftWidth: isReply ? 3 : 0, paddingBottom: isLastReply ? 0 : 10, marginLeft: isReply ? 8 : 0 }}>
             <Card style={{ backgroundColor: colors.backgroundSecondary, padding: 15, borderRadius: 10, marginLeft: isReply ? 10 : 0, marginBottom: replies.length > 0 ? 10 : 0, borderColor: colors.accent, borderWidth: isSelected ? 2 : 0 }}>
                 <View style={{ flexDirection: "row", alignItems: "top", justifyContent: "space-between" }}>
                     <Chip.Image text={comment.author.username} imageURL={comment.author.image} mode="outlined" style={{ marginRight: "auto", marginBottom: 8 }} textStyle={{ fontWeight: "bold" }} onPress={openAuthor} />

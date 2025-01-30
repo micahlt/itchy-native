@@ -13,6 +13,7 @@ export default function ProjectComments() {
     const [comments, setComments] = useState([]);
     const [offset, setOffset] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [hasScrolledToSelected, setHasScrolledToSelected] = useState(false);
     const scrollRef = useRef();
 
     useEffect(() => {
@@ -31,28 +32,19 @@ export default function ProjectComments() {
     }, [offset]);
 
     useEffect(() => {
-        console.log("Comments updating")
-        if (!comment_id) {
-            console.log("No comment id")
-            return;
-        }
+        if (!comment_id || hasScrolledToSelected) return;
         const commentIndex = comments.findIndex(c => {
             if (c.id === comment_id) {
                 return true;
             } else if (c.replies) {
-                console.log(c.replies[0]?.id);
-                console.log(comment_id);
                 return c.replies.findIndex(r => r.id === comment_id) !== -1;
             }
         });
         if (commentIndex === -1) {
-            console.log("Comment not found")
-            if (!loading) {
-                console.log("Not currently loading")
-                setOffset(comments.length);
-            }
+            if (!loading) setOffset(comments.length);
         } else if (scrollRef?.current) {
             scrollRef.current.scrollToIndex({ index: commentIndex, animated: true });
+            setHasScrolledToSelected(true);
         }
     }, [comments])
 
@@ -60,7 +52,7 @@ export default function ProjectComments() {
         return <Comment comment={item} parentMetadata={{
             author: project?.author?.username,
             project: project?.id
-        }} selected={comment_id.split("comments-")[1]} />
+        }} selected={comment_id ? comment_id.split("comments-")[1] : undefined} />
     }, [project]);
 
     const endReached = useCallback(() => {

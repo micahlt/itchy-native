@@ -12,6 +12,7 @@ export default function UserComments() {
     const [comments, setComments] = useState([]);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
+    const [hasScrolledToSelected, setHasScrolledToSelected] = useState(false);
     const scrollRef = useRef();
 
     useEffect(() => {
@@ -20,7 +21,6 @@ export default function UserComments() {
         ScratchAPIWrapper.user.getComments(username, page).then((d) => {
             if (page === 1) {
                 setComments(d);
-                console.log(comment_id, d[0].id);
             } else {
                 setComments([...comments, ...d]);
             }
@@ -29,11 +29,7 @@ export default function UserComments() {
     }, [username, page]);
 
     useEffect(() => {
-        console.log("Comments updating")
-        if (!comment_id) {
-            console.log("No comment id")
-            return;
-        }
+        if (!comment_id || !!hasScrolledToSelected) return;
         const commentIndex = comments.findIndex(c => {
             if (c.id === comment_id) {
                 return true;
@@ -42,18 +38,15 @@ export default function UserComments() {
             }
         });
         if (commentIndex === -1) {
-            console.log("Comment not found")
-            if (!loading) {
-                console.log("Not currently loading")
-                setPage(page + 1);
-            }
+            if (!loading) setPage(page + 1);
         } else if (scrollRef?.current) {
             scrollRef.current.scrollToIndex({ index: commentIndex, animated: true });
+            setHasScrolledToSelected(true);
         }
     }, [comments, comment_id])
 
     const renderComment = useCallback(({ item }) => {
-        return <Comment comment={item} selected={comment_id} />
+        return <Comment comment={item} selected={comment_id || undefined} />
     }, []);
 
     const endReached = useCallback(() => {

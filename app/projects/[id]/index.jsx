@@ -32,7 +32,6 @@ export default function Project() {
         }).catch(console.error);
         if (!!username) {
             ScratchAPIWrapper.project.getInteractions(id, username, token).then((d) => {
-                console.log(d)
                 setInteractions(d);
             }).catch(console.error);
         }
