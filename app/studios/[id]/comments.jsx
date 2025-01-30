@@ -1,44 +1,50 @@
-import { View, Text, FlatList, RefreshControl } from "react-native";
+import { View, FlatList, RefreshControl } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import Comment from "../../../components/Comment";
 
-export default function UserComments() {
-    const { username, comment_id } = useLocalSearchParams();
+export default function StudioComments() {
+    const { id, comment_id } = useLocalSearchParams();
     const { colors, isDark } = useTheme();
+    const [studio, setStudio] = useState(null);
     const [comments, setComments] = useState([]);
-    const [page, setPage] = useState(1);
+    const [offset, setOffset] = useState(0);
     const [loading, setLoading] = useState(true);
     const [hasScrolledToSelected, setHasScrolledToSelected] = useState(false);
     const scrollRef = useRef();
 
     useEffect(() => {
-        if (!username) return;
+        if (!id) return;
+        ScratchAPIWrapper.studio.getStudio(id).then(setStudio).catch(console.error);
+    }, [id]);
+
+    useEffect(() => {
+        if (!id) return;
         setLoading(true);
-        ScratchAPIWrapper.user.getComments(username, page).then((d) => {
-            if (page === 1) {
+        ScratchAPIWrapper.studio.getComments(id, offset).then((d) => {
+            if (offset === 0) {
                 setComments(d);
             } else {
                 setComments([...comments, ...d]);
             }
             setLoading(false);
         }).catch(console.error);
-    }, [username, page]);
+    }, [id, offset]);
 
     useEffect(() => {
         if (!comment_id || !!hasScrolledToSelected) return;
         const commentIndex = comments.findIndex(c => {
-            if (c.id === comment_id) {
+            if (c.id == comment_id) {
                 return true;
-            } else if (c.replies) {
-                return c.replies.findIndex(r => r.id === comment_id) !== -1;
+            } else if (c.replies?.length > 0) {
+                return c.replies.findIndex(r => r.id == comment_id) !== -1;
             }
         });
         if (commentIndex === -1) {
-            if (!loading) setPage(page + 1);
+            if (!loading) setOffset(comments.length - 1);
         } else if (scrollRef?.current) {
             scrollRef.current.scrollToIndex({ index: commentIndex, animated: true });
             setHasScrolledToSelected(true);
@@ -51,11 +57,11 @@ export default function UserComments() {
 
     const endReached = useCallback(() => {
         if (loading) return;
-        setPage(page + 1);
-    }, [loading, page]);
+        setOffset(comments.length - 1);
+    }, [loading, offset]);
 
     const refresh = useCallback(() => {
-        setPage(1);
+        setOffset(1);
     }, []);
 
 
@@ -63,11 +69,11 @@ export default function UserComments() {
         <View style={{ flex: 1, backgroundColor: colors.background }}>
             <Stack.Screen
                 options={{
-                    title: `Comments for ${username}`
+                    title: studio ? `Comments in ${studio.title}` : "Loading..."
                 }}
             />
             {comments.length > 0 && (
-                <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={(item, i) => item.id + i} onEndReached={endReached} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
+                <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={item => item.id} onEndReached={endReached} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
                     index,
                 }) => {
                     scrollRef.current?.scrollToOffset({

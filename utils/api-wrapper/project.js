@@ -60,7 +60,7 @@ const APIProject = {
         const data = await res.json();
         if (includeReplies) {
             let commentArr = [];
-            Promise.allSettled(data.map(async (comment) => {
+            await Promise.allSettled(data.map(async (comment) => {
                 const replies = await APIProject.getCommentReplies(projectID, author, comment.id);
                 comment.replies = replies;
                 comment.includesReplies = true;

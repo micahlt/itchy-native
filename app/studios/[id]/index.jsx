@@ -13,7 +13,7 @@ import Card from "../../../components/Card";
 
 export default function Studio() {
     const { id } = useLocalSearchParams();
-    const { colors } = useTheme();
+    const { colors, isDark } = useTheme();
     const { width } = useWindowDimensions();
     const [studio, setStudio] = useState(null);
     const [projects, setProjects] = useState(null);
@@ -49,7 +49,7 @@ export default function Studio() {
                     headerRight: () => <MaterialIcons.Button onPressIn={openStudio} name='launch' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
                 }}
             />
-            <ScrollView refreshControl={<RefreshControl refreshing={loading} onRefresh={load} />}>
+            <ScrollView refreshControl={<RefreshControl refreshing={loading} onRefresh={load} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}>
                 {studio &&
                     <>
                         <Image source={{ uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${id}.png` }} style={{ width: width, aspectRatio: 16 / 9 }} />
@@ -86,7 +86,7 @@ export default function Studio() {
                         </Card>
                         <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 30, paddingBottom: 0, gap: 10 }}>
                             <MaterialIcons name='video-library' size={24} color={colors.text} />
-                            <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Projects <Text style={{ opacity: 0.7 }}>({studio.stats.projects})</Text></Text>
+                            <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Projects <Text style={{ color: colors.textSecondary, fontWeight: "normal" }}>({studio.stats.projects == 100 ? "100+" : studio.stats.projects})</Text></Text>
                         </View>
                         <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
                             {projects?.map((project) => (<ProjectCard project={{ ...project }} key={project.id} />))}

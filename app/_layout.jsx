@@ -47,15 +47,17 @@ export default function App() {
                         }} />
                         <Stack.Screen name="projects/[id]/comments" options={{
                             presentation: "modal",
-                            animation: "fade_from_bottom",
-                            headerRight: () =>
-                                <MaterialIcons name='question-answer' size={24} color={colors.textSecondary} />
+                            animation: "fade_from_bottom"
                         }} />
                         <Stack.Screen name="studios/[id]/index" options={{
                             presentation: "modal",
                             animation: "fade_from_bottom",
                             headerRight: () =>
                                 <MaterialIcons name='launch' size={24} color={colors.textSecondary} />
+                        }} />
+                        <Stack.Screen name="studios/[id]/comments" options={{
+                            presentation: "modal",
+                            animation: "fade_from_bottom"
                         }} />
                         <Stack.Screen name="users/[username]/index" options={{
                             presentation: "modal",

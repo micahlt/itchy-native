@@ -31,10 +31,10 @@ export default function UserComments() {
     useEffect(() => {
         if (!comment_id || !!hasScrolledToSelected) return;
         const commentIndex = comments.findIndex(c => {
-            if (c.id === comment_id) {
+            if (c.id == comment_id) {
                 return true;
             } else if (c.replies) {
-                return c.replies.findIndex(r => r.id === comment_id) !== -1;
+                return c.replies.findIndex(r => r.id == comment_id) !== -1;
             }
         });
         if (commentIndex === -1) {
@@ -67,7 +67,7 @@ export default function UserComments() {
                 }}
             />
             {comments.length > 0 && (
-                <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={(item, i) => item.id + i} onEndReached={endReached} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
+                <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={item => item.id} onEndReached={endReached} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
                     index,
                 }) => {
                     scrollRef.current?.scrollToOffset({

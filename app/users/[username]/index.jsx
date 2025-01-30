@@ -1,4 +1,4 @@
-import { View, useWindowDimensions, ScrollView, Text, Pressable, Linking } from "react-native";
+import { View, useWindowDimensions, ScrollView, Text, Pressable, RefreshControl } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useState } from "react";
@@ -12,12 +12,16 @@ import linkWithFallback from "../../../utils/linkWithFallback";
 
 export default function User() {
     const { username } = useLocalSearchParams();
-    const { colors } = useTheme();
+    const { colors, isDark } = useTheme();
     const { width } = useWindowDimensions();
     const [profile, setProfile] = useState(null);
     const [projects, setProjects] = useState(null);
     const [favorites, setFavorites] = useState(null);
-    useEffect(() => {
+    const [loading, setLoading] = useState(false);
+
+    const load = () => {
+        if (!!loading) return;
+        setLoading(true);
         ScratchAPIWrapper.user.getCompleteProfile(username).then((d) => {
             setProfile(d);
         }).catch(console.error)
@@ -27,6 +31,17 @@ export default function User() {
         ScratchAPIWrapper.user.getFavorites(username).then((d) => {
             setFavorites(d);
         }).catch(console.error)
+    };
+
+    useEffect(() => {
+        if (!loading) return;
+        if (!!profile && !!projects && !!favorites) {
+            setLoading(false);
+        }
+    }, [profile, projects, favorites]);
+
+    useEffect(() => {
+        load();
     }, [username]);
 
     const openProfile = () => {
@@ -41,8 +56,9 @@ export default function User() {
                     headerRight: () => <MaterialIcons.Button onPressIn={openProfile} name='launch' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
                 }}
             />
-            {!!profile && (
-                <ScrollView>
+
+            <ScrollView refreshControl={<RefreshControl refreshing={loading} onRefresh={load} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}>
+                {!!profile && (<>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0 }}>
                         <Image source={{ uri: profile.profile.images["90x90"] }} placeholder={require("../../../assets/avatar.png")} placeholderContentFit="cover" style={{ height: 75, width: 75, borderRadius: 75, marginRight: 25, backgroundColor: "white" }} />
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginRight: 10, flex: 1 }}>
@@ -88,8 +104,9 @@ export default function User() {
                     <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
                         {favorites?.map((project) => (<ProjectCard project={{ ...project }} key={project.id} />))}
                     </ScrollView>
-                </ScrollView>
-            )}
+                </>)}
+            </ScrollView>
+
         </View>
     );
 }

@@ -34,10 +34,10 @@ export default function ProjectComments() {
     useEffect(() => {
         if (!comment_id || hasScrolledToSelected) return;
         const commentIndex = comments.findIndex(c => {
-            if (c.id === comment_id) {
+            if (c.id == comment_id) {
                 return true;
             } else if (c.replies) {
-                return c.replies.findIndex(r => r.id === comment_id) !== -1;
+                return c.replies.findIndex(r => r.id == comment_id) !== -1;
             }
         });
         if (commentIndex === -1) {
@@ -49,10 +49,7 @@ export default function ProjectComments() {
     }, [comments])
 
     const renderComment = useCallback(({ item }) => {
-        return <Comment comment={item} parentMetadata={{
-            author: project?.author?.username,
-            project: project?.id
-        }} selected={comment_id ? comment_id.split("comments-")[1] : undefined} />
+        return <Comment comment={item} selected={comment_id ? comment_id.split("comments-")[1] : undefined} />
     }, [project]);
 
     const endReached = useCallback(() => {
@@ -73,7 +70,7 @@ export default function ProjectComments() {
                 }}
             />
 
-            <FlatList contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={(item, i) => item.id + Math.random()} onEndReached={endReached} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
+            <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={(item) => item.id} onEndReached={endReached} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
                 index,
             }) => {
                 scrollRef.current?.scrollToOffset({

@@ -6,8 +6,8 @@ const APIMessages = {
      * @param {"comments"|"project"|"studios"|"forums"} filter 
      * @returns 
      */
-    getMessages: async function (username, token, offset = 0, filter = "") {
-        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/messages?offset=${offset}&filter=${filter}`, {
+    getMessages: async function (username, token, offset = 0, filter = "", limit = 30) {
+        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/messages?offset=${offset}&filter=${filter}&limit=30`, {
             headers: {
                 "x-token": token
             }

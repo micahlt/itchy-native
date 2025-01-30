@@ -22,7 +22,7 @@ export default function Messages() {
 
     const loadMessages = () => {
         setLoading(true);
-        ScratchAPIWrapper.messages.getMessages(username, token, offset).then((d) => {
+        ScratchAPIWrapper.messages.getMessages(username, token, offset, "", 30).then((d) => {
             if (offset === 0) {
                 setMessages(d);
             } else {
@@ -44,7 +44,7 @@ export default function Messages() {
         data={messages}
         style={{ flex: 1, backgroundColor: colors.background }}
         renderItem={renderMessage}
-        keyExtractor={(m) => m.id}
+        keyExtractor={m => m.id}
         onRefresh={() => {
             setOffset(0);
             loadMessages();
@@ -52,6 +52,7 @@ export default function Messages() {
         refreshing={loading}
         refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}
         ListHeaderComponent={<Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, padding: 10, marginBottom: 20 }}>Messages</Text>}
+        onEndReachedThreshold={1.5}
         onEndReached={() => {
             if (loading) return;
             setOffset(messages.length);

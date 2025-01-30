@@ -5,7 +5,6 @@ import { useCallback, useMemo } from "react";
 import { decode } from 'html-entities';
 import { useRouter } from "expo-router";
 import { useMMKVString } from "react-native-mmkv";
-import linkWithFallback from "../utils/linkWithFallback";
 
 export default function Message({ message }) {
     const { colors } = useTheme();
@@ -83,7 +82,7 @@ export default function Message({ message }) {
                 } else if (message?.comment_type === 1) {
                     router.push(`/users/${username}/comments?comment_id=comments-${message.comment_id}`);
                 } else if (message?.comment_type === 2) {
-                    linkWithFallback(`https://scratch.mit.edu/studios/${message.comment_obj_id}/comments/#comments-${message.comment_id}`, colors.accent);
+                    router.push(`/studios/${message.comment_obj_id}/comments?comment_id=${message.comment_id}`)
                 }
                 break;
             case "studioactivity":
@@ -92,11 +91,14 @@ export default function Message({ message }) {
             case "remixproject":
                 return `remixed ${message.parent_title}`;
             case "curatorinvite":
-                return `invited you to curate ${message.title}`;
+                router.push(`/studios/${message.gallery_id}`);
+                break;
             case "becomeownerstudio":
-                return `promoted you to curator of ${message.gallery_title}`;
+                router.push(`/studios/${message.gallery_id}`);
+                break;
             case "becomehoststudio":
-                return `made you host of ${message.gallery_title}`;
+                router.push(`/studios/${message.gallery_id}`);
+                break;
             case "forumpost":
                 return `posted in ${message.topic_title}`;
             case "admin":
@@ -118,19 +120,19 @@ export default function Message({ message }) {
                         {message.type == "addcomment" && message?.comment_type === 0 && <>
                             <Text style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> on</Text>
                             <TouchableOpacity onPress={() => router.push(`/projects/${message.comment_obj_id}`)}>
-                                <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 0.6, fontWeight: "bold" }}> {message.comment_obj_title}</Text>
+                                <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 1, fontWeight: "bold" }}> {message.comment_obj_title}</Text>
                             </TouchableOpacity>
                         </>}
                         {message.type == "addcomment" && message?.comment_type === 1 && <>
                             <Text style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> on</Text>
                             <TouchableOpacity onPress={() => router.push(`/users/${username}`)}>
-                                <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 0.6, fontWeight: "bold" }}> your profile</Text>
+                                <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 1, fontWeight: "bold" }}> your profile</Text>
                             </TouchableOpacity>
                         </>}
                         {message.type == "addcomment" && message?.comment_type === 2 && <>
                             <Text style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> in</Text>
-                            <TouchableOpacity onPress={() => linkWithFallback(`https://scratch.mit.edu/studios/${message.comment_obj_id}/comments/#comments-${message.comment_id}`, colors.accent)}>
-                                <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 0.6, fontWeight: "bold" }}> {message.comment_obj_title}</Text>
+                            <TouchableOpacity onPress={() => router.push(`/studios/${message.comment_obj_id}`)}>
+                                <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 1, fontWeight: "bold" }}> {message.comment_obj_title}</Text>
                             </TouchableOpacity>
                         </>}
                     </View>
