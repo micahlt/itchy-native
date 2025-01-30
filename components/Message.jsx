@@ -87,7 +87,7 @@ export default function Message({ message }) {
                 }
                 break;
             case "studioactivity":
-                linkWithFallback(`https://scratch.mit.edu/studios/${message.gallery_id}/activity`, colors.accent);
+                router.push(`/studios/${message.gallery_id}`);
                 break;
             case "remixproject":
                 return `remixed ${message.parent_title}`;
