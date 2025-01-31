@@ -1,7 +1,7 @@
-import { View, Text, FlatList, RefreshControl } from "react-native";
+import { View, FlatList, RefreshControl } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import Comment from "../../../components/Comment";
@@ -32,12 +32,13 @@ export default function ProjectComments() {
     }, [offset]);
 
     useEffect(() => {
-        if (!comment_id || hasScrolledToSelected) return;
+        if (!comment_id || !!hasScrolledToSelected) return;
+        const commentID = comment_id.split("comments-")[1];
         const commentIndex = comments.findIndex(c => {
-            if (c.id == comment_id) {
+            if (c.id == commentID) {
                 return true;
-            } else if (c.replies) {
-                return c.replies.findIndex(r => r.id == comment_id) !== -1;
+            } else if (c.replies?.length > 0) {
+                return c.replies.findIndex(r => r.id == commentID) !== -1;
             }
         });
         if (commentIndex === -1) {
@@ -54,6 +55,7 @@ export default function ProjectComments() {
 
     const endReached = useCallback(() => {
         if (loading) return;
+        console.log("End reached");
         setOffset(comments.length);
     }, [loading, offset]);
 
