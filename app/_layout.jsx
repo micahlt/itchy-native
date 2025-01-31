@@ -73,6 +73,11 @@ export default function App() {
                             presentation: "modal",
                             animation: "fade_from_bottom",
                         }} />
+                        <Stack.Screen name="feed" options={{
+                            presentation: "modal",
+                            animation: "fade_from_bottom",
+                            headerTitle: "What's Happening"
+                        }} />
                         <Stack.Screen name="login" options={{
                             presentation: "modal",
                             animation: "fade_from_bottom",

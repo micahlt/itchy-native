@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import ProjectCard from '../../components/ProjectCard';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useMMKVString } from 'react-native-mmkv';
+import Feed from '../../components/Feed';
 
 export default function HomeScreen() {
     const { colors, isDark } = useTheme();
@@ -40,6 +41,7 @@ export default function HomeScreen() {
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
             <ScrollView refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}>
                 <>
+                    {!!username ? <Feed style={{ margin: 20, marginBottom: 0 }} username={username} /> : <></>}
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
                         <MaterialIcons name='workspace-premium' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Featured</Text>

@@ -43,7 +43,16 @@ const APIExplore = {
         const res = await fetch(`https://api.scratch.mit.edu/search/studios?limit=${limit}&offset=${offset}&language=en&mode=${sortMode}&q=${encodeURIComponent(query)}`);
         const data = await res.json();
         return data;
-    }
+    },
+    getFeed: async (username, token, offset = 0, limit = 4) => {
+        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/following/users/activity?limit=${limit}&offset=${offset}`, {
+            headers: {
+                "x-token": token
+            }
+        });
+        const data = await res.json();
+        return data;
+    },
 };
 
 export default APIExplore;
