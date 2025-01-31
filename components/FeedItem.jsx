@@ -1,12 +1,10 @@
 import { Pressable, Text, TouchableOpacity, View } from "react-native";
-import { useTheme } from "../utils/theme";
 import { useMemo } from "react";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import timeago from "time-ago";
 
 export default function FeedItem({ item, textColor = "white" }) {
-    const { colors } = useTheme();
     const router = useRouter();
     const activityType = useMemo(() => {
         switch (item.type) {

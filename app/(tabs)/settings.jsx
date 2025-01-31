@@ -11,7 +11,7 @@ import linkWithFallback from '../../utils/linkWithFallback';
 export default function SettingsScreen() {
     const { colors } = useTheme();
     const router = useRouter();
-    const [username, setUsername] = useMMKVString("username");
+    const [username] = useMMKVString("username");
     const [twConfig, setTWConfig] = useMMKVObject("twConfig");
     useEffect(() => {
         if (!twConfig) {
