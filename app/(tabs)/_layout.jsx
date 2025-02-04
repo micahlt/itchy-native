@@ -27,7 +27,7 @@ export default function TabLayout() {
         <>
             <StatusBar style="auto" backgroundColor={colors.background} />
 
-            <Tabs tabBarActiveTintColor={colors.accent} activeIndicatorColor={colors.accentTransparent} tabBarStyle={{
+            <Tabs tabBarActiveTintColor={colors.accent} activeIndicatorColor={colors.accentTransparent} ignoresTopSafeArea={true} tabBarStyle={{
                 backgroundColor: colors.backgroundSecondary
             }} screenOptions={{
                 headerShown: false
