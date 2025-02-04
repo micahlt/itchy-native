@@ -27,15 +27,10 @@ export default function TabLayout() {
         <>
             <StatusBar style="auto" backgroundColor={colors.background} />
 
-            <Tabs screenOptions={{
-                tabBarActiveTintColor: colors.accent, headerShown: false, tabBarStyle: {
-                    backgroundColor: colors.backgroundSecondary,
-                    borderColor: "transparent",
-                    height: 60,
-                },
-                tabBarIconStyle: {
-                    marginTop: 4
-                },
+            <Tabs tabBarActiveTintColor={colors.accent} activeIndicatorColor={colors.accentTransparent} tabBarStyle={{
+                backgroundColor: colors.backgroundSecondary
+            }} screenOptions={{
+                headerShown: false
             }}>
                 <Tabs.Screen
                     name="index"
@@ -56,8 +51,7 @@ export default function TabLayout() {
                     options={{
                         title: 'Messages',
                         tabBarIcon: () => require("../../assets/icons/messages.png"),
-                        tabBarBadge: messageCount > 0 ? messageCount : undefined,
-                        tabBarBadgeStyle: { backgroundColor: colors.accent, color: "white", fontSize: 9, fontWeight: "bold", transform: [{ translateX: 5 }], padding: 0 }
+                        tabBarBadge: String(messageCount > 0 ? messageCount : ""),
                     }}
                 />
                 <Tabs.Screen

@@ -40,8 +40,8 @@ export default function HomeScreen() {
     }
 
     return (
-        <SafeAreaView style={{ backgroundColor: colors.background, flex: 1, paddingBottom: 50 }}>
-            <ScrollView refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}>
+        <SafeAreaView style={{ backgroundColor: colors.background, flex: 1 }}>
+            <ScrollView refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} style={{ paddingBottom: 50 }} />}>
                 <>
                     {!!username ? <Feed style={{ margin: 20, marginBottom: 0 }} username={username} /> : <SignInPrompt />}
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
