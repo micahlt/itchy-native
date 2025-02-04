@@ -1,10 +1,15 @@
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Tabs } from 'expo-router';
 import { useTheme } from '../../utils/theme';
 import { StatusBar } from 'react-native';
 import { useEffect, useState } from 'react';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { useMMKVString } from 'react-native-mmkv';
+import { withLayoutContext } from "expo-router";
+import { createNativeBottomTabNavigator } from "@bottom-tabs/react-navigation";
+
+export const Tabs = withLayoutContext(
+    createNativeBottomTabNavigator().Navigator
+);
 
 export default function TabLayout() {
     const { colors } = useTheme();
@@ -36,21 +41,21 @@ export default function TabLayout() {
                     name="index"
                     options={{
                         title: 'Explore',
-                        tabBarIcon: ({ color }) => <MaterialIcons size={28} name="public" color={color} />,
+                        tabBarIcon: () => require("../../assets/icons/explore.png"),
                     }}
                 />
                 <Tabs.Screen
                     name="search"
                     options={{
                         title: 'Search',
-                        tabBarIcon: ({ color }) => <MaterialIcons size={28} name="search" color={color} />,
+                        tabBarIcon: () => require("../../assets/icons/search.png"),
                     }}
                 />
                 <Tabs.Screen
                     name="messages"
                     options={{
                         title: 'Messages',
-                        tabBarIcon: ({ color }) => <MaterialIcons size={28} name="email" color={color} />,
+                        tabBarIcon: () => require("../../assets/icons/messages.png"),
                         tabBarBadge: messageCount > 0 ? messageCount : undefined,
                         tabBarBadgeStyle: { backgroundColor: colors.accent, color: "white", fontSize: 9, fontWeight: "bold", transform: [{ translateX: 5 }], padding: 0 }
                     }}
@@ -59,7 +64,7 @@ export default function TabLayout() {
                     name="settings"
                     options={{
                         title: 'Settings',
-                        tabBarIcon: ({ color }) => <MaterialIcons size={28} name="settings" color={color} />,
+                        tabBarIcon: () => require("../../assets/icons/settings.png"),
                     }}
                 />
             </Tabs>

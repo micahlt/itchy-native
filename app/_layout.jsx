@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Stack from 'expo-router/stack';
 import { ThemeProvider } from '../utils/theme';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Pressable, useColorScheme, View } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 import { darkColors, lightColors } from '../utils/theme/colors';
 import { useMMKVObject } from 'react-native-mmkv';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -21,7 +20,7 @@ export default function App() {
     if (!!colors) {
         return (
             <ThemeProvider>
-                <SafeAreaView style={{ backgroundColor: colors.background, flex: 1 }}>
+                <View style={{ backgroundColor: colors.background, flex: 1 }}>
                     <Stack screenOptions={{
                         contentStyle: {
                             backgroundColor: colors.background,
@@ -84,7 +83,7 @@ export default function App() {
                             title: "Log In"
                         }} />
                     </Stack>
-                </SafeAreaView>
+                </View>
             </ThemeProvider >
         );
     }

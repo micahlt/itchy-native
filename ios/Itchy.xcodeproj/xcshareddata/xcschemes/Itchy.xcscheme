@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "itchynative.app"
-               BlueprintName = "itchynative"
-               ReferencedContainer = "container:itchynative.xcodeproj">
+               BuildableName = "Itchy.app"
+               BlueprintName = "Itchy"
+               ReferencedContainer = "container:Itchy.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "itchynativeTests.xctest"
-               BlueprintName = "itchynativeTests"
-               ReferencedContainer = "container:itchynative.xcodeproj">
+               BuildableName = "ItchyTests.xctest"
+               BlueprintName = "ItchyTests"
+               ReferencedContainer = "container:Itchy.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "itchynative.app"
-            BlueprintName = "itchynative"
-            ReferencedContainer = "container:itchynative.xcodeproj">
+            BuildableName = "Itchy.app"
+            BlueprintName = "Itchy"
+            ReferencedContainer = "container:Itchy.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "itchynative.app"
-            BlueprintName = "itchynative"
-            ReferencedContainer = "container:itchynative.xcodeproj">
+            BuildableName = "Itchy.app"
+            BlueprintName = "Itchy"
+            ReferencedContainer = "container:Itchy.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

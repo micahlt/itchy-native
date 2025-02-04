@@ -6,11 +6,23 @@
     "version": "2.2.5",
     "scheme": "itchy",
     "newArchEnabled": true,
-    "plugins": ["expo-router", "expo-build-properties"],
+    "plugins": [
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ],
+      "react-native-bottom-tabs"
+    ],
     "splash": {
       "image": "./assets/splash.png",
       "backgroundColor": "#0082FF"
     },
+    "userInterfaceStyle": "automatic",
     "android": {
       "versionCode": 34,
       "package": "org.scratchclient4.itchy",
@@ -20,6 +32,10 @@
         "foregroundImage": "./assets/icon-foreground.png",
         "monochromeImage": "./assets/icon-monochrome.png"
       }
+    },
+    "ios": {
+      "bundleIdentifier": "org.scratchclient4.itchy",
+      "icon": "./assets/logo.png"
     }
   },
   "plugins": [
