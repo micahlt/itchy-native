@@ -24,7 +24,7 @@
     },
     "userInterfaceStyle": "automatic",
     "android": {
-      "versionCode": 35,
+      "versionCode": 36,
       "package": "org.scratchclient4.itchy",
       "packageName": "org.scratchclient4.itchy",
       "adaptiveIcon": {
