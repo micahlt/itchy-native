@@ -98,7 +98,7 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 35
-        versionName "2.2.6"
+        versionName "2.2.7"
         externalNativeBuild {
             cmake {
                 arguments "-DCMAKE_MAKE_PROGRAM=C:\\ninja\\ninja.exe", "-DCMAKE_OBJECT_PATH_MAX=1024", "-DCMAKE_VERBOSE_MAKEFILE=1"

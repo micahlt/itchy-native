@@ -48,8 +48,8 @@ export default function SettingsScreen() {
     }, []);
 
     return (
-        <SafeAreaView style={{ backgroundColor: colors.background, flex: 1 }}>
-            <ScrollView style={{ backgroundColor: colors.background, flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }}>
+            <ScrollView>
                 <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, padding: 10, paddingBottom: 0 }}>Settings</Text>
                 <Text style={s.sectionHeader}>Account</Text>
                 <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>

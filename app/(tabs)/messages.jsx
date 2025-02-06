@@ -44,7 +44,7 @@ export default function Messages() {
     return <SafeAreaView style={{ flex: 1 }}>
         <FlatList
             data={messages}
-            style={{ flex: 1, backgroundColor: colors.background }}
+            style={{ backgroundColor: colors.background }}
             renderItem={renderMessage}
             keyExtractor={m => m.id}
             onRefresh={() => {

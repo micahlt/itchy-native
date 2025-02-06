@@ -3,7 +3,7 @@
     "name": "Itchy",
     "slug": "itchy-native",
     "packageName": "org.scratchclient4.itchy",
-    "version": "2.2.6",
+    "version": "2.2.7",
     "scheme": "itchy",
     "newArchEnabled": true,
     "plugins": [
@@ -24,7 +24,7 @@
     },
     "userInterfaceStyle": "automatic",
     "android": {
-      "versionCode": 34,
+      "versionCode": 35,
       "package": "org.scratchclient4.itchy",
       "packageName": "org.scratchclient4.itchy",
       "adaptiveIcon": {
