@@ -79,7 +79,7 @@ export default function SettingsScreen() {
                 </View>
                 <View style={s.settingContainer}>
                     <Text style={s.settingTitle}>Autoplay</Text>
-                    <Switch thumbColor={twConfig.autoplay ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })} alue={twConfig.autoplay} />
+                    <Switch thumbColor={twConfig.autoplay ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })} value={twConfig.autoplay} />
                 </View>
                 <View style={s.settingContainer}>
                     <Text style={s.settingTitle}>Force 60 FPS</Text>
