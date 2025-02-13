@@ -19,7 +19,8 @@ keyPassword=[key password]
 keyAlias=[key alias]
 storeFile=[path to your keystore]
 ```
-4. Run `npm run android` to run the on an emulator or device.
+4. Prebuild the project with `npx expo prebuild`.
+5. Run `npm run android` to run the on an emulator or device.
 
 ### iOS
 
@@ -27,7 +28,8 @@ storeFile=[path to your keystore]
 2. Set up your environment according to the [Expo iOS docs](https://docs.expo.dev/get-started/set-up-your-environment/?platform=ios&device=simulated&mode=development-build&buildEnv=local).
 3. Install Ruby version 2.7.2 according to the [Ruby docs](https://www.ruby-lang.org/en/documentation/installation/#rbenv) if it's not already on your Mac.
 4. Install Cocoapods with `sudo gem install cocoapods` and resolve any errors that may occur.
-5. Run `npx expo run:ios` to run the on the XCode simulator or your device.
+5. Prebuild the project with `npx expo prebuild`.
+6. Run `npx expo run:ios` to run the on the XCode simulator or your device.
 
 ## Building
 
