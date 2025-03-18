@@ -2,12 +2,14 @@ import consts from "./consts";
 
 const APIAuth = {
     login: async (user, pass) => {
+        const csrfFetch = await fetch("https://scratch.mit.edu/csrf_token/");
+        const initialCSRF = /scratchcsrftoken=(.*?);/gm.exec(csrfFetch.headers.get("set-cookie"))[1];
         // a lot of this code is taken from
         // https://github.com/webdev03/meowclient/blob/main/src/ScratchSession.ts
         const headers = {
-            "x-csrftoken": "a",
+            "x-csrftoken": initialCSRF,
             "x-requested-with": "XMLHttpRequest",
-            Cookie: "scratchcsrftoken=a;scratchlanguage=en;",
+            Cookie: `scratchcsrftoken=${initialCSRF};scratchlanguage=en;`,
             referer: "https://scratch.mit.edu",
             "User-Agent": consts.UserAgent
         };
@@ -57,12 +59,19 @@ const APIAuth = {
             sessionJSON
         };
     },
-    logout: async (csrf, cookie) => {
+    logout: async (cookie) => {
+        const csrfFetch = await fetch("https://scratch.mit.edu/csrf_token/", {
+            headers: {
+                Cookie: cookie
+            }
+        });
+        const setCookie = csrfFetch.headers.get("set-cookie");
+        const csrfToken = /scratchcsrftoken=(.*?);/gm.exec(setCookie)[1];
         const logoutFetch = await fetch(
             "https://scratch.mit.edu/accounts/logout/",
             {
                 method: "POST",
-                body: `csrfmiddlewaretoken=${csrf}`,
+                body: `csrfmiddlewaretoken=${csrfToken}`,
                 headers: {
                     Cookie: cookie,
                     "User-Agent": consts.UserAgent,
