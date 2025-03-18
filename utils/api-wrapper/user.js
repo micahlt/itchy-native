@@ -14,12 +14,12 @@ const APIUser = {
 
         return {
             ...data,
-            featuredProject: {
+            featuredProject: featuredProject.featured_project_data ? {
                 label: featuredProject.featured_project_label_name,
-                title: featuredProject.featured_project_data.title,
-                thumbnail_url: featuredProject.featured_project_data.thumbnail_url,
-                id: featuredProject.featured_project_data.id,
-            },
+                title: featuredProject.featured_project_data?.title,
+                thumbnail_url: featuredProject.featured_project_data?.thumbnail_url,
+                id: featuredProject.featured_project_data?.id,
+            } : null,
             followers: followersHTML.match(/Followers \((\d*)\)/g)[0].split("(")[1].split(")")[0],
             following: followingHTML.match(/Following \((\d*)\)/g)[0].split("(")[1].split(")")[0]
         };
