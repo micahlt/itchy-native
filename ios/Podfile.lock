@@ -1,15 +1,15 @@
 PODS:
   - boost (1.84.0)
   - DoubleConversion (1.1.6)
-  - EXConstants (17.0.4):
+  - EXConstants (17.0.5):
     - ExpoModulesCore
-  - Expo (52.0.27):
+  - Expo (52.0.30):
     - ExpoModulesCore
-  - ExpoAsset (11.0.2):
+  - ExpoAsset (11.0.3):
     - ExpoModulesCore
   - ExpoCrypto (14.0.2):
     - ExpoModulesCore
-  - ExpoFileSystem (18.0.7):
+  - ExpoFileSystem (18.0.9):
     - ExpoModulesCore
   - ExpoFont (13.0.3):
     - ExpoModulesCore
@@ -23,9 +23,9 @@ PODS:
     - SDWebImageSVGCoder (~> 1.7.0)
   - ExpoKeepAwake (14.0.2):
     - ExpoModulesCore
-  - ExpoLinking (7.0.4):
+  - ExpoLinking (7.0.5):
     - ExpoModulesCore
-  - ExpoModulesCore (2.1.4):
+  - ExpoModulesCore (2.2.0):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -56,8 +56,6 @@ PODS:
   - hermes-engine (0.76.6):
     - hermes-engine/Pre-built (= 0.76.6)
   - hermes-engine/Pre-built (0.76.6)
-  - ImageColors (2.4.0):
-    - ExpoModulesCore
   - libavif/core (0.11.1)
   - libavif/libdav1d (0.11.1):
     - libavif/core
@@ -1298,7 +1296,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-bottom-tabs (0.8.3):
+  - react-native-bottom-tabs (0.8.6):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1409,7 +1407,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-webview (13.13.1):
+  - react-native-webview (13.12.5):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1794,7 +1792,6 @@ DEPENDENCIES:
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
-  - ImageColors (from `../node_modules/react-native-image-colors/ios`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCT-Folly/Fabric (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTDeprecation (from `../node_modules/react-native/ReactApple/Libraries/RCTFoundation/RCTDeprecation`)
@@ -1909,8 +1906,6 @@ EXTERNAL SOURCES:
   hermes-engine:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
     :tag: hermes-2024-11-12-RNv0.76.2-5b4aa20c719830dcf5684832b89a6edb95ac3d64
-  ImageColors:
-    :path: "../node_modules/react-native-image-colors/ios"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTDeprecation:
@@ -2041,23 +2036,22 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost: 1dca942403ed9342f98334bf4c3621f011aa7946
   DoubleConversion: f16ae600a246532c4020132d54af21d0ddb2a385
-  EXConstants: cc788e18fb962b77999c16f6b90e551542b1bcf4
-  Expo: 7021c4880d0bbd02781e88e213b6786c1200ebdf
-  ExpoAsset: 6cc988c426b5fc997859cc0f8f6728d1376bf53f
+  EXConstants: aa93a3e70f8b37c81a80931cfd23f860b1819167
+  Expo: ff20e7bf6603d213f5bcb4076adadad772468a0e
+  ExpoAsset: 77e4579f19b48d6b3f4055c933e86ce45e80caeb
   ExpoCrypto: 1eaf79360c8135af1f2ebb133394fd3513ca9a3d
-  ExpoFileSystem: a0a5c44d3d3e8a2aa54fe7c70c7690df03cf4dd8
+  ExpoFileSystem: 208cf862e5d0f4afcc37dc3958d54c7f0b5b7fc1
   ExpoFont: 8b14db1afebf62e9774613a082e402985f4e747c
   ExpoHead: 3d555eb5d0d68c478b9ea259337686c58de22c71
   ExpoImage: 3099001359e4414d60addd7c3e00a5d949df41e0
   ExpoKeepAwake: 1f74cdf53ab3b3aeb7110f18eb053c92e7c3e710
-  ExpoLinking: a9e64f08d2bb4fc42e7441174f15cc535bb390ba
-  ExpoModulesCore: d6d140b694e1e6d243d5e250b478df7ec754d8de
+  ExpoLinking: 0381341519ca7180a3a057d20edb1cf6a908aaf4
+  ExpoModulesCore: f62ee40b56e97e844944d65e418d3f46c32ba8b9
   ExpoSystemUI: 7296f92af7c30ec0fc4305bbeb5c396d7fc9e86c
   FBLazyVector: be509404b5de73a64a74284edcaf73a5d1e128b1
   fmt: 10c6e61f4be25dc963c36bd73fc7b1705fe975be
   glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
   hermes-engine: 1949ca944b195a8bde7cbf6316b9068e19cf53c6
-  ImageColors: 88be684570585c07ae2750bff34eb7b78bfc53b4
   libavif: 84bbb62fb232c3018d6f1bab79beea87e35de7b7
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
   RCT-Folly: bf5c0376ffe4dd2cf438dcf86db385df9fdce648
@@ -2089,10 +2083,10 @@ SPEC CHECKSUMS:
   React-logger: 162c09cc432b02d4a0db31b1d98f6df5243a2679
   React-Mapbuffer: eab34f6d54d26931c5f70eb19da1e36162d87bbd
   React-microtasksnativemodule: 069ef12656a93e0344851e18de6cfb7bdfd9a59e
-  react-native-bottom-tabs: 2a1270fde025cf3a8bbca455d12f992fc6ccb4cb
+  react-native-bottom-tabs: d75bc1994a971946c2b0e9b5a4af856cf218337b
   react-native-mmkv: 35992c4170a4a46be095fd1b7fe17d2fd1d42124
   react-native-safe-area-context: 908ee3cf872b29ed987a0514f1a6ccbf57f0fef4
-  react-native-webview: a6f72ac9328c141a235fd85a7866dd691b0b799a
+  react-native-webview: 47c9d892756ec3930810f2b539e732c01858e1c9
   React-nativeconfig: 014403841159c621de6d2f888ad829aac530f93e
   React-NativeModulesApple: 5bebad70ac824fefe9c0a04a5e2c829a91365b9d
   React-perflogger: 4e80a5b8d61dfb38024e7d5b8efaf9ce1037d31f
