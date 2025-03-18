@@ -16,7 +16,16 @@
           }
         }
       ],
-      "react-native-bottom-tabs"
+      "react-native-bottom-tabs",
+      [
+        "expo-asset",
+        {
+          "assets": [
+            "assets/icons/search_24_black.png",
+            "assets/icons/search_24_white.png"
+          ]
+        }
+      ]
     ],
     "splash": {
       "image": "./assets/splash.png",

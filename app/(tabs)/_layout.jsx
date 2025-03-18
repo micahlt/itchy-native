@@ -1,4 +1,3 @@
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useTheme } from '../../utils/theme';
 import { StatusBar } from 'react-native';
 import { useEffect, useState } from 'react';
@@ -44,6 +43,7 @@ export default function TabLayout() {
                     options={{
                         title: 'Search',
                         tabBarIcon: () => require("../../assets/icons/search.png"),
+
                     }}
                 />
                 <Tabs.Screen
