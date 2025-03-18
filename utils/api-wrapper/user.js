@@ -126,6 +126,46 @@ const APIUser = {
         }
         return comments;
     },
+    getFollowing: async (username, page) => {
+        const followers = await fetch(`https://scratch.mit.edu/users/${username}/followers/?page=${page}`);
+        const dom = parse(await followers.text());
+        const items = dom.querySelectorAll(".user");
+        let followersList = [];
+        for (let element of items) {
+            const user = {
+                profile: {
+                    images: {}
+                }
+            };
+            user.username = element.querySelector(".title").textContent.trim();
+            followersList.push(user);
+            user.profile.images["60x60"] = element.querySelector("img").getAttribute("data-original");
+            user.id = user.profile.images["60x60"].match(/(?!get_image\/user\/)(\d+|default)(?=_)+/g)[0]
+            if (user.id === "default")
+                user.id = null;
+        }
+        return followersList;
+    },
+    getFollowing: async (username, page) => {
+        const following = await fetch(`https://scratch.mit.edu/users/${username}/following/?page=${page}`);
+        const dom = parse(await following.text());
+        const items = dom.querySelectorAll(".user");
+        let followingList = [];
+        for (let element of items) {
+            const user = {
+                profile: {
+                    images: {}
+                }
+            };
+            user.username = element.querySelector(".title").textContent.trim();
+            followingList.push(user);
+            user.profile.images["60x60"] = element.querySelector("img").getAttribute("data-original");
+            user.id = user.profile.images["60x60"].match(/(?!get_image\/user\/)(\d+|default)(?=_)+/g)[0]
+            if (user.id === "default")
+                user.id = null;
+        }
+        return followingList;
+    }
 }
 
 export default APIUser;
