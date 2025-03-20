@@ -44,7 +44,11 @@
     },
     "ios": {
       "bundleIdentifier": "org.scratchclient4.itchy",
-      "icon": "./assets/logo.png"
+      "icon": {
+        "dark": "./assets/ios-dark.png",
+        "light": "./assets/ios-light.png",
+        "tinted": "./assets/ios-tinted.png"
+      }
     }
   },
   "plugins": [
