@@ -35,7 +35,8 @@
     "react-native-screens": "~4.4.0",
     "react-native-webview": "13.12.5",
     "time-ago": "^0.2.1",
-    "tinycolor2": "^1.6.0"
+    "tinycolor2": "^1.6.0",
+    "expo-sharing": "~13.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",

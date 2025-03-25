@@ -3,6 +3,7 @@ import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useMemo, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import * as Sharing from 'expo-sharing';
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import WebView from "react-native-webview";
 import Chip from "../../../components/Chip";
@@ -84,6 +85,9 @@ export default function Project() {
                     <Chip.Icon icon='star' text={approximateNumber(metadata.stats.favorites)} color="#ddbf37" mode={interactions.favorited ? "filled" : "outlined"} onPress={() => toggleInteraction("favorite")} />
                     <Chip.Icon icon='sync' text={approximateNumber(metadata.stats.remixes)} color={isDark ? "#32ee87" : "#0ca852"} mode="filled" />
                     <Chip.Icon icon='visibility' text={approximateNumber(metadata.stats.views)} color="#47b5ff" mode="filled" />
+                    <Chip.Icon icon='share' text="Share" color="#7847ff" mode="filled" onPress={() => Sharing.shareAsync(`https://scratch.mit.edu/projects/${id}`, {
+                        dialogTitle: "Share this project",
+                    })} />
                 </ScrollView>}
                 {metadata?.instructions && <Card style={{ margin: 10, marginTop: 0, padding: 16 }}>
                     <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</Text>
