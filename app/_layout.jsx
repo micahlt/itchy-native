@@ -37,7 +37,7 @@ export default function App() {
                         },
                         headerTintColor: colors.text
                     }} >
-                        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                        <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: "default" }} />
                         <Stack.Screen name="projects/[id]/index" options={{
                             presentation: "modal",
                             animation: "fade_from_bottom",

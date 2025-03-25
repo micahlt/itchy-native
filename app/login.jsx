@@ -24,7 +24,7 @@ export default function LoginScreen() {
             storage.set("cookieSet", d.cookieSet);
             storage.set("token", d.sessionJSON.user.token);
             setUser(d.sessionJSON.user);
-            router.push("/");
+            router.dismissTo("/");
         }).catch((e) => {
             setError(e.message);
             console.error(e);

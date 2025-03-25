@@ -1,20 +1,29 @@
+import { Platform } from "react-native";
 import consts from "./consts";
 
 const APIAuth = {
     login: async (user, pass) => {
         const csrfFetch = await fetch("https://scratch.mit.edu/csrf_token/");
-        const initialCSRF = /scratchcsrftoken=(.*?);/gm.exec(csrfFetch.headers.get("set-cookie"))[1];
+        console.log(csrfFetch.headers.get("set-cookie"));
+        let initialCSRF = /scratchcsrftoken=(.*?);/gm.exec(csrfFetch.headers.get("set-cookie"))[1];
+        console.log(initialCSRF)
         // a lot of this code is taken from
         // https://github.com/webdev03/meowclient/blob/main/src/ScratchSession.ts
         const headers = {
-            "x-csrftoken": initialCSRF,
-            "x-requested-with": "XMLHttpRequest",
-            Cookie: `scratchcsrftoken=${initialCSRF};scratchlanguage=en;`,
-            referer: "https://scratch.mit.edu",
-            "User-Agent": consts.UserAgent
+            "X-Csrftoken": initialCSRF,
+            "X-Requested-With": "XMLHttpRequest",
+            "Content-Type": "application/json",
+            "User-Agent": consts.UserAgent,
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': 0,
+            "Origin": "https://scratch.mit.edu",
+            "Referer": "https://scratch.mit.edu/",
+            "X-TestTOken": "1233"
         };
         const loginReq = await fetch("https://scratch.mit.edu/login/", {
             method: "POST",
+            credentials: "include",
             body: JSON.stringify({
                 username: user,
                 password: pass
