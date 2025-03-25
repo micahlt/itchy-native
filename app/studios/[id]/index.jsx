@@ -52,7 +52,7 @@ export default function Studio() {
             <ScrollView refreshControl={<RefreshControl refreshing={loading} onRefresh={load} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}>
                 {studio &&
                     <>
-                        <Image source={{ uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${id}.png` }} style={{ width: width, aspectRatio: 16 / 9 }} />
+                        <Image source={{ uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${id}.png` }} style={{ width: width, aspectRatio: 1.7 / 1 }} />
                         <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0 }}>
                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginRight: 10, flex: 1 }}>
                                 <View style={{ alignItems: "center" }}>

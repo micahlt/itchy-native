@@ -9,6 +9,7 @@ import { Image } from "expo-image";
 import approximateNumber from "approximate-number";
 import { MaterialIcons } from "@expo/vector-icons";
 import linkWithFallback from "../../../utils/linkWithFallback";
+import StudioCard from "../../../components/StudioCard";
 
 export default function User() {
     const { username } = useLocalSearchParams();
@@ -18,6 +19,7 @@ export default function User() {
     const [profile, setProfile] = useState(null);
     const [projects, setProjects] = useState(null);
     const [favorites, setFavorites] = useState(null);
+    const [curatedStudios, setCuratedStudios] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const load = () => {
@@ -31,6 +33,10 @@ export default function User() {
         }).catch(console.error)
         ScratchAPIWrapper.user.getFavorites(username).then((d) => {
             setFavorites(d);
+        }).catch(console.error)
+        ScratchAPIWrapper.user.getCuratedStudios(username).then((d) => {
+            console.log(d);
+            setCuratedStudios(d);
         }).catch(console.error)
     };
 
@@ -104,6 +110,14 @@ export default function User() {
                     </View>
                     <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
                         {favorites?.map((project) => (<ProjectCard project={{ ...project }} key={project.id} />))}
+                    </ScrollView>
+
+                    <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 10, paddingBottom: 0, gap: 10 }}>
+                        <MaterialIcons name='collections' size={24} color={colors.text} />
+                        <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Curated Studios</Text>
+                    </View>
+                    <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
+                        {curatedStudios?.map((studio) => (<StudioCard studio={{ ...studio }} key={studio.id} />))}
                     </ScrollView>
                 </>)}
             </ScrollView>

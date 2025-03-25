@@ -39,6 +39,11 @@ const APIUser = {
         const data = await res.json();
         return data;
     },
+    getCuratedStudios: async (username) => {
+        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/studios/curate`);
+        const data = await res.json();
+        return data;
+    },
     getComments: async (username, page = 1) => {
         // Algorithm taken from https://github.com/webdev03/meowclient
         const res = await fetch(`https://scratch.mit.edu/site-api/comments/user/${username}/?page=${page}`);
