@@ -35,7 +35,6 @@ export default function User() {
             setFavorites(d);
         }).catch(console.error)
         ScratchAPIWrapper.user.getCuratedStudios(username).then((d) => {
-            console.log(d);
             setCuratedStudios(d);
         }).catch(console.error)
     };

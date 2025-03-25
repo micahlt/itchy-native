@@ -4,9 +4,7 @@ import consts from "./consts";
 const APIAuth = {
     login: async (user, pass) => {
         const csrfFetch = await fetch("https://scratch.mit.edu/csrf_token/");
-        console.log(csrfFetch.headers.get("set-cookie"));
         let initialCSRF = /scratchcsrftoken=(.*?);/gm.exec(csrfFetch.headers.get("set-cookie"))[1];
-        console.log(initialCSRF)
         // a lot of this code is taken from
         // https://github.com/webdev03/meowclient/blob/main/src/ScratchSession.ts
         const headers = {
