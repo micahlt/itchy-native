@@ -60,7 +60,11 @@ export default function SettingsScreen() {
                             if (username) {
                                 ScratchAPIWrapper.auth.logout(storage.getString("cookieSet")).then(() => {
                                     storage.clearAll();
-                                }).catch(console.error);
+                                }).catch((e) => {
+                                    console.error(e);
+                                    console.error("Proceeding with login anyway.");
+                                    storage.clearAll();
+                                });
                             } else {
                                 router.push("/login");
                             }
