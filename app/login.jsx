@@ -1,4 +1,5 @@
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Text, TextInput, View } from 'react-native';
+import Pressable from '../components/Pressable';
 import ScratchAPIWrapper from '../utils/api-wrapper';
 import { useTheme } from '../utils/theme';
 import { useState } from 'react';

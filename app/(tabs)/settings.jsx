@@ -1,4 +1,5 @@
-import { Pressable, ScrollView, Switch, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { ScrollView, Switch, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import Pressable from '../../components/Pressable';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { useTheme } from '../../utils/theme';
 import { useEffect, useMemo } from 'react';

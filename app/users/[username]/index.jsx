@@ -1,4 +1,5 @@
-import { View, useWindowDimensions, ScrollView, Text, Pressable, RefreshControl } from "react-native";
+import { View, useWindowDimensions, ScrollView, Text, RefreshControl } from "react-native";
+import Pressable from "../../../components/Pressable";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useState } from "react";

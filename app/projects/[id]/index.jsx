@@ -1,4 +1,4 @@
-import { View, Text, useWindowDimensions, ScrollView } from "react-native";
+import { View, Text, useWindowDimensions, ScrollView, Share } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useMemo, useState } from "react";
@@ -36,7 +36,10 @@ export default function Project() {
     useEffect(() => {
         if (!id) return;
         ScratchAPIWrapper.project.getProject(id).then((d) => {
-            if (!!d?.code) return;
+            if (d.code == "NotFound") {
+                router.replace("/error?errorText=Couldn't find that project.");
+                return;
+            }
             console.log(d);
             setMetadata(d);
         }).catch(console.error);
@@ -85,8 +88,12 @@ export default function Project() {
                     <Chip.Icon icon='star' text={approximateNumber(metadata.stats.favorites)} color="#ddbf37" mode={interactions.favorited ? "filled" : "outlined"} onPress={() => toggleInteraction("favorite")} />
                     <Chip.Icon icon='sync' text={approximateNumber(metadata.stats.remixes)} color={isDark ? "#32ee87" : "#0ca852"} mode="filled" />
                     <Chip.Icon icon='visibility' text={approximateNumber(metadata.stats.views)} color="#47b5ff" mode="filled" />
-                    <Chip.Icon icon='share' text="Share" color="#7847ff" mode="filled" onPress={() => Sharing.shareAsync(`https://scratch.mit.edu/projects/${id}`, {
+                    <Chip.Icon icon='share' text="Share" color="#7847ff" mode="filled" onPress={() => Share.share({
+                        url: `https://scratch.mit.edu/projects/${id}`,
+                        title: "Share this project"
+                    }, {
                         dialogTitle: "Share this project",
+                        tintColor: colors.accent
                     })} />
                 </ScrollView>}
                 {metadata?.instructions && <Card style={{ margin: 10, marginTop: 0, padding: 16 }}>

@@ -1,4 +1,5 @@
-import { View, Text, Pressable, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
+import Pressable from "./Pressable";
 import { Image } from "expo-image";
 import { useTheme } from "../utils/theme";
 import { useCallback, useMemo } from "react";

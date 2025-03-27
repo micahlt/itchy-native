@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
 import { MaterialIcons } from "@expo/vector-icons";
 import tinycolor from "tinycolor2";
@@ -31,7 +32,7 @@ const IconChip = ({ icon, text = "", onPress = () => { }, color = "#ff656d", mod
         onPress();
     }, [onPress]);
 
-    return <View style={{ borderRadius: 20, height: 32, overflow: "hidden" }}>
+    return <View style={{ borderRadius: 20, height: 32, overflow: "hidden", flexDirection: 'row' }}>
         <Pressable style={{ flexDirection: "row", alignItems: "center", gap: 5, backgroundColor: mode == "filled" ? bg : "transparent", paddingRight: 12, borderColor: color, borderWidth: 1, borderRadius: 20, height: 32, }} android_ripple={{ color: colors.ripple, foreground: true, borderless: false }} onPress={onPressFn}>
             <MaterialIcons name={icon} size={20} color={color} style={{ paddingLeft: 8 }} />
             <Text style={{ color: color }}>{text}</Text>

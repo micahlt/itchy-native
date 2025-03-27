@@ -1,4 +1,5 @@
-import { View, useWindowDimensions, ScrollView, Text, Pressable, RefreshControl } from "react-native";
+import { View, useWindowDimensions, ScrollView, Text, RefreshControl } from "react-native";
+import Pressable from "../../../components/Pressable";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useState } from "react";
@@ -24,6 +25,10 @@ export default function Studio() {
         if (loading) return;
         setLoading(true);
         ScratchAPIWrapper.studio.getStudio(id).then((d) => {
+            if (d.code == "NotFound") {
+                router.replace("/error?errorText=Couldn't find that studio.");
+                return;
+            }
             setStudio(d);
             setLoading(false);
         }).catch(console.error);
@@ -55,18 +60,19 @@ export default function Studio() {
                         <Image source={{ uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${id}.png` }} style={{ width: width, aspectRatio: 1.7 / 1 }} />
                         <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0 }}>
                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginRight: 10, flex: 1 }}>
-                                <View style={{ alignItems: "center" }}>
+                                {studio?.stats?.followers && <View style={{ alignItems: "center" }}>
                                     <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{approximateNumber(studio.stats.followers)}</Text>
                                     <Text style={{ color: colors.text, fontSize: 12 }}>Followers</Text>
-                                </View>
-                                <View style={{ alignItems: "center" }}>
+                                </View>}
+                                {studio?.stats?.managers && <View style={{ alignItems: "center" }}>
                                     <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{approximateNumber(studio.stats.managers)}</Text>
                                     <Text style={{ color: colors.text, fontSize: 12 }}>Managers</Text>
                                 </View>
-                                <View style={{ alignItems: "center" }}>
+                                }
+                                {studio?.history?.created && <View style={{ alignItems: "center" }}>
                                     <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{new Date(studio.history.created).getFullYear()}</Text>
                                     <Text style={{ color: colors.text, fontSize: 12 }}>Created</Text>
-                                </View>
+                                </View>}
                             </View>
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>

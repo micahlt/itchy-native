@@ -1,4 +1,5 @@
-import { Pressable, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
 import { useEffect, useState } from "react";
 import APIExplore from "../utils/api-wrapper/explore";

@@ -82,6 +82,11 @@ export default function App() {
                             animation: "fade_from_bottom",
                             title: "Log In"
                         }} />
+                        <Stack.Screen name="error" options={{
+                            presentation: "modal",
+                            animation: "fade",
+                            title: "Error"
+                        }} />
                     </Stack>
                 </View>
             </ThemeProvider >

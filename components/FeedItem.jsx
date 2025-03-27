@@ -1,4 +1,5 @@
-import { Pressable, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import Pressable from "./Pressable";
 import { useMemo } from "react";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
