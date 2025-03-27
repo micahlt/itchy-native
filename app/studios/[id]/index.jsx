@@ -11,6 +11,7 @@ import approximateNumber from "approximate-number";
 import { MaterialIcons } from "@expo/vector-icons";
 import linkWithFallback from "../../../utils/linkWithFallback";
 import Card from "../../../components/Card";
+import LinkifiedText from "../../../utils/regex/LinkifiedText";
 
 export default function Studio() {
     const { id } = useLocalSearchParams();
@@ -88,7 +89,7 @@ export default function Studio() {
                             </View>
                         </View>
                         <Card style={{ padding: 20, marginHorizontal: 20 }}>
-                            <Text style={{ color: colors.text }}>{studio.description}</Text>
+                            <LinkifiedText style={{ color: colors.text }} text={studio.description} />
                         </Card>
                         <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 30, paddingBottom: 0, gap: 10 }}>
                             <MaterialIcons name='video-library' size={24} color={colors.text} />
