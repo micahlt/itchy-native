@@ -46,6 +46,9 @@ export default function SettingsScreen() {
         if (!twConfig) {
             setTWConfig({})
         }
+        fetch(`https://scratch.mit.edu/users/ampara`, {}).then((d) => d.text()).then((d) => {
+            console.log(d);
+        });
     }, []);
 
     return (

@@ -141,7 +141,7 @@ export default function Message({ message }) {
                         <Text style={{ color: colors.text, marginRight: "auto" }}>{bodyText}</Text>
                     </View> : <Text style={{ color: colors.text, marginRight: 64 }}>{bodyText}</Text>}
                 </View>
-            </View >
+            </View>
         </Pressable>
     )
 }

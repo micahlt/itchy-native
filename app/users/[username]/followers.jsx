@@ -16,7 +16,7 @@ export default function Followers() {
     }, [username]);
 
     const getFollowers = () => {
-        ScratchAPIWrapper.user.getFollowing(username, page).then((data) => {
+        ScratchAPIWrapper.user.getFollowers(username, page).then((data) => {
             setFollowers([...followers, ...data]);
             setPage(page + 1);
         }).catch(console.error);

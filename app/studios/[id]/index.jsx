@@ -78,12 +78,12 @@ export default function Studio() {
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>
                             <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
                                 <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/studios/${id}/comments`)}>
-                                    <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold" }}>Comments</Text>
+                                    <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Comments</Text>
                                 </Pressable>
                             </View>
                             <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
                                 <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/studios/${id}/activity`)}>
-                                    <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold" }}>Activity</Text>
+                                    <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Activity</Text>
                                 </Pressable>
                             </View>
                         </View>
