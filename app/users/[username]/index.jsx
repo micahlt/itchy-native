@@ -1,4 +1,5 @@
-import { View, useWindowDimensions, ScrollView, Text, Pressable, RefreshControl } from "react-native";
+import { View, useWindowDimensions, ScrollView, Text, RefreshControl } from "react-native";
+import Pressable from "../../../components/Pressable";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useState } from "react";
@@ -9,15 +10,21 @@ import { Image } from "expo-image";
 import approximateNumber from "approximate-number";
 import { MaterialIcons } from "@expo/vector-icons";
 import linkWithFallback from "../../../utils/linkWithFallback";
+import StudioCard from "../../../components/StudioCard";
+import { useMMKVString } from "react-native-mmkv";
 
 export default function User() {
     const { username } = useLocalSearchParams();
+    const [myUsername] = useMMKVString("username");
+    const [csrfToken] = useMMKVString("csrfToken");
     const { colors, isDark } = useTheme();
     const router = useRouter();
     const { width } = useWindowDimensions();
     const [profile, setProfile] = useState(null);
     const [projects, setProjects] = useState(null);
     const [favorites, setFavorites] = useState(null);
+    const [curatedStudios, setCuratedStudios] = useState(null);
+    const [followingStatus, setFollowingStatus] = useState(undefined);
     const [loading, setLoading] = useState(false);
 
     const load = () => {
@@ -26,11 +33,17 @@ export default function User() {
         ScratchAPIWrapper.user.getCompleteProfile(username).then((d) => {
             setProfile(d);
         }).catch(console.error)
+        ScratchAPIWrapper.user.amIFollowing(username).then((d) => {
+            setFollowingStatus(d);
+        }).catch(console.error)
         ScratchAPIWrapper.user.getProjects(username).then((d) => {
             setProjects(d);
         }).catch(console.error)
         ScratchAPIWrapper.user.getFavorites(username).then((d) => {
             setFavorites(d);
+        }).catch(console.error)
+        ScratchAPIWrapper.user.getCuratedStudios(username).then((d) => {
+            setCuratedStudios(d);
         }).catch(console.error)
     };
 
@@ -48,6 +61,19 @@ export default function User() {
     const openProfile = () => {
         linkWithFallback(`https://scratch.mit.edu/users/${username}`, colors.accent);
     };
+
+    const changeFollowingStatus = () => {
+        if (followingStatus === undefined) return;
+        if (followingStatus === true) {
+            ScratchAPIWrapper.user.unfollow(username, myUsername, csrfToken).then(() => {
+                setFollowingStatus(!followingStatus);
+            }).catch(console.error)
+        } else {
+            ScratchAPIWrapper.user.follow(username, myUsername, csrfToken).then(() => {
+                setFollowingStatus(!followingStatus);
+            }).catch(console.error)
+        }
+    }
 
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
@@ -80,16 +106,21 @@ export default function User() {
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>
                         <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
                             <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/users/${username}/comments`)}>
-                                <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold" }}>Comments</Text>
+                                <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Comments</Text>
                             </Pressable>
                         </View>
                         <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
                             <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/users/${username}/about`)}>
-                                <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold" }}>About</Text>
+                                <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>About</Text>
                             </Pressable>
                         </View>
+                        {followingStatus !== undefined && <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
+                            <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={changeFollowingStatus}>
+                                <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>{followingStatus === true ? "Unfollow" : "Follow"}</Text>
+                            </Pressable>
+                        </View>}
                     </View>
-                    {profile.featuredProject && <ProjectCard project={profile.featuredProject} width={width - 40} style={{ margin: "auto", marginTop: 10 }} />}
+                    {profile.featuredProject && <ProjectCard project={profile.featuredProject} width={width - 40} style={{ margin: "auto", marginTop: 0 }} />}
                     <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 30, paddingBottom: 0, gap: 10 }}>
                         <MaterialIcons name='auto-awesome' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Created Projects</Text>
@@ -104,6 +135,14 @@ export default function User() {
                     </View>
                     <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
                         {favorites?.map((project) => (<ProjectCard project={{ ...project }} key={project.id} />))}
+                    </ScrollView>
+
+                    <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 10, paddingBottom: 0, gap: 10 }}>
+                        <MaterialIcons name='collections' size={24} color={colors.text} />
+                        <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Curated Studios</Text>
+                    </View>
+                    <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
+                        {curatedStudios?.map((studio) => (<StudioCard studio={{ ...studio }} key={studio.id} />))}
                     </ScrollView>
                 </>)}
             </ScrollView>

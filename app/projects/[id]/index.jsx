@@ -1,8 +1,9 @@
-import { View, Text, useWindowDimensions, ScrollView } from "react-native";
+import { View, Text, useWindowDimensions, ScrollView, Share } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import * as Sharing from 'expo-sharing';
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import WebView from "react-native-webview";
 import Chip from "../../../components/Chip";
@@ -12,6 +13,8 @@ import { useMMKVString } from "react-native-mmkv";
 import storage from "../../../utils/storage";
 import useTurbowarpLink from "../../../utils/hooks/useTurbowarpLink";
 import { MaterialIcons } from "@expo/vector-icons";
+import timeago from "time-ago";
+import LinkifiedText from "../../../utils/regex/LinkifiedText";
 
 export default function Project() {
     const { id } = useLocalSearchParams();
@@ -24,10 +27,22 @@ export default function Project() {
     const router = useRouter();
     const twLink = useTurbowarpLink(id);
 
+    const dateInfo = useMemo(() => {
+        return {
+            created: timeago.ago(metadata?.history?.created),
+            modified: timeago.ago(metadata?.history?.modified)
+        }
+    }, [metadata?.history]);
+
     useEffect(() => {
         if (!id) return;
         ScratchAPIWrapper.project.getProject(id).then((d) => {
-            if (!!d?.code) return;
+            if (d.code == "NotFound") {
+                router.replace("/error?errorText=Couldn't find that project.");
+                return;
+            } else if (!!d?.code) {
+                return;
+            }
             setMetadata(d);
         }).catch(console.error);
         if (!!username) {
@@ -75,14 +90,25 @@ export default function Project() {
                     <Chip.Icon icon='star' text={approximateNumber(metadata.stats.favorites)} color="#ddbf37" mode={interactions.favorited ? "filled" : "outlined"} onPress={() => toggleInteraction("favorite")} />
                     <Chip.Icon icon='sync' text={approximateNumber(metadata.stats.remixes)} color={isDark ? "#32ee87" : "#0ca852"} mode="filled" />
                     <Chip.Icon icon='visibility' text={approximateNumber(metadata.stats.views)} color="#47b5ff" mode="filled" />
+                    <Chip.Icon icon='share' text="Share" color="#7847ff" mode="filled" onPress={() => Share.share({
+                        url: `https://scratch.mit.edu/projects/${id}`,
+                        title: "Share this project"
+                    }, {
+                        dialogTitle: "Share this project",
+                        tintColor: colors.accent
+                    })} />
                 </ScrollView>}
-                {metadata?.instructions && <Card style={{ margin: 10, marginTop: 3, padding: 16 }}>
+                {metadata?.instructions && <Card style={{ margin: 10, marginTop: 0, padding: 16 }}>
                     <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</Text>
-                    <Text style={{ color: colors.text, }}>{metadata?.instructions}</Text>
+                    <LinkifiedText style={{ color: colors.text }} text={metadata?.instructions} />
                 </Card>}
-                {metadata?.description && <Card style={{ margin: 10, marginTop: 3, padding: 16 }}>
+                {metadata?.description && <Card style={{ margin: 10, marginTop: 0, padding: 16 }}>
                     <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Credits</Text>
-                    <Text style={{ color: colors.text, }}>{metadata?.description}</Text>
+                    <LinkifiedText style={{ color: colors.text }} text={metadata?.description} />
+                </Card>}
+                {dateInfo && <Card style={{ margin: 10, marginTop: 0, marginBottom: 30, padding: 16 }}>
+                    <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Created {dateInfo.created}</Text>
+                    {dateInfo.modified != dateInfo.created && <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Modified {dateInfo.modified}</Text>}
                 </Card>}
             </ScrollView>
         </View>

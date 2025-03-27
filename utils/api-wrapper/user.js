@@ -1,5 +1,6 @@
 import { decode } from "html-entities";
 import { parse } from "node-html-parser";
+import consts from "./consts";
 const APIUser = {
     getCompleteProfile: async (username) => {
         const res = await fetch(`https://api.scratch.mit.edu/users/${username}`);
@@ -36,6 +37,11 @@ const APIUser = {
     },
     getFavorites: async (username) => {
         const res = await fetch(`https://api.scratch.mit.edu/users/${username}/favorites`);
+        const data = await res.json();
+        return data;
+    },
+    getCuratedStudios: async (username) => {
+        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/studios/curate`);
         const data = await res.json();
         return data;
     },
@@ -126,7 +132,7 @@ const APIUser = {
         }
         return comments;
     },
-    getFollowing: async (username, page) => {
+    getFollowers: async (username, page) => {
         const followers = await fetch(`https://scratch.mit.edu/users/${username}/followers/?page=${page}`);
         const dom = parse(await followers.text());
         const items = dom.querySelectorAll(".user");
@@ -165,6 +171,61 @@ const APIUser = {
                 user.id = null;
         }
         return followingList;
+    },
+    amIFollowing: async (username) => {
+        const user = await fetch(`https://scratch.mit.edu/users/${username}/`);
+        const dom = parse(await user.text());
+        if (!!dom.querySelector("[data-control='unfollow']")) {
+            return true;
+        } else if (!!dom.querySelector("[data-control='follow']")) {
+            return false;
+        } else {
+            return undefined;
+        }
+    },
+    follow: async (usernameToFollow, myUsername, csrf) => {
+        const req = await fetch(`https://scratch.mit.edu/site-api/users/followers/${usernameToFollow}/add/?usernames=${myUsername}`, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": csrf,
+                "x-requested-with": "XMLHttpRequest",
+                Referer: `https://scratch.mit.edu/users/${usernameToFollow}/`,
+                "User-Agent": consts.UserAgent,
+                Accept: "*/*",
+                "Content-Length": "0",
+                Origin: "https://scratch.mit.edu",
+                "Cache-Control": "max-age=0, no-cache",
+                Pragma: "no-cache",
+                "Accept-Encoding": "gzip, deflate, br"
+            },
+        });
+        if (req.ok) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    unfollow: async (usernameToUnfollow, myUsername, csrf) => {
+        const req = await fetch(`https://scratch.mit.edu/site-api/users/followers/${usernameToUnfollow}/remove/?usernames=${myUsername}`, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": csrf,
+                "x-requested-with": "XMLHttpRequest",
+                Referer: `https://scratch.mit.edu/users/${usernameToUnfollow}/`,
+                "User-Agent": consts.UserAgent,
+                Accept: "*/*",
+                "Content-Length": "0",
+                Origin: "https://scratch.mit.edu",
+                "Cache-Control": "max-age=0, no-cache",
+                Pragma: "no-cache",
+                "Accept-Encoding": "gzip, deflate, br"
+            },
+        });
+        if (req.ok) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

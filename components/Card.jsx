@@ -1,4 +1,5 @@
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
+import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
 
 export default function Card({ onPress, children, style = {} }) {

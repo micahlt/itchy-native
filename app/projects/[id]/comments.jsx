@@ -55,7 +55,6 @@ export default function ProjectComments() {
 
     const endReached = useCallback(() => {
         if (loading) return;
-        console.log("End reached");
         setOffset(comments.length);
     }, [loading, offset]);
 

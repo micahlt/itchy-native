@@ -48,6 +48,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - ExpoSharing (13.0.1):
+    - ExpoModulesCore
   - ExpoSystemUI (4.0.8):
     - ExpoModulesCore
   - FBLazyVector (0.76.6)
@@ -1787,6 +1789,7 @@ DEPENDENCIES:
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoLinking (from `../node_modules/expo-linking/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
+  - ExpoSharing (from `../node_modules/expo-sharing/ios`)
   - ExpoSystemUI (from `../node_modules/expo-system-ui/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - fmt (from `../node_modules/react-native/third-party-podspecs/fmt.podspec`)
@@ -1895,6 +1898,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-linking/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
+  ExpoSharing:
+    :path: "../node_modules/expo-sharing/ios"
   ExpoSystemUI:
     :path: "../node_modules/expo-system-ui/ios"
   FBLazyVector:
@@ -2047,6 +2052,7 @@ SPEC CHECKSUMS:
   ExpoKeepAwake: 2a5f15dd4964cba8002c9a36676319a3394c85c7
   ExpoLinking: 0381341519ca7180a3a057d20edb1cf6a908aaf4
   ExpoModulesCore: 9566a9ca8f0882e12a7c24d43309773df80653b6
+  ExpoSharing: c4540ef2e6615a92e05d2bddf019e1f58f27119e
   ExpoSystemUI: ba4507df7d8d15f5e1694a3c7fc6bc3cca3803e5
   FBLazyVector: be509404b5de73a64a74284edcaf73a5d1e128b1
   fmt: 10c6e61f4be25dc963c36bd73fc7b1705fe975be

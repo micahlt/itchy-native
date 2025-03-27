@@ -1,5 +1,5 @@
-import { FlatList } from "react-native";
-import Chip from "./Chip";
+import { View, Text, Image, FlatList } from "react-native";
+import Pressable from "./Pressable"
 import { useTheme } from "../utils/theme";
 import { useRouter } from "expo-router";
 
@@ -11,6 +11,13 @@ export default function UserList({ users = [], onEndReached }) {
         if (user.profile.images["60x60"][0] != "h") {
             user.profile.images["60x60"] = "https:" + user.profile.images["60x60"];
         }
-        return <Chip.Image imageURL={user.profile.images["60x60"]} text={user.username} textStyle={{ fontWeight: "bold" }} style={{ backgroundColor: colors.backgroundSecondary }} onPress={() => router.push(`/users/${user.username}`)} />
-    }} numColumns={2} style={{ flex: 1 }} contentContainerStyle={{ padding: 15, gap: 10, paddingTop: 5 }} columnWrapperStyle={{ gap: 10 }} onEndReached={onEndReached} onEndReachedThreshold={0.4} />
+        return <Pressable android_ripple={{ color: colors.ripple, foreground: true }} onPress={() => router.push(`/users/${user.username}`)}>
+            <View style={{ paddingHorizontal: 15, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: colors.backgroundTertiary, backgroundColor: colors.background, flexDirection: "row", alignItems: 'center' }}>
+                <View style={{ marginRight: 15, borderRadius: 25, overflow: "hidden", height: 36, width: 36 }}>
+                    <Image source={{ uri: user.profile.images["60x60"] }} placeholder={require("../assets/avatar.png")} placeholderContentFit="cover" style={{ width: 36, height: 36, backgroundColor: "white" }} />
+                </View>
+                <Text style={{ fontSize: 14, fontWeight: "bold", color: colors.text }}>{user.username}</Text>
+            </View>
+        </Pressable>
+    }} style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 5 }} onEndReached={onEndReached} onEndReachedThreshold={0.4} />
 }
