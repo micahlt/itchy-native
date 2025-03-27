@@ -39,8 +39,9 @@ export default function Project() {
             if (d.code == "NotFound") {
                 router.replace("/error?errorText=Couldn't find that project.");
                 return;
+            } else if (!!d?.code) {
+                return;
             }
-            console.log(d);
             setMetadata(d);
         }).catch(console.error);
         if (!!username) {

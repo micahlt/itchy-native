@@ -8,7 +8,7 @@ import FeedItem from "./FeedItem";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
-export default function Feed({ username, style }) {
+export default function Feed({ username, style, rerender }) {
     const { colors } = useTheme();
     const [feed, setFeed] = useState([]);
     const [token] = useMMKVString("token");
@@ -18,7 +18,7 @@ export default function Feed({ username, style }) {
         APIExplore.getFeed(username, token).then((f) => {
             setFeed(f);
         })
-    }, []);
+    }, [rerender]);
 
     return <View style={{ backgroundColor: colors.accent, padding: 10, borderRadius: 10, ...style }}>
         <View style={{ flexDirection: "row", alignItems: "center", paddingLeft: 4, gap: 10 }}>

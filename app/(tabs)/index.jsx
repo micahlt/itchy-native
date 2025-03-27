@@ -16,6 +16,7 @@ export default function HomeScreen() {
     const [friendsLoves, setFriendsLoves] = useState([]);
     const [friendsProjects, setFriendsProjects] = useState([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [refreshCount, setRefreshCount] = useState(0);
     const [username] = useMMKVString("username");
     const [token] = useMMKVString("token");
 
@@ -38,13 +39,14 @@ export default function HomeScreen() {
         setIsRefreshing(true);
         load();
         setIsRefreshing(false);
+        setRefreshCount(prev => prev + 1);
     }
 
     return (
         <SafeAreaView>
             <ScrollView contentInsetAdjustmentBehavior="automatic" refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} style={{ flex: 1, borderBottomColor: "red", borderBottomWidth: 5 }} />}>
-                {exploreData?.featured && <>
-                    {!!username ? <Feed style={{ margin: 20, marginBottom: 0 }} username={username} /> : <SignInPrompt />}
+                {!!username ? <Feed style={{ margin: 20, marginBottom: 0 }} username={username} rerender={refreshCount} /> : <SignInPrompt />}
+                {exploreData?.featured?.length > 0 && <>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
                         <MaterialIcons name='workspace-premium' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Featured</Text>
@@ -80,7 +82,7 @@ export default function HomeScreen() {
                     </ScrollView>
                 </>}
 
-                {exploreData?.topLoved && <>
+                {exploreData?.topLoved?.length > 0 && <>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
                         <MaterialIcons name='favorite' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Top Loved</Text>
@@ -92,7 +94,7 @@ export default function HomeScreen() {
                     </ScrollView>
                 </>}
 
-                {exploreData?.featuredStudios && <>
+                {exploreData?.featuredStudios?.length > 0 && <>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
                         <MaterialIcons name='photo-filter' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Featured Studios</Text>
@@ -104,7 +106,7 @@ export default function HomeScreen() {
                     </ScrollView>
                 </>}
 
-                {exploreData?.topRemixed && <>
+                {exploreData?.topRemixed?.length > 0 && <>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
                         <MaterialIcons name='sync' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Top Remixed</Text>
@@ -116,7 +118,7 @@ export default function HomeScreen() {
                     </ScrollView>
                 </>}
 
-                {exploreData?.newest && <>
+                {exploreData?.newest?.length > 0 && <>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
                         <MaterialIcons name='more-time' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Newest</Text>
