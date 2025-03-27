@@ -221,7 +221,6 @@ const APIUser = {
                 "Accept-Encoding": "gzip, deflate, br"
             },
         });
-        console.log(req.status)
         if (req.ok) {
             return true;
         } else {

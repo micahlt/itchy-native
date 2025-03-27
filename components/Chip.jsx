@@ -13,7 +13,7 @@ const ImageChip = ({ imageURL = "", text = "", onPress = () => { }, textStyle, m
     }, [onPress]);
     return <View style={{ borderRadius: 20, height: 32, overflow: "hidden", borderColor: mode == "outlined" ? colors.backgroundTertiary : "transparent", borderWidth: mode == "outlined" ? 1 : 0, ...style }}>
         <Pressable style={{ flexDirection: "row", alignItems: "center", gap: 5, paddingRight: 12, borderRadius: 20, height: 32 }} android_ripple={{ color: colors.ripple, borderless: false }} onPress={onPressFn}>
-            <Image source={{ uri: imageURL }} style={{ width: 31, aspectRatio: 1, borderRadius: 16, marginTop: 0 }} />
+            <Image source={{ uri: imageURL }} style={{ width: 30, aspectRatio: 1, borderRadius: 16, marginTop: -2 }} />
             <Text style={{ color: colors.text, marginLeft: 4, ...textStyle }}>{text}</Text>
         </Pressable>
     </View>;

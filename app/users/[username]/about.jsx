@@ -7,6 +7,7 @@ import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import Card from "../../../components/Card";
 import timeago from "time-ago";
 import { flag } from "country-emoji";
+import LinkifiedText from "../../../utils/regex/LinkifiedText";
 
 export default function About() {
     const { username } = useLocalSearchParams();
@@ -28,17 +29,18 @@ export default function About() {
                 <ScrollView style={{ padding: 10 }}>
                     <Card style={{ marginBottom: 10, padding: 16 }}>
                         <Text style={{ fontWeight: "bold", color: colors.accent, fontSize: 16, marginBottom: 10 }}>About Me</Text>
-                        <Text style={{ color: colors.text, }}>{profile.profile.bio}</Text>
+                        <LinkifiedText style={{ color: colors.text, }} text={profile.profile.bio} />
                     </Card>
                     <Card style={{ marginBottom: 10, padding: 16 }}>
                         <Text style={{ fontWeight: "bold", color: colors.accent, fontSize: 16, marginBottom: 10 }}>What I'm Working On</Text>
-                        <Text style={{ color: colors.text, }}>{profile.profile.status}</Text>
+                        <LinkifiedText style={{ color: colors.text, }} text={profile.profile.status} />
                     </Card>
                     <Card style={{ marginBottom: 10, padding: 16 }}>
                         <Text style={{ color: colors.text }}>Joined <Text style={{ fontWeight: "bold" }}>{timeago.ago(profile.history.joined)}</Text>   |   from <Text style={{ fontWeight: "bold" }}>{profile.profile.country}  {flag(profile.profile.country)}</Text></Text>
                     </Card>
                 </ScrollView>
-            )}
-        </View>
+            )
+            }
+        </View >
     );
 }

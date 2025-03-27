@@ -7,6 +7,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Card from "./Card";
 import ScratchAPIWrapper from "../utils/api-wrapper";
 import timeago from "time-ago";
+import LinkifiedText from "../utils/regex/LinkifiedText";
 
 export default function Comment({ comment, isReply = false, isLastReply = false, parentMetadata = {}, selected = 0, partOfSelection = false }) {
     const { colors } = useTheme();
@@ -46,7 +47,7 @@ export default function Comment({ comment, isReply = false, isLastReply = false,
                     <Chip.Image text={comment.author.username} imageURL={comment.author.image} mode="outlined" style={{ marginRight: "auto", marginBottom: 8 }} textStyle={{ fontWeight: "bold" }} onPress={openAuthor} />
                     <Text style={{ color: colors.textSecondary, fontSize: 12, marginTop: 2 }}>{timestamp}</Text>
                 </View>
-                <Text style={{ color: colors.text }}>{content}</Text>
+                <LinkifiedText style={{ color: colors.text, fontSize: 14 }} text={content} />
             </Card>
             {!!replies.length > 0 && replyList}
         </View>

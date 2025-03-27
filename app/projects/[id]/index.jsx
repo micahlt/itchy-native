@@ -14,6 +14,7 @@ import storage from "../../../utils/storage";
 import useTurbowarpLink from "../../../utils/hooks/useTurbowarpLink";
 import { MaterialIcons } from "@expo/vector-icons";
 import timeago from "time-ago";
+import LinkifiedText from "../../../utils/regex/LinkifiedText";
 
 export default function Project() {
     const { id } = useLocalSearchParams();
@@ -99,11 +100,11 @@ export default function Project() {
                 </ScrollView>}
                 {metadata?.instructions && <Card style={{ margin: 10, marginTop: 0, padding: 16 }}>
                     <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</Text>
-                    <Text style={{ color: colors.text, }}>{metadata?.instructions}</Text>
+                    <LinkifiedText style={{ color: colors.text }} text={metadata?.instructions} />
                 </Card>}
                 {metadata?.description && <Card style={{ margin: 10, marginTop: 0, padding: 16 }}>
                     <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Credits</Text>
-                    <Text style={{ color: colors.text }}>{metadata?.description}</Text>
+                    <LinkifiedText style={{ color: colors.text }} text={metadata?.description} />
                 </Card>}
                 {dateInfo && <Card style={{ margin: 10, marginTop: 0, marginBottom: 30, padding: 16 }}>
                     <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Created {dateInfo.created}</Text>
