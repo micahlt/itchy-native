@@ -37,14 +37,14 @@ export default function LoginScreen() {
             <Card style={{ padding: 20, margin: 20 }}>
                 <View style={{ flexDirection: 'row', justifyContent: "center", alignItems: "center", gap: 20, marginVertical: 20 }}>
                     <Image source={require("../assets/logo.webp")} style={{ width: 65, height: 65, alignSelf: "center", borderRadius: 65 }} />
-                    <MaterialIcons name='arrow-forward' size={45} color={colors.textSecondary} />
-                    <Image source={require("../assets/avatar.png")} style={{ width: 65, height: 65, alignSelf: "center", borderRadius: 65 }} />
+                    <MaterialIcons name='arrow-forward' size={45} color={"dimgray"} />
+                    <Image source={require("../assets/avatar2.png")} style={{ width: 65, height: 65, alignSelf: "center", borderRadius: 65 }} />
                 </View>
-                <TextInput placeholder="Username" style={{ backgroundColor: colors.backgroundSecondary, color: colors.text, padding: 10, margin: 10, borderBottomColor: colors.text, borderBottomWidth: 1 }} underlineColorAndroid={colors.text} placeholderTextColor={colors.textSecondary} onChangeText={(t) => setUsername(t)} value={username} />
-                <TextInput placeholder="Password" style={{ backgroundColor: colors.backgroundSecondary, color: colors.text, padding: 10, margin: 10, borderBottomColor: colors.text, borderBottomWidth: 1 }} underlineColorAndroid={colors.text} placeholderTextColor={colors.textSecondary} secureTextEntry={true} onChangeText={(t) => setPassword(t)} value={password} />
+                <TextInput placeholder="Username" style={{ backgroundColor: colors.backgroundSecondary, color: colors.text, padding: 10, margin: 10, borderBottomColor: "silver", borderBottomWidth: 1 }} underlineColorAndroid={colors.text} placeholderTextColor={colors.textSecondary} onChangeText={(t) => setUsername(t)} value={username} />
+                <TextInput placeholder="Password" style={{ backgroundColor: colors.backgroundSecondary, color: colors.text, padding: 10, margin: 10, borderBottomColor: "silver", borderBottomWidth: 1 }} underlineColorAndroid={colors.text} placeholderTextColor={colors.textSecondary} secureTextEntry={true} onChangeText={(t) => setPassword(t)} value={password} />
                 <View style={{ borderRadius: 10, overflow: 'hidden', backgroundColor: colors.accent, margin: 10, elevation: 2 }}>
                     <Pressable onPress={() => logIn()} style={{ padding: 10 }} android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}>
-                        <Text style={{ color: colors.text, textAlign: "center", fontWeight: "bold" }}>Log In</Text>
+                        <Text style={{ color: colors.text, textAlign: "center", fontWeight: "bold", color: "white" }}>Log In</Text>
                     </Pressable>
                 </View>
                 {error && <Text style={{ color: "#f85a5a", textAlign: "center", fontSize: 16, marginBottom: 5 }}>{error}</Text>}

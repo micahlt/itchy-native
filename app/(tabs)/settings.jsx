@@ -102,7 +102,7 @@ export default function SettingsScreen() {
                     <Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Options provided by </Text><TouchableOpacity onPress={() => linkWithFallback("https://turbowarp.org")}><Text style={{ color: colors.accent, fontSize: 12 }}>TurboWarp</Text></TouchableOpacity>
                 </View>
                 <Text style={s.sectionHeader}>About</Text>
-                <View style={s.settingContainer}>
+                <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
                     <Text style={{ color: colors.text, fontSize: 16 }}>Itchy v{version}</Text>
                 </View>
                 <View style={s.settingContainer}>
