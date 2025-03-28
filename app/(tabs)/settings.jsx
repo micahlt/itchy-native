@@ -112,6 +112,7 @@ export default function SettingsScreen() {
                 <View style={{ ...s.settingContainer, justifyContent: "flex-start" }}>
                     <Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Made </Text><TouchableOpacity onPress={() => linkWithFallback("https://github.com/micahlt")}><Text style={{ color: colors.accent, fontSize: 12 }}>open source</Text></TouchableOpacity><Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}> with ❤️</Text>
                 </View>
+                <View style={{height: 120}}></View>
             </ScrollView>
         </SafeAreaView >
     );
