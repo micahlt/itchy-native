@@ -40,7 +40,7 @@ export default function Search() {
     }, [type])
 
     return <SafeAreaView style={{ flex: 1, backgroundColor: colors.background, paddingHorizontal: 10 }}>
-        <View style={{ flexDirection: "row", gap: 5 }}>
+        <View style={{ flexDirection: "row", gap: 5, marginTop: 10, marginBottom: 5 }}>
             <Chip.Icon icon="smart-display" text="Projects" color={colors.accent} mode={type == "projects" && "filled"} onPress={() => setType("projects")} />
             <Chip.Icon icon="collections" text="Studios" color={colors.accent} mode={type == "studios" && "filled"} onPress={() => setType("studios")} />
             {//<Chip.Icon icon="person" text="Users" color={colors.accent} mode={type == "users" && "filled"} onPress={() => setType("users")} />
