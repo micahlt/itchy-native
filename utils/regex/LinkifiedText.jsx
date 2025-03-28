@@ -52,7 +52,6 @@ export default function LinkifiedText({ text, ...props }) {
             return emojis[emojiName] || match;
         });;
         const splitLinked = comment.split(globalRegex);
-        console.log(splitLinked)
         setTextParts(splitLinked.filter((part) => {
             if (!!part) return true; else return false;
         }));
@@ -65,7 +64,6 @@ export default function LinkifiedText({ text, ...props }) {
                     return <Text style={{ ...props.style, color: colors.accent }} onPress={() => router.push(`/users/${part.split('@')[1]}`)} key={index}>{part}</Text>
                 } else if (part.match(project)) {
                     const projectID = part.match(project)[1];
-                    console.log("PART", part);
                     return <Text style={{ ...props.style, color: colors.accent }} onPress={() => router.push(`/projects/${projectID}`)} key={index}>project:{projectID}</Text>
                 } else if (part.match(studio)) {
                     const studioID = part.match(studio)[0];

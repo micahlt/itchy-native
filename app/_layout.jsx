@@ -5,6 +5,7 @@ import { useColorScheme, View } from 'react-native';
 import { darkColors, lightColors } from '../utils/theme/colors';
 import { useMMKVObject } from 'react-native-mmkv';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 
 export default function App() {
     const theme = useColorScheme();
@@ -16,6 +17,7 @@ export default function App() {
             setTWConfig({});
         }
     }, [theme]);
+    Image.clearDiskCache();
 
     if (!!colors) {
         return (

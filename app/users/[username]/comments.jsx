@@ -1,10 +1,12 @@
-import { View, Text, FlatList, RefreshControl } from "react-native";
+import { View, FlatList, RefreshControl, TextInput, TouchableOpacity, useWindowDimensions } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import Comment from "../../../components/Comment";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useMMKVString } from "react-native-mmkv";
 
 export default function UserComments() {
     const { username, comment_id } = useLocalSearchParams();
@@ -12,8 +14,11 @@ export default function UserComments() {
     const [comments, setComments] = useState([]);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
+    const [commentContent, setCommentContent] = useState("");
     const [hasScrolledToSelected, setHasScrolledToSelected] = useState(false);
     const scrollRef = useRef();
+    const { width } = useWindowDimensions();
+    const [csrf] = useMMKVString("csrfToken");
 
     useEffect(() => {
         if (!username) return;
@@ -58,6 +63,13 @@ export default function UserComments() {
         setPage(1);
     }, []);
 
+    const postComment = () => {
+        ScratchAPIWrapper.user.postComment(username, commentContent, csrf).then(() => {
+            setCommentContent("");
+            refresh();
+        }).catch(console.error);
+    }
+
 
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
@@ -80,6 +92,12 @@ export default function UserComments() {
                     });
                 }} refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} />
             )}
+            <View style={{ padding: 15, backgroundColor: colors.backgroundTertiary, flexDirection: "row" }}>
+                <TextInput placeholder="Add a comment..." style={{ width: width - 66 }} multiline={true} onChangeText={setCommentContent} />
+                <TouchableOpacity onPress={postComment} style={{ width: 24, flexGrow: 1, marginLeft: 10 }}>
+                    <MaterialIcons name="send" size={24} color={colors.accent} />
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }

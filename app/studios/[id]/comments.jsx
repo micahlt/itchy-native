@@ -44,7 +44,7 @@ export default function StudioComments() {
             }
         });
         if (commentIndex === -1) {
-            if (!loading) setOffset(comments.length - 1);
+            if (!loading) setOffset(comments.length);
         } else if (scrollRef?.current) {
             scrollRef.current.scrollToIndex({ index: commentIndex, animated: true });
             setHasScrolledToSelected(true);
@@ -56,9 +56,9 @@ export default function StudioComments() {
     }, []);
 
     const endReached = useCallback(() => {
-        if (loading) return;
-        setOffset(comments.length - 1);
-    }, [loading, offset]);
+        if (loading || !hasScrolledToSelected) return;
+        setOffset(comments.length);
+    }, [loading, offset, hasScrolledToSelected]);
 
     const refresh = useCallback(() => {
         setOffset(1);

@@ -16,7 +16,7 @@ const APIMessages = {
         return data;
     },
     getMessageCount: async function (username) {
-        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/messages/count`);
+        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/messages/count?cacheBust=${Date.now()}`);
         const data = await res.json();
         return data.count;
     }

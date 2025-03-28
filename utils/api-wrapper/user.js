@@ -47,7 +47,13 @@ const APIUser = {
     },
     getComments: async (username, page = 1) => {
         // Algorithm taken from https://github.com/webdev03/meowclient
-        const res = await fetch(`https://scratch.mit.edu/site-api/comments/user/${username}/?page=${page}`);
+        const res = await fetch(`https://scratch.mit.edu/site-api/comments/user/${username}/?page=${page}&cacheBust=${Math.random()}`, {
+            headers: {
+                "Cache-Control": "no-cache",
+                "User-Agent": consts.UserAgent,
+                Pragma: "no-cache",
+            }
+        });
         const commentHTML = await res.text();
         const dom = parse(commentHTML);
         const items = dom.querySelectorAll(".top-level-reply");
@@ -220,6 +226,56 @@ const APIUser = {
                 Pragma: "no-cache",
                 "Accept-Encoding": "gzip, deflate, br"
             },
+        });
+        if (req.ok) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    postComment: async (username, content = "", csrf, parentID = "", commentee = "") => {
+        const req = await fetch(`https://scratch.mit.edu/site-api/comments/user/${username}/add/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrf,
+                "x-requested-with": "XMLHttpRequest",
+                Referer: `https://scratch.mit.edu/users/${username}/`,
+                "User-Agent": consts.UserAgent,
+                Accept: "*/*",
+                Origin: "https://scratch.mit.edu",
+                "Cache-Control": "max-age=0, no-cache",
+                Pragma: "no-cache",
+                "Accept-Encoding": "gzip, deflate, br"
+            },
+            body: JSON.stringify({
+                content: content,
+                parent_id: parentID,
+                commentee_id: commentee,
+            })
+        });
+        if (req.ok) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    deleteComment: async (username, commentID, csrf) => {
+        const req = await fetch(`https://scratch.mit.edu/site-api/comments/user/${username}/add/`, {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrf,
+                "x-requested-with": "XMLHttpRequest",
+                Referer: `https://scratch.mit.edu/users/${username}/`,
+                "User-Agent": consts.UserAgent,
+                Accept: "*/*",
+                Origin: "https://scratch.mit.edu",
+                "Cache-Control": "max-age=0, no-cache",
+                Pragma: "no-cache",
+                "Accept-Encoding": "gzip, deflate, br"
+            },
+            body: JSON.stringify({
+                id: commentID
+            })
         });
         if (req.ok) {
             return true;
