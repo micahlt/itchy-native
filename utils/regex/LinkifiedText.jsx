@@ -66,7 +66,7 @@ export default function LinkifiedText({ text, ...props }) {
                     const projectID = part.match(project)[1];
                     return <Text style={{ ...props.style, color: colors.accent }} onPress={() => router.push(`/projects/${projectID}`)} key={index}>project:{projectID}</Text>
                 } else if (part.match(studio)) {
-                    const studioID = part.match(studio)[0];
+                    const studioID = part.match(studio)[1];
                     return <Text style={{ ...props.style, color: colors.accent }} onPress={() => router.push(`/studios/${studioID}`)} key={index}>studio:{studioID}</Text>;
                 }
                 return <Text key={index}>{part}</Text>
