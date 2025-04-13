@@ -15,6 +15,7 @@ import useTurbowarpLink from "../../../utils/hooks/useTurbowarpLink";
 import { MaterialIcons } from "@expo/vector-icons";
 import timeago from "time-ago";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
+import RemixNotice from "../../../components/RemixNotice";
 
 export default function Project() {
     const { id } = useLocalSearchParams();
@@ -98,6 +99,7 @@ export default function Project() {
                         tintColor: colors.accent
                     })} />
                 </ScrollView>}
+                {metadata?.remix?.parent && <RemixNotice originalProjectID={metadata?.remix?.parent} />}
                 {metadata?.instructions && <Card style={{ margin: 10, marginTop: 0, padding: 16 }}>
                     <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</Text>
                     <LinkifiedText style={{ color: colors.text }} text={metadata?.instructions} />
