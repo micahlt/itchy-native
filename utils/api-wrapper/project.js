@@ -59,14 +59,15 @@ const APIProject = {
         const res = await fetch(`https://api.scratch.mit.edu/users/${author}/projects/${projectID}/comments?offset=${offset}&limit=${limit}`);
         const data = await res.json();
         if (includeReplies) {
-            let commentArr = [];
-            await Promise.allSettled(data.map(async (comment) => {
+            const commentPromises = data.map(async (comment) => {
                 const replies = await APIProject.getCommentReplies(projectID, author, comment.id);
                 comment.replies = replies;
                 comment.includesReplies = true;
-                commentArr.push(comment);
-            }));
-            return commentArr;
+                return comment;
+            });
+
+            const settledComments = await Promise.allSettled(commentPromises);
+            return settledComments.map(result => result.status === "fulfilled" ? result.value : null).filter(Boolean);
         } else {
             return data;
         }

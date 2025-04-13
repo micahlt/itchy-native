@@ -15,7 +15,7 @@ export default function UserComments() {
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
     const [commentContent, setCommentContent] = useState("");
-    const [hasScrolledToSelected, setHasScrolledToSelected] = useState(false);
+    const [hasScrolledToSelected, setHasScrolledToSelected] = useState(!!comment_id ? false : true);
     const scrollRef = useRef();
     const { width } = useWindowDimensions();
     const [csrf] = useMMKVString("csrfToken");
@@ -55,7 +55,7 @@ export default function UserComments() {
     }, []);
 
     const endReached = useCallback(() => {
-        if (loading) return;
+        if (loading || !hasScrolledToSelected) return;
         setPage(page + 1);
     }, [loading, page]);
 
@@ -79,7 +79,7 @@ export default function UserComments() {
                 }}
             />
             {comments.length > 0 && (
-                <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={item => item.id} onEndReached={endReached} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
+                <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={item => item.id} onEndReached={endReached} onEndReachedThreshold={1.2} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
                     index,
                 }) => {
                     scrollRef.current?.scrollToOffset({

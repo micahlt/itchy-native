@@ -54,7 +54,7 @@ export default function Messages() {
             refreshing={loading}
             refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}
             ListHeaderComponent={<Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, padding: 10, marginBottom: 20 }}>Messages</Text>}
-            onEndReachedThreshold={1.5}
+            onEndReachedThreshold={1.2}
             onEndReached={() => {
                 if (loading) return;
                 setOffset(messages.length);

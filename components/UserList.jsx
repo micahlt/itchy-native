@@ -19,5 +19,5 @@ export default function UserList({ users = [], onEndReached }) {
                 <Text style={{ fontSize: 14, fontWeight: "bold", color: colors.text }}>{user.username}</Text>
             </View>
         </Pressable>
-    }} style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 5 }} onEndReached={onEndReached} onEndReachedThreshold={0.4} />
+    }} style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 5 }} onEndReached={onEndReached} onEndReachedThreshold={1.2} />
 }

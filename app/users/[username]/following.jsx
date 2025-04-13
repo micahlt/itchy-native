@@ -11,14 +11,18 @@ export default function Following() {
     const { colors } = useTheme();
     const [following, setFollowing] = useState([]);
     const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         getFollowing();
     }, [username]);
 
     const getFollowing = () => {
+        if (loading) return;
+        setLoading(true);
         ScratchAPIWrapper.user.getFollowing(username, page).then((data) => {
             setFollowing([...following, ...data]);
             setPage(page + 1);
+            setLoading(false);
         }).catch(console.error);
     }
 

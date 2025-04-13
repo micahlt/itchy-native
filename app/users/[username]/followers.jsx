@@ -11,14 +11,18 @@ export default function Followers() {
     const { colors } = useTheme();
     const [followers, setFollowers] = useState([]);
     const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         getFollowers();
     }, [username]);
 
     const getFollowers = () => {
+        if (loading) return;
+        setLoading(true);
         ScratchAPIWrapper.user.getFollowers(username, page).then((data) => {
             setFollowers([...followers, ...data]);
             setPage(page + 1);
+            setLoading(false);
         }).catch(console.error);
     }
 

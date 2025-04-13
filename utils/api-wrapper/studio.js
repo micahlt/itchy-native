@@ -15,16 +15,17 @@ const APIStudio = {
                 Referer: "https://scratch.mit.edu"
             }
         });
-        const data = await res.json();
+        let data = await res.json();
         if (includeReplies) {
-            let commentArr = [];
-            await Promise.allSettled(data.map(async (comment) => {
+            let commentPromises = data.map(async (comment) => {
                 const replies = await APIStudio.getCommentReplies(id, comment.id);
                 comment.replies = replies || [];
                 comment.includesReplies = true;
-                commentArr.push(comment);
-            }));
-            return commentArr;
+                return comment;
+            });
+
+            const settledComments = await Promise.allSettled(commentPromises);
+            return settledComments.map(result => result.status === "fulfilled" ? result.value : null).filter(Boolean);
         } else {
             return data;
         }

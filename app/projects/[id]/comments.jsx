@@ -13,7 +13,7 @@ export default function ProjectComments() {
     const [comments, setComments] = useState([]);
     const [offset, setOffset] = useState(0);
     const [loading, setLoading] = useState(true);
-    const [hasScrolledToSelected, setHasScrolledToSelected] = useState(false);
+    const [hasScrolledToSelected, setHasScrolledToSelected] = useState(!!comment_id ? false : true);
     const scrollRef = useRef();
 
     useEffect(() => {
@@ -71,7 +71,7 @@ export default function ProjectComments() {
                 }}
             />
 
-            <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={(item) => item.id} onEndReached={endReached} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
+            <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={(item) => item.id} onEndReached={endReached} onEndReachedThreshold={1.2} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
                 index,
             }) => {
                 scrollRef.current?.scrollToOffset({
