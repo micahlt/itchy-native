@@ -2,7 +2,7 @@ import { View, useWindowDimensions, ScrollView, Text, RefreshControl } from "rea
 import Pressable from "../../../components/Pressable";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { router, useLocalSearchParams, useRouter } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import ProjectCard from "../../../components/ProjectCard";
@@ -47,6 +47,16 @@ export default function User() {
         }).catch(console.error)
     };
 
+    const profileStats = useMemo(() => {
+        let stats = {};
+        if (!profile) return stats;
+        if (profile.followers === -1) stats.followers = "∞";
+        else stats.followers = approximateNumber(profile.followers);
+        if (profile.following === -1) stats.following = "∞";
+        else stats.following = approximateNumber(profile.following);
+        return stats;
+    }, [profile]);
+
     useEffect(() => {
         if (!loading) return;
         if (!!profile && !!projects && !!favorites) {
@@ -90,11 +100,11 @@ export default function User() {
                         <Image source={{ uri: profile.profile.images["90x90"] }} placeholder={require("../../../assets/avatar.png")} placeholderContentFit="cover" style={{ height: 75, width: 75, borderRadius: 75, marginRight: 25, backgroundColor: "white" }} />
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginRight: 10, flex: 1 }}>
                             <Pressable style={{ alignItems: "center" }} onPress={() => router.push(`users/${username}/followers`)} android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}>
-                                <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{approximateNumber(profile.followers)}</Text>
+                                <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{profileStats?.followers}</Text>
                                 <Text style={{ color: colors.text, fontSize: 12 }}>Followers</Text>
                             </Pressable>
                             <Pressable style={{ alignItems: "center" }} onPress={() => router.push(`users/${username}/following`)} android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}>
-                                <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{approximateNumber(profile.following)}</Text>
+                                <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{profileStats?.following}</Text>
                                 <Text style={{ color: colors.text, fontSize: 12 }}>Following</Text>
                             </Pressable>
                             <View style={{ alignItems: "center" }}>

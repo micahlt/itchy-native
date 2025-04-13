@@ -10,8 +10,8 @@ const APIUser = {
 
         const data = await res.json();
         const featuredProject = await featured.json();
-        const followersHTML = await follower.text();
-        const followingHTML = await following.text();
+        const followersHTML = follower.ok ? await follower.text() : "Followers (-1)";
+        const followingHTML = following.ok ? await following.text() : "Following (-1)";
 
         return {
             ...data,
@@ -21,8 +21,8 @@ const APIUser = {
                 thumbnail_url: featuredProject.featured_project_data?.thumbnail_url,
                 id: featuredProject.featured_project_data?.id,
             } : null,
-            followers: followersHTML.match(/Followers \((\d*)\)/g)[0].split("(")[1].split(")")[0],
-            following: followingHTML.match(/Following \((\d*)\)/g)[0].split("(")[1].split(")")[0]
+            followers: Number(followersHTML.match(/Followers \((-?\d*)\)/g)[0].split("(")[1].split(")")[0]),
+            following: Number(followingHTML.match(/Following \((-?\d*)\)/g)[0].split("(")[1].split(")")[0])
         };
     },
     getProfile: async (username) => {

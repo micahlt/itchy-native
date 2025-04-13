@@ -1,4 +1,4 @@
-import { RefreshControl, ScrollView, Text, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { useTheme } from '../../utils/theme';
 import { useEffect, useState } from 'react';
@@ -9,6 +9,17 @@ import Feed from '../../components/Feed';
 import SignInPrompt from '../../components/SignInPrompt';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StudioCard from '../../components/StudioCard';
+
+const s = new StyleSheet.create({
+    scrollHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        padding: 20,
+        paddingBottom: 0,
+        paddingTop: 5,
+        gap: 10
+    }
+});
 
 export default function HomeScreen() {
     const { colors, isDark } = useTheme();
@@ -47,84 +58,84 @@ export default function HomeScreen() {
             <ScrollView contentInsetAdjustmentBehavior="automatic" refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} style={{ flex: 1, borderBottomColor: "red", borderBottomWidth: 5 }} />}>
                 {!!username ? <Feed style={{ margin: 20, marginBottom: 0 }} username={username} rerender={refreshCount} /> : <SignInPrompt />}
                 {exploreData?.featured?.length > 0 && <>
-                    <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
+                    <View style={{ ...s.scrollHeader, marginTop: 10 }}>
                         <MaterialIcons name='workspace-premium' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Featured</Text>
                     </View>
                     <ScrollView horizontal contentContainerStyle={{
-                        padding: 20, paddingTop: 10, paddingBottom: 0, columnGap: 10
+                        padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
                     }} showsHorizontalScrollIndicator={false}>
                         {exploreData?.featured?.map((item, index) => (<ProjectCard key={index} project={item} />))}
                     </ScrollView>
                 </>}
 
                 {friendsLoves.length > 0 && <>
-                    <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
+                    <View style={s.scrollHeader}>
                         <MaterialIcons name='people' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Loved by Friends</Text>
                     </View>
                     <ScrollView horizontal contentContainerStyle={{
-                        padding: 20, paddingTop: 10, paddingBottom: 0, columnGap: 10
+                        padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
                     }} showsHorizontalScrollIndicator={false}>
                         {friendsLoves?.map((item, index) => (<ProjectCard key={index} project={item} />))}
                     </ScrollView>
                 </>}
 
                 {friendsProjects.length > 0 && <>
-                    <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
+                    <View style={s.scrollHeader}>
                         <MaterialIcons name='people' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Created by Friends</Text>
                     </View>
                     <ScrollView horizontal contentContainerStyle={{
-                        padding: 20, paddingTop: 10, paddingBottom: 0, columnGap: 10
+                        padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
                     }} showsHorizontalScrollIndicator={false}>
                         {friendsProjects?.map((item, index) => (<ProjectCard key={index} project={item} />))}
                     </ScrollView>
                 </>}
 
                 {exploreData?.topLoved?.length > 0 && <>
-                    <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
+                    <View style={s.scrollHeader}>
                         <MaterialIcons name='favorite' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Top Loved</Text>
                     </View>
                     <ScrollView horizontal contentContainerStyle={{
-                        padding: 20, paddingTop: 10, paddingBottom: 0, columnGap: 10
+                        padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
                     }} showsHorizontalScrollIndicator={false}>
                         {exploreData?.topLoved?.map((item, index) => (<ProjectCard key={index} project={item} />))}
                     </ScrollView>
                 </>}
 
                 {exploreData?.featuredStudios?.length > 0 && <>
-                    <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
+                    <View style={s.scrollHeader}>
                         <MaterialIcons name='photo-filter' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Featured Studios</Text>
                     </View>
                     <ScrollView horizontal contentContainerStyle={{
-                        padding: 20, paddingTop: 10, columnGap: 10
+                        padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
                     }} showsHorizontalScrollIndicator={false}>
                         {exploreData?.featuredStudios?.map((item, index) => (<StudioCard key={index} studio={item} />))}
                     </ScrollView>
                 </>}
 
                 {exploreData?.topRemixed?.length > 0 && <>
-                    <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
+                    <View style={s.scrollHeader}>
                         <MaterialIcons name='sync' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Top Remixed</Text>
                     </View>
                     <ScrollView horizontal contentContainerStyle={{
-                        padding: 20, paddingTop: 10, paddingBottom: 0, columnGap: 10
+                        padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
                     }} showsHorizontalScrollIndicator={false}>
                         {exploreData?.topRemixed?.map((item, index) => (<ProjectCard key={index} project={item} />))}
                     </ScrollView>
                 </>}
 
                 {exploreData?.newest?.length > 0 && <>
-                    <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0, gap: 10 }}>
+                    <View style={s.scrollHeader}>
                         <MaterialIcons name='more-time' size={24} color={colors.text} />
                         <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Newest</Text>
                     </View>
                     <ScrollView horizontal contentContainerStyle={{
-                        padding: 20, paddingTop: 10, columnGap: 10
+                        padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
                     }} showsHorizontalScrollIndicator={false}>
                         {exploreData?.newest?.map((item, index) => (<ProjectCard key={index} project={item} />))}
                     </ScrollView>
