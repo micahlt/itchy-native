@@ -18,7 +18,7 @@ export default function Feed({ }) {
         })
     }, [username, token]);
 
-    return <ScrollView contentContainerStyle={{ paddingHorizontal: 20 }}>
+    return <ScrollView contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 15 }}>
         {feed.map((item) => <FeedItem key={item.id} item={item} textColor={colors.text} />)}
     </ScrollView>
 }
