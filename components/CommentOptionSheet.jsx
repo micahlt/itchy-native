@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import BottomSheet from '@devvie/bottom-sheet';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from '../utils/theme';
@@ -7,8 +6,10 @@ import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import Comment from './Comment';
 import Pressable from './Pressable'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import BottomSheet, { BottomSheetView } from '@gorhom/bottom-sheet';
 import linkWithFallback from '../utils/linkWithFallback';
 import ScratchAPIWrapper from '../utils/api-wrapper';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 export default function CommentOptionSheet({ comment, context, setComment = () => { }, onDeleteCommentID = () => { } }) {
     const { colors } = useTheme();
@@ -20,7 +21,7 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
 
     useEffect(() => {
         if (!!comment) {
-            sheetRef.current?.open()
+            sheetRef.current?.expand()
             return;
         } else {
             sheetRef.current?.close()
@@ -28,7 +29,7 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
     }, [comment])
 
     const onViewLayout = (e) => {
-        setSheetHeight(e.nativeEvent.layout.height);
+        setSheetHeight(e.nativeEvent.layout.height + insets.bottom);
     }
 
     const canDelete = useMemo(() => {
@@ -76,13 +77,48 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
         }
     }, [comment, csrf, user]);
 
+    const renderBackdrop = useCallback(
+        (props) => {
+            const opacity = useSharedValue(0);
+            const [shouldShow, setShouldShow] = useState(true);
+
+            const animatedStyle = useAnimatedStyle(() => ({
+                opacity: withTiming(opacity.value, { duration: 200 }),
+            }));
+
+            useEffect(() => {
+                opacity.value = shouldShow ? 0.6 : 0;
+            }, [shouldShow]);
+
+            const containerStyle = useMemo(
+                () => ({
+                    backgroundColor: `${colors.background}`, // Semi-transparent background
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                }),
+                [colors.background]
+            );
+
+            return (
+                <Animated.View style={[containerStyle, animatedStyle]} onTouchEnd={() => {
+                    setShouldShow(false)
+                    sheetRef.current?.close()
+                }}></Animated.View>
+            );
+        },
+        [sheetRef]
+    );
+
     if (!comment) return null;
 
     return (
         <BottomSheet ref={sheetRef} style={{
-            backgroundColor: colors.backgroundSecondary, borderTopLeftRadius: 10, borderTopRightRadius: 10,
-        }} backdropMaskColor="#000000aa" height={sheetHeight + insets.bottom + 50} onClose={() => setComment(undefined)} onOpen={() => setComment(comment)}>
-            <View onLayout={onViewLayout}>
+            borderTopLeftRadius: 10, borderTopRightRadius: 10, shadowColor: "#000",
+        }} backdropMaskColor="#000000aa" onClose={() => setComment(undefined)} enableDynamicSizing={true} enablePanDownToClose={true} backgroundStyle={{ backgroundColor: colors.backgroundSecondary }} backdropComponent={renderBackdrop}>
+            <BottomSheetView onLayout={onViewLayout} style={{ paddingBottom: insets.bottom, backgroundColor: colors.backgroundSecondary }}>
                 <Text style={{ color: colors.text, fontSize: 22, fontWeight: 'bold', marginBottom: 10, paddingHorizontal: 15 }}>Comment</Text>
                 <View style={{ paddingHorizontal: 5 }}><Comment comment={comment} showReplies={false} isReply={false} fullWidth={true} /></View>
                 {canDelete && <Pressable android_ripple={{ color: "#ffffff22", borderless: false, foreground: true }} onPress={deleteComment} style={{
@@ -106,7 +142,7 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
                 }}>
                     <MaterialIcons name="flag" color={colors.accent} size={22} /><Text style={{ color: colors.accent, fontSize: 16 }}>Report comment</Text>
                 </Pressable>
-            </View>
+            </BottomSheetView>
         </BottomSheet >
     );
 };
