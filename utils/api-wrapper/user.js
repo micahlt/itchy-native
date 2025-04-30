@@ -262,13 +262,14 @@ const APIUser = {
             return false;
         }
     },
-    deleteComment: async (username, commentID, csrf) => {
-        const req = await fetch(`https://scratch.mit.edu/site-api/comments/user/${username}/add/`, {
+    deleteComment: async (username, commentID, csrf, token) => {
+        const req = await fetch(`https://scratch.mit.edu/site-api/comments/user/${username}/del/`, {
             method: "POST",
             headers: {
                 "X-CSRFToken": csrf,
+                "X-Token": token,
                 "x-requested-with": "XMLHttpRequest",
-                Referer: `https://scratch.mit.edu/users/${username}/`,
+                Referer: `https://scratch.mit.edu/`,
                 "User-Agent": consts.UserAgent,
                 Accept: "*/*",
                 Origin: "https://scratch.mit.edu",
@@ -283,6 +284,8 @@ const APIUser = {
         if (req.ok) {
             return true;
         } else {
+            console.error(req.status)
+            console.log(await req.text())
             return false;
         }
     }

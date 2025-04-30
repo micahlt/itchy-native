@@ -9,6 +9,7 @@ import { router } from "expo-router";
 import CommentEditor from "../../../components/CommentEditor";
 import uniqueArray from "../../../utils/uniqueArray";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
+import CommentOptionSheet from "../../../components/CommentOptionSheet";
 
 export default function StudioComments() {
     const { id, comment_id } = useLocalSearchParams();
@@ -24,6 +25,7 @@ export default function StudioComments() {
     const [reply, setReply] = useState(undefined);
     const [commentContent, setCommentContent] = useState("");
     const [rerenderComments, setRerenderComments] = useState(true);
+    const [commentOptionsObj, setCommentOptionsObj] = useState(undefined);
 
     useEffect(() => {
         if (!id) return;
@@ -48,7 +50,7 @@ export default function StudioComments() {
         const commentIndex = comments.findIndex(c => {
             if (c.id == comment_id) {
                 return true;
-            } else if (c.replies?.length > 0) {
+            } else if (!!c?.replies && c?.replies?.length > 0) {
                 return c.replies.findIndex(r => r.id == comment_id) !== -1;
             }
         });
@@ -101,8 +103,28 @@ export default function StudioComments() {
         }).catch(console.error);
     }, []);
 
+    const openCommentOptions = useCallback((comment) => {
+        setCommentOptionsObj(comment);
+    }, []);
+
+    const afterDeleteComment = useCallback((obj) => {
+        if (!obj) return;
+        setComments((prev) => prev.map(c => {
+            if (c.id === obj.id) {
+                return null; // Remove the main comment
+            }
+            if (c.replies) {
+                return {
+                    ...c,
+                    replies: c.replies.filter(r => r.id !== obj.id) // Remove the reply immutably
+                };
+            }
+            return c;
+        }).filter(Boolean)); // Filter out null values
+    }, [comments]);
+
     const renderComment = useCallback(({ item }) => {
-        return <Comment comment={item} selected={comment_id || undefined} onPress={setReply} onLongPress={deleteComment} />;
+        return <Comment comment={item} selected={comment_id || undefined} onPress={setReply} onLongPress={openCommentOptions} />;
     }, [rerenderComments]);
 
     const endReached = useCallback(() => {
@@ -138,6 +160,7 @@ export default function StudioComments() {
                     }} refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} />
                 )}
                 <CommentEditor onSubmit={postComment} reply={reply} onClearReply={() => setReply(undefined)} />
+                <CommentOptionSheet comment={commentOptionsObj} setComment={setCommentOptionsObj} context={{ type: "studio", studioID: id }} onDeleteCommentID={afterDeleteComment} />
             </KeyboardAvoidingView>
         </View>
     );

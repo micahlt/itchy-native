@@ -9,6 +9,7 @@ import { router } from "expo-router";
 import CommentEditor from "../../../components/CommentEditor";
 import uniqueArray from "../../../utils/uniqueArray";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
+import CommentOptionSheet from "../../../components/CommentOptionSheet";
 
 export default function ProjectComments() {
     const { id, comment_id } = useLocalSearchParams();
@@ -24,6 +25,7 @@ export default function ProjectComments() {
     const [reply, setReply] = useState(undefined);
     const [commentContent, setCommentContent] = useState("");
     const [rerenderComments, setRerenderComments] = useState(true);
+    const [commentOptionsObj, setCommentOptionsObj] = useState(undefined);
 
     useEffect(() => {
         setLoading(true);
@@ -91,16 +93,28 @@ export default function ProjectComments() {
         }).catch(console.error);
     };
 
-    const deleteComment = useCallback((obj) => {
-        if (!obj) return;
-        if (obj.author.id !== user.id) return;
-        ScratchAPIWrapper.project.deleteComment(id, obj.id, csrf, user.token).then(() => {
-            setComments((prev) => prev.filter(c => c.id !== obj.id));
-        }).catch(console.error);
+    const openCommentOptions = useCallback((comment) => {
+        setCommentOptionsObj(comment);
     }, []);
 
+    const afterDeleteComment = useCallback((obj) => {
+        if (!obj) return;
+        setComments((prev) => prev.map(c => {
+            if (c.id === obj.id) {
+                return null; // Remove the main comment
+            }
+            if (c.replies) {
+                return {
+                    ...c,
+                    replies: c.replies.filter(r => r.id !== obj.id) // Remove the reply immutably
+                };
+            }
+            return c;
+        }).filter(Boolean)); // Filter out null values
+    }, [comments]);
+
     const renderComment = useCallback(({ item }) => {
-        return <Comment comment={item} selected={comment_id ? comment_id.split("comments-")[1] : undefined} onPress={setReply} onLongPress={deleteComment} />;
+        return <Comment comment={item} selected={comment_id ? comment_id.split("comments-")[1] : undefined} onPress={setReply} onLongPress={openCommentOptions} />;
     }, [project, rerenderComments]);
 
     const endReached = useCallback(() => {
@@ -134,6 +148,7 @@ export default function ProjectComments() {
                     });
                 }} refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} />
                 <CommentEditor onSubmit={postComment} reply={reply} onClearReply={() => setReply(undefined)} />
+                <CommentOptionSheet comment={commentOptionsObj} setComment={setCommentOptionsObj} context={{ type: "project", owner: project?.author?.username, projectID: id }} onDeleteCommentID={afterDeleteComment} />
             </KeyboardAvoidingView>
         </View>
     );

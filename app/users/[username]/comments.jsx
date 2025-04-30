@@ -10,7 +10,6 @@ import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import CommentEditor from "../../../components/CommentEditor";
 import uniqueArray from "../../../utils/uniqueArray";
 import CommentOptionSheet from "../../../components/CommentOptionSheet";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export default function UserComments() {
@@ -89,7 +88,10 @@ export default function UserComments() {
                 if (!!reply) {
                     setComments((prev) => prev.map(c => {
                         if (c.id === reply.id) {
-                            c.replies.push({ author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: `comments-${postedID}`, parentID: reply.id, includesReplies: true, replies: [] });
+                            return {
+                                ...c,
+                                replies: [...c.replies, { author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: `comments-${postedID}`, parentID: reply.id, includesReplies: true, replies: [] }]
+                            };
                         }
                         return c;
                     }));
@@ -109,6 +111,21 @@ export default function UserComments() {
         }).catch(console.error);
     }
 
+    const afterDeleteComment = useCallback((obj) => {
+        if (!obj) return;
+        setComments((prev) => prev.map(c => {
+            if (c.id === obj.id) {
+                return null; // Remove the main comment
+            }
+            if (c.replies) {
+                return {
+                    ...c,
+                    replies: c.replies.filter(r => r.id !== obj.id) // Remove the reply immutably
+                };
+            }
+            return c;
+        }).filter(Boolean)); // Filter out null values
+    }, [comments]);
 
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
@@ -133,7 +150,7 @@ export default function UserComments() {
                     }} refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} />
                 )}
                 <CommentEditor onSubmit={postComment} reply={reply} onClearReply={() => setReply(undefined)} />
-                <CommentOptionSheet comment={commentOptionsObj} setComment={setCommentOptionsObj} />
+                <CommentOptionSheet comment={commentOptionsObj} setComment={setCommentOptionsObj} context={{ type: "user", owner: username }} onDeleteCommentID={afterDeleteComment} />
             </KeyboardAvoidingView>
         </View>
     );

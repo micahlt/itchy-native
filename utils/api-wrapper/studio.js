@@ -73,7 +73,7 @@ const APIStudio = {
                 "X-CSRFToken": csrf,
                 "X-Token": token,
                 "x-requested-with": "XMLHttpRequest",
-                Referer: `https://scratch.mit.edu/`,
+                Referer: `https://scratch.mit.edu/studios/${studioID}/comments`,
                 "User-Agent": consts.UserAgent,
                 Accept: "*/*",
                 Origin: "https://scratch.mit.edu",
