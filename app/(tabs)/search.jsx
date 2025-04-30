@@ -6,6 +6,7 @@ import ProjectCard from "../../components/ProjectCard";
 import { useEffect, useRef, useState } from "react";
 import Chip from "../../components/Chip";
 import StudioCard from "../../components/StudioCard";
+import { useFocusEffect } from "expo-router";
 
 export default function Search() {
     const { colors, isDark } = useTheme();
@@ -15,6 +16,12 @@ export default function Search() {
     const [projects, setProjects] = useState([]);
     const searchBarRef = useRef(null);
     const { width } = useWindowDimensions();
+
+    useFocusEffect(() => {
+        if (searchBarRef.current) {
+            searchBarRef.current.focus();
+        }
+    })
 
     const search = () => {
         setIsLoading(true);
@@ -49,11 +56,11 @@ export default function Search() {
         <FlatList data={projects} renderItem={({ item }) => renderItem(item, width, type)} stickyHeaderIndices={[0]} keyExtractor={(item) => item.id} numColumns={2} columnWrapperStyle={{ gap: 10 }} contentContainerStyle={{ gap: 10, paddingBottom: 100 }} refreshing={isLoading} onRefresh={search} ListHeaderComponent={
             <>
                 <View style={{ backgroundColor: colors.background, zIndex: 0, height: 40 }}></View>
-                <View style={{backgroundColor: colors.backgroundSecondary, paddingVertical: 15, paddingLeft: 15, paddingRight: 9, marginBottom: 5, borderRadius: 10, marginTop: -30, zIndex: 1}}>
-                <TextInput ref={searchBarRef} placeholder="Search" inputMode="search" enterKeyHint="search" style={{
-                    backgroundColor: 'transparent', color: colors.text, 
-                    fontSize: 18, width: '100%'
-                }} placeholderTextColor={colors.textSecondary} inlineImageLeft={isDark ? "search_24_white" : "search_24_black"} inlineImagePadding={28} onSubmitEditing={search} clearButtonMode="always" onChangeText={(t) => setQuery(t)} />
+                <View style={{ backgroundColor: colors.backgroundSecondary, paddingVertical: 15, paddingLeft: 15, paddingRight: 9, marginBottom: 5, borderRadius: 10, marginTop: -30, zIndex: 1 }}>
+                    <TextInput ref={searchBarRef} placeholder="Search" inputMode="search" enterKeyHint="search" style={{
+                        backgroundColor: 'transparent', color: colors.text,
+                        fontSize: 18, width: '100%'
+                    }} placeholderTextColor={colors.textSecondary} inlineImageLeft={isDark ? "search_24_white" : "search_24_black"} inlineImagePadding={28} onSubmitEditing={search} clearButtonMode="always" onChangeText={(t) => setQuery(t)} />
                 </View>
             </>
         } />

@@ -1,12 +1,14 @@
-import { View, FlatList, RefreshControl, TextInput, TouchableOpacity, useWindowDimensions } from "react-native";
+import { View, FlatList, RefreshControl } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { router } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import Comment from "../../../components/Comment";
-import { MaterialIcons } from "@expo/vector-icons";
-import { useMMKVString } from "react-native-mmkv";
+import { useMMKVObject, useMMKVString } from "react-native-mmkv";
+import CommentEditor from "../../../components/CommentEditor";
+
 
 export default function UserComments() {
     const { username, comment_id } = useLocalSearchParams();
@@ -17,8 +19,10 @@ export default function UserComments() {
     const [commentContent, setCommentContent] = useState("");
     const [hasScrolledToSelected, setHasScrolledToSelected] = useState(!!comment_id ? false : true);
     const scrollRef = useRef();
-    const { width } = useWindowDimensions();
+    const [user] = useMMKVObject("user");
     const [csrf] = useMMKVString("csrfToken");
+    const [reply, setReply] = useState(undefined);
+    const [rerenderComments, setRerenderComments] = useState(0);
 
     useEffect(() => {
         if (!username) return;
@@ -31,7 +35,7 @@ export default function UserComments() {
             }
             setLoading(false);
         }).catch(console.error);
-    }, [username, page]);
+    }, [username, page, comment_id]);
 
     useEffect(() => {
         if (!comment_id || !!hasScrolledToSelected) return;
@@ -51,8 +55,8 @@ export default function UserComments() {
     }, [comments, comment_id])
 
     const renderComment = useCallback(({ item }) => {
-        return <Comment comment={item} selected={comment_id || undefined} />
-    }, []);
+        return <Comment comment={item} selected={comment_id || undefined} onPress={setReply} />
+    }, [rerenderComments, comments]);
 
     const endReached = useCallback(() => {
         if (loading || !hasScrolledToSelected) return;
@@ -61,12 +65,35 @@ export default function UserComments() {
 
     const refresh = useCallback(() => {
         setPage(1);
-    }, []);
+    }, [comments]);
 
-    const postComment = () => {
-        ScratchAPIWrapper.user.postComment(username, commentContent, csrf).then(() => {
-            setCommentContent("");
-            refresh();
+    const postComment = (content) => {
+        let authorID = null, parentID = null;
+        if (!!reply?.author?.image) {
+            authorID = (/https:\/\/cdn2.scratch.mit.edu\/get_image\/user\/(\d+)_60x60.png/g).exec(reply.author.image)[1]
+        }
+        if (!!reply?.id) {
+            parentID = reply.id.split("comments-")[1];
+        }
+        ScratchAPIWrapper.user.postComment(username, content, csrf, parentID, authorID).then((postedID) => {
+            if (!!postedID) {
+                if (!!reply) {
+                    setComments((prev) => prev.map(c => {
+                        if (c.id === reply.id) {
+                            c.replies.push({ author: { username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: `comments-${postedID}`, parentID: reply.id, includesReplies: true, replies: [] });
+                        }
+                        return c;
+                    }));
+                    router.setParams({ comment_id: `comments-${postedID}` });
+                    setCommentContent("");
+                    setReply(undefined);
+                } else {
+                    setComments((prev) => [{ author: { username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: `comments-${postedID}`, replies: [], includesReplies: true }, ...prev]);
+                    router.setParams({ comment_id: `comments-${postedID}` });
+                }
+            } else {
+                alert("Comment failed to post. Please try again later.");
+            }
         }).catch(console.error);
     }
 
@@ -92,12 +119,7 @@ export default function UserComments() {
                     });
                 }} refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} />
             )}
-            <View style={{ padding: 15, backgroundColor: colors.backgroundTertiary, flexDirection: "row" }}>
-                <TextInput placeholder="Add a comment..." style={{ width: width - 66 }} multiline={true} onChangeText={setCommentContent} />
-                <TouchableOpacity onPress={postComment} style={{ width: 24, flexGrow: 1, marginLeft: 10 }}>
-                    <MaterialIcons name="send" size={24} color={colors.accent} />
-                </TouchableOpacity>
-            </View>
+            <CommentEditor onSubmit={postComment} reply={reply} onClearReply={() => setReply(undefined)} />
         </View>
     );
 }

@@ -47,7 +47,7 @@ const APIUser = {
     },
     getComments: async (username, page = 1) => {
         // Algorithm taken from https://github.com/webdev03/meowclient
-        const res = await fetch(`https://scratch.mit.edu/site-api/comments/user/${username}/?page=${page}&cacheBust=${Math.random()}`, {
+        const res = await fetch(`https://scratch.mit.edu/site-api/comments/user/${username}/?page=${page}&cacheBust=${Date.now()}`, {
             headers: {
                 "Cache-Control": "no-cache",
                 "User-Agent": consts.UserAgent,
@@ -62,6 +62,7 @@ const APIUser = {
             const element = items[elID];
             if (typeof element == "function") break;
             const commentID = element.querySelector(".comment").id;
+            const parentCommentID = commentID;
             const commentPoster = element
                 .querySelector(".comment")
                 .getElementsByTagName("a")[0]
@@ -111,6 +112,7 @@ const APIUser = {
 
                 replies.push({
                     id: commentID,
+                    parentID: parentCommentID,
                     content: decode(commentContent),
                     author: {
                         username: commentPoster,
@@ -254,7 +256,8 @@ const APIUser = {
             })
         });
         if (req.ok) {
-            return true;
+            const t = await req.text();
+            return /data-comment-id="(\d+)"/g.exec(t)[1];
         } else {
             return false;
         }
