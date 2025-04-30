@@ -8,6 +8,7 @@ import Card from "../../../components/Card";
 import timeago from "time-ago";
 import { flag } from "country-emoji";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function About() {
     const { username } = useLocalSearchParams();
@@ -19,7 +20,7 @@ export default function About() {
         }).catch(console.error)
     }, [username]);
     return (
-        <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <SafeAreaView edges={["bottom"]} style={{ flex: 1, backgroundColor: colors.background }}>
             <Stack.Screen
                 options={{
                     title: `About ${username}`
@@ -41,6 +42,6 @@ export default function About() {
                 </ScrollView>
             )
             }
-        </View >
+        </SafeAreaView>
     );
 }

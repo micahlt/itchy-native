@@ -94,7 +94,7 @@ export default function User() {
                 }}
             />
 
-            <ScrollView refreshControl={<RefreshControl refreshing={loading} onRefresh={load} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}>
+            <ScrollView refreshControl={<RefreshControl refreshing={loading} onRefresh={load} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} contentContainerStyle={{ paddingBottom: 20 }}>
                 {!!profile && (<>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0 }}>
                         <Image source={{ uri: profile.profile.images["90x90"] }} placeholder={require("../../../assets/avatar.png")} placeholderContentFit="cover" style={{ height: 75, width: 75, borderRadius: 75, marginRight: 25, backgroundColor: "white" }} />

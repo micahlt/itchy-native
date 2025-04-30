@@ -1,4 +1,4 @@
-import { View, FlatList, RefreshControl } from "react-native";
+import { FlatList, RefreshControl, KeyboardAvoidingView, Platform, View } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { router } from "expo-router";
@@ -9,6 +9,8 @@ import Comment from "../../../components/Comment";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import CommentEditor from "../../../components/CommentEditor";
 import uniqueArray from "../../../utils/uniqueArray";
+import CommentOptionSheet from "../../../components/CommentOptionSheet";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export default function UserComments() {
@@ -24,6 +26,7 @@ export default function UserComments() {
     const [csrf] = useMMKVString("csrfToken");
     const [reply, setReply] = useState(undefined);
     const [rerenderComments, setRerenderComments] = useState(true);
+    const [commentOptionsObj, setCommentOptionsObj] = useState(undefined);
 
     useEffect(() => {
         if (!username) return;
@@ -56,7 +59,7 @@ export default function UserComments() {
     }, [comments, comment_id])
 
     const renderComment = useCallback(({ item }) => {
-        return <Comment comment={item} selected={comment_id || undefined} onPress={setReply} />
+        return <Comment comment={item} selected={comment_id || undefined} onPress={setReply} onLongPress={openCommentOptions} />
     }, [rerenderComments, comments]);
 
     const endReached = useCallback(() => {
@@ -67,6 +70,10 @@ export default function UserComments() {
     const refresh = useCallback(() => {
         setPage(1);
     }, [comments]);
+
+    const openCommentOptions = useCallback((comment) => {
+        setCommentOptionsObj(comment);
+    }, []);
 
     const postComment = (content) => {
         let authorID = null, parentID = null;
@@ -105,26 +112,29 @@ export default function UserComments() {
 
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
-            <Stack.Screen
-                options={{
-                    title: `Comments for ${username}`
-                }}
-            />
-            {comments.length > 0 && (
-                <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={item => item.id} onEndReached={endReached} onEndReachedThreshold={1.2} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
-                    index,
-                }) => {
-                    scrollRef.current?.scrollToOffset({
-                        offset: index * 1000,
-                        animated: true,
-                    });
-                    const wait = new Promise((resolve) => setTimeout(resolve, 500));
-                    wait.then(() => {
-                        scrollRef.current?.scrollToIndex({ index, animated: true });
-                    });
-                }} refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} />
-            )}
-            <CommentEditor onSubmit={postComment} reply={reply} onClearReply={() => setReply(undefined)} />
+            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
+                <Stack.Screen
+                    options={{
+                        title: `Comments for ${username}`
+                    }}
+                />
+                {comments.length > 0 && (
+                    <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={item => item.id} onEndReached={endReached} onEndReachedThreshold={1.2} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
+                        index,
+                    }) => {
+                        scrollRef.current?.scrollToOffset({
+                            offset: index * 1000,
+                            animated: true,
+                        });
+                        const wait = new Promise((resolve) => setTimeout(resolve, 500));
+                        wait.then(() => {
+                            scrollRef.current?.scrollToIndex({ index, animated: true });
+                        });
+                    }} refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} />
+                )}
+                <CommentEditor onSubmit={postComment} reply={reply} onClearReply={() => setReply(undefined)} />
+                <CommentOptionSheet comment={commentOptionsObj} setComment={setCommentOptionsObj} />
+            </KeyboardAvoidingView>
         </View>
     );
 }

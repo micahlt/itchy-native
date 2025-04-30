@@ -1,4 +1,4 @@
-import { View, FlatList, RefreshControl } from "react-native";
+import { View, FlatList, RefreshControl, Platform, KeyboardAvoidingView } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -120,20 +120,21 @@ export default function ProjectComments() {
                     title: project ? `Comments on ${project.title}` : "Loading..."
                 }}
             />
-
-            <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={(item) => item.id} onEndReached={endReached} onEndReachedThreshold={1.2} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
-                index,
-            }) => {
-                scrollRef.current?.scrollToOffset({
-                    offset: index * 1000,
-                    animated: true,
-                });
-                const wait = new Promise((resolve) => setTimeout(resolve, 500));
-                wait.then(() => {
-                    scrollRef.current?.scrollToIndex({ index, animated: true });
-                });
-            }} refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} />
-            <CommentEditor onSubmit={postComment} reply={reply} onClearReply={() => setReply(undefined)} />
+            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
+                <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={(item) => item.id} onEndReached={endReached} onEndReachedThreshold={1.2} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
+                    index,
+                }) => {
+                    scrollRef.current?.scrollToOffset({
+                        offset: index * 1000,
+                        animated: true,
+                    });
+                    const wait = new Promise((resolve) => setTimeout(resolve, 500));
+                    wait.then(() => {
+                        scrollRef.current?.scrollToIndex({ index, animated: true });
+                    });
+                }} refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} />
+                <CommentEditor onSubmit={postComment} reply={reply} onClearReply={() => setReply(undefined)} />
+            </KeyboardAvoidingView>
         </View>
     );
 }
