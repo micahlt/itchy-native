@@ -49,7 +49,7 @@ export default function SettingsScreen() {
     }, []);
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
             <ScrollView>
                 <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, padding: 10, paddingBottom: 0 }}>Settings</Text>
                 <Text style={s.sectionHeader}>Account</Text>
@@ -112,8 +112,8 @@ export default function SettingsScreen() {
                 <View style={{ ...s.settingContainer, justifyContent: "flex-start" }}>
                     <Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Made </Text><TouchableOpacity onPress={() => linkWithFallback("https://github.com/micahlt")}><Text style={{ color: colors.accent, fontSize: 12 }}>open source</Text></TouchableOpacity><Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}> with ❤️</Text>
                 </View>
-                <View style={{height: 120}}></View>
+                <View style={{ height: 120 }}></View>
             </ScrollView>
-        </SafeAreaView >
+        </SafeAreaView>
     );
 }

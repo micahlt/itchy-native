@@ -91,7 +91,7 @@ export default function App() {
                         }} />
                     </Stack>
                 </View>
-            </ThemeProvider >
+            </ThemeProvider>
         );
     }
 }

@@ -54,7 +54,7 @@ export default function HomeScreen() {
     }
 
     return (
-        <SafeAreaView>
+        <SafeAreaView edges={['top']}>
             <ScrollView contentInsetAdjustmentBehavior="automatic" refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={refresh} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} style={{ flex: 1, borderBottomColor: "red", borderBottomWidth: 5 }} />}>
                 {!!username ? <Feed style={{ margin: 20, marginBottom: 0 }} username={username} rerender={refreshCount} /> : <SignInPrompt />}
                 {exploreData?.featured?.length > 0 && <>

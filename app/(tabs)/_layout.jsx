@@ -5,6 +5,7 @@ import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { useMMKVString } from 'react-native-mmkv';
 import { withLayoutContext } from "expo-router";
 import { createNativeBottomTabNavigator } from "@bottom-tabs/react-navigation";
+import { SystemBars } from "react-native-edge-to-edge"
 
 export const Tabs = withLayoutContext(
     createNativeBottomTabNavigator().Navigator
@@ -24,13 +25,13 @@ export default function TabLayout() {
 
     return (
         <>
-            <StatusBar style="auto" backgroundColor={colors.background} />
+            <SystemBars style="auto" backgroundColor={colors.background} />
 
             <Tabs tabBarActiveTintColor={colors.accent} activeIndicatorColor={colors.accentTransparent} ignoresTopSafeArea={true} tabBarStyle={{
                 backgroundColor: colors.backgroundSecondary
             }} screenOptions={{
                 headerShown: false
-            }}>
+            }} sidebarAdaptable={true} translucent={true}>
                 <Tabs.Screen
                     name="index"
                     options={{
@@ -59,7 +60,9 @@ export default function TabLayout() {
                     options={{
                         title: 'Settings',
                         tabBarIcon: () => require("../../assets/icons/settings.png"),
+
                     }}
+
                 />
             </Tabs>
         </>

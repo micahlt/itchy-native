@@ -13,6 +13,9 @@
         {
           "ios": {
             "useFrameworks": "static"
+          },
+          "android": {
+            "kotlinVersion": "1.9.24"
           }
         }
       ],
@@ -24,6 +27,15 @@
             "assets/icons/search_24_black.png",
             "assets/icons/search_24_white.png"
           ]
+        }
+      ],
+      [
+        "react-native-edge-to-edge",
+        {
+          "android": {
+            "parentTheme": "Material3",
+            "enforceNavigationBarContrast": false
+          }
         }
       ]
     ],
@@ -40,7 +52,8 @@
         "backgroundColor": "#0082FF",
         "foregroundImage": "./assets/icon-foreground.png",
         "monochromeImage": "./assets/icon-monochrome.png"
-      }
+      },
+      "edgeToEdgeEnabled": true
     },
     "ios": {
       "bundleIdentifier": "org.scratchclient4.itchy",
@@ -50,13 +63,5 @@
         "tinted": "./assets/ios-tinted.png"
       }
     }
-  },
-  "plugins": [
-    [
-      "expo-build-properties",
-      {
-        "android": {}
-      }
-    ]
-  ]
+  }
 }

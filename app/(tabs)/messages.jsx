@@ -41,7 +41,7 @@ export default function Messages() {
         return <Message message={m.item} />
     };
 
-    return <SafeAreaView style={{ flex: 1 }}>
+    return <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
         <FlatList
             data={messages}
             style={{ backgroundColor: colors.background }}
