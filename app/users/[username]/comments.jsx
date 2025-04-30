@@ -76,13 +76,13 @@ export default function UserComments() {
         if (!!reply?.id) {
             parentID = reply.id.split("comments-")[1];
         }
-        ScratchAPIWrapper.user.postComment(username, content, csrf, parentID, authorID).then((postedID) => {
+        ScratchAPIWrapper.user.postComment(user.username, content, csrf, parentID, authorID).then((postedID) => {
             setRerenderComments(!rerenderComments);
             if (!!postedID) {
                 if (!!reply) {
                     setComments((prev) => prev.map(c => {
                         if (c.id === reply.id) {
-                            c.replies.push({ author: { username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: `comments-${postedID}`, parentID: reply.id, includesReplies: true, replies: [] });
+                            c.replies.push({ author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: `comments-${postedID}`, parentID: reply.id, includesReplies: true, replies: [] });
                         }
                         return c;
                     }));
@@ -91,7 +91,7 @@ export default function UserComments() {
                     setReply(undefined);
                 } else {
                     setComments((prev) => {
-                        const c = [{ author: { username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: `comments-${postedID}`, replies: [], includesReplies: true }, ...prev];
+                        const c = [{ author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: `comments-${postedID}`, replies: [], includesReplies: true }, ...prev];
                         return uniqueArray(c);
                     });
                     router.setParams({ comment_id: `comments-${postedID}` });

@@ -37,7 +37,6 @@ const APIProject = {
                 "X-CSRFToken": csrf,
                 "X-Token": token,
                 "x-requested-with": "XMLHttpRequest",
-                Cookie: cookie,
                 Referer: `https://scratch.mit.edu/projects/${id}/`,
                 "User-Agent": consts.UserAgent,
                 Accept: "*/*",
@@ -76,6 +75,59 @@ const APIProject = {
         const res = await fetch(`https://api.scratch.mit.edu/users/${author}/projects/${projectID}/comments/${parentCommentID}/replies`);
         const data = await res.json();
         return data;
+    },
+    postComment: async (projectID, content = "", csrf, token, parentID = "", commentee = "") => {
+        const opts = {
+            headers: {
+                "X-CSRFToken": csrf,
+                "X-Token": token,
+                "x-requested-with": "XMLHttpRequest",
+                Referer: `https://scratch.mit.edu/`,
+                "User-Agent": consts.UserAgent,
+                Accept: "*/*",
+                "Content-Type": "application/json",
+                Origin: "https://scratch.mit.edu",
+                TE: "trailers",
+                "Cache-Control": "max-age=0, no-cache",
+                Pragma: "no-cache",
+                Connection: "keep-alive",
+                "Accept-Encoding": "gzip, deflate, br"
+            },
+            referrer: `https://scratch.mit.edu/`,
+            method: "POST",
+            body: JSON.stringify({
+                content: content,
+                parent_id: parentID,
+                commentee_id: commentee
+            })
+        };
+
+        const res = await fetch(`https://api.scratch.mit.edu/proxy/comments/project/${projectID}`, opts);
+        const data = await res.json();
+        return data.id;
+    },
+    deleteComment: async (projectID, commentID, csrf, token) => {
+        const opts = {
+            headers: {
+                "X-CSRFToken": csrf,
+                "X-Token": token,
+                "x-requested-with": "XMLHttpRequest",
+                Referer: `https://scratch.mit.edu/`,
+                "User-Agent": consts.UserAgent,
+                Accept: "*/*",
+                Origin: "https://scratch.mit.edu",
+                TE: "trailers",
+                "Cache-Control": "max-age=0, no-cache",
+                Pragma: "no-cache",
+                Connection: "keep-alive",
+                "Accept-Encoding": "gzip, deflate, br"
+            },
+            referrer: `https://scratch.mit.edu/`,
+            method: "DELETE"
+        };
+
+        const res = await fetch(`https://api.scratch.mit.edu/proxy/comments/project/${projectID}/comment/${commentID}`, opts);
+        return res.status === 200;
     }
 }
 
