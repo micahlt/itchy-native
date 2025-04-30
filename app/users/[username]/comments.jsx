@@ -8,6 +8,7 @@ import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import Comment from "../../../components/Comment";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import CommentEditor from "../../../components/CommentEditor";
+import uniqueArray from "../../../utils/uniqueArray";
 
 
 export default function UserComments() {
@@ -22,7 +23,7 @@ export default function UserComments() {
     const [user] = useMMKVObject("user");
     const [csrf] = useMMKVString("csrfToken");
     const [reply, setReply] = useState(undefined);
-    const [rerenderComments, setRerenderComments] = useState(0);
+    const [rerenderComments, setRerenderComments] = useState(true);
 
     useEffect(() => {
         if (!username) return;
@@ -35,7 +36,7 @@ export default function UserComments() {
             }
             setLoading(false);
         }).catch(console.error);
-    }, [username, page, comment_id]);
+    }, [username, page]);
 
     useEffect(() => {
         if (!comment_id || !!hasScrolledToSelected) return;
@@ -76,6 +77,7 @@ export default function UserComments() {
             parentID = reply.id.split("comments-")[1];
         }
         ScratchAPIWrapper.user.postComment(username, content, csrf, parentID, authorID).then((postedID) => {
+            setRerenderComments(!rerenderComments);
             if (!!postedID) {
                 if (!!reply) {
                     setComments((prev) => prev.map(c => {
@@ -88,7 +90,10 @@ export default function UserComments() {
                     setCommentContent("");
                     setReply(undefined);
                 } else {
-                    setComments((prev) => [{ author: { username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: `comments-${postedID}`, replies: [], includesReplies: true }, ...prev]);
+                    setComments((prev) => {
+                        const c = [{ author: { username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: `comments-${postedID}`, replies: [], includesReplies: true }, ...prev];
+                        return uniqueArray(c);
+                    });
                     router.setParams({ comment_id: `comments-${postedID}` });
                 }
             } else {
