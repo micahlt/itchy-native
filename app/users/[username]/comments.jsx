@@ -82,7 +82,7 @@ export default function UserComments() {
         if (!!reply?.id) {
             parentID = reply.id.split("comments-")[1];
         }
-        ScratchAPIWrapper.user.postComment(user.username, content, csrf, parentID, authorID).then((postedID) => {
+        ScratchAPIWrapper.user.postComment(username, content, csrf, parentID, authorID).then((postedID) => {
             setRerenderComments(!rerenderComments);
             if (!!postedID) {
                 if (!!reply) {

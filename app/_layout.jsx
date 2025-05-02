@@ -4,20 +4,41 @@ import { ThemeProvider } from '../utils/theme';
 import { useColorScheme, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { darkColors, lightColors } from '../utils/theme/colors';
-import { useMMKVObject } from 'react-native-mmkv';
+import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
+import APIAuth from '../utils/api-wrapper/auth';
+import storage from '../utils/storage';
 
 export default function App() {
     const theme = useColorScheme();
     const [colors, setColors] = useState(null);
     const [twConfig, setTWConfig] = useMMKVObject("twConfig");
+    const [user, setUser] = useMMKVObject("user");
+    const [cookieSet, setCookieSet] = useMMKVString("cookieSet");
     useEffect(() => {
         setColors(theme === "dark" ? darkColors : lightColors);
         if (!twConfig) {
             setTWConfig({});
         }
     }, [theme]);
+    useEffect(() => {
+        if (!!user) {
+            APIAuth.getSession(cookieSet).then((d) => {
+                console.log("Session data: ", d);
+                if (!!d?.sessionToken && !!d?.csrfToken && !!d?.sessionJSON && !!d?.sessionJSON?.user) {
+                    console.log("Setting session token and user data");
+                    storage.set("sessionID", d.sessionToken)
+                    storage.set("csrfToken", d.csrfToken);
+                    storage.set("cookieSet", d.cookieSet);
+                    storage.set("token", d.sessionJSON.user.token);
+                    setUser(d.sessionJSON.user);
+                }
+            }).catch((e) => {
+                console.error("Error getting session data: ", e);
+            });
+        }
+    }, [])
     Image.clearDiskCache();
 
     if (!!colors) {

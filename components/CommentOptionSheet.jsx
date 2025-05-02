@@ -34,9 +34,8 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
 
     const canDelete = useMemo(() => {
         if (!user || !comment) return false;
-        if (user.username === comment.author.username && context.type != "studio") return true;
-        if (context.type === "user" && user.username === context.owner) return true;
-        if (context.type === "project" && user.username === context.owner) return true;
+        if (user.username === context.owner) return true;
+        return false;
     }, [user, comment, csrf]);
 
     const openOnScratch = useCallback(() => {
@@ -54,9 +53,10 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
     }, [comment]);
 
     const deleteComment = useCallback(() => {
+        console.log(comment);
         switch (context.type) {
             case "user":
-                ScratchAPIWrapper.user.deleteComment(user.name, comment.id.split("comments-")[1], csrf, user.token).then((res) => {
+                ScratchAPIWrapper.user.deleteComment(context.owner, comment.id.split("comments-")[1], csrf, user.token).then((res) => {
                     onDeleteCommentID(comment);
                     setComment(undefined);
                 }).catch(console.error);

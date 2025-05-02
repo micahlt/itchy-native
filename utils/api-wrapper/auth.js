@@ -94,6 +94,39 @@ const APIAuth = {
         if (!logoutFetch.ok) {
             throw new Error(`Error in logging out. ${logoutFetch.status}`);
         }
+    },
+    getSession: async (existingCookies = "") => {
+        const sessionFetch = await fetch("https://scratch.mit.edu/session", {
+            method: "GET",
+            credentials: "omit",
+            headers: {
+                Cookie: existingCookies,
+                "User-Agent": consts.UserAgent,
+                Referer: "https://scratch.mit.edu/",
+                "Cache-Control": "max-age=0, no-cache",
+                "X-Requested-With": "XMLHttpRequest",
+                Pragma: "no-cache",
+                Accept: "*/*",
+                "Accept-Encoding": "gzip, deflate, br"
+            }
+        });
+        const sessionJSON = await sessionFetch.json();
+        const setCookie = sessionFetch.headers.get("set-cookie");
+        if (!setCookie) throw Error("Something went wrong");
+        const csrfToken = /scratchcsrftoken=(.*?);/gm.exec(setCookie)[1];
+        const token = /"(.*)"/gm.exec(setCookie)[1];
+        const cookieSet =
+            "scratchcsrftoken=" +
+            csrfToken +
+            ";scratchlanguage=en;scratchsessionsid=" +
+            token +
+            ";";
+        return {
+            csrfToken,
+            sessionToken: token,
+            cookieSet,
+            sessionJSON
+        };
     }
 }
 
