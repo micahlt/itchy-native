@@ -129,29 +129,27 @@ export default function UserComments() {
 
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
-            <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
-                <Stack.Screen
-                    options={{
-                        title: `Comments for ${username}`
-                    }}
-                />
-                {comments.length > 0 && (
-                    <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={item => item.id} onEndReached={endReached} onEndReachedThreshold={1.2} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
-                        index,
-                    }) => {
-                        scrollRef.current?.scrollToOffset({
-                            offset: index * 1000,
-                            animated: true,
-                        });
-                        const wait = new Promise((resolve) => setTimeout(resolve, 500));
-                        wait.then(() => {
-                            scrollRef.current?.scrollToIndex({ index, animated: true });
-                        });
-                    }} refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} />
-                )}
-                <CommentEditor onSubmit={postComment} reply={reply} onClearReply={() => setReply(undefined)} />
-                <CommentOptionSheet comment={commentOptionsObj} setComment={setCommentOptionsObj} context={{ type: "user", owner: username }} onDeleteCommentID={afterDeleteComment} />
-            </KeyboardAvoidingView>
+            <Stack.Screen
+                options={{
+                    title: `Comments for ${username}`
+                }}
+            />
+            {comments.length > 0 && (
+                <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={item => item.id} onEndReached={endReached} onEndReachedThreshold={1.2} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
+                    index,
+                }) => {
+                    scrollRef.current?.scrollToOffset({
+                        offset: index * 1000,
+                        animated: true,
+                    });
+                    const wait = new Promise((resolve) => setTimeout(resolve, 500));
+                    wait.then(() => {
+                        scrollRef.current?.scrollToIndex({ index, animated: true });
+                    });
+                }} refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} />
+            )}
+            <CommentEditor onSubmit={postComment} reply={reply} onClearReply={() => setReply(undefined)} />
+            <CommentOptionSheet comment={commentOptionsObj} setComment={setCommentOptionsObj} context={{ type: "user", owner: username }} onDeleteCommentID={afterDeleteComment} />
         </View>
     );
 }

@@ -1,9 +1,8 @@
 import { View, TextInput, TouchableOpacity, useWindowDimensions, Text, Keyboard, Animated, Platform, KeyboardAvoidingView } from "react-native"
 import { MaterialIcons } from "@expo/vector-icons"
-import * as NavigationBar from 'expo-navigation-bar';
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useTheme } from "../utils/theme";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function CommentEditor({ onSubmit, reply, onClearReply }) {
     const [content, setContent] = useState();
@@ -48,7 +47,7 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
         }
     }, [reply]);
 
-    return <KeyboardAvoidingView behavior="height"><Animated.View style={{ position: 'absolute', bottom: Platform.OS === 'android' ? bottomAnim : 0 }}>
+    return <Animated.View style={{ position: 'absolute', bottom: bottomAnim }}>
         {!!reply && <View style={{ paddingHorizontal: 15, paddingTop: 15, marginBottom: -3, zIndex: 1, backgroundColor: colors.backgroundTertiary, flexDirection: "row", justifyContent: "flex-start", gap: 8, alignItems: "center" }}>
             <Text style={{ color: colors.text, fontSize: 12, lineHeight: 12 }}>Replying to <Text style={{ fontWeight: "bold" }}>{reply.author.username}</Text></Text>
             <TouchableOpacity onPress={onClearReply} style={{ marginTop: -2 }}>
@@ -56,7 +55,7 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
             </TouchableOpacity>
         </View>}
         <View style={{
-            paddingHorizontal: 15, backgroundColor: colors.backgroundTertiary, flexDirection: "row", paddingBottom: insets.bottom + 60, marginBottom: insets.bottom, alignItems: "center"
+            paddingHorizontal: 15, backgroundColor: colors.backgroundTertiary, flexDirection: "row", paddingBottom: Platform === "ios" ? insets.bottom + 60 : insets.bottom + 20, marginBottom: insets.bottom, alignItems: "center"
         }}>
             <TextInput placeholder="Add a comment..." style={{ width: width - 66, color: colors.text, marginVertical: 16 }} multiline={true} value={content} onChangeText={setContent} ref={inputRef} />
             <TouchableOpacity onPress={() => {
@@ -67,5 +66,4 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
             </TouchableOpacity>
         </View>
     </Animated.View>
-    </KeyboardAvoidingView>
 };
