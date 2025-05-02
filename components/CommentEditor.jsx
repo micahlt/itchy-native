@@ -14,31 +14,29 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
     const insets = useSafeAreaInsets();
 
     useEffect(() => {
-        if (Platform.OS === 'android') {
-            const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
-                const height = e.endCoordinates.height;
-                setKeyboardHeight(height);
-                Animated.timing(bottomAnim, {
-                    toValue: height,
-                    duration: 250,
-                    useNativeDriver: false,
-                }).start();
-            });
+        const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
+            const height = e.endCoordinates.height;
+            setKeyboardHeight(height);
+            Animated.timing(bottomAnim, {
+                toValue: height - insets.bottom / 2,
+                duration: 125,
+                useNativeDriver: false,
+            }).start();
+        });
 
-            const hideSub = Keyboard.addListener('keyboardDidHide', () => {
-                setKeyboardHeight(0);
-                Animated.timing(bottomAnim, {
-                    toValue: 0,
-                    duration: 250,
-                    useNativeDriver: false,
-                }).start();
-            });
+        const hideSub = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardHeight(0);
+            Animated.timing(bottomAnim, {
+                toValue: 0,
+                duration: 125,
+                useNativeDriver: false,
+            }).start();
+        });
 
-            return () => {
-                showSub.remove();
-                hideSub.remove();
-            };
-        }
+        return () => {
+            showSub.remove();
+            hideSub.remove();
+        };
     }, []);
 
     useEffect(() => {
@@ -55,7 +53,7 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
             </TouchableOpacity>
         </View>}
         <View style={{
-            paddingHorizontal: 15, backgroundColor: colors.backgroundTertiary, flexDirection: "row", paddingBottom: Platform === "ios" ? insets.bottom + 60 : insets.bottom + 20, marginBottom: insets.bottom, alignItems: "center"
+            paddingHorizontal: 15, backgroundColor: colors.backgroundTertiary, flexDirection: "row", paddingBottom: Platform === "ios" ? insets.bottom + 40 : insets.bottom + 20, marginBottom: insets.bottom, alignItems: "center"
         }}>
             <TextInput placeholder="Add a comment..." style={{ width: width - 66, color: colors.text, marginVertical: 16 }} multiline={true} value={content} onChangeText={setContent} ref={inputRef} />
             <TouchableOpacity onPress={() => {

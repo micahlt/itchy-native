@@ -148,7 +148,7 @@ export default function HomeScreen() {
                         isAtTop.value = offsetY <= 0;
                     }}>
                     <Animated.View style={[headerStyle, { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingTop: insets.top + 5, paddingBottom: 15, paddingHorizontal: 20, gap: 10 }]}>
-                        <Pressable onPress={() => router.push(`/users/${username}`)}><Image source={`https://uploads.scratch.mit.edu/get_image/user/${user.id}_60x60.png`} style={{ height: 35, width: 35, borderRadius: 35 }} contentFit="stretch" /></Pressable>
+                        {username && user?.id ? <Pressable onPress={() => router.push(`/users/${username}`)}><Image source={`https://uploads.scratch.mit.edu/get_image/user/${user.id}_60x60.png`} style={{ height: 35, width: 35, borderRadius: 35 }} contentFit="stretch" /></Pressable> : <Pressable onPress={() => router.push(`/login`)}><Image source={require("../../assets/avatar2.png")} style={{ height: 35, width: 35, borderRadius: 35 }} contentFit="stretch" /></Pressable>}
                         <Animated.Image source={require("../../assets/logo-nobg.png")} style={[logoStyle, { height: 50, width: 50 }]} />
                         <Pressable onPress={() => router.push('/settings')}><MaterialIcons style={{ marginRight: 7 }} name="online-prediction" size={26} contentFit="cover" color={colors.textSecondary} /></Pressable>
                     </Animated.View>
