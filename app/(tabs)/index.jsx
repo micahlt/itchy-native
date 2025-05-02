@@ -1,19 +1,22 @@
 const REFRESH_TRIGGER_HEIGHT = 75;
 const MAX_PULL_HEIGHT = 100;
 
-import { Platform, StyleSheet, Text, Vibration, View } from 'react-native';
+import { Platform, StyleSheet, Text, useAnimatedValue, Vibration, View } from 'react-native';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { Gesture, GestureDetector, ScrollView } from 'react-native-gesture-handler';
 import { useTheme } from '../../utils/theme';
 import { useEffect, useRef, useState } from 'react';
 import ProjectCard from '../../components/ProjectCard';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useMMKVString } from 'react-native-mmkv';
+import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import Feed from '../../components/Feed';
 import SignInPrompt from '../../components/SignInPrompt';
+import Pressable from '../../components/Pressable';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import StudioCard from '../../components/StudioCard';
 import Animated, { cancelAnimation, Easing, runOnJS, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import { Image } from 'expo-image';
+import { router } from 'expo-router';
 
 const s = new StyleSheet.create({
     scrollHeader: {
@@ -33,6 +36,7 @@ export default function HomeScreen() {
     const [friendsProjects, setFriendsProjects] = useState([]);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [refreshCount, setRefreshCount] = useState(0);
+    const [user] = useMMKVObject("user");
     const [username] = useMMKVString("username");
     const [token] = useMMKVString("token");
     const insets = useSafeAreaInsets();
@@ -42,6 +46,7 @@ export default function HomeScreen() {
     const rotate = useSharedValue(0);
     const isAtTop = useSharedValue(true);
     const didVibrate = useSharedValue(false);
+    const opacity = useAnimatedValue(1);
 
     useEffect(() => {
         refresh()
@@ -114,7 +119,6 @@ export default function HomeScreen() {
         .enabled(!isRefreshing)
         .onUpdate((e) => {
             if (!isRefreshing && isAtTop.value && scrollOffset.value <= 0 && e.translationY > 0) {
-                panPosition.value = e.translationY * 0.18 + 0.5 * (1 - Math.min(e.translationY, MAX_PULL_HEIGHT) / MAX_PULL_HEIGHT);
                 if (panPosition.value > REFRESH_TRIGGER_HEIGHT) {
                     if (!didVibrate.value) {
                         runOnJS(vib)();
@@ -134,7 +138,7 @@ export default function HomeScreen() {
     return (
         <View style={{ backgroundColor: colors.accentTransparent }}>
             <GestureDetector gesture={panGesture}>
-                <ScrollView ref={scrollRef} scrollEventThrottle={16} bounces={true}
+                <ScrollView ref={scrollRef} scrollEventThrottle={2} bounces={true}
                     onScrollBeginDrag={(e) => {
                         const offsetY = e.nativeEvent.contentOffset.y;
                         isAtTop.value = offsetY <= 0;
@@ -143,8 +147,10 @@ export default function HomeScreen() {
                         const offsetY = e.nativeEvent.contentOffset.y;
                         isAtTop.value = offsetY <= 0;
                     }}>
-                    <Animated.View style={[headerStyle, { flexDirection: "row", alignItems: "center", justifyContent: "center", paddingTop: insets.top + 5, paddingBottom: 15, gap: 10 }]}>
+                    <Animated.View style={[headerStyle, { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingTop: insets.top + 5, paddingBottom: 15, paddingHorizontal: 20, gap: 10 }]}>
+                        <Pressable onPress={() => router.push(`/users/${username}`)}><Image source={`https://uploads.scratch.mit.edu/get_image/user/${user.id}_60x60.png`} style={{ height: 35, width: 35, borderRadius: 35, opacity: opacity.value }} contentFit="stretch" /></Pressable>
                         <Animated.Image source={require("../../assets/logo-nobg.png")} style={[logoStyle, { height: 50, width: 50 }]} />
+                        <Pressable onPress={() => router.push('/settings')}><MaterialIcons style={{ backgroundColor: opacity.value, marginRight: 5 }} name="settings" size={26} contentFit="cover" color={colors.textSecondary} /></Pressable>
                     </Animated.View>
                     <Animated.View style={[contentStyle, { backgroundColor: colors.background, paddingBottom: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingTop: 10 }]}>
                         {!!username ? <Feed style={{ margin: 20, marginBottom: 0, marginTop: 15 }} username={username} rerender={refreshCount} /> : <SignInPrompt />}
