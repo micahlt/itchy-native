@@ -119,6 +119,7 @@ export default function HomeScreen() {
         .enabled(!isRefreshing)
         .onUpdate((e) => {
             if (!isRefreshing && isAtTop.value && scrollOffset.value <= 0 && e.translationY > 0) {
+                panPosition.value = e.translationY * 0.18 + 0.5 * (1 - Math.min(e.translationY, MAX_PULL_HEIGHT) / MAX_PULL_HEIGHT);
                 if (panPosition.value > REFRESH_TRIGGER_HEIGHT) {
                     if (!didVibrate.value) {
                         runOnJS(vib)();
