@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ScratchAPIWrapper from "../../utils/api-wrapper";
 import Message from "../../components/Message";
 import { SafeAreaView } from "react-native-safe-area-context";
+import SignInPrompt from "../../components/SignInPrompt";
 
 export default function Messages() {
     const { colors, isDark } = useTheme();
@@ -40,6 +41,13 @@ export default function Messages() {
     const renderMessage = (m) => {
         return <Message message={m.item} />
     };
+
+    if (!username || !token) {
+        return <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.background }}>
+            <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, padding: 10, marginBottom: 10 }}>Messages</Text>
+            <SignInPrompt />
+        </SafeAreaView>
+    }
 
     return <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
         <FlatList
