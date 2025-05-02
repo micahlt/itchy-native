@@ -1,7 +1,7 @@
 const REFRESH_TRIGGER_HEIGHT = 75;
 const MAX_PULL_HEIGHT = 100;
 
-import { StyleSheet, Text, Vibration, View } from 'react-native';
+import { Platform, StyleSheet, Text, Vibration, View } from 'react-native';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { Gesture, GestureDetector, ScrollView } from 'react-native-gesture-handler';
 import { useTheme } from '../../utils/theme';
@@ -56,13 +56,23 @@ export default function HomeScreen() {
     });
 
     const logoStyle = useAnimatedStyle(() => {
-        return {
-            transform: [
-                { translateY: panPosition.value / 2 },
-                { scale: 1 + Math.min(panPosition.value, MAX_PULL_HEIGHT) / 100 },
-                { rotate: `${rotate.value}deg` }
-            ],
-        };
+        if (Platform.OS === "ios") {
+            return {
+                transform: [
+                    { translateY: panPosition.value * 2 },
+                    { scale: 1 + Math.min(panPosition.value, MAX_PULL_HEIGHT) / 100 },
+                    { rotate: `${rotate.value}deg` }
+                ],
+            };
+        } else {
+            return {
+                transform: [
+                    { translateY: panPosition.value / 2 },
+                    { scale: 1 + Math.min(panPosition.value, MAX_PULL_HEIGHT) / 100 },
+                    { rotate: `${rotate.value}deg` }
+                ],
+            };
+        }
     });
 
     const contentStyle = useAnimatedStyle(() => {
@@ -124,7 +134,7 @@ export default function HomeScreen() {
     return (
         <View style={{ backgroundColor: colors.backgroundSecondary }}>
             <GestureDetector gesture={panGesture}>
-                <ScrollView contentInsetAdjustmentBehavior="automatic" ref={scrollRef} scrollEventThrottle={16}
+                <ScrollView ref={scrollRef} scrollEventThrottle={16} bounces={true}
                     onScrollBeginDrag={(e) => {
                         const offsetY = e.nativeEvent.contentOffset.y;
                         isAtTop.value = offsetY <= 0;
