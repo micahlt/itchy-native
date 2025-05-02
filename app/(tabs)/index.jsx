@@ -152,7 +152,7 @@ export default function HomeScreen() {
                         <Animated.Image source={require("../../assets/logo-nobg.png")} style={[logoStyle, { height: 50, width: 50 }]} />
                         <Pressable onPress={() => router.push('/settings')}><MaterialIcons style={{ marginRight: 7 }} name="online-prediction" size={26} contentFit="cover" color={colors.textSecondary} /></Pressable>
                     </Animated.View>
-                    <Animated.View style={[contentStyle, { backgroundColor: colors.background, paddingBottom: 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingTop: 10 }]}>
+                    <Animated.View style={[contentStyle, { backgroundColor: colors.background, paddingBottom: 100, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingTop: 10 }]}>
                         {!!username ? <Feed style={{ margin: 20, marginBottom: 0, marginTop: 15 }} username={username} rerender={refreshCount} /> : <SignInPrompt />}
                         {exploreData?.featured?.length > 0 && <>
                             <View style={{ ...s.scrollHeader, marginTop: 10 }}>
