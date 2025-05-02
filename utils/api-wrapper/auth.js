@@ -96,7 +96,7 @@ const APIAuth = {
         }
     },
     getSession: async (existingCookies = "") => {
-        const sessionFetch = await fetch("https://scratch.mit.edu/session", {
+        const sessionFetch = await fetch("https://scratch.mit.edu/session?nocache=1", {
             method: "GET",
             credentials: "omit",
             headers: {
@@ -112,7 +112,9 @@ const APIAuth = {
         });
         const sessionJSON = await sessionFetch.json();
         const setCookie = sessionFetch.headers.get("set-cookie");
-        if (!setCookie) throw Error("Something went wrong");
+        if (!setCookie) {
+            return false;
+        }
         const csrfToken = /scratchcsrftoken=(.*?);/gm.exec(setCookie)[1];
         const token = /"(.*)"/gm.exec(setCookie)[1];
         const cookieSet =

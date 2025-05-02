@@ -284,8 +284,8 @@ const APIUser = {
         if (req.ok) {
             return true;
         } else {
-            console.error(req.status)
-            console.log(await req.text())
+            console.warn(req.status)
+            console.warn(await req.text())
             return false;
         }
     }

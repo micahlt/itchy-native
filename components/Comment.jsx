@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native"
+import { View, Text } from "react-native"
 import Chip from "./Chip"
 import { decode } from "html-entities"
 import { useTheme } from "../utils/theme"
@@ -23,7 +23,6 @@ export default function Comment({ comment, isReply = false, showReplies = true, 
     const isSelected = useMemo(() => selected == comment.id, [selected, comment]);
     const partOfSelected = useMemo(() => {
         if (selected === 0) return false;
-        console.log(replies)
         if (!replies || replies?.length < 1) return false;
         if (replies.findIndex((r) => r.id == selected) !== -1) {
             return true;

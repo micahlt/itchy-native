@@ -3,7 +3,6 @@ import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useMemo, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import * as Sharing from 'expo-sharing';
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import WebView from "react-native-webview";
 import Chip from "../../../components/Chip";

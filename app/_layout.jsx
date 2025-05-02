@@ -25,9 +25,7 @@ export default function App() {
     useEffect(() => {
         if (!!user) {
             APIAuth.getSession(cookieSet).then((d) => {
-                console.log("Session data: ", d);
                 if (!!d?.sessionToken && !!d?.csrfToken && !!d?.sessionJSON && !!d?.sessionJSON?.user) {
-                    console.log("Setting session token and user data");
                     storage.set("sessionID", d.sessionToken)
                     storage.set("csrfToken", d.csrfToken);
                     storage.set("cookieSet", d.cookieSet);

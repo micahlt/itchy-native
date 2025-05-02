@@ -53,7 +53,6 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
     }, [comment]);
 
     const deleteComment = useCallback(() => {
-        console.log(comment);
         switch (context.type) {
             case "user":
                 ScratchAPIWrapper.user.deleteComment(context.owner, comment.id.split("comments-")[1], csrf, user.token).then((res) => {
@@ -69,7 +68,6 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
                 break;
             case "studio":
                 ScratchAPIWrapper.studio.deleteComment(context.studioID, comment.id, csrf, user.token).then((r) => {
-                    console.log(r);
                     onDeleteCommentID(comment);
                     setComment(undefined);
                 }).catch(console.error);
