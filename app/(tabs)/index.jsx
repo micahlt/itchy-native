@@ -132,7 +132,7 @@ export default function HomeScreen() {
         });
 
     return (
-        <View style={{ backgroundColor: colors.backgroundSecondary }}>
+        <View style={{ backgroundColor: colors.accentTransparent }}>
             <GestureDetector gesture={panGesture}>
                 <ScrollView ref={scrollRef} scrollEventThrottle={16} bounces={true}
                     onScrollBeginDrag={(e) => {
