@@ -100,7 +100,7 @@ android {
         applicationId 'org.scratchclient4.itchy'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 43
+        versionCode 44
         versionName "2.4.1"
         externalNativeBuild {
             cmake {

@@ -11,7 +11,6 @@ import CommentEditor from "../../../components/CommentEditor";
 import uniqueArray from "../../../utils/uniqueArray";
 import CommentOptionSheet from "../../../components/CommentOptionSheet";
 
-
 export default function UserComments() {
     const { username, comment_id } = useLocalSearchParams();
     const { colors, isDark } = useTheme();

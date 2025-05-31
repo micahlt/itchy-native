@@ -12,15 +12,16 @@ We're not currently publishing public APK or IPA files, but you're welcome to bu
 
 1. Clone the repository and run `npm install`.
 2. Set up your environment according to the [Expo Android docs](https://docs.expo.dev/get-started/set-up-your-environment/?platform=android&device=simulated&mode=development-build&buildEnv=local).
-3. In the `android` directory, create a new file called `key.properties`.  Inside of it, place information about your signing keystore in this format:
+3. If are on Windows, due to path limits you should map the repository to a drive letter and work from there: `subst I: "C:\Users\myuser\repos\itchy-native"`
+4. In the `android` directory, create a new file called `key.properties`.  Inside of it, place information about your signing keystore in this format:
 ```
 storePassword=[keystore password]
 keyPassword=[key password]
 keyAlias=[key alias]
 storeFile=[path to your keystore]
 ```
-4. Prebuild the project with `npx expo prebuild`.
-5. Run `npm run android` to run the on an emulator or device.
+5. Prebuild the project with `npx expo prebuild`.
+6. Run `npm run android` to run the on an emulator or device.
 
 ### iOS
 

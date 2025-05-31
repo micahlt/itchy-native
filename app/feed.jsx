@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import { useTheme } from "../utils/theme";
 import FeedItem from "../components/FeedItem";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Feed({ }) {
     const { colors } = useTheme();
     const [feed, setFeed] = useState([]);
     const [token] = useMMKVString("token");
     const [username] = useMMKVString("username");
+    const insets = useSafeAreaInsets();
 
     useEffect(() => {
         if (!token || !username) return;
@@ -18,7 +20,7 @@ export default function Feed({ }) {
         })
     }, [username, token]);
 
-    return <ScrollView contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: 15 }}>
+    return <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: insets.bottom + 35 }}>
         {feed.map((item) => <FeedItem key={item.id} item={item} textColor={colors.text} />)}
     </ScrollView>
 }

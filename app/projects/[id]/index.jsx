@@ -15,6 +15,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import timeago from "time-ago";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
 import RemixNotice from "../../../components/RemixNotice";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Project() {
     const { id } = useLocalSearchParams();
@@ -26,6 +27,7 @@ export default function Project() {
     const [token] = useMMKVString("token");
     const router = useRouter();
     const twLink = useTurbowarpLink(id);
+    const insets = useSafeAreaInsets();
 
     const dateInfo = useMemo(() => {
         return {
@@ -82,7 +84,7 @@ export default function Project() {
                     headerRight: () => <MaterialIcons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='question-answer' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
                 }}
             />
-            <ScrollView>
+            <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 10 }}>
                 <WebView source={{ uri: twLink }} containerStyle={{ flex: 0, marginTop: 5, width: width - 20, aspectRatio: 480 / 425, margin: "auto", borderRadius: 10 }} androidLayerType="hardware" renderToHardwareTextureAndroid={true} bounces={false} scrollEnabled={false} overScrollMode="never" allowsFullscreenVideo={true} style={{ backgroundColor: "transparent", }} injectedJavaScript={twJSInject} />
                 {metadata && <ScrollView horizontal contentContainerStyle={{ padding: 10, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
                     <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/users/${metadata?.author?.username}`)} textStyle={{ fontWeight: 'bold' }} />
