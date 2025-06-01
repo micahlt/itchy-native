@@ -1,4 +1,4 @@
-import { View, FlatList, TextInput, useWindowDimensions } from "react-native";
+import { View, FlatList, TextInput, useWindowDimensions, RefreshControl } from "react-native";
 import { useTheme } from "../../utils/theme";
 import { SafeAreaView } from "react-native-safe-area-context";
 import APIExplore from "../../utils/api-wrapper/explore";
@@ -7,13 +7,15 @@ import { useEffect, useRef, useState } from "react";
 import Chip from "../../components/Chip";
 import StudioCard from "../../components/StudioCard";
 import { useFocusEffect } from "expo-router";
+import searchForUser from "../../utils/searchForUser";
+import UserCard from "../../components/UserCard";
 
 export default function Search() {
     const { colors, isDark } = useTheme();
     const [isLoading, setIsLoading] = useState(false);
     const [type, setType] = useState("projects");
     const [query, setQuery] = useState("");
-    const [projects, setProjects] = useState([]);
+    const [results, setResults] = useState([]);
     const searchBarRef = useRef(null);
     const { width } = useWindowDimensions();
 
@@ -25,17 +27,23 @@ export default function Search() {
 
     const search = () => {
         setIsLoading(true);
-        setProjects([]);
+        setResults([]);
         switch (type) {
             case "projects":
                 APIExplore.searchForProjects(query).then((data) => {
-                    setProjects(data);
+                    setResults(data);
                     setIsLoading(false);
                 });
                 break;
             case "studios":
                 APIExplore.searchForStudios(query).then((data) => {
-                    setProjects(data);
+                    setResults(data);
+                    setIsLoading(false);
+                });
+                break;
+            case "users":
+                searchForUser(query).then((data) => {
+                    setResults(data);
                     setIsLoading(false);
                 });
                 break;
@@ -50,13 +58,12 @@ export default function Search() {
         <View style={{ flexDirection: "row", gap: 5, marginTop: 10, marginBottom: 5 }}>
             <Chip.Icon icon="smart-display" text="Projects" color={colors.accent} mode={type == "projects" && "filled"} onPress={() => setType("projects")} />
             <Chip.Icon icon="collections" text="Studios" color={colors.accent} mode={type == "studios" && "filled"} onPress={() => setType("studios")} />
-            {//<Chip.Icon icon="person" text="Users" color={colors.accent} mode={type == "users" && "filled"} onPress={() => setType("users")} />
-            }
+            <Chip.Icon icon="person" text="Users" color={colors.accent} mode={type == "users" && "filled"} onPress={() => setType("users")} />
         </View>
-        <FlatList data={projects} renderItem={({ item }) => renderItem(item, width, type)} stickyHeaderIndices={[0]} keyExtractor={(item) => item.id} numColumns={2} columnWrapperStyle={{ gap: 10 }} contentContainerStyle={{ gap: 10, paddingBottom: 100 }} refreshing={isLoading} onRefresh={search} ListHeaderComponent={
+        <FlatList data={results} renderItem={({ item }) => renderItem(item, width, type)} stickyHeaderIndices={[0]} keyExtractor={(item) => item.id} numColumns={2} columnWrapperStyle={{ gap: 10 }} contentContainerStyle={{ gap: 10, paddingBottom: 100 }} refreshing={isLoading} refreshControl={<RefreshControl refreshing={isLoading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} onRefresh={search} ListHeaderComponent={
             <>
                 <View style={{ backgroundColor: colors.background, zIndex: 0, height: 40 }}></View>
-                <View style={{ backgroundColor: colors.backgroundSecondary, paddingVertical: 15, paddingLeft: 15, paddingRight: 9, marginBottom: 5, borderRadius: 10, marginTop: -30, zIndex: 1 }}>
+                <View style={{ backgroundColor: colors.backgroundSecondary, paddingVertical: 15, paddingLeft: 15, paddingRight: 9, marginBottom: 5, borderRadius: 10, marginTop: -30, zIndex: 1, elevation: 3 }}>
                     <TextInput ref={searchBarRef} placeholder="Search" inputMode="search" enterKeyHint="search" style={{
                         backgroundColor: 'transparent', color: colors.text,
                         fontSize: 18, width: '100%'
@@ -73,5 +80,8 @@ function renderItem(item, width, type) {
     }
     if (type === "studios") {
         return <StudioCard studio={item} width={(width - 30) / 2} />;
+    }
+    if (type === "users") {
+        return <UserCard user={item} width={(width - 30) / 2} />;
     }
 }
