@@ -21,7 +21,7 @@ export default function Feed({ username, style, rerender }) {
     }, [rerender]);
 
     return <View style={{ backgroundColor: colors.accent, padding: 10, borderRadius: 10, ...style }}>
-        <View style={{ flexDirection: "row", alignItems: "center", paddingLeft: 4, gap: 10 }}>
+        <View style={{ flexDirection: "row", alignItems: "center", paddingLeft: 4, gap: 10, marginBottom: 5 }}>
             <MaterialIcons name='timeline' size={24} color="white" />
             <Text style={{ color: "white", fontSize: 20, fontWeight: "bold", flexGrow: 1 }}>Featured</Text>
             <View style={{ flexDirection: "row", alignItems: "center", borderColor: "white", borderWidth: 1, borderRadius: 16, overflow: "hidden", height: 30 }}>
