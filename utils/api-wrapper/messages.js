@@ -1,3 +1,5 @@
+import fetch from "../fetch-provider";
+
 const APIMessages = {
     /**
      * @param {String} token 

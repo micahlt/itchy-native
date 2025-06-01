@@ -1,4 +1,5 @@
 import consts from "./consts";
+import fetch from "../fetch-provider";
 
 const APIProject = {
     getProject: async (id) => {
@@ -10,7 +11,7 @@ const APIProject = {
         const opts = {
             headers: {
                 "User-Agent": consts.UserAgent,
-                Accept: "*/*",
+                Accept: "application/json",
                 "Accept-Language": "en, en;q=0.8",
                 "X-Token": token,
                 Pragma: "no-cache",
@@ -39,12 +40,11 @@ const APIProject = {
                 "x-requested-with": "XMLHttpRequest",
                 Referer: `https://scratch.mit.edu/projects/${id}/`,
                 "User-Agent": consts.UserAgent,
-                Accept: "*/*",
+                Accept: "application/json",
                 "Content-Length": "0",
                 Origin: "https://scratch.mit.edu",
                 "Cache-Control": "max-age=0, no-cache",
                 Pragma: "no-cache",
-                "Accept-Encoding": "gzip, deflate, br"
             },
             referrer: `https://scratch.mit.edu/projects/${id}`,
             method: value === true ? "POST" : "DELETE"
@@ -84,14 +84,13 @@ const APIProject = {
                 "x-requested-with": "XMLHttpRequest",
                 Referer: `https://scratch.mit.edu/`,
                 "User-Agent": consts.UserAgent,
-                Accept: "*/*",
+                Accept: "application/json",
                 "Content-Type": "application/json",
                 Origin: "https://scratch.mit.edu",
                 TE: "trailers",
                 "Cache-Control": "max-age=0, no-cache",
                 Pragma: "no-cache",
                 Connection: "keep-alive",
-                "Accept-Encoding": "gzip, deflate, br"
             },
             referrer: `https://scratch.mit.edu/`,
             method: "POST",
@@ -120,7 +119,6 @@ const APIProject = {
                 "Cache-Control": "max-age=0, no-cache",
                 Pragma: "no-cache",
                 Connection: "keep-alive",
-                "Accept-Encoding": "gzip, deflate, br"
             },
             referrer: `https://scratch.mit.edu/`,
             method: "DELETE"

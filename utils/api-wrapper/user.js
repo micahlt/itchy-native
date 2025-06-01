@@ -1,7 +1,13 @@
 import { decode } from "html-entities";
 import { parse } from "node-html-parser";
 import consts from "./consts";
+import fetch from "../fetch-provider";
+
 const APIUser = {
+    doesExist: async (username) => {
+        const res = await fetch(`https://api.scratch.mit.edu/users/${username}`);
+        return res.ok;
+    },
     getCompleteProfile: async (username) => {
         const res = await fetch(`https://api.scratch.mit.edu/users/${username}`);
         const featured = await fetch(`https://scratch.mit.edu/site-api/users/all/${username}`);
@@ -204,7 +210,6 @@ const APIUser = {
                 Origin: "https://scratch.mit.edu",
                 "Cache-Control": "max-age=0, no-cache",
                 Pragma: "no-cache",
-                "Accept-Encoding": "gzip, deflate, br"
             },
         });
         if (req.ok) {
@@ -226,7 +231,6 @@ const APIUser = {
                 Origin: "https://scratch.mit.edu",
                 "Cache-Control": "max-age=0, no-cache",
                 Pragma: "no-cache",
-                "Accept-Encoding": "gzip, deflate, br"
             },
         });
         if (req.ok) {
@@ -243,11 +247,11 @@ const APIUser = {
                 "x-requested-with": "XMLHttpRequest",
                 Referer: `https://scratch.mit.edu/users/${username}/`,
                 "User-Agent": consts.UserAgent,
-                Accept: "*/*",
+                Accept: "text/plain",
+                'Content-Type': 'text/plain; charset=UTF-8',
                 Origin: "https://scratch.mit.edu",
                 "Cache-Control": "max-age=0, no-cache",
                 Pragma: "no-cache",
-                "Accept-Encoding": "gzip, deflate, br"
             },
             body: JSON.stringify({
                 content: content,
@@ -275,7 +279,6 @@ const APIUser = {
                 Origin: "https://scratch.mit.edu",
                 "Cache-Control": "max-age=0, no-cache",
                 Pragma: "no-cache",
-                "Accept-Encoding": "gzip, deflate, br"
             },
             body: JSON.stringify({
                 id: commentID

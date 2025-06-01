@@ -1,3 +1,5 @@
+import fetch from "../fetch-provider";
+
 const APIExplore = {
     getExplore: async () => {
         const res = await fetch("https://api.scratch.mit.edu/proxy/featured", {
@@ -19,7 +21,8 @@ const APIExplore = {
     getFriendsLoves: async (username, token) => {
         const res = await fetch(`https://api.scratch.mit.edu/users/${username}/following/users/loves`, {
             headers: {
-                "x-token": token
+                "x-token": token,
+                "Accept": "application/json"
             }
         });
         const data = await res.json();
@@ -28,7 +31,8 @@ const APIExplore = {
     getFriendsProjects: async (username, token) => {
         const res = await fetch(`https://api.scratch.mit.edu/users/${username}/following/users/projects`, {
             headers: {
-                "x-token": token
+                "x-token": token,
+                "Accept": "application/json"
             }
         });
         const data = await res.json();
@@ -47,7 +51,8 @@ const APIExplore = {
     getFeed: async (username, token, offset = 0, limit = 4) => {
         const res = await fetch(`https://api.scratch.mit.edu/users/${username}/following/users/activity?limit=${limit}&offset=${offset}`, {
             headers: {
-                "x-token": token
+                "x-token": token,
+                "Accept": "application/json"
             }
         });
         const data = await res.json();

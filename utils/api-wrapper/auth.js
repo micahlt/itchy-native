@@ -1,5 +1,5 @@
-import { Platform } from "react-native";
 import consts from "./consts";
+import fetch from "../fetch-provider";
 
 const APIAuth = {
     login: async (user, pass) => {
@@ -14,10 +14,9 @@ const APIAuth = {
             "User-Agent": consts.UserAgent,
             'Cache-Control': 'no-cache, no-store, must-revalidate',
             'Pragma': 'no-cache',
-            'Expires': 0,
+            'Expires': "0",
             "Origin": "https://scratch.mit.edu",
-            "Referer": "https://scratch.mit.edu/",
-            "X-TestTOken": "1233"
+            "Referer": "https://scratch.mit.edu/"
         };
         const loginReq = await fetch("https://scratch.mit.edu/login/", {
             method: "POST",
@@ -53,8 +52,8 @@ const APIAuth = {
                 "Cache-Control": "max-age=0, no-cache",
                 "X-Requested-With": "XMLHttpRequest",
                 Pragma: "no-cache",
-                Accept: "*/*",
-                "Accept-Encoding": "gzip, deflate, br"
+                Accept: "application/json",
+                "Content-Type": "application/json",
             }
         });
         const sessionJSON = await sessionFetch.json();
@@ -87,7 +86,6 @@ const APIAuth = {
                     Origin: "https://scratch.mit.edu",
                     "Content-Type": "application/x-www-form-urlencoded",
                     Accept: "*/*",
-                    "Accept-Encoding": "gzip, deflate, br"
                 }
             }
         );
@@ -106,8 +104,7 @@ const APIAuth = {
                 "Cache-Control": "max-age=0, no-cache",
                 "X-Requested-With": "XMLHttpRequest",
                 Pragma: "no-cache",
-                Accept: "*/*",
-                "Accept-Encoding": "gzip, deflate, br"
+                Accept: "application/json",
             }
         });
         const sessionJSON = await sessionFetch.json();

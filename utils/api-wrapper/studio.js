@@ -1,4 +1,5 @@
 import consts from "./consts";
+import fetch from "../fetch-provider";
 
 const APIStudio = {
     getStudio: async (id) => {
@@ -45,14 +46,13 @@ const APIStudio = {
                 "x-requested-with": "XMLHttpRequest",
                 Referer: `https://scratch.mit.edu/`,
                 "User-Agent": consts.UserAgent,
-                Accept: "*/*",
+                Accept: "application/json",
                 "Content-Type": "application/json",
                 Origin: "https://scratch.mit.edu",
                 TE: "trailers",
                 "Cache-Control": "max-age=0, no-cache",
                 Pragma: "no-cache",
                 Connection: "keep-alive",
-                "Accept-Encoding": "gzip, deflate, br"
             },
             referrer: `https://scratch.mit.edu/`,
             method: "POST",
@@ -75,13 +75,12 @@ const APIStudio = {
                 "x-requested-with": "XMLHttpRequest",
                 Referer: `https://scratch.mit.edu/studios/${studioID}/comments`,
                 "User-Agent": consts.UserAgent,
-                Accept: "*/*",
+                Accept: "application/json",
                 Origin: "https://scratch.mit.edu",
                 TE: "trailers",
                 "Cache-Control": "max-age=0, no-cache",
                 Pragma: "no-cache",
                 Connection: "keep-alive",
-                "Accept-Encoding": "gzip, deflate, br"
             },
             referrer: `https://scratch.mit.edu/`,
             method: "DELETE"
