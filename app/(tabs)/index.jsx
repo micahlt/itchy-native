@@ -1,11 +1,12 @@
 const REFRESH_TRIGGER_HEIGHT = 50;
 const MAX_PULL_HEIGHT = 75;
 
-import { Platform, StyleSheet, Text, Vibration, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { Gesture, GestureDetector, ScrollView } from 'react-native-gesture-handler';
 import { useTheme } from '../../utils/theme';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ProjectCard from '../../components/ProjectCard';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
@@ -14,7 +15,7 @@ import SignInPrompt from '../../components/SignInPrompt';
 import Pressable from '../../components/Pressable';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import StudioCard from '../../components/StudioCard';
-import Animated, { cancelAnimation, Easing, runOnJS, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, runOnJS, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
 import { withPause } from 'react-native-redash';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
@@ -101,20 +102,24 @@ export default function HomeScreen() {
         }
         setIsRefreshing(false);
         setRefreshCount(prev => prev + 1);
-        console.log("Refresh complete!");
         setTimeout(() => {
             rotationPaused.value = true;
         }, 1500);
     }
 
     const refresh = () => {
-        console.log("Refreshing...");
         rotationPaused.value = false;
         setIsRefreshing(true);
-        setTimeout(load, 1000);
+        setTimeout(load, 250);
     }
 
-    const vib = () => Vibration.vibrate(30);
+    const vib = (length) => {
+        if (length === "tick") {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+        } else if (length === "long") {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
+        }
+    }
 
     const panGesture = Gesture.Pan()
         .simultaneousWithExternalGesture(scrollRef)
@@ -122,9 +127,10 @@ export default function HomeScreen() {
         .onUpdate((e) => {
             if (!isRefreshing && isAtTop.value && scrollOffset.value <= 0 && e.translationY > 0) {
                 panPosition.value = e.translationY * 0.18 + 0.5 * (1 - Math.min(e.translationY, MAX_PULL_HEIGHT) / MAX_PULL_HEIGHT);
+                if (Math.floor(panPosition.value) % 18 == 0) runOnJS(vib)("tick");
                 if (panPosition.value > REFRESH_TRIGGER_HEIGHT) {
                     if (!didVibrate.value) {
-                        runOnJS(vib)();
+                        runOnJS(vib)("long");
                         didVibrate.value = true;
                     }
                 }
@@ -133,7 +139,7 @@ export default function HomeScreen() {
         .onEnd((e) => {
             didVibrate.value = false;
             if (isAtTop.value && panPosition.value > REFRESH_TRIGGER_HEIGHT) {
-                runOnJS(vib)();
+                runOnJS(vib)("long");
                 runOnJS(refresh)();
             }
             panPosition.value = withSpring(0, { damping: 10, stiffness: 80 });
