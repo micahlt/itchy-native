@@ -81,7 +81,7 @@ export default function Project() {
             <Stack.Screen
                 options={{
                     title: metadata?.title || "Loading...",
-                    headerRight: () => <MaterialIcons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='question-answer' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
+                    headerRight: () => <MaterialIcons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='question-answer' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
                 }}
             />
             <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 10 }}>

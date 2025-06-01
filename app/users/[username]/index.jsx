@@ -90,10 +90,9 @@ export default function User() {
             <Stack.Screen
                 options={{
                     title: username,
-                    headerTitleAlign: "center",
                     headerRight: () => <>
                         <MaterialIcons.Button onPressIn={() => router.push(`/users/${username}/comments`)} name='question-answer' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
-                        <MaterialIcons.Button onPressIn={openProfile} name='launch' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
+                        <MaterialIcons.Button onPressIn={openProfile} name='launch' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
                     </>
                 }}
             />

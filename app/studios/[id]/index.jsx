@@ -12,6 +12,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import linkWithFallback from "../../../utils/linkWithFallback";
 import Card from "../../../components/Card";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function Studio() {
     const { id } = useLocalSearchParams();
@@ -20,6 +21,8 @@ export default function Studio() {
     const [studio, setStudio] = useState(null);
     const [projects, setProjects] = useState(null);
     const [loading, setLoading] = useState(false);
+    const insets = useSafeAreaInsets();
+
     const load = () => {
         setProjects(null);
         setStudio(null);
@@ -52,10 +55,10 @@ export default function Studio() {
             <Stack.Screen
                 options={{
                     title: studio?.title || "Loading...",
-                    headerRight: () => <MaterialIcons.Button onPressIn={openStudio} name='launch' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
+                    headerRight: () => <MaterialIcons.Button onPressIn={openStudio} name='launch' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
                 }}
             />
-            <ScrollView refreshControl={<RefreshControl refreshing={loading} onRefresh={load} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}>
+            <ScrollView refreshControl={<RefreshControl refreshing={loading} onRefresh={load} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} contentContainerStyle={{ paddingBottom: insets.bottom + 40 }} style={{ flex: 1 }}>
                 {studio &&
                     <>
                         <Image source={{ uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${id}.png` }} style={{ width: width, aspectRatio: 1.7 / 1 }} />

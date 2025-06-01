@@ -62,9 +62,10 @@ export default function App() {
                             },
                             headerTitleStyle: {
                                 color: colors.text,
-                                fontWeight: "bold"
+                                fontWeight: "bold",
                             },
-                            headerTintColor: colors.text
+                            headerTintColor: colors.text,
+                            headerLeft: () => <View style={{ width: 5 }}></View>
                         }} >
                             <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: "default" }} />
                             <Stack.Screen name="projects/[id]/index" options={{
