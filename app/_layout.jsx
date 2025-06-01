@@ -34,6 +34,12 @@ export default function App() {
                 }
             }).catch((e) => {
                 console.error("Error getting session data: ", e);
+                storage.delete("sessionID");
+                storage.delete("csrfToken");
+                storage.delete("cookieSet");
+                storage.delete("token");
+                storage.delete("user");
+                setUser(null);
             });
         }
     }, [])
