@@ -1,8 +1,9 @@
-import { View, TextInput, TouchableOpacity, useWindowDimensions, Text, Keyboard, Animated, Platform, KeyboardAvoidingView } from "react-native"
+import { View, TextInput, TouchableOpacity, useWindowDimensions, Text, Keyboard, Platform } from "react-native"
 import { MaterialIcons } from "@expo/vector-icons"
 import { useEffect, useRef, useState } from "react"
 import { useTheme } from "../utils/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Animated, { useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 
 export default function CommentEditor({ onSubmit, reply, onClearReply }) {
     const [content, setContent] = useState();
@@ -10,27 +11,19 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
     const { colors } = useTheme();
     const inputRef = useRef(null);
     const [keyboardHeight, setKeyboardHeight] = useState(0);
-    const bottomAnim = useRef(new Animated.Value(0)).current;
+    const bottomAnim = useSharedValue(0);
     const insets = useSafeAreaInsets();
 
     useEffect(() => {
         const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
             const height = e.endCoordinates.height;
             setKeyboardHeight(height);
-            Animated.timing(bottomAnim, {
-                toValue: height - insets.bottom / 2,
-                duration: 125,
-                useNativeDriver: false,
-            }).start();
+            bottomAnim.value = withTiming(height - (insets.bottom - 25))
         });
 
         const hideSub = Keyboard.addListener('keyboardDidHide', () => {
             setKeyboardHeight(0);
-            Animated.timing(bottomAnim, {
-                toValue: 0,
-                duration: 125,
-                useNativeDriver: false,
-            }).start();
+            bottomAnim.value = withTiming(0);
         });
 
         return () => {
@@ -53,7 +46,7 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
             </TouchableOpacity>
         </View>}
         <View style={{
-            paddingHorizontal: 15, backgroundColor: colors.backgroundTertiary, flexDirection: "row", paddingBottom: Platform === "ios" ? insets.bottom + 40 : insets.bottom + 20, marginBottom: insets.bottom, alignItems: "center"
+            paddingHorizontal: 15, backgroundColor: colors.backgroundTertiary, flexDirection: "row", paddingBottom: insets.bottom, alignItems: "center"
         }}>
             <TextInput placeholder="Add a comment..." style={{ width: width - 66, color: colors.text, marginVertical: 16 }} multiline={true} value={content} onChangeText={setContent} ref={inputRef} />
             <TouchableOpacity onPress={() => {

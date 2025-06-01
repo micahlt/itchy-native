@@ -115,8 +115,8 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
     return (
         <BottomSheet ref={sheetRef} style={{
             borderTopLeftRadius: 10, borderTopRightRadius: 10, shadowColor: "#000",
-        }} backdropMaskColor="#000000aa" onClose={() => setComment(undefined)} enableDynamicSizing={true} enablePanDownToClose={true} backgroundStyle={{ backgroundColor: colors.backgroundSecondary }} backdropComponent={renderBackdrop}>
-            <BottomSheetView onLayout={onViewLayout} style={{ paddingBottom: insets.bottom, backgroundColor: colors.backgroundSecondary }}>
+        }} backdropMaskColor="#000000aa" onClose={() => setComment(undefined)} enableDynamicSizing={true} enablePanDownToClose={true} backgroundStyle={{ backgroundColor: colors.backgroundSecondary }} backdropComponent={renderBackdrop} bottomInset={insets.bottom} handleIndicatorStyle={{ backgroundColor: colors.textSecondary }}>
+            <BottomSheetView onLayout={onViewLayout} style={{ paddingBottom: 10, backgroundColor: colors.backgroundSecondary }}>
                 <Text style={{ color: colors.text, fontSize: 22, fontWeight: 'bold', marginBottom: 10, paddingHorizontal: 15 }}>Comment</Text>
                 <View style={{ paddingHorizontal: 5 }}><Comment comment={comment} showReplies={false} isReply={false} fullWidth={true} /></View>
                 {canDelete && <Pressable android_ripple={{ color: "#ffffff22", borderless: false, foreground: true }} onPress={deleteComment} style={{

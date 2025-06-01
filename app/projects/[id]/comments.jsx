@@ -1,4 +1,4 @@
-import { View, FlatList, RefreshControl, Platform, KeyboardAvoidingView } from "react-native";
+import { View, FlatList, RefreshControl, Platform, KeyboardAvoidingView, Vibration } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -95,6 +95,7 @@ export default function ProjectComments() {
 
     const openCommentOptions = useCallback((comment) => {
         setCommentOptionsObj(comment);
+        Vibration.vibrate(5);
     }, []);
 
     const afterDeleteComment = useCallback((obj) => {

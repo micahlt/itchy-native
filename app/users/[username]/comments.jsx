@@ -1,4 +1,4 @@
-import { FlatList, RefreshControl, KeyboardAvoidingView, Platform, View } from "react-native";
+import { FlatList, RefreshControl, KeyboardAvoidingView, Platform, View, Vibration } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { router } from "expo-router";
@@ -71,6 +71,7 @@ export default function UserComments() {
 
     const openCommentOptions = useCallback((comment) => {
         setCommentOptionsObj(comment);
+        Vibration.vibrate(5);
     }, []);
 
     const postComment = (content) => {
