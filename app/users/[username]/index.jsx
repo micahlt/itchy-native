@@ -141,7 +141,7 @@ export default function User() {
                     {profile.featuredProject && <ProjectCard project={profile.featuredProject} width={width - 40} style={{ margin: "auto", marginTop: 0 }} />}
                     <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 30, paddingBottom: 0, gap: 10 }}>
                         <MaterialIcons name='auto-awesome' size={24} color={colors.text} />
-                        <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Created Projects</Text>
+                        <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Created Projects</Text>
                     </View>
                     <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
                         {projects?.map((project) => (<ProjectCard project={{ ...project }} key={project.id} />))}
@@ -149,7 +149,7 @@ export default function User() {
 
                     <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 10, paddingBottom: 0, gap: 10 }}>
                         <MaterialIcons name='star' size={24} color={colors.text} />
-                        <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Favorites</Text>
+                        <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Favorites</Text>
                     </View>
                     <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
                         {favorites?.map((project) => (<ProjectCard project={{ ...project }} key={project.id} />))}
@@ -157,7 +157,7 @@ export default function User() {
 
                     <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 10, paddingBottom: 0, gap: 10 }}>
                         <MaterialIcons name='collections' size={24} color={colors.text} />
-                        <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Curated Studios</Text>
+                        <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Curated Studios</Text>
                     </View>
                     <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
                         {curatedStudios?.map((studio) => (<StudioCard studio={{ ...studio }} key={studio.id} />))}

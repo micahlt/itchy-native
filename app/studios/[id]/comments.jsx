@@ -95,14 +95,6 @@ export default function StudioComments() {
         }).catch(console.error);
     };
 
-    const deleteComment = useCallback((obj) => {
-        if (!obj) return;
-        if (obj.author.id !== user.id) return;
-        ScratchAPIWrapper.studio.deleteComment(id, obj.id, csrf, user.token).then(() => {
-            setComments((prev) => prev.filter(c => c.id !== obj.id));
-        }).catch(console.error);
-    }, []);
-
     const openCommentOptions = useCallback((comment) => {
         setCommentOptionsObj(comment);
     }, []);

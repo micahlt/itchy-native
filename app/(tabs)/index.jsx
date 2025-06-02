@@ -49,7 +49,6 @@ export default function HomeScreen() {
     const isAtTop = useSharedValue(true);
     const didVibrate = useSharedValue(false);
     const rotationPaused = useSharedValue(false);
-    const [overscrollMode, setOverscrollMode] = useState("never");
 
     useEffect(() => {
         rotate.value = withPause(withRepeat(withTiming(360, { duration: 1000, easing: Easing.linear }), -1, false), rotationPaused);
@@ -149,14 +148,9 @@ export default function HomeScreen() {
     return (
         <View style={{ backgroundColor: colors.accentTransparent }}>
             <GestureDetector gesture={panGesture}>
-                <ScrollView ref={scrollRef} scrollEventThrottle={2} bounces={true} overScrollMode={Platform.OS === 'android' ? overscrollMode : 'auto'} onScrollBeginDrag={(e) => {
+                <ScrollView ref={scrollRef} scrollEventThrottle={2} bounces={true} overScrollMode={Platform.OS === 'android' ? "never" : 'auto'} onScrollBeginDrag={(e) => {
                     const offsetY = e.nativeEvent.contentOffset.y;
                     isAtTop.value = offsetY <= 0;
-                    if (isAtTop.value) {
-                        setOverscrollMode("never");
-                    } else {
-                        setOverscrollMode("always");
-                    }
                 }}
                     onScroll={(e) => {
                         const offsetY = e.nativeEvent.contentOffset.y;

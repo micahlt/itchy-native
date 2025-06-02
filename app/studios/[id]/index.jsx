@@ -96,7 +96,7 @@ export default function Studio() {
                         </Card>
                         <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 30, paddingBottom: 0, gap: 10 }}>
                             <MaterialIcons name='video-library' size={24} color={colors.text} />
-                            <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Projects <Text style={{ color: colors.textSecondary, fontWeight: "normal" }}>({studio.stats.projects == 100 ? "100+" : studio.stats.projects})</Text></Text>
+                            <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Projects <Text style={{ color: colors.textSecondary, fontWeight: "normal" }}>({studio.stats.projects == 100 ? "100+" : studio.stats.projects})</Text></Text>
                         </View>
                         <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
                             {projects?.map((project) => (<ProjectCard project={{ ...project }} key={project.id} />))}
