@@ -1,6 +1,6 @@
 {
   "name": "itchy-native",
-  "version": "2.4.1",
+  "version": "2.4.5",
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start --dev-client",

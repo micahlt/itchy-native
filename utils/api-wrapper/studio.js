@@ -88,7 +88,66 @@ const APIStudio = {
 
         const res = await fetch(`https://api.scratch.mit.edu/proxy/comments/studio/${studioID}/comment/${commentID}`, opts);
         return res.status === 200;
-    }
+    },
+    getRelationship: async (username, studioID, token) => {
+        const res = await fetch(`https://api.scratch.mit.edu/studios/${studioID}/users/${username}`,
+            {
+                headers: {
+                    "User-Agent": consts.UserAgent,
+                    "Accept": "application/json",
+                    Pragma: "no-cache",
+                    "Cache-Control": "max-age=0, no-cache",
+                    "X-Token": token,
+                    "x-requested-with": "XMLHttpRequest",
+                }
+            }
+        );
+        return await res.json();
+    },
+    follow: async (studioID, myUsername, csrf) => {
+        const req = await fetch(`https://scratch.mit.edu/site-api/users/bookmarkers/${studioID}/add/?usernames=${myUsername}`, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": csrf,
+                "x-requested-with": "XMLHttpRequest",
+                Referer: `https://scratch.mit.edu/studios/${studioID}/`,
+                "User-Agent": consts.UserAgent,
+                Accept: "*/*",
+                "Content-Length": "0",
+                Origin: "https://scratch.mit.edu",
+                "Cache-Control": "max-age=0, no-cache",
+                Pragma: "no-cache",
+            },
+            body: ""
+        });
+        if (req.ok) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    unfollow: async (studioID, myUsername, csrf) => {
+        const req = await fetch(`https://scratch.mit.edu/site-api/users/bookmarkers/${studioID}/remove/?usernames=${myUsername}`, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": csrf,
+                "x-requested-with": "XMLHttpRequest",
+                Referer: `https://scratch.mit.edu/studios/${studioID}/`,
+                "User-Agent": consts.UserAgent,
+                Accept: "*/*",
+                "Content-Length": "0",
+                Origin: "https://scratch.mit.edu",
+                "Cache-Control": "max-age=0, no-cache",
+                Pragma: "no-cache",
+            },
+            body: ""
+        });
+        if (req.ok) {
+            return true;
+        } else {
+            return false;
+        }
+    },
 }
 
 export default APIStudio;

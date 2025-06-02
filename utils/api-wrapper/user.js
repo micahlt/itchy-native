@@ -302,6 +302,7 @@ const APIUser = {
                 "Cache-Control": "max-age=0, no-cache",
                 Pragma: "no-cache",
             },
+            body: ""
         });
         if (req.ok) {
             return true;
@@ -323,6 +324,7 @@ const APIUser = {
                 "Cache-Control": "max-age=0, no-cache",
                 Pragma: "no-cache",
             },
+            body: ""
         });
         if (req.ok) {
             return true;

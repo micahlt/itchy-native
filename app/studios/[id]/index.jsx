@@ -13,6 +13,7 @@ import linkWithFallback from "../../../utils/linkWithFallback";
 import Card from "../../../components/Card";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useMMKVString } from "react-native-mmkv";
 
 export default function Studio() {
     const { id } = useLocalSearchParams();
@@ -21,6 +22,10 @@ export default function Studio() {
     const [studio, setStudio] = useState(null);
     const [projects, setProjects] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [followingStatus, setFollowingStatus] = useState(undefined);
+    const [myUsername] = useMMKVString("username");
+    const [csrfToken] = useMMKVString("csrfToken");
+    const [token] = useMMKVString("token");
     const insets = useSafeAreaInsets();
 
     const load = () => {
@@ -36,6 +41,14 @@ export default function Studio() {
             setStudio(d);
             setLoading(false);
         }).catch(console.error);
+        ScratchAPIWrapper.studio.getRelationship(myUsername, id, token).then((d) => {
+            console.log(d);
+            if (d.following) {
+                setFollowingStatus(true);
+            } else {
+                setFollowingStatus(false);
+            }
+        })
         ScratchAPIWrapper.studio.getProjects(id).then((d) => {
             setProjects(d);
         }).catch(console.error);
@@ -45,6 +58,18 @@ export default function Studio() {
         load();
     }, [id]);
 
+    const changeFollowingStatus = () => {
+        if (followingStatus === undefined) return;
+        if (followingStatus === true) {
+            ScratchAPIWrapper.studio.unfollow(id, myUsername, csrfToken).then(() => {
+                setFollowingStatus(!followingStatus);
+            }).catch(console.error)
+        } else {
+            ScratchAPIWrapper.studio.follow(id, myUsername, csrfToken).then(() => {
+                setFollowingStatus(!followingStatus);
+            }).catch(console.error)
+        }
+    }
 
     const openStudio = () => {
         linkWithFallback(`https://scratch.mit.edu/studios/${id}`, colors.accent);
@@ -90,6 +115,11 @@ export default function Studio() {
                                     <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Activity</Text>
                                 </Pressable>
                             </View>
+                            {followingStatus !== undefined && <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
+                                <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={changeFollowingStatus}>
+                                    <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>{followingStatus === true ? "Unfollow" : "Follow"}</Text>
+                                </Pressable>
+                            </View>}
                         </View>
                         <Card style={{ padding: 20, marginHorizontal: 20 }}>
                             <LinkifiedText style={{ color: colors.text }} text={studio.description} />
