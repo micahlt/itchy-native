@@ -65,7 +65,7 @@ export default function App() {
                                 fontWeight: "bold",
                             },
                             headerTintColor: colors.text,
-                            headerLeft: () => <View style={{ width: 5 }}></View>
+                            headerLeft: () => <View style={{ width: 10 }}></View>
                         }} >
                             <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: "default" }} />
                             <Stack.Screen name="projects/[id]/index" options={{
@@ -107,9 +107,14 @@ export default function App() {
                                 animation: "fade_from_bottom",
                                 headerTitle: "What's Happening"
                             }} />
-                            <Stack.Screen name="login" options={{
+                            <Stack.Screen name="settings" options={{
                                 presentation: "modal",
                                 animation: "fade_from_bottom",
+                                headerTitle: "Settings"
+                            }} />
+                            <Stack.Screen name="login" options={{
+                                presentation: "modal",
+                                animation: "default",
                                 title: "Log In"
                             }} />
                             <Stack.Screen name="error" options={{

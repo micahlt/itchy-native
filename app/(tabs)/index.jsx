@@ -165,14 +165,14 @@ export default function HomeScreen() {
                     <Animated.View style={[headerStyle, { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingTop: insets.top + 5, paddingBottom: 15, paddingHorizontal: 20, gap: 10 }]}>
                         {username && user?.id ? <Pressable onPress={() => router.push(`/users/${username}`)}><Image source={`https://uploads.scratch.mit.edu/get_image/user/${user.id}_60x60.png`} style={{ height: 36, width: 36, borderRadius: 36 }} contentFit="stretch" /></Pressable> : <Pressable onPress={() => router.push(`/login`)}><Image source={require("../../assets/avatar2.png")} style={{ height: 36, width: 36, borderRadius: 63 }} contentFit="stretch" /></Pressable>}
                         <Animated.Image source={require("../../assets/logo-nobg.png")} style={[logoStyle, { height: 65, width: 65 }]} />
-                        <Pressable onPress={() => router.push('/settings')}><MaterialIcons style={{ marginRight: 7 }} name="online-prediction" size={26} contentFit="cover" color={colors.textSecondary} /></Pressable>
+                        <Pressable onPress={() => router.push('/settings')}><MaterialIcons style={{ marginRight: 7 }} name="settings" size={26} contentFit="cover" color={colors.textSecondary} /></Pressable>
                     </Animated.View>
                     <Animated.View style={[contentStyle, { backgroundColor: colors.background, paddingBottom: insets.bottom + 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingTop: 10, boxShadow: "0px -2px 10px rgba(0,0,0,0.1)" }]}>
                         {!!username ? <Feed style={{ margin: 20, marginBottom: 0, marginTop: 15 }} username={username} rerender={refreshCount} /> : <SignInPrompt />}
                         {exploreData?.featured?.length > 0 && <>
                             <View style={{ ...s.scrollHeader, marginTop: 10 }}>
                                 <MaterialIcons name='workspace-premium' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Featured</Text>
+                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Featured</Text>
                             </View>
                             <ScrollView horizontal contentContainerStyle={{
                                 padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
@@ -184,7 +184,7 @@ export default function HomeScreen() {
                         {friendsLoves.length > 0 && <>
                             <View style={s.scrollHeader}>
                                 <MaterialIcons name='people' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Loved by Friends</Text>
+                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Loved by Friends</Text>
                             </View>
                             <ScrollView horizontal contentContainerStyle={{
                                 padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
@@ -196,7 +196,7 @@ export default function HomeScreen() {
                         {friendsProjects.length > 0 && <>
                             <View style={s.scrollHeader}>
                                 <MaterialIcons name='people' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Created by Friends</Text>
+                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Created by Friends</Text>
                             </View>
                             <ScrollView horizontal contentContainerStyle={{
                                 padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
@@ -208,7 +208,7 @@ export default function HomeScreen() {
                         {exploreData?.topLoved?.length > 0 && <>
                             <View style={s.scrollHeader}>
                                 <MaterialIcons name='favorite' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Top Loved</Text>
+                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Top Loved</Text>
                             </View>
                             <ScrollView horizontal contentContainerStyle={{
                                 padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
@@ -220,7 +220,7 @@ export default function HomeScreen() {
                         {exploreData?.featuredStudios?.length > 0 && <>
                             <View style={s.scrollHeader}>
                                 <MaterialIcons name='photo-filter' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Featured Studios</Text>
+                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Featured Studios</Text>
                             </View>
                             <ScrollView horizontal contentContainerStyle={{
                                 padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
@@ -232,7 +232,7 @@ export default function HomeScreen() {
                         {exploreData?.topRemixed?.length > 0 && <>
                             <View style={s.scrollHeader}>
                                 <MaterialIcons name='sync' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Top Remixed</Text>
+                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Top Remixed</Text>
                             </View>
                             <ScrollView horizontal contentContainerStyle={{
                                 padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
@@ -244,7 +244,7 @@ export default function HomeScreen() {
                         {exploreData?.newest?.length > 0 && <>
                             <View style={s.scrollHeader}>
                                 <MaterialIcons name='more-time' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 24, fontWeight: "bold" }}>Newest</Text>
+                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Newest</Text>
                             </View>
                             <ScrollView horizontal contentContainerStyle={{
                                 padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10

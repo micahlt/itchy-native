@@ -54,13 +54,13 @@ export default function Search() {
         search();
     }, [type])
 
-    return <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.background, paddingHorizontal: 10 }}>
-        <View style={{ flexDirection: "row", gap: 5, marginTop: 10, marginBottom: 5 }}>
+    return <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.background }}>
+        <View style={{ flexDirection: "row", gap: 5, marginTop: 10, marginBottom: 5, marginHorizontal: 20 }}>
             <Chip.Icon icon="smart-display" text="Projects" color={colors.accent} mode={type == "projects" && "filled"} onPress={() => setType("projects")} />
             <Chip.Icon icon="collections" text="Studios" color={colors.accent} mode={type == "studios" && "filled"} onPress={() => setType("studios")} />
             <Chip.Icon icon="person" text="Users" color={colors.accent} mode={type == "users" && "filled"} onPress={() => setType("users")} />
         </View>
-        <FlatList data={results} renderItem={({ item }) => renderItem(item, width, type)} stickyHeaderIndices={[0]} keyExtractor={(item) => item.id} numColumns={2} columnWrapperStyle={{ gap: 10 }} contentContainerStyle={{ gap: 10, paddingBottom: 100 }} refreshing={isLoading} refreshControl={<RefreshControl refreshing={isLoading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} onRefresh={search} ListHeaderComponent={
+        <FlatList data={results} renderItem={({ item }) => renderItem(item, width, type)} stickyHeaderIndices={[0]} keyExtractor={(item) => item.id} numColumns={2} columnWrapperStyle={{ gap: 10 }} contentContainerStyle={{ marginHorizontal: 20, gap: 10, paddingBottom: 100 }} refreshing={isLoading} refreshControl={<RefreshControl refreshing={isLoading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} onRefresh={search} ListHeaderComponent={
             <>
                 <View style={{ backgroundColor: colors.background, zIndex: 0, height: 40 }}></View>
                 <View style={{ backgroundColor: colors.backgroundSecondary, paddingVertical: 15, paddingLeft: 15, paddingRight: 9, marginBottom: 5, borderRadius: 10, marginTop: -30, zIndex: 1, elevation: 3 }}>
@@ -76,12 +76,12 @@ export default function Search() {
 
 function renderItem(item, width, type) {
     if (type === "projects") {
-        return <ProjectCard project={item} width={(width - 30) / 2} />;
+        return <ProjectCard project={item} width={(width - 50) / 2} />;
     }
     if (type === "studios") {
-        return <StudioCard studio={item} width={(width - 30) / 2} />;
+        return <StudioCard studio={item} width={(width - 50) / 2} />;
     }
     if (type === "users") {
-        return <UserCard user={item} width={(width - 30) / 2} />;
+        return <UserCard user={item} width={(width - 50) / 2} />;
     }
 }

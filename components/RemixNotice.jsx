@@ -19,7 +19,7 @@ export default function RemixNotice({ originalProjectID }) {
 
 
     if (!originalProject) return null;
-    return <Card style={{ margin: 10, padding: 8, flexDirection: "row", backgroundColor: isDark ? "#04361b" : "#cfeedd", alignItems: "center" }} onPress={() => router.push(`/projects/${originalProjectID}`)}>
+    return <Card style={{ marginHorizontal: 20, marginBottom: 10, padding: 8, flexDirection: "row", backgroundColor: isDark ? "#04361b" : "#cfeedd", alignItems: "center" }} onPress={() => router.push(`/projects/${originalProjectID}`)}>
         <Image placeholder={require("../assets/project.png")} placeholderContentFit="cover" source={{ uri: `https://cdn2.scratch.mit.edu/get_image/project/${originalProjectID}_480x360.png` }} style={{ height: 70, aspectRatio: "4 / 3", borderRadius: 8 }} />
         <View style={{ marginLeft: 14, flex: 1 }}>
             <Text style={{ fontSize: 14, color: isDark ? "#6affad" : "#043319", fontWeight: "bold", marginBottom: 8, lineHeight: 14 }}>This project is a remix of</Text>

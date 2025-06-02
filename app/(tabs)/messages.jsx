@@ -44,7 +44,7 @@ export default function Messages() {
 
     if (!username || !token) {
         return <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.background }}>
-            <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, padding: 10, marginBottom: 10 }}>Messages</Text>
+            <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, marginBottom: 10, marginHorizontal: 20 }}>Messages</Text>
             <SignInPrompt />
         </SafeAreaView>
     }
@@ -61,7 +61,7 @@ export default function Messages() {
             }}
             refreshing={loading}
             refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}
-            ListHeaderComponent={<Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, padding: 10, marginBottom: 20 }}>Messages</Text>}
+            ListHeaderComponent={<Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, marginVertical: 20, marginHorizontal: 20 }}>Messages</Text>}
             onEndReachedThreshold={1.2}
             onEndReached={() => {
                 if (loading) return;

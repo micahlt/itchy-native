@@ -85,8 +85,8 @@ export default function Project() {
                 }}
             />
             <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 10 }}>
-                <WebView source={{ uri: twLink }} containerStyle={{ flex: 0, marginTop: 5, width: width - 20, aspectRatio: 480 / 425, margin: "auto", borderRadius: 10 }} androidLayerType="hardware" renderToHardwareTextureAndroid={true} bounces={false} scrollEnabled={false} overScrollMode="never" allowsFullscreenVideo={true} style={{ backgroundColor: "transparent", }} injectedJavaScript={twJSInject} />
-                {metadata && <ScrollView horizontal contentContainerStyle={{ padding: 10, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
+                <WebView source={{ uri: twLink }} containerStyle={{ flex: 0, marginTop: 5, width: width - 40, aspectRatio: 480 / 425, margin: "auto", borderRadius: 10 }} androidLayerType="hardware" renderToHardwareTextureAndroid={true} bounces={false} scrollEnabled={false} overScrollMode="never" allowsFullscreenVideo={true} style={{ backgroundColor: "transparent", }} injectedJavaScript={twJSInject} />
+                {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
                     <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/users/${metadata?.author?.username}`)} textStyle={{ fontWeight: 'bold' }} />
                     <Chip.Icon icon='favorite' text={approximateNumber(metadata.stats.loves)} color="#ff4750" mode={interactions.loved ? "filled" : "outlined"} onPress={() => toggleInteraction("love")} />
                     <Chip.Icon icon='star' text={approximateNumber(metadata.stats.favorites)} color="#ddbf37" mode={interactions.favorited ? "filled" : "outlined"} onPress={() => toggleInteraction("favorite")} />
@@ -101,15 +101,15 @@ export default function Project() {
                     })} />
                 </ScrollView>}
                 {metadata?.remix?.parent && <RemixNotice originalProjectID={metadata?.remix?.parent} />}
-                {metadata?.instructions && <Card style={{ margin: 10, marginTop: 0, padding: 16 }}>
+                {metadata?.instructions && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16 }}>
                     <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</Text>
                     <LinkifiedText style={{ color: colors.text }} text={metadata?.instructions} />
                 </Card>}
-                {metadata?.description && <Card style={{ margin: 10, marginTop: 0, padding: 16 }}>
+                {metadata?.description && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16 }}>
                     <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Credits</Text>
                     <LinkifiedText style={{ color: colors.text }} text={metadata?.description} />
                 </Card>}
-                {dateInfo && <Card style={{ margin: 10, marginTop: 0, marginBottom: 30, padding: 16 }}>
+                {dateInfo && <Card style={{ margin: 20, marginTop: 0, marginBottom: 30, padding: 16 }}>
                     <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Created {dateInfo.created}</Text>
                     {dateInfo.modified != dateInfo.created && <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Modified {dateInfo.modified}</Text>}
                 </Card>}

@@ -55,7 +55,7 @@ export default function TabLayout() {
                         tabBarBadge: String(messageCount > 0 ? messageCount : ""),
                     }}
                 />
-                <Tabs.Screen
+                {/*<Tabs.Screen
                     name="settings"
                     options={{
                         title: 'Settings',
@@ -63,7 +63,7 @@ export default function TabLayout() {
 
                     }}
 
-                />
+                />*/}
             </Tabs>
         </>
     );
