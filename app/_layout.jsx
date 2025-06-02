@@ -98,6 +98,11 @@ export default function App() {
                                 presentation: "modal",
                                 animation: "fade_from_bottom",
                             }} />
+                            <Stack.Screen name="users/[username]/activity" options={{
+                                presentation: "modal",
+                                animation: "fade_from_bottom",
+                                title: "loading...",
+                            }} />
                             <Stack.Screen name="users/[username]/comments" options={{
                                 presentation: "modal",
                                 animation: "fade_from_bottom",

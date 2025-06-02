@@ -146,6 +146,97 @@ const APIUser = {
         }
         return comments;
     },
+    getActivity: async (username, max = 50) => {
+        const userFetch = await fetch(`https://api.scratch.mit.edu/users/${username}`, {
+            headers: {
+                "User-Agent": consts.UserAgent,
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            }
+        });
+        const user = await userFetch.json();
+        const activityFetch = await fetch(`https://scratch.mit.edu/messages/ajax/user-activity/?user=${username}&max=${max}`, {
+            headers: {
+                "Content-Type": "text/html",
+                "User-Agent": consts.UserAgent,
+                "Accept": "text/html",
+                "Referer": `https://scratch.mit.edu/users/${username}/`,
+            }
+        });
+        const activityHTML = await activityFetch.text();
+        let dom = parse(activityHTML);
+        dom = dom.querySelectorAll("li");
+        let events = [];
+        for (let i = 0; i < dom.length; i++) {
+            let obj = {
+                id: Math.floor(Math.random() * 10000000),
+            };
+            const selected = dom[i].querySelector("div");
+            obj.actor_username = username;
+            obj.actor_id = user.id;
+            obj.datetime_created = dom[i].querySelector(".time").innerText;
+            switch (
+            selected.childNodes[2].innerText.replace(/\s+/g, " ").trim()
+            ) {
+                case "became a curator of": {
+                    obj.type = "becomecurator";
+                    obj.title = decode(selected.childNodes[3].innerText);
+                    break;
+                }
+                case "added": {
+                    obj.type = "addproject";
+                    obj.title = decode(selected.childNodes[3].innerText);
+                    obj.project_id = Number(
+                        selected.childNodes[3].getAttribute("href").split("/")[2]
+                    );
+                    obj.gallery_title = selected.childNodes[5].innerText;
+                    break;
+                }
+                case "shared the project": {
+                    obj.type = "shareproject";
+                    obj.title = decode(selected.childNodes[3].innerText);
+                    obj.project_id = Number(
+                        selected.childNodes[3].getAttribute("href").split("/")[2]
+                    );
+                    break;
+                }
+                case "loved": {
+                    obj.type = "loveproject";
+                    obj.title = decode(selected.childNodes[3].innerText);
+                    obj.project_id = Number(
+                        selected.childNodes[3].getAttribute("href").split("/")[2]
+                    );
+                    break;
+                }
+                case "favorited": {
+                    obj.type = "favoriteproject";
+                    obj.project_title = decode(selected.childNodes[3].innerText);
+                    obj.project_id = Number(
+                        selected.childNodes[3].getAttribute("href").split("/")[2]
+                    );
+                    break;
+                }
+                case "is now following": {
+                    obj.type = "followuser";
+                    obj.followed_username = selected.childNodes[3].innerText;
+                    break;
+                }
+                case "was promoted to manager of": {
+                    obj.type = "becomeownerstudio";
+                    obj.recipient_id = obj.actor_id;
+                    obj.recipient_username = username;
+                    delete obj.actor_id;
+                    delete obj.actor_username;
+                    obj.gallery_title = decode(selected.childNodes[3].innerText);
+                    obj.gallery_id = Number(
+                        selected.childNodes[3].getAttribute("href").split("/")[2]
+                    );
+                }
+            }
+            events.push(obj);
+        }
+        return events;
+    },
     getFollowers: async (username, page) => {
         const followers = await fetch(`https://scratch.mit.edu/users/${username}/followers/?page=${page}`);
         const dom = parse(await followers.text());

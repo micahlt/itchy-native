@@ -22,6 +22,7 @@
     "expo-build-properties": "~0.13.2",
     "expo-constants": "~17.0.8",
     "expo-crypto": "~14.0.2",
+    "expo-haptics": "~14.0.1",
     "expo-image": "~2.0.6",
     "expo-linking": "~7.0.5",
     "expo-navigation-bar": "~4.0.9",
@@ -43,8 +44,7 @@
     "react-native-screens": "~4.4.0",
     "react-native-webview": "13.12.5",
     "time-ago": "^0.2.1",
-    "tinycolor2": "^1.6.0",
-    "expo-haptics": "~14.0.1"
+    "tinycolor2": "^1.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
