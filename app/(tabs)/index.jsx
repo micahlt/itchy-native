@@ -4,7 +4,7 @@ const MAX_PULL_HEIGHT = 75;
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
-import { Gesture, GestureDetector, ScrollView } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector, ScrollView, Pressable, TouchableOpacity } from 'react-native-gesture-handler';
 import { useTheme } from '../../utils/theme';
 import { useEffect, useState } from 'react';
 import ProjectCard from '../../components/ProjectCard';
@@ -12,7 +12,6 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import Feed from '../../components/Feed';
 import SignInPrompt from '../../components/SignInPrompt';
-import Pressable from '../../components/Pressable';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import StudioCard from '../../components/StudioCard';
 import Animated, { Easing, runOnJS, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
@@ -51,8 +50,17 @@ export default function HomeScreen() {
     const rotationPaused = useSharedValue(false);
 
     useEffect(() => {
-        rotate.value = withPause(withRepeat(withTiming(360, { duration: 1000, easing: Easing.linear }), -1, false), rotationPaused);
-        refresh()
+        rotate.value = withPause(
+            withRepeat(withTiming(360, { duration: 1000, easing: Easing.linear }), -1, false),
+            rotationPaused
+        );
+        refresh();
+
+        return () => {
+            rotationPaused.value = true;
+            rotate.value = 0;
+            panPosition.value = 0;
+        };
     }, []);
 
     const headerStyle = useAnimatedStyle(() => {
@@ -157,9 +165,9 @@ export default function HomeScreen() {
                         isAtTop.value = offsetY <= 0;
                     }} showsVerticalScrollIndicator={false}>
                     <Animated.View style={[headerStyle, { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingTop: insets.top + 5, paddingBottom: 15, paddingHorizontal: 20, gap: 10 }]}>
-                        {username && user?.id ? <Pressable onPress={() => router.push(`/users/${username}`)}><Image source={`https://uploads.scratch.mit.edu/get_image/user/${user.id}_60x60.png`} style={{ height: 36, width: 36, borderRadius: 36 }} contentFit="stretch" /></Pressable> : <Pressable onPress={() => router.push(`/login`)}><Image source={require("../../assets/avatar2.png")} style={{ height: 36, width: 36, borderRadius: 63 }} contentFit="stretch" /></Pressable>}
+                        {username && user?.id ? <TouchableOpacity onPress={() => router.push(`/users/${username}`)}><Image source={`https://uploads.scratch.mit.edu/get_image/user/${user.id}_60x60.png`} style={{ height: 36, width: 36, borderRadius: 36 }} contentFit="stretch" /></TouchableOpacity> : <TouchableOpacity onPress={() => router.push(`/login`)}><Image source={require("../../assets/avatar2.png")} style={{ height: 36, width: 36, borderRadius: 63 }} contentFit="stretch" /></TouchableOpacity>}
                         <Animated.Image source={require("../../assets/logo-nobg.png")} style={[logoStyle, { height: 65, width: 65 }]} />
-                        <Pressable onPress={() => router.push('/settings')}><MaterialIcons style={{ marginRight: 7 }} name="settings" size={26} contentFit="cover" color={colors.textSecondary} /></Pressable>
+                        <TouchableOpacity onPress={() => router.push('/settings')}><MaterialIcons style={{ marginRight: 7 }} name="settings" size={26} contentFit="cover" color={colors.textSecondary} /></TouchableOpacity>
                     </Animated.View>
                     <Animated.View style={[contentStyle, { backgroundColor: colors.background, paddingBottom: insets.bottom + 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingTop: 10, boxShadow: "0px -2px 10px rgba(0,0,0,0.1)" }]}>
                         {!!username ? <Feed style={{ margin: 20, marginBottom: 0, marginTop: 15 }} username={username} rerender={refreshCount} /> : <SignInPrompt />}
