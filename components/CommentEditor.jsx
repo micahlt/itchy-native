@@ -3,7 +3,7 @@ import { MaterialIcons } from "@expo/vector-icons"
 import { useEffect, useRef, useState } from "react"
 import { useTheme } from "../utils/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import Animated, { useSharedValue, withSpring, withTiming } from "react-native-reanimated";
+import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
 
 export default function CommentEditor({ onSubmit, reply, onClearReply }) {
     const [content, setContent] = useState();
@@ -18,8 +18,12 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
         const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
             const height = e.endCoordinates.height;
             setKeyboardHeight(height);
-            bottomAnim.value = withTiming(height - (insets.bottom - 25))
-        });
+            if (Platform.OS == "ios") {
+                bottomAnim.value = withTiming(height - insets.bottom - 1)
+            } else {
+                bottomAnim.value = withTiming(height - (insets.bottom - 25))
+            }
+    });
 
         const hideSub = Keyboard.addListener('keyboardDidHide', () => {
             setKeyboardHeight(0);

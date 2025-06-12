@@ -65,7 +65,7 @@ export default function App() {
                                 fontWeight: "bold",
                             },
                             headerTintColor: colors.text,
-                            headerLeft: () => Platform.OS === "ios" ? <View style={{ width: 0 }}></View> : <View style={{ width: 4 }}></View>
+                            headerLeft: () => Platform.OS === "ios" ? <></> : <View style={{ width: 4 }}></View>
                         }} >
                             <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: "default" }} />
                             <Stack.Screen name="projects/[id]/index" options={{

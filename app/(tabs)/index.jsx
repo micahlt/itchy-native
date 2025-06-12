@@ -169,7 +169,7 @@ export default function HomeScreen() {
                         <Animated.Image source={require("../../assets/logo-nobg.png")} style={[logoStyle, { height: 65, width: 65 }]} />
                         <TouchableOpacity onPress={() => router.push('/settings')}><MaterialIcons style={{ marginRight: 7 }} name="settings" size={26} contentFit="cover" color={colors.textSecondary} /></TouchableOpacity>
                     </Animated.View>
-                    <Animated.View style={[contentStyle, { backgroundColor: colors.background, paddingBottom: insets.bottom + 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingTop: 10, boxShadow: "0px -2px 10px rgba(0,0,0,0.1)" }]}>
+                    <Animated.View style={[contentStyle, { backgroundColor: colors.background, paddingBottom: Platform.OS == "ios" ? 60 : insets.bottom + 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingTop: 10, boxShadow: "0px -2px 10px rgba(0,0,0,0.1)" }]}>
                         {!!username ? <Feed style={{ margin: 20, marginBottom: 0, marginTop: 15 }} username={username} rerender={refreshCount} /> : <SignInPrompt />}
                         {exploreData?.featured?.length > 0 && <>
                             <View style={{ ...s.scrollHeader, marginTop: 10 }}>

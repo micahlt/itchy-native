@@ -353,7 +353,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Itchy/Itchy.entitlements;
 				CURRENT_PROJECT_VERSION = 40;
-				DEVELOPMENT_TEAM = MTG62W6KP7;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"$(inherited)",
@@ -392,7 +392,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Itchy/Itchy.entitlements;
 				CURRENT_PROJECT_VERSION = 40;
-				DEVELOPMENT_TEAM = MTG62W6KP7;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Itchy/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Itchy;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
