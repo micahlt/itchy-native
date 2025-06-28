@@ -7,7 +7,6 @@ import timeago from "time-ago";
 import { useTheme } from "../utils/theme";
 
 export default function StudioFeedItem({ item }) {
-    console.log("StudioFeedItem", item);
     const router = useRouter();
     const { colors } = useTheme();
     const activityType = useMemo(() => {
