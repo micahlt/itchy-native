@@ -7,8 +7,8 @@ const APIStudio = {
         const data = await res.json();
         return data;
     },
-    getProjects: async (id) => {
-        const res = await fetch(`https://api.scratch.mit.edu/studios/${id}/projects`);
+    getProjects: async (id, offset = 0, limit = 20) => {
+        const res = await fetch(`https://api.scratch.mit.edu/studios/${id}/projects?offset=${offset}&limit=${limit}`);
         const data = await res.json();
         return data;
     },

@@ -14,6 +14,7 @@ import Card from "../../../components/Card";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMMKVString } from "react-native-mmkv";
+import HorizontalContentScroller from "../../../components/HorizontalContentScroller";
 
 export default function Studio() {
     const { id } = useLocalSearchParams();
@@ -42,7 +43,6 @@ export default function Studio() {
             setLoading(false);
         }).catch(console.error);
         ScratchAPIWrapper.studio.getRelationship(myUsername, id, token).then((d) => {
-            console.log(d);
             if (d.following) {
                 setFollowingStatus(true);
             } else {
@@ -80,7 +80,10 @@ export default function Studio() {
             <Stack.Screen
                 options={{
                     title: studio?.title || "Loading...",
-                    headerRight: () => <MaterialIcons.Button onPressIn={openStudio} name='launch' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
+                    headerRight: () => <>
+                        <MaterialIcons.Button onPressIn={() => router.push(`/studios/${id}/comments`)} name='question-answer' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
+                        <MaterialIcons.Button onPressIn={openStudio} name='launch' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
+                    </>
                 }}
             />
             <ScrollView refreshControl={<RefreshControl refreshing={loading} onRefresh={load} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} contentContainerStyle={{ paddingBottom: insets.bottom + 40 }} style={{ flex: 1 }}>
@@ -106,11 +109,6 @@ export default function Studio() {
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>
                             <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
-                                <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/studios/${id}/comments`)}>
-                                    <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Comments</Text>
-                                </Pressable>
-                            </View>
-                            <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
                                 <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/studios/${id}/activity`)}>
                                     <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Activity</Text>
                                 </Pressable>
@@ -124,13 +122,7 @@ export default function Studio() {
                         <Card style={{ padding: 20, marginHorizontal: 20 }}>
                             <LinkifiedText style={{ color: colors.text }} text={studio.description} />
                         </Card>
-                        <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 30, paddingBottom: 0, gap: 10 }}>
-                            <MaterialIcons name='video-library' size={24} color={colors.text} />
-                            <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Projects <Text style={{ color: colors.textSecondary, fontWeight: "normal" }}>({studio.stats.projects == 100 ? "100+" : studio.stats.projects})</Text></Text>
-                        </View>
-                        <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
-                            {projects?.map((project) => (<ProjectCard project={{ ...project }} key={project.id} />))}
-                        </ScrollView>
+                        <HorizontalContentScroller data={projects} itemType="projects" itemCount={studio.stats.projects} headerStyle={{ marginTop: 20 }} iconName="video-library" onShowMore={() => router.push(`/studios/${id}/projects`)} title="Projects" />
                     </>}
             </ScrollView>
         </View>

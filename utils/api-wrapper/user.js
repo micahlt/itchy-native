@@ -36,18 +36,18 @@ const APIUser = {
         const data = await res.json();
         return data;
     },
-    getProjects: async (username) => {
-        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/projects`);
+    getProjects: async (username, offset = 0) => {
+        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/projects?offset=${offset}&limit=20`);
         const data = await res.json();
         return data;
     },
-    getFavorites: async (username) => {
-        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/favorites`);
+    getFavorites: async (username, offset = 0) => {
+        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/favorites?offset=${offset}&limit=20`);
         const data = await res.json();
         return data;
     },
-    getCuratedStudios: async (username) => {
-        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/studios/curate`);
+    getCuratedStudios: async (username, offset = 0) => {
+        const res = await fetch(`https://api.scratch.mit.edu/users/${username}/studios/curate?offset=${offset}&limit=20`);
         const data = await res.json();
         return data;
     },

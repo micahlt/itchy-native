@@ -17,7 +17,6 @@ export default function UserComments() {
     const [comments, setComments] = useState([]);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(true);
-    const [commentContent, setCommentContent] = useState("");
     const [hasScrolledToSelected, setHasScrolledToSelected] = useState(!!comment_id ? false : true);
     const scrollRef = useRef();
     const [user] = useMMKVObject("user");
@@ -96,7 +95,6 @@ export default function UserComments() {
                         return c;
                     }));
                     router.setParams({ comment_id: `comments-${postedID}` });
-                    setCommentContent("");
                     setReply(undefined);
                 } else {
                     setComments((prev) => {

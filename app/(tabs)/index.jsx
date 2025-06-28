@@ -18,17 +18,7 @@ import Animated, { Easing, runOnJS, useAnimatedRef, useAnimatedStyle, useScrollV
 import { withPause } from 'react-native-redash';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-
-const s = new StyleSheet.create({
-    scrollHeader: {
-        flexDirection: "row",
-        alignItems: "center",
-        padding: 20,
-        paddingBottom: 0,
-        paddingTop: 5,
-        gap: 10
-    }
-});
+import HorizontalContentScroller from '../../components/HorizontalContentScroller';
 
 export default function HomeScreen() {
     const { colors } = useTheme();
@@ -171,56 +161,28 @@ export default function HomeScreen() {
                     </Animated.View>
                     <Animated.View style={[contentStyle, { backgroundColor: colors.background, paddingBottom: Platform.OS == "ios" ? 60 : insets.bottom + 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingTop: 10, boxShadow: "0px -2px 10px rgba(0,0,0,0.1)" }]}>
                         {!!username ? <Feed style={{ margin: 20, marginBottom: 0, marginTop: 15 }} username={username} rerender={refreshCount} /> : <SignInPrompt />}
-                        {exploreData?.featured?.length > 0 && <>
-                            <View style={{ ...s.scrollHeader, marginTop: 10 }}>
-                                <MaterialIcons name='workspace-premium' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Featured</Text>
-                            </View>
-                            <ScrollView horizontal contentContainerStyle={{
-                                padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
-                            }} showsHorizontalScrollIndicator={false}>
-                                {exploreData?.featured?.map((item, index) => (<ProjectCard key={index} project={item} />))}
-                            </ScrollView>
-                        </>}
 
-                        {friendsLoves.length > 0 && <>
-                            <View style={s.scrollHeader}>
-                                <MaterialIcons name='people' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Loved by Friends</Text>
-                            </View>
-                            <ScrollView horizontal contentContainerStyle={{
-                                padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
-                            }} showsHorizontalScrollIndicator={false}>
-                                {friendsLoves?.map((item, index) => (<ProjectCard key={index} project={item} />))}
-                            </ScrollView>
-                        </>}
+                        {exploreData?.featured?.length > 0 &&
+                            <HorizontalContentScroller title="Featured Projects" data={exploreData.featured} iconName="workspace-premium" headerStyle={{ marginTop: 10 }} />}
 
-                        {friendsProjects.length > 0 && <>
-                            <View style={s.scrollHeader}>
-                                <MaterialIcons name='people' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Created by Friends</Text>
-                            </View>
-                            <ScrollView horizontal contentContainerStyle={{
-                                padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
-                            }} showsHorizontalScrollIndicator={false}>
-                                {friendsProjects?.map((item, index) => (<ProjectCard key={index} project={item} />))}
-                            </ScrollView>
-                        </>}
+                        {friendsLoves.length > 0 &&
+                            <HorizontalContentScroller title="Friends Loved" data={friendsLoves} iconName="people" />}
 
-                        {exploreData?.topLoved?.length > 0 && <>
-                            <View style={s.scrollHeader}>
-                                <MaterialIcons name='favorite' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Top Loved</Text>
-                            </View>
-                            <ScrollView horizontal contentContainerStyle={{
-                                padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
-                            }} showsHorizontalScrollIndicator={false}>
-                                {exploreData?.topLoved?.map((item, index) => (<ProjectCard key={index} project={item} />))}
-                            </ScrollView>
-                        </>}
+                        {friendsProjects.length > 0 &&
+                            <HorizontalContentScroller title="Created by Friends" data={friendsProjects} iconName="people" />}
+
+                        {exploreData?.topLoved?.length > 0 &&
+                            <HorizontalContentScroller title="Top Loved" data={exploreData.topLoved} iconName="favorite" />}
 
                         {exploreData?.featuredStudios?.length > 0 && <>
-                            <View style={s.scrollHeader}>
+                            <View style={{
+                                flexDirection: "row",
+                                alignItems: "center",
+                                padding: 20,
+                                paddingBottom: 0,
+                                paddingTop: 5,
+                                gap: 10
+                            }}>
                                 <MaterialIcons name='photo-filter' size={24} color={colors.text} />
                                 <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Featured Studios</Text>
                             </View>
@@ -231,29 +193,11 @@ export default function HomeScreen() {
                             </ScrollView>
                         </>}
 
-                        {exploreData?.topRemixed?.length > 0 && <>
-                            <View style={s.scrollHeader}>
-                                <MaterialIcons name='sync' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Top Remixed</Text>
-                            </View>
-                            <ScrollView horizontal contentContainerStyle={{
-                                padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
-                            }} showsHorizontalScrollIndicator={false}>
-                                {exploreData?.topRemixed?.map((item, index) => (<ProjectCard key={index} project={item} />))}
-                            </ScrollView>
-                        </>}
+                        {exploreData?.topRemixed?.length > 0 &&
+                            <HorizontalContentScroller title="Top Remixed" data={exploreData.topRemixed} iconName="sync" />}
 
-                        {exploreData?.newest?.length > 0 && <>
-                            <View style={s.scrollHeader}>
-                                <MaterialIcons name='more-time' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Newest</Text>
-                            </View>
-                            <ScrollView horizontal contentContainerStyle={{
-                                padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
-                            }} showsHorizontalScrollIndicator={false}>
-                                {exploreData?.newest?.map((item, index) => (<ProjectCard key={index} project={item} />))}
-                            </ScrollView>
-                        </>}
+                        {exploreData?.newest?.length > 0 &&
+                            <HorizontalContentScroller title="Newest Projects" data={exploreData.newest} iconName="more-time" />}
                     </Animated.View>
                 </ScrollView>
             </GestureDetector>

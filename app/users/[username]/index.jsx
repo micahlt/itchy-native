@@ -12,6 +12,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import linkWithFallback from "../../../utils/linkWithFallback";
 import StudioCard from "../../../components/StudioCard";
 import { useMMKVString } from "react-native-mmkv";
+import HorizontalContentScroller from "../../../components/HorizontalContentScroller";
 
 export default function User() {
     const { username } = useLocalSearchParams();
@@ -139,29 +140,12 @@ export default function User() {
                         </View>}
                     </View>
                     {profile.featuredProject && <ProjectCard project={profile.featuredProject} width={width - 40} style={{ margin: "auto", marginTop: 0 }} />}
-                    <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 30, paddingBottom: 0, gap: 10 }}>
-                        <MaterialIcons name='auto-awesome' size={24} color={colors.text} />
-                        <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Created Projects</Text>
-                    </View>
-                    <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
-                        {projects?.map((project) => (<ProjectCard project={{ ...project }} key={project.id} />))}
-                    </ScrollView>
 
-                    <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 10, paddingBottom: 0, gap: 10 }}>
-                        <MaterialIcons name='star' size={24} color={colors.text} />
-                        <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Favorites</Text>
-                    </View>
-                    <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
-                        {favorites?.map((project) => (<ProjectCard project={{ ...project }} key={project.id} />))}
-                    </ScrollView>
+                    <HorizontalContentScroller title="Created Projects" data={projects} iconName="auto-awesome" headerStyle={{ marginTop: 16 }} onShowMore={() => router.push(`/users/${username}/projects`)} />
 
-                    <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 20, paddingTop: 10, paddingBottom: 0, gap: 10 }}>
-                        <MaterialIcons name='collections' size={24} color={colors.text} />
-                        <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Curated Studios</Text>
-                    </View>
-                    <ScrollView horizontal contentContainerStyle={{ padding: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
-                        {curatedStudios?.map((studio) => (<StudioCard studio={{ ...studio }} key={studio.id} />))}
-                    </ScrollView>
+                    <HorizontalContentScroller title="Favorites" data={favorites} iconName="star" headerStyle={{ marginTop: 5 }} onShowMore={() => router.push(`/users/${username}/favorites`)} />
+
+                    <HorizontalContentScroller title="Curated Studios" data={curatedStudios} itemType="studios" iconName="collections" headerStyle={{ marginTop: 5 }} onShowMore={() => router.push(`/users/${username}/studios`)} />
                 </>)}
             </ScrollView>
 
