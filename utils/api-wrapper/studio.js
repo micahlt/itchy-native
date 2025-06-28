@@ -12,6 +12,11 @@ const APIStudio = {
         const data = await res.json();
         return data;
     },
+    getActivity: async (id, offset = 0, limit = 20) => {
+        const res = await fetch(`https://api.scratch.mit.edu/studios/${id}/activity?offset=${offset}&limit=${limit}`);
+        const data = await res.json();
+        return data;
+    },
     getComments: async (id, offset = 0, limit = 20, includeReplies = true) => {
         const res = await fetch(`https://api.scratch.mit.edu/studios/${id}/comments?offset=${offset}&limit=${limit}`, {
             headers: {
