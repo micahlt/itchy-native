@@ -1,7 +1,7 @@
 import { View, Text, useWindowDimensions, ScrollView, Share } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import WebView from "react-native-webview";
@@ -16,6 +16,7 @@ import timeago from "time-ago";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
 import RemixNotice from "../../../components/RemixNotice";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import ControlsSheet from "../../../components/ControlsSheet";
 
 export default function Project() {
     const { id } = useLocalSearchParams();
@@ -28,6 +29,7 @@ export default function Project() {
     const router = useRouter();
     const twLink = useTurbowarpLink(id);
     const insets = useSafeAreaInsets();
+    const webViewRef = useRef(null);
 
     const dateInfo = useMemo(() => {
         return {
@@ -76,6 +78,16 @@ export default function Project() {
     document.querySelector("img[title='Full Screen Control']").style.filter = "contrast(0) brightness(1.4)";
     `
 
+    const sendKeyEvent = (key, type) => {
+        const jsCode = `
+          document.dispatchEvent(new KeyboardEvent('${type}', { key: '${key}' }));
+          true;
+        `;
+        console.clear();
+        console.log(`KeyboardEvent('${type}', { key: '${key}' })`);
+        webViewRef.current?.injectJavaScript(jsCode);
+    };
+
     return (
         <View style={{ flex: 1, backgroundColor: colors.background }}>
             <Stack.Screen
@@ -85,7 +97,7 @@ export default function Project() {
                 }}
             />
             <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 10 }}>
-                <WebView source={{ uri: twLink }} containerStyle={{ flex: 0, marginTop: 5, width: width - 40, aspectRatio: 480 / 425, margin: "auto", borderRadius: 10 }} androidLayerType="hardware" renderToHardwareTextureAndroid={true} bounces={false} scrollEnabled={false} overScrollMode="never" allowsFullscreenVideo={true} style={{ backgroundColor: "transparent", }} injectedJavaScript={twJSInject} />
+                <WebView source={{ uri: twLink }} containerStyle={{ flex: 0, marginTop: 5, width: width - 40, aspectRatio: 480 / 425, margin: "auto", borderRadius: 10 }} androidLayerType="hardware" renderToHardwareTextureAndroid={true} bounces={false} scrollEnabled={false} overScrollMode="never" allowsFullscreenVideo={true} style={{ backgroundColor: "transparent", }} injectedJavaScript={twJSInject} ref={webViewRef} />
                 {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
                     <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/users/${metadata?.author?.username}`)} textStyle={{ fontWeight: 'bold' }} />
                     <Chip.Icon icon='favorite' text={approximateNumber(metadata.stats.loves)} color="#ff4750" mode={interactions.loved ? "filled" : "outlined"} onPress={() => toggleInteraction("love")} />
@@ -114,6 +126,7 @@ export default function Project() {
                     {dateInfo.modified != dateInfo.created && <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Modified {dateInfo.modified}</Text>}
                 </Card>}
             </ScrollView>
+            <ControlsSheet onControlPress={sendKeyEvent} />
         </View>
     );
 }
