@@ -20,7 +20,15 @@ const APIStudio = {
     getComments: async (id, offset = 0, limit = 20, includeReplies = true) => {
         const res = await fetch(`https://api.scratch.mit.edu/studios/${id}/comments?offset=${offset}&limit=${limit}`, {
             headers: {
-                Referer: "https://scratch.mit.edu"
+                Referer: `https://scratch.mit.edu/`,
+                "User-Agent": consts.UserAgent,
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Origin: "https://scratch.mit.edu",
+                TE: "trailers",
+                "Cache-Control": "max-age=0, no-cache",
+                Pragma: "no-cache",
+                Connection: "keep-alive",
             }
         });
         let data = await res.json();
@@ -39,7 +47,19 @@ const APIStudio = {
         }
     },
     getCommentReplies: async (id, parentCommentID) => {
-        const res = await fetch(`https://api.scratch.mit.edu/studios/${id}/comments/${parentCommentID}/replies`);
+        const res = await fetch(`https://api.scratch.mit.edu/studios/${id}/comments/${parentCommentID}/replies`, {
+            headers: {
+                Referer: `https://scratch.mit.edu/`,
+                "User-Agent": consts.UserAgent,
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Origin: "https://scratch.mit.edu",
+                TE: "trailers",
+                "Cache-Control": "max-age=0, no-cache",
+                Pragma: "no-cache",
+                Connection: "keep-alive",
+            }
+        });
         const data = await res.json();
         return data;
     },
@@ -48,7 +68,6 @@ const APIStudio = {
             headers: {
                 "X-CSRFToken": csrf,
                 "X-Token": token,
-                "x-requested-with": "XMLHttpRequest",
                 Referer: `https://scratch.mit.edu/`,
                 "User-Agent": consts.UserAgent,
                 Accept: "application/json",
@@ -68,8 +87,15 @@ const APIStudio = {
             })
         };
 
+        console.log(JSON.stringify({
+            content: content,
+            parent_id: parentID,
+            commentee_id: commentee
+        }));
+
         const res = await fetch(`https://api.scratch.mit.edu/proxy/comments/studio/${studioID}`, opts);
         const data = await res.json();
+        console.log(data);
         return data.id;
     },
     deleteComment: async (studioID, commentID, csrf, token) => {

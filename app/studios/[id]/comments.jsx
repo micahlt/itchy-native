@@ -65,8 +65,18 @@ export default function StudioComments() {
     const postComment = (content) => {
         let authorID = null, parentID = null;
         if (!!reply?.id) {
-            parentID = reply.id;
             authorID = reply.author.id;
+            // Find the top-level comment for this reply
+            let topLevelComment = comments.find(c => {
+                if (c.id === reply.id) return true;
+                if (c.replies && c.replies.some(r => r.id === reply.id)) return true;
+                return false;
+            });
+            if (topLevelComment) {
+                parentID = topLevelComment.id;
+            } else {
+                parentID = reply.id; // fallback, should not happen
+            }
         }
         ScratchAPIWrapper.studio.postComment(id, content, csrf, user.token, parentID, authorID).then((postedID) => {
             setRerenderComments(!rerenderComments);
