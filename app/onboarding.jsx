@@ -33,15 +33,21 @@ const data = [{
     imgSrc: onboarding.turbowarp,
 }, {
     key: 5,
+    title: "Custom Controls",
+    description: "For the first time ever, play keyboard-controlled Scratch games on mobile with custom controls that work seamlessly.",
+    imgSrc: onboarding.controller,
+}, {
+    key: 6,
     title: "Search",
     description: "Easily find projects, studios, and even users with our enhanced search engine.",
     imgSrc: onboarding.search,
 }, {
-    key: 6,
+    key: 7,
     title: "Profiles",
     description: "Visit your friends' profiles, check out their projects, and follow users, all in a mobile-friendly format.",
     imgSrc: onboarding.accounts,
-}];
+},
+];
 const { width, height } = Dimensions.get("screen")
 
 export default function Onboarding({ }) {
@@ -116,7 +122,21 @@ export default function Onboarding({ }) {
                     onPressPagination(Math.floor(progress.value) + 1);
                 }
             }} android_ripple={{ color: "#ffffff80", borderless: true, foreground: true, radius: 28 }} style={{ margin: "auto" }}>
-                <View style={{ backgroundColor: "#f4a935", padding: 10, borderRadius: 100, flexDirection: "row", alignItems: "center", justifyContent: "center" }} >
+                <View style={{
+                    backgroundColor: "#f4a935",
+                    padding: 10,
+                    borderRadius: 100,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    // Shadow for iOS
+                    shadowColor: "#000",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    // Shadow for Android
+                    elevation: 5
+                }} >
                     <MaterialIcons name={isAtEnd ? "check" : "play-arrow"} size={36} color="white" />
                 </View>
             </Pressable>

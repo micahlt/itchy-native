@@ -13,6 +13,7 @@ export default function useTurbowarpLink(id) {
             newLink.pathname = `/${id}/embed`;
             newLink.searchParams.set("fullscreen-background", colors.background);
             newLink.searchParams.set("settings-button", "true");
+            newLink.searchParams.set("addons", "pause")
             if (!!username) {
                 newLink.searchParams.set("username", username);
             }

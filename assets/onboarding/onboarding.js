@@ -4,6 +4,7 @@ const messages = require("./onboarding-messages.png");
 const turbowarp = require("./onboarding-turbowarp.png");
 const search = require("./onboarding-search.png");
 const accounts = require("./onboarding-accounts.png");
+const controller = require("./onboarding-controller.png");
 
 export default {
     welcome,
@@ -11,5 +12,6 @@ export default {
     messages,
     turbowarp,
     search,
-    accounts
+    accounts,
+    controller
 };
