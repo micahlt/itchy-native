@@ -59,6 +59,13 @@ export default function Onboarding({ }) {
     const [hasOpenedBefore, setHasOpenedBefore] = useMMKVBoolean("hasOpenedBeforeDev");
     const [isAtEnd, setIsAtEnd] = useState(false);
 
+    // Update isAtEnd whenever progress changes
+    const handleProgressChange = (offsetProgress, absoluteProgress) => {
+        progress.value = absoluteProgress;
+        // If the progress is at or past the last slide, set isAtEnd to true
+        setIsAtEnd(Math.round(absoluteProgress) >= data.length - 1);
+    };
+
     useEffect(() => {
         const listener = nav.addListener('beforeRemove', (e) => {
             if (e.data.action.type === "GO_BACK") {
@@ -88,22 +95,30 @@ export default function Onboarding({ }) {
     };
 
     return <View style={{ flex: 1, backgroundColor: "#0082ff", position: "relative" }}>
-        <Carousel ref={carouselRef} width={width} height={height} data={data} onProgressChange={progress} loop={false} renderItem={({ item }) => (
-            <View
-                style={{
-                    flex: 1,
-                    borderWidth: 0,
-                    justifyContent: "center",
-                }}
-            >
-                <Image
-                    source={item.imgSrc}
-                    style={{ height: width * 0.6, width: width * 0.6, marginHorizontal: "auto" }}
-                />
-                <Text style={{ textAlign: "center", fontSize: 30, fontWeight: "bold", color: "#fff" }}>{item.title}</Text>
-                <Text style={{ textAlign: "center", fontSize: 16, color: "#fff", marginTop: 10, paddingHorizontal: 36, marginBottom: 70 }}>{item.description}</Text>
-            </View>
-        )} />
+        <Carousel
+            ref={carouselRef}
+            width={width}
+            height={height}
+            data={data}
+            onProgressChange={handleProgressChange}
+            loop={false}
+            renderItem={({ item }) => (
+                <View
+                    style={{
+                        flex: 1,
+                        borderWidth: 0,
+                        justifyContent: "center",
+                    }}
+                >
+                    <Image
+                        source={item.imgSrc}
+                        style={{ height: width * 0.6, width: width * 0.6, marginHorizontal: "auto" }}
+                    />
+                    <Text style={{ textAlign: "center", fontSize: 30, fontWeight: "bold", color: "#fff" }}>{item.title}</Text>
+                    <Text style={{ textAlign: "center", fontSize: 16, color: "#fff", marginTop: 10, paddingHorizontal: 36, marginBottom: 70 }}>{item.description}</Text>
+                </View>
+            )}
+        />
         <Pagination.Basic
             progress={progress}
             data={data}
