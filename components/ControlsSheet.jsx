@@ -1,141 +1,76 @@
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { useMemo, useRef, useState } from "react";
-import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useEffect, useRef } from "react";
+import * as Haptics from 'expo-haptics';
+import { Text, useWindowDimensions, View } from "react-native";
 import { useTheme } from "../utils/theme";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import Joystick from "./Controls/Joystick";
+import Dpad from "./Controls/Dpad";
+import ButtonPad from "./Controls/ButtonPad";
+import ExtraButton from "./Controls/ExtraButton";
 import { MaterialIcons } from "@expo/vector-icons";
-import Animated, { useSharedValue, useAnimatedStyle } from "react-native-reanimated";
-import { PanGestureHandler, State } from "react-native-gesture-handler";
+import { router } from "expo-router";
+import { useMMKVObject } from "react-native-mmkv";
+import { TouchableOpacity } from "react-native";
 
-export default function ControlsSheet({ onControlPress = () => { } }) {
+const MAPPING_CONFIG = {
+    controlOptions: {
+        showPrimaryController: true,
+        showSecondaryController: true,
+        primaryController: "joystick",
+        secondaryController: "buttonpad",
+    },
+    controls: {
+        primary: {
+            up: "W",
+            down: "S",
+            left: "A",
+            right: "D",
+        },
+        secondary: {
+            up: "E",
+            down: " ",
+            left: "Q",
+            right: "E",
+        },
+        extra: []
+    },
+}
+
+export default function ControlsSheet({ onControlPress = () => { }, onClose = () => { }, opened = false, height: passedHeight = 300, projectId = 0 }) {
+    const [currentMapping, setCurrentMapping] = useMMKVObject("currentMapping");
+    const [localControllerMappings, setLocalControllerMappings] = useMMKVObject("localControllerMappings");
     const sheetRef = useRef(null);
-    const insets = useSafeAreaInsets();
-    const { colors, isDark } = useTheme();
-    const { height } = useWindowDimensions();
-    const [direction, setDirection] = useState("keyboard");
-    const [alternateUpArrow, setAlternateUpArrow] = useState(false);
-    const [currentKeys, setCurrentKeys] = useState([]);
-    const s = useMemo(() => StyleSheet.create({
-        roundButton: {
-            borderRadius: 5000,
-            paddingHorizontal: 20,
-            paddingVertical: 20,
-            backgroundColor: colors.backgroundSecondary,
-            margin: "auto",
-            alignItems: "center",
-            justifyContent: "center",
-        },
-        buttonText: {
-            color: colors.text,
-            fontSize: 16,
-            textAlign: "center"
-        },
-        buttonContainer: {
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "relative",
-            height: 150,
-            width: 150
-        },
-        arrowButton: {
-            position: "absolute",
-        },
-        upButton: {
-            top: 0,
-        },
-        downButton: {
-            bottom: 0,
-        },
-        leftButton: {
-            left: 0,
-        },
-        rightButton: {
-            right: 0,
-        },
-        centerButton: {
-            alignSelf: "center",
-        },
-    }), [isDark]);
+    const { colors } = useTheme();
+    const { width } = useWindowDimensions();
 
-    const joystickRadius = 75; // Radius of the joystick container
-    const handleRadius = 30; // Radius of the joystick handle
-
-    const handleX = useSharedValue(0);
-    const handleY = useSharedValue(0);
-
-    const handleStyle = useAnimatedStyle(() => ({
-        transform: [
-            { translateX: handleX.value },
-            { translateY: handleY.value },
-        ],
-    }));
-
-    const handleJoystickGesture = (event) => {
-        const { translationX: dx, translationY: dy } = event.nativeEvent;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const maxDistance = joystickRadius - handleRadius;
-
-        // Clamp the handle position within the joystick container
-        const clampedDx = (distance > maxDistance) ? (dx / distance) * maxDistance : dx;
-        const clampedDy = (distance > maxDistance) ? (dy / distance) * maxDistance : dy;
-
-        handleX.value = clampedDx;
-        handleY.value = clampedDy;
-
-        let direction = null;
-        if (distance > maxDistance / 2) {
-            const angle = Math.atan2(dy, dx);
-            if (angle >= -Math.PI / 4 && angle <= Math.PI / 4) {
-                direction = "ArrowRight";
-                setDirection("keyboard-arrow-right");
-            } else if (angle > Math.PI / 4 && angle < (3 * Math.PI) / 4) {
-                direction = "ArrowDown";
-                setDirection("keyboard-arrow-down");
-            } else if (angle <= -Math.PI / 4 && angle > -(3 * Math.PI) / 4) {
-                direction = "ArrowUp";
-                setDirection("keyboard-arrow-up");
-            } else {
-                direction = "ArrowLeft";
-                setDirection("keyboard-arrow-left");
-            }
+    const onControlPressProxy = (key, action) => {
+        if (action === "keydown") {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
         }
+        onControlPress(key, action);
+    }
 
-        if (direction) {
-            onControlPress(direction, "keydown");
-        }
-    };
-
-    const handleJoystickStateChange = (event) => {
-        if (event.nativeEvent.state === State.END) {
-            handleX.value = 0;
-            handleY.value = 0;
-
-            onControlPress("ArrowUp", "keyup");
-            onControlPress("ArrowDown", "keyup");
-            onControlPress("ArrowLeft", "keyup");
-            onControlPress("ArrowRight", "keyup");
-            setDirection("keyboard");
-        }
-    };
-
-    const handleSpaceGesture = (event) => {
-        if (event.nativeEvent.state === State.BEGAN) {
-            onControlPress(" ", "keydown");
-        } else {
-            onControlPress(" ", "keyup");
-        }
-    };
+    useEffect(() => {
+        fetch(`https://itchy-controldb.vercel.app/api/controllermapping?projectId=${projectId}&mappingId=${localControllerMappings[projectId] ? localControllerMappings[projectId] : ""}`)
+            .then((response) => response.json())
+            .then((data) => {
+                if (!data.error) {
+                    setCurrentMapping(data[0]);
+                } else {
+                    setCurrentMapping(MAPPING_CONFIG);
+                }
+            });
+    }, [projectId, localControllerMappings]);
 
     return (
         <BottomSheet
+            onClose={onClose}
             ref={sheetRef}
-            enablePanDownToClose={false}
+            index={opened ? 0 : -1}
+            enablePanDownToClose={true}
             enableDynamicSizing={false}
-            snapPoints={[height / 3]}
-            enableOverDrag={false}
-            handleComponent={null}
+            snapPoints={[passedHeight]}
+            enableOverDrag={true}
             backgroundStyle={{ backgroundColor: colors.backgroundTertiary }}
             style={{
                 borderTopLeftRadius: 10,
@@ -144,45 +79,32 @@ export default function ControlsSheet({ onControlPress = () => { } }) {
                 shadowColor: "#000",
             }}
         >
-            <BottomSheetView style={{ backgroundColor: colors.backgroundTertiary, padding: 10, alignItems: "flex-start", flexDirection: "row", justifyContent: "space-between" }}>
-                <PanGestureHandler
-                    onGestureEvent={handleJoystickGesture}
-                    onHandlerStateChange={handleJoystickStateChange}
-                >
-                    <View
-                        style={{
-                            width: joystickRadius * 2,
-                            height: joystickRadius * 2,
-                            borderRadius: joystickRadius,
-                            backgroundColor: colors.backgroundSecondary,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            position: "relative",
-                        }}
-                    >
-                        <Animated.View
-                            style={[
-                                {
-                                    width: handleRadius * 2,
-                                    height: handleRadius * 2,
-                                    borderRadius: handleRadius,
-                                    backgroundColor: colors.backgroundTertiary,
-                                    position: "absolute",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                },
-                                handleStyle,
-                            ]}
-                        >
-                            <MaterialIcons name={direction} color={colors.text} size={36} />
-                        </Animated.View>
+            <BottomSheetView style={{ backgroundColor: colors.backgroundTertiary, padding: 5, flexDirection: "column", alignItems: "center", justifyContent: "flex-start", height: "100%" }}>
+                {currentMapping?.controlOptions && <>
+                    <View style={{ flex: 0, flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                        {currentMapping.controlOptions.showPrimaryController && <>
+                            {currentMapping.controlOptions.primaryController === "joystick" && <Joystick onControlPress={onControlPressProxy} mapping={currentMapping.controls.primary} />}
+                            {currentMapping.controlOptions.primaryController === "dpad" && <Dpad onControlPress={onControlPressProxy} mapping={currentMapping.controls.primary} />}
+                            {currentMapping.controlOptions.primaryController === "buttonpad" && <ButtonPad onControlPress={onControlPressProxy} mapping={currentMapping.controls.primary} />}
+                        </>}
+                        {currentMapping.controlOptions.showSecondaryController && <>
+                            {currentMapping.controlOptions.secondaryController === "joystick" && <Joystick onControlPress={onControlPressProxy} mapping={currentMapping.controls.secondary} />}
+                            {currentMapping.controlOptions.secondaryController === "dpad" && <Dpad onControlPress={onControlPressProxy} mapping={currentMapping.controls.secondary} />}
+                            {currentMapping.controlOptions.secondaryController === "buttonpad" && <ButtonPad onControlPress={onControlPressProxy} mapping={currentMapping.controls.secondary} />}
+                        </>}
                     </View>
-                </PanGestureHandler>
-                <PanGestureHandler onHandlerStateChange={handleSpaceGesture}>
-                    <View style={{ ...s.roundButton, height: 100, width: 100 }}>
-                        <Text style={s.buttonText}>SPACE</Text>
-                    </View>
-                </PanGestureHandler>
+                    {currentMapping.controls.extra.length > 0 && <View style={{ flex: 1, flexDirection: "row", alignItems: "flex-start", justifyContent: "center", marginTop: 20, borderColor: colors.backgroundSecondary, borderTopWidth: 1, width: "90%", paddingTop: 10, marginHorizontal: width * 0.05, zIndex: 2 }}>
+                        {currentMapping.controls.extra.map((key, index) => (
+                            <ExtraButton key={index} onControlPress={onControlPressProxy} keyboardKey={key} />
+                        ))}
+                    </View>}
+                </>}
+                <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "center", width: "100%", paddingHorizontal: 20, paddingVertical: 10 }}>
+                    {currentMapping?.username && <Text style={{ color: colors.text, opacity: 0.4, marginBottom: -10 }}>Current control setup provided by @{currentMapping.username}</Text>}
+                    <TouchableOpacity onPress={() => router.push(`/projects/${projectId}/controls/find`)} style={{ padding: 20, flexDirection: "row", alignItems: "center", }} android_ripple={{ color: colors.accentTransparent, radius: 30 }}>
+                        <MaterialIcons name="settings" backgroundColor="transparent" color={colors.textSecondary} size={16} /><Text style={{ marginLeft: 10, color: colors.textSecondary, fontSize: 16, fontWeight: "bold" }}>Configure Controls</Text>
+                    </TouchableOpacity>
+                </View>
             </BottomSheetView>
         </BottomSheet>
     );

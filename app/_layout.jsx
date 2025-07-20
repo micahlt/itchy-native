@@ -9,6 +9,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import APIAuth from '../utils/api-wrapper/auth';
 import storage from '../utils/storage';
+import encryptedStorage from '../utils/encryptedStorage';
 
 export default function App() {
     const theme = useColorScheme();
@@ -16,6 +17,8 @@ export default function App() {
     const [twConfig, setTWConfig] = useMMKVObject("twConfig");
     const [user, setUser] = useMMKVObject("user");
     const [cookieSet, setCookieSet] = useMMKVString("cookieSet");
+    const [localControllerMappings, setLocalControllerMappings] = useMMKVObject("localControllerMappings");
+    const [savedLogins, setSavedLogins] = useMMKVObject("savedLogins", encryptedStorage);
     useEffect(() => {
         setColors(theme === "dark" ? darkColors : lightColors);
         if (!twConfig) {
@@ -32,15 +35,57 @@ export default function App() {
                     storage.set("token", d.sessionJSON.user.token);
                     setUser(d.sessionJSON.user);
                 }
-            }).catch((e) => {
-                console.error("Error getting session data: ", e);
+                if (!d.isLoggedIn) {
+                    storage.delete("sessionID");
+                    storage.delete("csrfToken");
+                    storage.delete("cookieSet");
+                    storage.delete("token");
+                    storage.delete("user");
+                    setUser(null);
+                    APIAuth.logout().finally(async () => {
+                        if (!savedLogins) return;
+                        const currentLogin = savedLogins.find((o) => o.username === storage.getString("username"));
+                        if (!currentLogin) return;
+                        APIAuth.login(currentLogin.username, currentLogin.password).then((d) => {
+                            storage.set("sessionID", d.sessionToken)
+                            storage.set("csrfToken", d.csrfToken);
+                            storage.set("username", d.username);
+                            storage.set("cookieSet", d.cookieSet);
+                            storage.set("token", d.sessionJSON.user.token);
+                            setUser(d.sessionJSON.user);
+                            router.dismissTo("/");
+                        }).catch((e) => {
+                            storage.delete("username");
+                        });
+                    })
+                }
+            }).catch(() => {
                 storage.delete("sessionID");
                 storage.delete("csrfToken");
                 storage.delete("cookieSet");
                 storage.delete("token");
                 storage.delete("user");
-                setUser(null);
+                APIAuth.logout().finally(async () => {
+                    if (!savedLogins) { return storage.delete("username"); }
+                    const currentLogin = savedLogins.find((o) => o.username === storage.getString("username"));
+                    if (!currentLogin) { return storage.delete("username"); }
+                    APIAuth.login(currentLogin.username, currentLogin.password).then((d) => {
+                        storage.set("sessionID", d.sessionToken)
+                        storage.set("csrfToken", d.csrfToken);
+                        storage.set("username", d.username);
+                        storage.set("cookieSet", d.cookieSet);
+                        storage.set("token", d.sessionJSON.user.token);
+                        setUser(d.sessionJSON.user);
+                        router.dismissTo("/");
+                    }).catch((e) => {
+                        storage.delete("username");
+                        console.log("DELETING UNAME")
+                    });
+                })
             });
+        }
+        if (!localControllerMappings) {
+            setLocalControllerMappings({});
         }
     }, [])
     Image.clearDiskCache();
@@ -121,6 +166,16 @@ export default function App() {
                                 presentation: "modal",
                                 animation: "default",
                                 title: "Log In"
+                            }} />
+                            <Stack.Screen name="projects/[id]/controls/find" options={{
+                                presentation: "modal",
+                                animation: "fade_from_bottom",
+                                title: "Find Controller Setups"
+                            }} />
+                            <Stack.Screen name="projects/[id]/controls/config" options={{
+                                presentation: "modal",
+                                animation: "fade_from_bottom",
+                                title: "Controller Config"
                             }} />
                             <Stack.Screen name="error" options={{
                                 presentation: "modal",

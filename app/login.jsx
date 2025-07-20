@@ -9,6 +9,7 @@ import { useMMKVObject } from 'react-native-mmkv';
 import { router } from 'expo-router';
 import { Image } from 'expo-image';
 import { MaterialIcons } from '@expo/vector-icons';
+import encryptedStorage from '../utils/encryptedStorage';
 
 export default function LoginScreen() {
     const { colors } = useTheme();
@@ -16,6 +17,7 @@ export default function LoginScreen() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [user, setUser] = useMMKVObject("user");
+    const [savedLogins, setSavedLogins] = useMMKVObject("savedLogins", encryptedStorage);
 
     const logIn = () => {
         ScratchAPIWrapper.auth.login(username, password).then((d) => {
@@ -24,6 +26,10 @@ export default function LoginScreen() {
             storage.set("username", d.username);
             storage.set("cookieSet", d.cookieSet);
             storage.set("token", d.sessionJSON.user.token);
+            setSavedLogins((prev) => {
+                const newLogins = [...(prev || []), { username, password }];
+                return newLogins;
+            });
             setUser(d.sessionJSON.user);
             router.dismissTo("/");
         }).catch((e) => {

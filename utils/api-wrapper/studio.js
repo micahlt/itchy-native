@@ -87,15 +87,8 @@ const APIStudio = {
             })
         };
 
-        console.log(JSON.stringify({
-            content: content,
-            parent_id: parentID,
-            commentee_id: commentee
-        }));
-
         const res = await fetch(`https://api.scratch.mit.edu/proxy/comments/studio/${studioID}`, opts);
         const data = await res.json();
-        console.log(data);
         return data.id;
     },
     deleteComment: async (studioID, commentID, csrf, token) => {

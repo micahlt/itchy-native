@@ -1,8 +1,10 @@
 import consts from "./consts";
 import fetch from "../fetch-provider";
+import CookieManager from "@react-native-cookies/cookies";
 
 const APIAuth = {
     login: async (user, pass) => {
+        await CookieManager.clearAll();
         const csrfFetch = await fetch("https://scratch.mit.edu/csrf_token/");
         let initialCSRF = /scratchcsrftoken=(.*?);/gm.exec(csrfFetch.headers.get("set-cookie"))[1];
         // a lot of this code is taken from
@@ -89,32 +91,40 @@ const APIAuth = {
                 }
             }
         );
+        CookieManager.clearAll();
         if (!logoutFetch.ok) {
             throw new Error(`Error in logging out. ${logoutFetch.status}`);
         }
     },
     getSession: async (existingCookies = "") => {
-        const sessionFetch = await fetch("https://scratch.mit.edu/session?nocache=1", {
+        const sessionFetch = await fetch("https://scratch.mit.edu/session?", {
             method: "GET",
-            credentials: "omit",
+            credentials: "include",
             headers: {
                 Cookie: existingCookies,
+                "Accept-Language": "en-US,en;q=0.5",
+                Connection: "keep-alive",
                 "User-Agent": consts.UserAgent,
                 Referer: "https://scratch.mit.edu/",
                 "Cache-Control": "max-age=0, no-cache",
                 "X-Requested-With": "XMLHttpRequest",
                 Pragma: "no-cache",
-                Accept: "application/json",
+                Accept: "*/*",
+                Host: "scratch.mit.edu",
             }
         });
         const sessionJSON = await sessionFetch.json();
         const setCookie = sessionFetch.headers.get("set-cookie");
-        if (!setCookie) {
-            return false;
+        let csrfToken, cookieSet, token;
+        if (setCookie) {
+            csrfToken = /scratchcsrftoken=(.*?);/gm.exec(setCookie)[1];
+            token = /"(.*)"/gm.exec(setCookie)[1];
+        } else {
+            csrfToken = existingCookies.match(/scratchcsrftoken=(.*?);/gm)[1];
+            token = sessionJSON?.user?.token;
+            cookieSet = existingCookies;
         }
-        const csrfToken = /scratchcsrftoken=(.*?);/gm.exec(setCookie)[1];
-        const token = /"(.*)"/gm.exec(setCookie)[1];
-        const cookieSet =
+        cookieSet =
             "scratchcsrftoken=" +
             csrfToken +
             ";scratchlanguage=en;scratchsessionsid=" +
@@ -124,7 +134,8 @@ const APIAuth = {
             csrfToken,
             sessionToken: token,
             cookieSet,
-            sessionJSON
+            sessionJSON,
+            isLoggedIn: !!sessionJSON?.user
         };
     }
 }

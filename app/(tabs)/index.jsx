@@ -4,12 +4,11 @@ const MAX_PULL_HEIGHT = 75;
 import { Platform, StyleSheet, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
-import { Gesture, GestureDetector, ScrollView, Pressable, TouchableOpacity } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { useTheme } from '../../utils/theme';
 import { useEffect, useState } from 'react';
-import ProjectCard from '../../components/ProjectCard';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
+import { useMMKV, useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import Feed from '../../components/Feed';
 import SignInPrompt from '../../components/SignInPrompt';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,9 +18,13 @@ import { withPause } from 'react-native-redash';
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import HorizontalContentScroller from '../../components/HorizontalContentScroller';
+import APIProject from '../../utils/api-wrapper/project';
+import APIUser from '../../utils/api-wrapper/user';
+import APIAuth from '../../utils/api-wrapper/auth';
 
 export default function HomeScreen() {
     const { colors } = useTheme();
+    const [firstTimeOpened, setFirstTimeOpened] = useMMKV("firstTimeOpened");
     const [exploreData, setExploreData] = useState(null);
     const [friendsLoves, setFriendsLoves] = useState([]);
     const [friendsProjects, setFriendsProjects] = useState([]);
@@ -45,7 +48,6 @@ export default function HomeScreen() {
             rotationPaused
         );
         refresh();
-
         return () => {
             rotationPaused.value = true;
             rotate.value = 0;
