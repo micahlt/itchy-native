@@ -42,6 +42,7 @@ export default function Messages() {
         return <Message message={m.item} />
     };
 
+
     if (!username || !token) {
         return <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.background }}>
             <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, marginBottom: 10, marginHorizontal: 20 }}>Messages</Text>

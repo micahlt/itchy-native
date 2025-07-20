@@ -1,14 +1,14 @@
 const REFRESH_TRIGGER_HEIGHT = 50;
 const MAX_PULL_HEIGHT = 75;
 
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Platform, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { Gesture, GestureDetector, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { useTheme } from '../../utils/theme';
 import { useEffect, useState } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { useMMKV, useMMKVObject, useMMKVString } from 'react-native-mmkv';
+import { useMMKVBoolean, useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import Feed from '../../components/Feed';
 import SignInPrompt from '../../components/SignInPrompt';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,15 +16,12 @@ import StudioCard from '../../components/StudioCard';
 import Animated, { Easing, runOnJS, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
 import { withPause } from 'react-native-redash';
 import { Image } from 'expo-image';
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import HorizontalContentScroller from '../../components/HorizontalContentScroller';
-import APIProject from '../../utils/api-wrapper/project';
-import APIUser from '../../utils/api-wrapper/user';
-import APIAuth from '../../utils/api-wrapper/auth';
 
 export default function HomeScreen() {
     const { colors } = useTheme();
-    const [firstTimeOpened, setFirstTimeOpened] = useMMKV("firstTimeOpened");
+    const [hasOpenedBefore, setHasOpenedBefore] = useMMKVBoolean("hasOpenedBeforeDev");
     const [exploreData, setExploreData] = useState(null);
     const [friendsLoves, setFriendsLoves] = useState([]);
     const [friendsProjects, setFriendsProjects] = useState([]);
@@ -147,6 +144,7 @@ export default function HomeScreen() {
 
     return (
         <View style={{ backgroundColor: colors.accentTransparent }}>
+            {!hasOpenedBefore && <Redirect href="/onboarding" />}
             <GestureDetector gesture={panGesture}>
                 <ScrollView ref={scrollRef} scrollEventThrottle={2} bounces={true} overScrollMode={Platform.OS === 'android' ? "never" : 'auto'} onScrollBeginDrag={(e) => {
                     const offsetY = e.nativeEvent.contentOffset.y;

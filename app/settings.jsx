@@ -112,6 +112,10 @@ export default function SettingsScreen() {
                 <Text style={{ color: colors.text, fontSize: 16 }}>Itchy v{version}</Text>
             </View>
             <View style={s.settingContainer}>
+                <TouchableOpacity onPress={() => router.push("/onboarding")}><Text style={{ color: colors.accent, fontSize: 16, }}>Redo onboarding flow</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={s.settingContainer}>
                 <TouchableOpacity onPress={() => linkWithFallback("https://itchy.micahlindley.com/privacy.html")}><Text style={{ color: colors.accent, fontSize: 16, }}>Privacy Policy</Text>
                 </TouchableOpacity>
             </View>

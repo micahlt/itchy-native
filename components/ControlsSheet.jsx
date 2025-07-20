@@ -38,7 +38,7 @@ const MAPPING_CONFIG = {
 
 export default function ControlsSheet({ onControlPress = () => { }, onClose = () => { }, opened = false, height: passedHeight = 300, projectId = 0 }) {
     const [currentMapping, setCurrentMapping] = useMMKVObject("currentMapping");
-    const [localControllerMappings, setLocalControllerMappings] = useMMKVObject("localControllerMappings");
+    const [localControllerMappings] = useMMKVObject("localControllerMappings");
     const sheetRef = useRef(null);
     const { colors } = useTheme();
     const { width } = useWindowDimensions();
@@ -80,25 +80,29 @@ export default function ControlsSheet({ onControlPress = () => { }, onClose = ()
             }}
         >
             <BottomSheetView style={{ backgroundColor: colors.backgroundTertiary, padding: 5, flexDirection: "column", alignItems: "center", justifyContent: "flex-start", height: "100%" }}>
-                {currentMapping?.controlOptions && <>
-                    <View style={{ flex: 0, flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
-                        {currentMapping.controlOptions.showPrimaryController && <>
-                            {currentMapping.controlOptions.primaryController === "joystick" && <Joystick onControlPress={onControlPressProxy} mapping={currentMapping.controls.primary} />}
-                            {currentMapping.controlOptions.primaryController === "dpad" && <Dpad onControlPress={onControlPressProxy} mapping={currentMapping.controls.primary} />}
-                            {currentMapping.controlOptions.primaryController === "buttonpad" && <ButtonPad onControlPress={onControlPressProxy} mapping={currentMapping.controls.primary} />}
-                        </>}
-                        {currentMapping.controlOptions.showSecondaryController && <>
-                            {currentMapping.controlOptions.secondaryController === "joystick" && <Joystick onControlPress={onControlPressProxy} mapping={currentMapping.controls.secondary} />}
-                            {currentMapping.controlOptions.secondaryController === "dpad" && <Dpad onControlPress={onControlPressProxy} mapping={currentMapping.controls.secondary} />}
-                            {currentMapping.controlOptions.secondaryController === "buttonpad" && <ButtonPad onControlPress={onControlPressProxy} mapping={currentMapping.controls.secondary} />}
-                        </>}
-                    </View>
-                    {currentMapping.controls.extra.length > 0 && <View style={{ flex: 1, flexDirection: "row", alignItems: "flex-start", justifyContent: "center", marginTop: 20, borderColor: colors.backgroundSecondary, borderTopWidth: 1, width: "90%", paddingTop: 10, marginHorizontal: width * 0.05, zIndex: 2 }}>
-                        {currentMapping.controls.extra.map((key, index) => (
-                            <ExtraButton key={index} onControlPress={onControlPressProxy} keyboardKey={key} />
-                        ))}
-                    </View>}
-                </>}
+                {currentMapping?.controlOptions ? (
+                    <>
+                        <View style={{ flex: 0, flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                            {currentMapping.controlOptions.showPrimaryController && <>
+                                {currentMapping.controlOptions.primaryController === "joystick" && <Joystick onControlPress={onControlPressProxy} mapping={currentMapping.controls.primary} />}
+                                {currentMapping.controlOptions.primaryController === "dpad" && <Dpad onControlPress={onControlPressProxy} mapping={currentMapping.controls.primary} />}
+                                {currentMapping.controlOptions.primaryController === "buttonpad" && <ButtonPad onControlPress={onControlPressProxy} mapping={currentMapping.controls.primary} />}
+                            </>}
+                            {currentMapping.controlOptions.showSecondaryController && <>
+                                {currentMapping.controlOptions.secondaryController === "joystick" && <Joystick onControlPress={onControlPressProxy} mapping={currentMapping.controls.secondary} />}
+                                {currentMapping.controlOptions.secondaryController === "dpad" && <Dpad onControlPress={onControlPressProxy} mapping={currentMapping.controls.secondary} />}
+                                {currentMapping.controlOptions.secondaryController === "buttonpad" && <ButtonPad onControlPress={onControlPressProxy} mapping={currentMapping.controls.secondary} />}
+                            </>}
+                        </View>
+                        {currentMapping.controls.extra.length > 0 && <View style={{ flex: 1, flexDirection: "row", alignItems: "flex-start", justifyContent: "center", marginTop: 20, borderColor: colors.backgroundSecondary, borderTopWidth: 1, width: "90%", paddingTop: 10, marginHorizontal: width * 0.05, zIndex: 2 }}>
+                            {currentMapping.controls.extra.map((key, index) => (
+                                <ExtraButton key={index} onControlPress={onControlPressProxy} keyboardKey={key} />
+                            ))}
+                        </View>}
+                    </>
+                ) : (
+                    <Text style={{ color: colors.text }}>Loading controls...</Text>
+                )}
                 <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "center", width: "100%", paddingHorizontal: 20, paddingVertical: 10 }}>
                     {currentMapping?.username && <Text style={{ color: colors.text, opacity: 0.4, marginBottom: -10 }}>Current control setup provided by @{currentMapping.username}</Text>}
                     <TouchableOpacity onPress={() => router.push(`/projects/${projectId}/controls/find`)} style={{ padding: 20, flexDirection: "row", alignItems: "center", }} android_ripple={{ color: colors.accentTransparent, radius: 30 }}>

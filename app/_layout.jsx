@@ -10,6 +10,7 @@ import { Image } from 'expo-image';
 import APIAuth from '../utils/api-wrapper/auth';
 import storage from '../utils/storage';
 import encryptedStorage from '../utils/encryptedStorage';
+import { router } from 'expo-router';
 
 export default function App() {
     const theme = useColorScheme();
@@ -111,7 +112,7 @@ export default function App() {
                             },
                             headerTintColor: colors.text,
                             headerLeft: () => Platform.OS === "ios" ? <></> : <View style={{ width: 4 }}></View>
-                        }} >
+                        }}>
                             <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: "default" }} />
                             <Stack.Screen name="projects/[id]/index" options={{
                                 presentation: "modal",
@@ -156,6 +157,10 @@ export default function App() {
                                 presentation: "modal",
                                 animation: "fade_from_bottom",
                                 headerTitle: "What's Happening"
+                            }} />
+                            <Stack.Screen name="onboarding" options={{
+                                animation: "fade_from_bottom",
+                                headerShown: false
                             }} />
                             <Stack.Screen name="settings" options={{
                                 presentation: "modal",
