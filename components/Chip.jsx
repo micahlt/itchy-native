@@ -11,7 +11,7 @@ const ImageChip = ({ imageURL = "", text = "", onPress = () => { }, textStyle, m
     const onPressFn = useCallback(() => {
         onPress();
     }, [onPress]);
-    return <View style={{ marginRight: "auto", flexDirection: "row", borderRadius: 20, height: 32, overflow: "visible", borderColor: mode == "outlined" ? colors.backgroundTertiary : "transparent", borderWidth: mode == "outlined" ? 1 : 0, ...style }}>
+    return <View style={{ marginRight: "auto", flexDirection: "row", borderRadius: 20, height: 32, overflow: "hidden", borderColor: mode == "outlined" ? colors.backgroundTertiary : "transparent", borderWidth: mode == "outlined" ? 1 : 0, ...style }}>
         <Pressable provider={provider} style={{ alignItems: "center", gap: 5, paddingRight: 12, borderRadius: 20, height: 32, marginRight: "auto" }} android_ripple={{ borderless: false }} onPress={onPressFn}>
             <View style={{ flexDirection: "row", alignItems: "center", height: 32, gap: 5 }}>
                 <Image source={{ uri: imageURL }} style={{ width: 32, height: 32, aspectRatio: 1, borderRadius: 16, backgroundColor: '#ffffff' }} />
