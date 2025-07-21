@@ -10,7 +10,7 @@ import ExtraButton from "./Controls/ExtraButton";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useMMKVObject } from "react-native-mmkv";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 const MAPPING_CONFIG = {
     controlOptions: {

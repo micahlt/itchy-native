@@ -6,15 +6,17 @@ import { MaterialIcons } from "@expo/vector-icons";
 import tinycolor from "tinycolor2";
 import { useCallback, useMemo } from "react";
 
-const ImageChip = ({ imageURL = "", text = "", onPress = () => { }, textStyle, mode = "filled", style = {} }) => {
+const ImageChip = ({ imageURL = "", text = "", onPress = () => { }, textStyle, mode = "filled", style = {}, provider = "native" }) => {
     const { colors } = useTheme();
     const onPressFn = useCallback(() => {
         onPress();
     }, [onPress]);
-    return <View style={{ borderRadius: 20, height: 32, overflow: "hidden", borderColor: mode == "outlined" ? colors.backgroundTertiary : "transparent", borderWidth: mode == "outlined" ? 1 : 0, ...style }}>
-        <Pressable style={{ flexDirection: "row", alignItems: "center", gap: 5, paddingRight: 12, borderRadius: 20, height: 32 }} android_ripple={{ color: colors.ripple, borderless: false }} onPress={onPressFn}>
-            <Image source={{ uri: imageURL }} style={{ width: 30, aspectRatio: 1, borderRadius: 16, marginTop: -2 }} />
-            <Text style={{ color: colors.text, marginLeft: 4, ...textStyle }}>{text}</Text>
+    return <View style={{ marginRight: "auto", flexDirection: "row", borderRadius: 20, height: 32, overflow: "visible", borderColor: mode == "outlined" ? colors.backgroundTertiary : "transparent", borderWidth: mode == "outlined" ? 1 : 0, ...style }}>
+        <Pressable provider={provider} style={{ alignItems: "center", gap: 5, paddingRight: 12, borderRadius: 20, height: 32, marginRight: "auto" }} android_ripple={{ borderless: false }} onPress={onPressFn}>
+            <View style={{ flexDirection: "row", alignItems: "center", height: 32, gap: 5 }}>
+                <Image source={{ uri: imageURL }} style={{ width: 32, height: 32, aspectRatio: 1, borderRadius: 16, backgroundColor: '#ffffff' }} />
+                <Text style={{ color: colors.text, marginLeft: 4, ...textStyle }}>{text}</Text>
+            </View>
         </Pressable>
     </View>;
 };

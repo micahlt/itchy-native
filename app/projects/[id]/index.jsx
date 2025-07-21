@@ -167,7 +167,7 @@ true;`
                     onMessage={(e) => console.log("WebView | ", e.nativeEvent.data)}
                     onLayout={(event) => {
                         const { x, y, width, height } = event.nativeEvent.layout;
-                        setControlsHeight(appHeight - (y + height + insets.top)); // Update controlsHeight based on the WebView's position
+                        setControlsHeight(appHeight - (y + height + insets.top - 8)); // Update controlsHeight based on the WebView's position
                     }}
                 />
                 {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>

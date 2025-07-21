@@ -83,11 +83,12 @@ export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
                 icon="keyboard-arrow-up"
                 style={{
                     position: "absolute",
-                    top: 0,
+                    top: 1,
                     left: buttonSize,
                     borderTopLeftRadius: 8,
                     borderTopRightRadius: 8,
-                    borderWidth: 0
+                    borderWidth: 0,
+                    marginBottom: 0
                 }}
             />
 
