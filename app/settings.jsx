@@ -116,6 +116,10 @@ export default function SettingsScreen() {
                 </TouchableOpacity>
             </View>
             <View style={s.settingContainer}>
+                <TouchableOpacity onPress={() => router.push("/rtctest")}><Text style={{ color: colors.accent, fontSize: 16, }}>RTC test</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={s.settingContainer}>
                 <TouchableOpacity onPress={() => linkWithFallback("https://itchy.micahlindley.com/privacy.html")}><Text style={{ color: colors.accent, fontSize: 16, }}>Privacy Policy</Text>
                 </TouchableOpacity>
             </View>

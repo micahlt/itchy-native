@@ -1,5 +1,5 @@
 import { Text, TouchableOpacity, View } from "react-native";
-import Pressable from "./Pressable";
+import { Pressable } from "react-native-gesture-handler";
 import { useTheme } from "../utils/theme";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";

@@ -172,6 +172,11 @@ export default function App() {
                                 animation: "default",
                                 title: "Log In"
                             }} />
+                            <Stack.Screen name="rtctest" options={{
+                                presentation: "modal",
+                                animation: "default",
+                                title: "RTC Test"
+                            }} />
                             <Stack.Screen name="projects/[id]/controls/find" options={{
                                 presentation: "modal",
                                 animation: "fade_from_bottom",

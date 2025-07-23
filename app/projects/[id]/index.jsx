@@ -1,7 +1,7 @@
 import { View, Text, useWindowDimensions, ScrollView, Share, Platform } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
-import { useEffect, useMemo, useRef, useState, useLayoutEffect } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import WebView from "react-native-webview";
@@ -17,6 +17,9 @@ import LinkifiedText from "../../../utils/regex/LinkifiedText";
 import RemixNotice from "../../../components/RemixNotice";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ControlsSheet from "../../../components/ControlsSheet";
+import MultiPlayConfigSheet from "../../../components/MultiPlayConfigSheet";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { useMultiplayerRTC } from "../../../utils/hooks/useMultiplayerRTC";
 
 export default function Project() {
     const { id } = useLocalSearchParams();
@@ -32,7 +35,98 @@ export default function Project() {
     const twLink = useTurbowarpLink(id);
     const insets = useSafeAreaInsets();
     const webViewRef = useRef(null);
+    const onlineConfigSheetRef = useRef(null);
     const { height: appHeight } = useWindowDimensions();
+    const [activeOnlineTab, setActiveOnlineTab] = useState("create");
+    const [timeOffset, setTimeOffset] = useState(0);
+    const sendKeyEvent = (key, type, source = "local") => {
+        const message = JSON.stringify({ key, type });
+        if (source === "local") {
+            sendMessage(message);
+        }
+        webViewRef.current?.injectJavaScript(`
+            (function(){
+                window.postMessage(${JSON.stringify(message)},'*');
+            })();
+            true;`)
+    };
+    const startProject = () => {
+        const message = JSON.stringify({ type: "flag" })
+        webViewRef.current?.injectJavaScript(`
+            (function(){
+                window.postMessage(${JSON.stringify(message)},'*');
+            })();
+            true;`);
+    }
+    const handleRemoteMessage = useCallback((msg) => {
+        // Handle both string and object messages
+        if (typeof msg === 'string') {
+            try {
+                msg = JSON.parse(msg);
+            } catch (e) {
+                console.error("Failed to parse message:", e);
+                return;
+            }
+        }
+
+        if (msg.type === "host-time") {
+            console.log("Received host time:", msg.hostTime);
+            const clientTime = Date.now();
+            console.log("Client time:", new Date(clientTime).toLocaleTimeString());
+            console.log("Host time:", new Date(msg.hostTime).toLocaleTimeString());
+            const offset = msg.delayMs; // Host time minus client time
+            console.log("Calculated time offset:", offset);
+            setTimeOffset(offset); // Store the offset
+        } else if (msg.type === "flag") {
+            console.log("flag!")
+            closeOnlineConfigSheet();
+            if (msg.delayMs < 0) {
+                console.warn('Start time already passed — start immediately.');
+                startProject();
+            } else {
+                console.log(`Starting in ${msg.delayMs}ms`);
+                setTimeout(startProject, msg.delayMs);
+            }
+        } else if (msg.type == "keyup" || msg.type == "keydown") {
+            const message = JSON.stringify({ type: msg.type, key: msg.key });
+            webViewRef.current?.injectJavaScript(`
+                (function(){
+                    window.postMessage(${JSON.stringify(message)},'*');
+                })();
+                true;`);
+        } else if (msg.type === "mouse") {
+            msg = JSON.stringify(msg);
+            webViewRef.current?.injectJavaScript(`
+                (function(){
+                    window.postMessage(${JSON.stringify(msg)},'*');
+                })();
+                true;`);
+        }
+    }, [webViewRef, connected, isHost, roomCode]);
+    const {
+        roomCode,
+        isHost,
+        connected,
+        log,
+        createRoom,
+        joinRoom,
+        setRoomCode,
+        sendMessage,
+        disconnect,
+    } = useMultiplayerRTC(null, handleRemoteMessage);
+
+    const startMultiPlayGame = useCallback(() => {
+        const delayMs = 1500; // Start in 1.5 seconds
+        const flagMsg = { type: "flag", delayMs };
+        sendMessage(JSON.stringify(flagMsg));
+        const hostMsg = JSON.stringify({ type: "amIHost", value: isHost });
+        webViewRef.current?.injectJavaScript(`
+                (function(){
+                    window.postMessage(${JSON.stringify(hostMsg)},'*');
+                })();
+                true;`);
+
+    }, [sendMessage, isHost, startProject]);
 
     const dateInfo = useMemo(() => {
         return {
@@ -83,28 +177,133 @@ export default function Project() {
     (function () {
     if (window.itchyInputInitialized) return;
     window.itchyInputInitialized = true;
+    window.amIHost = ${isHost};
 
     const activeKeys = new Set();
 
-    function updateVMKeysPressed() {
-        const keyboard = window.vm?.runtime?.ioDevices?.keyboard;
-        if (keyboard) {
-          // Replace the internal list directly with a copy of our current set
-            keyboard._keysPressed = Array.from(activeKeys);
-        }
+    // Listen for "flag" events immediately
+    window.addEventListener("message", (e) => {
+      try {
+        const msg = JSON.parse(e.data);
+        if (msg.type === "flag") {
+          window.ReactNativeWebView?.postMessage("FLAG!");
+          document.querySelector('img[title="Go"]').click();
+        } else if (msg.type === "mouse") {
+         const canvas = document.querySelector("canvas");
+        const localRect = canvas.getBoundingClientRect();
+        const localWidth = canvas.width;
+        const localHeight = canvas.height;
+        const scaleX = localWidth / msg.canvasWidth;
+  const scaleY = localHeight / msg.canvasHeight;
+          window.ReactNativeWebView?.postMessage("MOUSEEVENT: " + localWidth);
+          
+          // Format the mouse event properly for the VM
+          const mouseData = {
+            x: msg.x * scaleX,
+            y: msg.y * scaleY,
+            canvasWidth: localWidth,
+            canvasHeight: localHeight,
+            isDown: msg.isDown,
+            wasDragged: false,
+            button: 0
+  };
+  try {
+    window.ReactNativeWebView?.postMessage("msg" + JSON.stringify(msg.x) + " " + JSON.stringify(msg.y));
+    window.ReactNativeWebView?.postMessage("converted" + JSON.stringify(mouseData.x) + " " + JSON.stringify(mouseData.y));
+    window.ReactNativeWebView?.postMessage(JSON.stringify(window.vm.runtime.ioDevices.mouse._pickTarget(msg.x, msg.y)));
+    } catch (err) {
+        window.ReactNativeWebView?.postMessage("err:" + JSON.stringify(err));
     }
+  window.vm.postIOData("mouse", mouseData);
+  window.ReactNativeWebView?.postMessage("buttons: " + JSON.stringify(window.vm.runtime.ioDevices.mouse._buttons) + " isDown: " + msg.isDown);
+        } else if (msg.type === "amIHost") {
+          window.ReactNativeWebView?.postMessage("AM I HOST: " + msg.value);
+          window.amIHost = msg.value;
+        }
+      } catch (err) {
+        console.error("Error parsing itchy message:", err);
+      }
+    });
+
+    document.querySelector("canvas").addEventListener("pointerdown", (e) => {
+      if (!amIHost) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      const canvas = document.querySelector("canvas");
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const data = {
+        type: "mouse",
+        canvasHeight: canvas.height,
+        canvasWidth: canvas.width, 
+        x: x * (canvas.width / rect.width),
+        y: y * (canvas.height / rect.height),
+        isDown: true
+      };
+      window.ReactNativeWebView?.postMessage(JSON.stringify(data));
+    });
+
+    document.querySelector("canvas").addEventListener("pointerup", (e) => {
+      if (!amIHost) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      const canvas = document.querySelector("canvas");
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const data = {
+        type: "mouse",
+        canvasHeight: canvas.height,
+        canvasWidth: canvas.width,
+        x: x * (canvas.width / rect.width),
+        y: y * (canvas.height / rect.height),
+        isDown: false
+      };
+      
+      window.ReactNativeWebView?.postMessage(JSON.stringify(data));
+    });
+
+    document.querySelector("canvas").addEventListener("pointermove", (e) => {
+      if (!amIHost) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      const canvas = document.querySelector("canvas");
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const data = {
+        type: "mouse",
+        canvasHeight: canvas.height,
+        canvasWidth: canvas.width,
+        x: x * (canvas.width / rect.width),
+        y: y * (canvas.height / rect.height),
+        isDown: undefined
+      };
+      
+      window.ReactNativeWebView?.postMessage(JSON.stringify(data));
+    });
 
     // Wait for the VM to be ready
     const waitForVM = setInterval(() => {
-    const keyboard = window.vm?.runtime?.ioDevices?.keyboard;
+        const keyboard = window.vm?.runtime?.ioDevices?.keyboard;
     if (keyboard && keyboard._keysPressed) {
-      clearInterval(waitForVM);
+        clearInterval(waitForVM);
 
       // Start the message listener
       window.addEventListener("message", (e) => {
         try {
           const { key, type } = JSON.parse(e.data);
-          if (!key || !type) return;
+          if (!type) return;
 
           if (type === "keydown") {
             activeKeys.add(keyboard._keyStringToScratchKey(key));
@@ -123,85 +322,135 @@ export default function Project() {
       setInterval(updateVMKeysPressed, 16);
     }   
   }, 100);
+
+function updateVMKeysPressed() {
+  const keyboard = window.vm?.runtime?.ioDevices?.keyboard;
+  if (keyboard) {
+    // Replace the internal list directly with a copy of our current set
+    keyboard._keysPressed = Array.from(activeKeys);
+  }
+}
 })();
 true;`
 
-    const sendKeyEvent = (key, type) => {
-        const message = JSON.stringify({ key, type });
-        webViewRef.current?.injectJavaScript(`
-    (function(){
-      window.postMessage(${JSON.stringify(message)},'*');
-    })();
-    true;
-    `)
+
+    const openOnlineConfigSheet = () => {
+        onlineConfigSheetRef.current?.expand();
     };
 
+    const closeOnlineConfigSheet = () => {
+        onlineConfigSheetRef.current?.close();
+    };
+
+    const moveMouse = useCallback((data) => {
+        if (isHost) {
+            sendMessage(JSON.stringify(data));
+        }
+    }, [webViewRef, connected, isHost, roomCode]);
+
     return (
-        <View style={{ flex: 1, backgroundColor: colors.background }}>
-            <Stack.Screen
-                options={{
-                    title: metadata?.title || "Loading...",
-                    headerRight: () => <><MaterialIcons.Button onPressIn={() => setControlsOpen(true)} name='videogame-asset' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /><MaterialIcons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='question-answer' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /></>
-                }}
-            />
-            <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 10 }}>
-                <WebView
-                    source={{ uri: twLink }}
-                    containerStyle={{
-                        flex: 0,
-                        marginTop: 5,
-                        width: width - 40,
-                        aspectRatio: 480 / 425,
-                        margin: "auto",
-                        borderRadius: 10,
-                    }}
-                    androidLayerType="hardware"
-                    renderToHardwareTextureAndroid={true}
-                    bounces={false}
-                    scrollEnabled={false}
-                    overScrollMode="never"
-                    allowsFullscreenVideo={true}
-                    style={{ backgroundColor: "transparent" }}
-                    injectedJavaScript={twJSInject}
-                    ref={webViewRef}
-                    onMessage={(e) => console.log("WebView | ", e.nativeEvent.data)}
-                    onLayout={(event) => {
-                        const { x, y, width, height } = event.nativeEvent.layout;
-                        setControlsHeight(appHeight - (y + height + insets.top - 8)); // Update controlsHeight based on the WebView's position
+        <>
+            <View style={{ flex: 1, backgroundColor: colors.background }}>
+                <Stack.Screen
+                    options={{
+                        title: metadata?.title || "Loading...",
+                        headerRight: () => <><MaterialIcons.Button onPressIn={() => setControlsOpen(true)} name='videogame-asset' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /><MaterialIcons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='question-answer' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /></>
                     }}
                 />
-                {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
-                    <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/users/${metadata?.author?.username}`)} textStyle={{ fontWeight: 'bold' }} />
-                    <Chip.Icon icon='favorite' text={approximateNumber(metadata.stats.loves)} color="#ff4750" mode={interactions.loved ? "filled" : "outlined"} onPress={() => toggleInteraction("love")} />
-                    <Chip.Icon icon='star' text={approximateNumber(metadata.stats.favorites)} color="#ddbf37" mode={interactions.favorited ? "filled" : "outlined"} onPress={() => toggleInteraction("favorite")} />
-                    <Chip.Icon icon='sync' text={approximateNumber(metadata.stats.remixes)} color={isDark ? "#32ee87" : "#0ca852"} mode="filled" />
-                    <Chip.Icon icon='visibility' text={approximateNumber(metadata.stats.views)} color="#47b5ff" mode="filled" />
-                    <Chip.Icon icon='share' text="Share" color="#7847ff" mode="filled" onPress={() => Share.share(Platform.OS === "android" ? {
-                        message: `https://scratch.mit.edu/projects/${id}`,
-                        dialogTitle: "Share this project"
-                    } : {
-                        url: `https://scratch.mit.edu/projects/${id}`,
-                        message: "Check out this project on Scratch!",
-                    }, {
-                        dialogTitle: "Share this project",
-                        tintColor: colors.accent
-                    })} />
-                </ScrollView>}
-                {metadata?.remix?.parent && <RemixNotice originalProjectID={metadata?.remix?.parent} />}
-                {metadata?.instructions && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16 }}>
-                    <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</Text>
-                    <LinkifiedText style={{ color: colors.text }} text={metadata?.instructions} />
-                </Card>}
-                {metadata?.description && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16 }}>
-                    <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Credits</Text>
-                    <LinkifiedText style={{ color: colors.text }} text={metadata?.description} />
-                </Card>}
-                {dateInfo && <Card style={{ margin: 20, marginTop: 0, marginBottom: 30, padding: 16 }}>
-                    <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Created {dateInfo.created}</Text>
-                    {dateInfo.modified != dateInfo.created && <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Modified {dateInfo.modified}</Text>}
-                </Card>}
-            </ScrollView>
-            <ControlsSheet onControlPress={sendKeyEvent} onClose={() => setControlsOpen(false)} opened={controlsOpen} height={controlsHeight} projectId={id} />
-        </View>
+                <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 10 }}>
+                    <WebView
+                        source={{ uri: twLink }}
+                        containerStyle={{
+                            flex: 0,
+                            marginTop: 5,
+                            width: width - 40,
+                            aspectRatio: 480 / 425,
+                            margin: "auto",
+                            borderRadius: 10,
+                        }}
+                        androidLayerType="hardware"
+                        renderToHardwareTextureAndroid={true}
+                        bounces={false}
+                        scrollEnabled={false}
+                        overScrollMode="never"
+                        allowsFullscreenVideo={true}
+                        style={{ backgroundColor: "transparent" }}
+                        injectedJavaScript={twJSInject}
+                        ref={webViewRef}
+                        onMessage={(e) => {
+                            console.log("WebView | ", e.nativeEvent.data);
+                            try {
+                                const d = JSON.parse(e.nativeEvent.data)
+                                if (d.type === "mouse") {
+                                    moveMouse(d);
+                                }
+                            } catch { }
+                        }}
+                        onLayout={(event) => {
+                            const { y, height } = event.nativeEvent.layout;
+                            setControlsHeight(appHeight - (y + height + insets.top)); // Update controlsHeight based on the WebView's position
+                        }}
+                    />
+                    {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
+                        <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/users/${metadata?.author?.username}`)} textStyle={{ fontWeight: 'bold' }} />
+                        <Chip.Icon icon='tap-and-play' text="MultiPlay" color="#47b5ff" mode="filled" onPress={openOnlineConfigSheet} />
+                        <Chip.Icon icon='favorite' text={approximateNumber(metadata.stats.loves)} color="#ff4750" mode={interactions.loved ? "filled" : "outlined"} onPress={() => toggleInteraction("love")} />
+                        <Chip.Icon icon='star' text={approximateNumber(metadata.stats.favorites)} color="#ddbf37" mode={interactions.favorited ? "filled" : "outlined"} onPress={() => toggleInteraction("favorite")} />
+                        <Chip.Icon icon='sync' text={approximateNumber(metadata.stats.remixes)} color={isDark ? "#32ee87" : "#0ca852"} mode="filled" />
+                        <Chip.Icon icon='visibility' text={approximateNumber(metadata.stats.views)} color="#47b5ff" mode="filled" />
+                        <Chip.Icon icon='share' text="Share" color="#7847ff" mode="filled" onPress={() => Share.share(Platform.OS === "android" ? {
+                            message: `https://scratch.mit.edu/projects/${id}`,
+                            dialogTitle: "Share this project"
+                        } : {
+                            url: `https://scratch.mit.edu/projects/${id}`,
+                            message: "Check out this project on Scratch!",
+                        }, {
+                            dialogTitle: "Share this project",
+                            tintColor: colors.accent
+                        })} />
+                    </ScrollView>}
+                    {metadata?.remix?.parent && <RemixNotice originalProjectID={metadata?.remix?.parent} />}
+                    {metadata?.instructions && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16 }}>
+                        <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</Text>
+                        <LinkifiedText style={{ color: colors.text }} text={metadata?.instructions} />
+                    </Card>}
+                    {metadata?.description && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16 }}>
+                        <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Credits</Text>
+                        <LinkifiedText style={{ color: colors.text }} text={metadata?.description} />
+                    </Card>}
+                    {dateInfo && <Card style={{ margin: 20, marginTop: 0, marginBottom: 30, padding: 16 }}>
+                        <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Created {dateInfo.created}</Text>
+                        {dateInfo.modified != dateInfo.created && <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Modified {dateInfo.modified}</Text>}
+                    </Card>}
+                </ScrollView>
+                <ControlsSheet onControlPress={sendKeyEvent} onClose={() => setControlsOpen(false)} opened={controlsOpen} height={controlsHeight} projectId={id} />
+            </View>
+            <BottomSheet
+                ref={onlineConfigSheetRef}
+                index={-1}
+                snapPoints={["80%"]}
+                enablePanDownToClose={true}
+                backgroundStyle={{
+                    backgroundColor: colors.background
+                }}
+                handleIndicatorStyle={{ backgroundColor: colors.backgroundTertiary }}
+            >
+                <MultiPlayConfigSheet
+                    colors={colors}
+                    isHost={isHost}
+                    connected={connected}
+                    log={log}
+                    roomCode={roomCode}
+                    activeOnlineTab={activeOnlineTab}
+                    onClose={closeOnlineConfigSheet}
+                    setActiveOnlineTab={setActiveOnlineTab}
+                    createRoom={createRoom}
+                    joinRoom={joinRoom}
+                    setRoomCode={setRoomCode}
+                    disconnect={disconnect}
+                    startMultiPlayGame={startMultiPlayGame}
+                />
+            </BottomSheet>
+        </>
     );
 }
