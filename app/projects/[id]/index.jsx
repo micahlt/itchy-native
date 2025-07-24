@@ -126,7 +126,7 @@ export default function Project() {
 
       // Create data channel for metadata transmission
       dataChannel = peerConnection.createDataChannel('metadata', {
-        ordered: true
+        ordered: false
       });
       setupDataChannel();
 
@@ -163,7 +163,10 @@ export default function Project() {
       }
 
       canvasStream = canvas.captureStream(60);
-      canvasStream.getTracks().forEach(track => peerConnection.addTrack(track, canvasStream));
+      canvasStream.getTracks().forEach(track => {
+        track.applyConstraints({ width: 640, height: 480 });
+        peerConnection.addTrack(track, canvasStream);
+      });
     }
 
     function setupDataChannel() {
