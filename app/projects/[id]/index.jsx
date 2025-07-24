@@ -38,6 +38,8 @@ export default function Project() {
   const { height: appHeight } = useWindowDimensions();
   const [connected, setIsConnected] = useState(false);
   const [roomCode, setRoomCode] = useState("");
+  const [connectionStatus, setConnectionStatus] = useState("idle");
+  const [peerConnected, setPeerConnected] = useState(false);
 
   const sendKeyEvent = (key, type, source = "local") => {
     const message = JSON.stringify({ key, type });
@@ -295,6 +297,33 @@ export default function Project() {
         return;
       }
       
+      if (type == "endMultiPlaySession") {
+        // Clean up connections and reset state
+        if (dataChannel) {
+          dataChannel.close();
+          dataChannel = null;
+        }
+        if (peerConnection) {
+          peerConnection.close();
+          peerConnection = null;
+        }
+        if (signalingSocket) {
+          signalingSocket.close();
+          signalingSocket = null;
+        }
+        if (canvasStream) {
+          canvasStream.getTracks().forEach(track => track.stop());
+          canvasStream = null;
+        }
+        
+        // Reset state variables
+        roomCode = null;
+        peerJoined = false;
+        
+        sendToReact({ type: 'session-ended' });
+        return;
+      }
+      
       if (type == "startMultiPlaySession") {
       if (!!signalingSocket) return;
     signalingSocket = new WebSocket(SIGNALING_SERVER_URL);
@@ -406,6 +435,35 @@ true;`
           return moveMouse(d);
         case "room-created":
           setRoomCode(d.roomCode);
+          setConnectionStatus("waiting-for-peer");
+          break;
+        case "peer-joined":
+          setPeerConnected(true);
+          setConnectionStatus("peer-connected");
+          break;
+        case "rtc-connection-state":
+          setConnectionStatus(d.payload);
+          if (d.payload === "connected") {
+            setIsConnected(true);
+          } else if (d.payload === "disconnected" || d.payload === "failed" || d.payload === "closed") {
+            setIsConnected(false);
+            setPeerConnected(false);
+            setRoomCode("");
+            setConnectionStatus("idle");
+          }
+          break;
+        case "peer-disconnected":
+          setPeerConnected(false);
+          setIsConnected(false);
+          setRoomCode("");
+          setConnectionStatus("idle");
+          break;
+        case "signaling-open":
+          setConnectionStatus("signaling-connected");
+          break;
+        case "webrtc-error":
+          setConnectionStatus("error");
+          console.error("WebRTC Error:", d.payload);
           break;
         case "request-metadata":
           // Send project metadata to WebView
@@ -439,6 +497,21 @@ true;`
 
   const createRoom = useCallback(() => {
     const message = { type: "startMultiPlaySession" }
+    webViewRef.current?.injectJavaScript(`
+            (function(){
+                window.postMessage(${JSON.stringify(message)},'*');
+            })();
+            true;`)
+  }, [webViewRef])
+
+  const disconnect = useCallback(() => {
+    // Reset all connection states
+    setIsConnected(false);
+    setPeerConnected(false);
+    setRoomCode("");
+    setConnectionStatus("idle");
+
+    const message = { type: "endMultiPlaySession" }
     webViewRef.current?.injectJavaScript(`
             (function(){
                 window.postMessage(${JSON.stringify(message)},'*');
@@ -528,9 +601,11 @@ true;`
         <MultiPlayConfigSheet
           connected={connected}
           roomCode={roomCode}
+          connectionStatus={connectionStatus}
+          peerConnected={peerConnected}
           onClose={closeOnlineConfigSheet}
           createRoom={createRoom}
-          disconnect={() => { }}
+          disconnect={disconnect}
         />
       </BottomSheet>
     </>
