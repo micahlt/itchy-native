@@ -179,119 +179,176 @@ export default function Project() {
     window.itchyInputInitialized = true;
     window.amIHost = ${isHost};
 
-    const activeKeys = new Set();
+    const SIGNALING_MESSAGE = 'signaling-message';
+    const INPUT_MESSAGE = 'forwarded-input';
+    const START_STREAM_MESSAGE = 'start-stream';
+    const ERROR_MESSAGE = 'webrtc-error';
+    const RTC_STATE_MESSAGE = 'rtc-connection-state';
 
-    // Listen for "flag" events immediately
-    window.addEventListener("message", (e) => {
-      try {
-        const msg = JSON.parse(e.data);
-        if (msg.type === "flag") {
-          window.ReactNativeWebView?.postMessage("FLAG!");
-          document.querySelector('img[title="Go"]').click();
-        } else if (msg.type === "mouse") {
-         const canvas = document.querySelector("canvas");
-        const localRect = canvas.getBoundingClientRect();
-        const localWidth = canvas.width;
-        const localHeight = canvas.height;
-        const scaleX = localWidth / msg.canvasWidth;
-  const scaleY = localHeight / msg.canvasHeight;
-          window.ReactNativeWebView?.postMessage("MOUSEEVENT: " + localWidth);
-          
-          // Format the mouse event properly for the VM
-          const mouseData = {
-            x: msg.x * scaleX,
-            y: msg.y * scaleY,
-            canvasWidth: localWidth,
-            canvasHeight: localHeight,
-            isDown: msg.isDown,
-            wasDragged: false,
-            button: 0
-  };
-  try {
-    window.ReactNativeWebView?.postMessage("msg" + JSON.stringify(msg.x) + " " + JSON.stringify(msg.y));
-    window.ReactNativeWebView?.postMessage("converted" + JSON.stringify(mouseData.x) + " " + JSON.stringify(mouseData.y));
-    window.ReactNativeWebView?.postMessage(JSON.stringify(window.vm.runtime.ioDevices.mouse._pickTarget(msg.x, msg.y)));
-    } catch (err) {
-        window.ReactNativeWebView?.postMessage("err:" + JSON.stringify(err));
-    }
-  window.vm.postIOData("mouse", mouseData);
-  window.ReactNativeWebView?.postMessage("buttons: " + JSON.stringify(window.vm.runtime.ioDevices.mouse._buttons) + " isDown: " + msg.isDown);
-        } else if (msg.type === "amIHost") {
-          window.ReactNativeWebView?.postMessage("AM I HOST: " + msg.value);
-          window.amIHost = msg.value;
+    const SIGNALING_SERVER_URL = 'wss://temp.micahlindley.com';
+    let signalingSocket = null;
+
+    const pcConfig = {
+      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+    };
+
+    let peerConnection = null;
+    let canvasStream = null;
+    let dataChannel = null;
+    let roomCode = null;
+    let peerJoined = false;
+
+    // ---------- Peer Setup ----------
+    function setupPeerConnection() {
+      sendToReact("Setting up peer connection");
+      peerConnection = new RTCPeerConnection(pcConfig);
+
+      peerConnection.onicecandidate = (event) => {
+        sendToReact("onicecandidate event: " + JSON.stringify(event));
+        if (event.candidate) {
+          signalingSocket?.send(JSON.stringify({
+            type: 'signal',
+            payload: { type: 'candidate', candidate: event.candidate, roomCode }
+          }));
         }
-      } catch (err) {
-        console.error("Error parsing itchy message:", err);
-      }
-    });
+      };
 
-    document.querySelector("canvas").addEventListener("pointerdown", (e) => {
-      if (!amIHost) {
-        e.preventDefault();
-        e.stopPropagation();
+      peerConnection.ondatachannel = (event) => {
+        sendToReact("ondatachannel: " + JSON.stringify(event));
+        dataChannel = event.channel;
+        setupDataChannel();
+      };
+
+      peerConnection.onconnectionstatechange = () => {
+        sendToReact({ type: RTC_STATE_MESSAGE, payload: peerConnection.connectionState });
+      };
+    }
+
+    async function startStreaming() {
+      const canvas = document.querySelector('canvas');
+      if (!canvas.captureStream) {
+        sendToReact({ type: ERROR_MESSAGE, payload: 'Canvas captureStream not supported' });
         return;
       }
-      const canvas = document.querySelector("canvas");
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      const data = {
-        type: "mouse",
-        canvasHeight: canvas.height,
-        canvasWidth: canvas.width, 
-        x: x * (canvas.width / rect.width),
-        y: y * (canvas.height / rect.height),
-        isDown: true
-      };
-      window.ReactNativeWebView?.postMessage(JSON.stringify(data));
-    });
 
-    document.querySelector("canvas").addEventListener("pointerup", (e) => {
-      if (!amIHost) {
-        e.preventDefault();
-        e.stopPropagation();
-        return;
-      }
-      const canvas = document.querySelector("canvas");
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      const data = {
-        type: "mouse",
-        canvasHeight: canvas.height,
-        canvasWidth: canvas.width,
-        x: x * (canvas.width / rect.width),
-        y: y * (canvas.height / rect.height),
-        isDown: false
-      };
-      
-      window.ReactNativeWebView?.postMessage(JSON.stringify(data));
-    });
+      canvasStream = canvas.captureStream(60);
+      canvasStream.getTracks().forEach(track => peerConnection.addTrack(track, canvasStream));
+    }
 
-    document.querySelector("canvas").addEventListener("pointermove", (e) => {
-      if (!amIHost) {
-        e.preventDefault();
-        e.stopPropagation();
-        return;
-      }
-      const canvas = document.querySelector("canvas");
-      const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      const data = {
-        type: "mouse",
-        canvasHeight: canvas.height,
-        canvasWidth: canvas.width,
-        x: x * (canvas.width / rect.width),
-        y: y * (canvas.height / rect.height),
-        isDown: undefined
+    function setupDataChannel() {
+      dataChannel.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        if (message.type === INPUT_MESSAGE) handleRemoteInput(message.payload);
       };
-      
-      window.ReactNativeWebView?.postMessage(JSON.stringify(data));
-    });
+
+      dataChannel.onerror = (err) => {
+        sendToReact({ type: ERROR_MESSAGE, payload: err.message });
+      };
+    }
+
+    async function createAndSendOffer() {
+      sendToReact({ type: 'sending-offer' });
+
+      // Start streaming before creating the offer
+      await startStreaming();
+
+      const offer = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offer);
+
+      sendToReact({ type: 'offer-created', payload: JSON.stringify(peerConnection) });
+
+      signalingSocket?.send(JSON.stringify({
+        type: 'signal',
+        payload: { type: 'offer', sdp: offer, roomCode }
+      }));
+    }
+
+    async function handleSignalingMessage(msg) {
+      sendToReact("Handling signaling message: " + JSON.stringify(msg));
+      if (msg.sdp) {
+        const desc = new RTCSessionDescription(msg);
+        await peerConnection.setRemoteDescription(desc);
+        sendToReact({ type: "answer-recieved", payload: JSON.stringify(peerConnection) });
+      } else if (msg.candidate) {
+        try {
+          await peerConnection.addIceCandidate(new RTCIceCandidate(msg.candidate));
+        } catch (e) {
+          sendToReact({ type: ERROR_MESSAGE, payload: e.message });
+        }
+      } else {
+        sendToReact({ type: ERROR_MESSAGE, payload: msg });
+      }
+    }
+
+    // ---------- Input ----------
+    function handleRemoteInput(input) {
+      const canvas = document.querySelector('canvas');
+      const event = new MouseEvent(input.eventType, {
+        bubbles: true,
+        clientX: input.x,
+        clientY: input.y,
+      });
+      canvas.dispatchEvent(event);
+    }
+
+    // ---------- Messaging Bridge ----------
+    function sendToReact(message) {
+      window.ReactNativeWebView?.postMessage(JSON.stringify(message));
+    }
+
+    // ---------- WebSocket Setup ----------
+    signalingSocket = new WebSocket(SIGNALING_SERVER_URL);
+
+    signalingSocket.onopen = () => {
+      signalingSocket.send(JSON.stringify({ type: 'create' }));
+      sendToReact({ type: 'signaling-open' });
+    };
+
+    signalingSocket.onmessage = async (event) => {
+      const msg = JSON.parse(event.data);
+
+      if (msg.type === 'room-created') {
+        roomCode = msg.payload.roomCode;
+        sendToReact({ type: 'room-created', payload: { roomCode } });
+      }
+
+      else if (msg.type === 'peer-joined') {
+        peerJoined = true;
+        if (!peerConnection) {
+            setupPeerConnection();
+        }
+        sendToReact({ type: 'peer-joined' });
+        if (peerConnection) {
+          await createAndSendOffer();
+        }
+      }
+
+      else if (msg.type === 'signal') {
+        await handleSignalingMessage(msg.payload);
+      }
+
+      else if (msg.type === 'peer-disconnected') {
+        sendToReact({ type: 'peer-disconnected' });
+        peerConnection?.close();
+        peerConnection = null;
+        peerJoined = false;
+      }
+
+      else if (msg.type === 'join-failed') {
+        sendToReact({ type: ERROR_MESSAGE, payload: 'Peer failed to join' });
+      }
+
+      else {
+        sendToReact({ type: ERROR_MESSAGE, payload: msg.type });
+      }
+    };
+
+    signalingSocket.onerror = (err) => {
+      sendToReact({ type: ERROR_MESSAGE, payload: 'WebSocket error: ' + err.message });
+    };
+
+
+    const activeKeys = new Set();
 
     // Wait for the VM to be ready
     const waitForVM = setInterval(() => {
