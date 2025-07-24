@@ -155,7 +155,7 @@ export default function HomeScreen() {
                         isAtTop.value = offsetY <= 0;
                     }} showsVerticalScrollIndicator={false}>
                     <Animated.View style={[headerStyle, { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingTop: insets.top + 5, paddingBottom: 15, paddingHorizontal: 20, gap: 10 }]}>
-                        {username && user?.id ? <TouchableOpacity onPress={() => router.push(`/users/${username}`)}><Image source={`https://uploads.scratch.mit.edu/get_image/user/${user.id}_60x60.png`} style={{ height: 36, width: 36, borderRadius: 36 }} contentFit="stretch" /></TouchableOpacity> : <TouchableOpacity onPress={() => router.push(`/login`)}><Image source={require("../../assets/avatar2.png")} style={{ height: 36, width: 36, borderRadius: 63 }} contentFit="stretch" /></TouchableOpacity>}
+                        <TouchableOpacity onPress={() => router.push(`/multiplay`)}><MaterialIcons name="tap-and-play" style={{ marginLeft: 7 }} size={26} color={colors.textSecondary} /></TouchableOpacity>
                         <Animated.Image source={require("../../assets/logo-nobg.png")} style={[logoStyle, { height: 65, width: 65 }]} />
                         <TouchableOpacity onPress={() => router.push('/settings')}><MaterialIcons style={{ marginRight: 7 }} name="settings" size={26} contentFit="cover" color={colors.textSecondary} /></TouchableOpacity>
                     </Animated.View>
