@@ -71,6 +71,8 @@ export default function ControlsSheet({ onControlPress = () => { }, onClose = ()
             enableDynamicSizing={false}
             snapPoints={[passedHeight]}
             enableOverDrag={true}
+            enableContentPanningGesture={false}
+            enableHandlePanningGesture={true}
             backgroundStyle={{ backgroundColor: colors.backgroundTertiary }}
             style={{
                 borderTopLeftRadius: 10,

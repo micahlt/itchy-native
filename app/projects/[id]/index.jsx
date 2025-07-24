@@ -19,7 +19,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ControlsSheet from "../../../components/ControlsSheet";
 import MultiPlayConfigSheet from "../../../components/MultiPlayConfigSheet";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { useMultiplayerRTC } from "../../../utils/hooks/useMultiplayerRTC";
 
 export default function Project() {
   const { id } = useLocalSearchParams();
@@ -42,9 +41,6 @@ export default function Project() {
 
   const sendKeyEvent = (key, type, source = "local") => {
     const message = JSON.stringify({ key, type });
-    if (source === "local") {
-      sendMessage(message);
-    }
     webViewRef.current?.injectJavaScript(`
             (function(){
                 window.postMessage(${JSON.stringify(message)},'*');
@@ -126,6 +122,12 @@ export default function Project() {
       sendToReact("Setting up peer connection");
       peerConnection = new RTCPeerConnection(pcConfig);
 
+      // Create data channel for metadata transmission
+      dataChannel = peerConnection.createDataChannel('metadata', {
+        ordered: true
+      });
+      setupDataChannel();
+
       peerConnection.onicecandidate = (event) => {
         sendToReact("onicecandidate event: " + JSON.stringify(event));
         if (event.candidate) {
@@ -138,12 +140,16 @@ export default function Project() {
 
       peerConnection.ondatachannel = (event) => {
         sendToReact("ondatachannel: " + JSON.stringify(event));
-        dataChannel = event.channel;
-        setupDataChannel();
+        // Handle additional data channels from peer if needed
       };
 
       peerConnection.onconnectionstatechange = () => {
         sendToReact({ type: RTC_STATE_MESSAGE, payload: peerConnection.connectionState });
+        
+        // Send project metadata when connection is established
+        if (peerConnection.connectionState === 'connected') {
+          sendProjectMetadata();
+        }
       };
     }
 
@@ -159,14 +165,60 @@ export default function Project() {
     }
 
     function setupDataChannel() {
+      sendToReact("Setting up data channel");
+      
+      dataChannel.onopen = () => {
+        sendToReact("Data channel opened");
+        // Send project metadata when data channel opens
+        sendProjectMetadata();
+      };
+
       dataChannel.onmessage = (event) => {
-        const message = JSON.parse(event.data);
-        if (message.type === INPUT_MESSAGE) handleRemoteInput(message.payload);
+        console.log("Data channel message received:", event.data);
+        try {
+          const message = JSON.parse(event.data);
+          
+          if (message.type === INPUT_MESSAGE) {
+            handleRemoteInput(message.payload);
+          } else {
+            // Handle keystroke messages directly
+            const { key, type } = message;
+            if (key && type && (type === "keyup" || type === "keydown")) {
+              const keyboard = window.vm?.runtime?.ioDevices?.keyboard;
+              if (keyboard && keyboard._keysPressed) {
+                if (type === "keydown") {
+                  activeKeys.add(keyboard._keyStringToScratchKey(key));
+                } else if (type === "keyup") {
+                  activeKeys.delete(keyboard._keyStringToScratchKey(key));
+                }
+                updateVMKeysPressed();
+                window.ReactNativeWebView?.postMessage("Remote key: " + key + " - " + type + " | Active: [" + Array.from(activeKeys).join(", ") + "]");
+              }
+            }
+          }
+        } catch (err) {
+          console.error("Error parsing data channel message:", err);
+          sendToReact({ type: ERROR_MESSAGE, payload: "Error parsing remote message: " + err.message });
+        }
       };
 
       dataChannel.onerror = (err) => {
         sendToReact({ type: ERROR_MESSAGE, payload: err.message });
       };
+
+      dataChannel.onclose = () => {
+        sendToReact("Data channel closed");
+      };
+    }
+
+    function sendProjectMetadata() {
+      if (!dataChannel || dataChannel.readyState !== 'open') {
+        sendToReact("Cannot send metadata - data channel not ready");
+        return;
+      }
+
+      // Get project metadata from React Native
+      sendToReact({ type: 'request-metadata' });
     }
 
     async function createAndSendOffer() {
@@ -195,13 +247,13 @@ export default function Project() {
       } else if (msg.candidate) {
         try {
           await peerConnection.addIceCandidate(new RTCIceCandidate(msg.candidate));
-        } catch (e) {
-          sendToReact({ type: ERROR_MESSAGE, payload: e.message });
-        }
-      } else {
-        sendToReact({ type: ERROR_MESSAGE, payload: msg });
-      }
-    }
+          } catch (e) {
+            sendToReact({ type: ERROR_MESSAGE, payload: e.message });
+            }
+            } else {
+              sendToReact({ type: ERROR_MESSAGE, payload: msg });
+          }
+          }
 
     // ---------- Input ----------
     function handleRemoteInput(input) {
@@ -210,9 +262,17 @@ export default function Project() {
         bubbles: true,
         clientX: input.x,
         clientY: input.y,
-      });
+        });
       canvas.dispatchEvent(event);
-    }
+      }
+      
+      function updateVMKeysPressed() {
+        const keyboard = window.vm?.runtime?.ioDevices?.keyboard;
+        if (keyboard) {
+          // Replace the internal list directly with a copy of our current set
+          keyboard._keysPressed = Array.from(activeKeys);
+        }
+      }
 
     // ---------- Messaging Bridge ----------
     function sendToReact(message) {
@@ -223,6 +283,18 @@ export default function Project() {
         window.addEventListener("message", (e) => {
       sendToReact("message got" + e)
       const { type } = e.data;
+      
+      // Handle project metadata transmission
+      if (type === "project-metadata" && dataChannel && dataChannel.readyState === 'open') {
+        const metadataMessage = {
+          type: 'PROJECT_METADATA',
+          payload: e.data.metadata
+        };
+        dataChannel.send(JSON.stringify(metadataMessage));
+        sendToReact({ type: 'metadata-sent', payload: e.data.metadata });
+        return;
+      }
+      
       if (type == "startMultiPlaySession") {
       if (!!signalingSocket) return;
     signalingSocket = new WebSocket(SIGNALING_SERVER_URL);
@@ -309,13 +381,6 @@ export default function Project() {
     }   
   }, 100);
 
-function updateVMKeysPressed() {
-  const keyboard = window.vm?.runtime?.ioDevices?.keyboard;
-  if (keyboard) {
-    // Replace the internal list directly with a copy of our current set
-    keyboard._keysPressed = Array.from(activeKeys);
-  }
-}
 })();
 true;`
 
@@ -340,7 +405,32 @@ true;`
         case "mouse":
           return moveMouse(d);
         case "room-created":
-          setRoomCode(d.roomCode)
+          setRoomCode(d.roomCode);
+          break;
+        case "request-metadata":
+          // Send project metadata to WebView
+          if (metadata) {
+            const metadataToSend = {
+              id: id,
+              title: metadata.title,
+              author: metadata.author,
+              instructions: metadata.instructions,
+              description: metadata.description,
+              stats: metadata.stats,
+              history: metadata.history,
+              remix: metadata.remix
+            };
+            const message = { type: "project-metadata", metadata: metadataToSend };
+            webViewRef.current?.injectJavaScript(`
+              (function(){
+                  window.postMessage(${JSON.stringify(message)},'*');
+              })();
+              true;`);
+          }
+          break;
+        case "metadata-sent":
+          console.log("Project metadata sent to peer:", d.payload);
+          break;
       }
     } catch {
       return;

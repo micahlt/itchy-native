@@ -8,6 +8,7 @@ import {
     Pressable,
     ActivityIndicator,
     useWindowDimensions,
+    ScrollView,
 } from 'react-native';
 import {
     RTCView,
@@ -17,6 +18,10 @@ import {
 } from 'react-native-webrtc';
 import { useTheme } from '../utils/theme';
 import Card from '../components/Card';
+import { Stack } from 'expo-router';
+import { MaterialIcons } from '@expo/vector-icons';
+import ControlsSheet from '../components/ControlsSheet';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SIGNALING_SERVER_URL = 'wss://itchyws.micahlindley.com';
 
@@ -24,15 +29,23 @@ export default function VideoClient() {
     const [roomCode, setRoomCode] = useState('');
     const [status, setStatus] = useState('Idle');
     const [remoteStream, setRemoteStream] = useState(null);
+    const [projectMetadata, setProjectMetadata] = useState(null);
     const socketRef = useRef(null);
     const pcRef = useRef(null);
+    const dataChannelRef = useRef(null);
     const { colors } = useTheme();
-    const { width } = useWindowDimensions();
+    const { width, height: appHeight } = useWindowDimensions();
     const [loading, setLoading] = useState(false);
+    const [controlsOpen, setControlsOpen] = useState(false);
+    const [controlsHeight, setControlsHeight] = useState(300);
+    const insets = useSafeAreaInsets();
 
     // Cleanup on component unmount
     useEffect(() => {
         return () => {
+            if (dataChannelRef.current) {
+                dataChannelRef.current.close();
+            }
             if (pcRef.current) {
                 pcRef.current.close();
             }
@@ -73,7 +86,6 @@ export default function VideoClient() {
             } else if (type === 'signal') {
                 console.log("Received signal:", payload);
                 const { sdp, candidate } = payload;
-
                 if (sdp) {
                     const remoteDescription = sdp;
                     console.log("Received description:", remoteDescription);
@@ -107,9 +119,14 @@ export default function VideoClient() {
                 }
             } else if (type === 'peer-disconnected') {
                 setStatus('Host disconnected.');
+                if (dataChannelRef.current) {
+                    dataChannelRef.current.close();
+                    dataChannelRef.current = null;
+                }
                 if (pcRef.current) pcRef.current.close();
                 pcRef.current = null;
                 setRemoteStream(null);
+                setProjectMetadata(null);
             }
         };
 
@@ -152,6 +169,40 @@ export default function VideoClient() {
             }
         };
 
+        pc.ondatachannel = (event) => {
+            console.log('Data channel received:', event.channel);
+            const dataChannel = event.channel;
+            dataChannelRef.current = dataChannel;
+
+            dataChannel.onopen = () => {
+                console.log('Data channel opened');
+                setStatus('Data channel connected.');
+            };
+
+            dataChannel.onmessage = (event) => {
+                try {
+                    const message = JSON.parse(event.data);
+                    console.log('Received data channel message:', message);
+
+                    if (message.type === 'PROJECT_METADATA') {
+                        setProjectMetadata(message.payload);
+                        setStatus(`Connected to: ${message.payload.title}`);
+                    }
+                } catch (err) {
+                    console.error('Error parsing data channel message:', err);
+                }
+            };
+
+            dataChannel.onerror = (err) => {
+                console.error('Data channel error:', err);
+            };
+
+            dataChannel.onclose = () => {
+                console.log('Data channel closed');
+                dataChannelRef.current = null;
+            };
+        };
+
         pc.onconnectionstatechange = () => {
             console.log("Connection state:", pc.connectionState);
         };
@@ -163,42 +214,110 @@ export default function VideoClient() {
         pcRef.current = pc;
     };
 
+    const disconnect = () => {
+        if (dataChannelRef.current) {
+            dataChannelRef.current.close();
+            dataChannelRef.current = null;
+        }
+        if (pcRef.current) {
+            pcRef.current.close();
+            pcRef.current = null;
+        }
+        if (socketRef.current) {
+            socketRef.current.close();
+            socketRef.current = null;
+        }
+        setRemoteStream(null);
+        setProjectMetadata(null);
+        setLoading(false);
+        setRoomCode('');
+    }
+
+    const sendKeyEvent = (key, type, source = "local") => {
+        const message = JSON.stringify({ key, type });
+        if (dataChannelRef.current && dataChannelRef.current.readyState === 'open') {
+            console.log(`Sending key event: ${key} - ${type} (source: ${source})`);
+            dataChannelRef.current.send(message);
+        } else {
+            console.warn('Data channel is not open. Cannot send key event:', message);
+        }
+    };
+
     return (
-        <SafeAreaView style={{ paddingHorizontal: 15 }}>
-            <View style={{ flexDirection: "row", columnGap: 15, alignItems: "center", justifyContent: "center", marginTop: 10 }}>
-                <TextInput
-                    style={{
-                        color: colors.text, minWidth: 200, fontFamily: "monospace", fontSize: 26, textAlign: "center", borderColor: colors.backgroundSecondary, borderWidth: 1, borderRadius: 10, height: 50, flexGrow: 1
-                    }}
-                    value={roomCode}
-                    placeholder="room code"
-                    autoCapitalize="characters"
-                    maxLength={6}
-                    onChangeText={setRoomCode}
-                />
-                <Pressable title="Join Room" style={{ margin: "auto" }} onPress={joinRoom}>
-                    <Text style={{ color: colors.buttonText, paddingHorizontal: 20, paddingVertical: 14, borderRadius: 10, backgroundColor: colors.accent, alignItems: "center", display: "flex", justifyContent: "center" }}>CONNECT</Text>
-                </Pressable>
-            </View>
-            <Text style={{ color: colors.textSecondary, opacity: 0.5, marginVertical: 10 }}>Status: {status}</Text>
-            <View style={{ width: width - 30, aspectRatio: 480 / 360, borderWidth: 2, borderRadius: 10, overflow: "hidden" }}>
-                {!!remoteStream ? (
-                    <RTCView
-                        streamURL={remoteStream.toURL()}
-                        style={{ height: "100%", width: "100%" }}
-                        objectFit="cover"
+        <>
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: insets.bottom + 20 }}>
+                <Stack.Screen options={{ title: 'MultiPlay', headerRight: () => <><MaterialIcons.Button onPressIn={() => setControlsOpen(true)} name='videogame-asset' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />{remoteStream && <MaterialIcons.Button name="stop-circle" onPressIn={disconnect} size={24} backgroundColor={"transparent"} style={{ paddingRight: 0 }} color={colors.text} />}</> }} />
+                {!remoteStream && <View style={{ flexDirection: "row", columnGap: 15, alignItems: "center", justifyContent: "center", marginTop: 10 }}>
+                    <TextInput
+                        style={{
+                            color: colors.text, minWidth: 200, fontFamily: "monospace", fontSize: 26, textAlign: "center", borderColor: colors.backgroundSecondary, borderWidth: 1, borderRadius: 10, height: 50, flexGrow: 1
+                        }}
+                        value={roomCode}
+                        placeholder="room code"
+                        autoCapitalize="characters"
+                        maxLength={6}
+                        onChangeText={setRoomCode}
                     />
-                ) : (
-                    <View style={{ alignItems: "center", height: "100%", width: "100%", justifyContent: "center" }}>
-                        {loading && <ActivityIndicator size={50} color={colors.accent} />}
-                    </View>
+                    <Pressable title="Join Room" style={{ margin: "auto" }} onPress={joinRoom}>
+                        <Text style={{ color: colors.buttonText, paddingHorizontal: 20, paddingVertical: 14, borderRadius: 10, backgroundColor: colors.accent, alignItems: "center", display: "flex", justifyContent: "center" }}>CONNECT</Text>
+                    </Pressable>
+                </View>}
+                <Text style={{ color: colors.textSecondary, opacity: 0.5, marginVertical: 10 }}>Status: {status}</Text>
+                <View style={{ width: width - 30, aspectRatio: 480 / 360, borderWidth: 2, borderRadius: 10, overflow: "hidden" }}>
+                    {!!remoteStream ? (
+                        <RTCView
+                            streamURL={remoteStream.toURL()}
+                            style={{ height: "100%", width: "100%" }}
+                            objectFit="cover"
+                            onLayout={(event) => {
+                                const { y, height } = event.nativeEvent.layout;
+                                setControlsHeight(appHeight - (y + height + insets.top + 20));
+                            }}
+                        />
+                    ) : (
+                        <View style={{ alignItems: "center", height: "100%", width: "100%", justifyContent: "center" }}>
+                            {loading && <ActivityIndicator size={50} color={colors.accent} />}
+                        </View>
+                    )}
+                </View>
+                {projectMetadata && (
+                    <Card style={{ paddingHorizontal: 15, paddingVertical: 10, marginTop: 15 }}>
+                        <Text style={{ color: colors.accent, fontSize: 18, fontWeight: "bold" }}>
+                            {projectMetadata.title}
+                        </Text>
+                        <Text style={{ color: colors.textSecondary, marginTop: 2 }}>
+                            by {projectMetadata.author?.username}
+                        </Text>
+                        {projectMetadata.instructions && (
+                            <View style={{ marginTop: 8 }}>
+                                <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 14 }}>
+                                    Instructions
+                                </Text>
+                                <Text style={{ color: colors.textSecondary, marginTop: 4, lineHeight: 17 }}>
+                                    {projectMetadata.instructions}
+                                </Text>
+                            </View>
+                        )}
+                        <View style={{ flexDirection: 'row', marginTop: 8, flexWrap: 'wrap', gap: 10 }}>
+                            <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
+                                ❤️ {projectMetadata.stats?.loves || 0}
+                            </Text>
+                            <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
+                                ⭐ {projectMetadata.stats?.favorites || 0}
+                            </Text>
+                            <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
+                                👁️ {projectMetadata.stats?.views || 0}
+                            </Text>
+                        </View>
+                    </Card>
                 )}
-            </View>
-            {!remoteStream && <Card style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
-                <Text style={{ color: colors.accent, fontSize: 20, fontWeight: "bold" }}>Introducing MultiPlay</Text>
-                <Text style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>MultiPlay is the first-ever online multiplayer platform for local multiplayer style Scratch games, built-in to Itchy!  You can host a game, make a join code, and send it to a friend to allow them to see and control game you're playing.  Combine this with Itchy's customizable control setups and you can play local multiplayer games with keyboard controls on your phone.</Text>
-                <Text style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>It's worth noting that MultiPlay is still in the alpha stage, so you may encounter connection issues, lag, random inputs, and other stuff like that.</Text>
-            </Card>}
-        </SafeAreaView>
+                {!remoteStream && <Card style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
+                    <Text style={{ color: colors.accent, fontSize: 20, fontWeight: "bold" }}>Introducing MultiPlay</Text>
+                    <Text style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>MultiPlay is the first-ever online multiplayer platform for local multiplayer style Scratch games, built-in to Itchy!  You can host a game, make a join code, and send it to a friend to allow them to see and control game you're playing.  Combine this with Itchy's customizable control setups and you can play local multiplayer games with keyboard controls on your phone.</Text>
+                    <Text style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>It's worth noting that MultiPlay is still in the alpha stage, so you may encounter connection issues, lag, random inputs, and other stuff like that.</Text>
+                </Card>}
+            </ScrollView>
+            <ControlsSheet onControlPress={sendKeyEvent} onClose={() => setControlsOpen(false)} opened={controlsOpen} height={controlsHeight} projectId={projectMetadata?.id} />
+        </>
     );
 }
