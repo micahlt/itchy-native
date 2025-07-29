@@ -54,9 +54,11 @@ const APIProject = {
         const data = await res.json();
         return data;
     },
-    recordView: async (id, username) => {
+    recordView: async (id, username, token, csrf) => {
         const opts = {
             headers: {
+                "X-CSRFToken": csrf,
+                "X-Token": token,
                 "User-Agent": consts.UserAgent,
                 Accept: "application/json",
                 "Content-Length": "0",
