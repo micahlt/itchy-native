@@ -54,7 +54,7 @@ const APIProject = {
         const data = await res.json();
         return data;
     },
-    recordView: async (id) => {
+    recordView: async (id, username) => {
         const opts = {
             headers: {
                 "User-Agent": consts.UserAgent,
@@ -70,7 +70,7 @@ const APIProject = {
         };
 
         try {
-            const res = await fetch(`https://api.scratch.mit.edu/proxy/projects/${id}/views`, opts);
+            const res = await fetch(`https://api.scratch.mit.edu/users/${username}/projects/${id}/views`, opts);
             return res.status === 200;
         } catch (error) {
             console.warn("Failed to record project view:", error);
