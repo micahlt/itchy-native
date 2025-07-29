@@ -1,5 +1,5 @@
 import { Text, TouchableOpacity, View } from "react-native";
-import { Pressable } from "react-native-gesture-handler";
+import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
@@ -29,7 +29,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
             <View style={{ width, ...style, borderRadius: 10, overflow: "hidden" }}>
                 <Pressable
                     provider="gesture-handler"
-                    android_ripple={{ borderless: true, foreground: true }}
+                    android_ripple={{ borderless: false, foreground: true, color: "#ffffff" }}
                     onPress={openProject}
                 >
                     <View style={{

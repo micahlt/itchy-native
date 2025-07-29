@@ -146,7 +146,7 @@ export default function HomeScreen() {
         <View style={{ backgroundColor: colors.accentTransparent }}>
             {!hasOpenedBefore && <Redirect href="/onboarding" />}
             <GestureDetector gesture={panGesture}>
-                <ScrollView ref={scrollRef} scrollEventThrottle={2} bounces={true} overScrollMode={Platform.OS === 'android' ? "never" : 'auto'} onScrollBeginDrag={(e) => {
+                <ScrollView ref={scrollRef} scrollEventThrottle={2} onScrollBeginDrag={(e) => {
                     const offsetY = e.nativeEvent.contentOffset.y;
                     isAtTop.value = offsetY <= 0;
                 }}

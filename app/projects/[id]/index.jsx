@@ -76,6 +76,7 @@ export default function Project() {
   }, [id]);
 
   const toggleInteraction = (interaction) => {
+    console.log("Toggling interaction:", interaction);
     if (interaction == "love") {
       ScratchAPIWrapper.project.setInteraction("loves", !interactions.loved, id, username, token, storage.getString("csrfToken"), storage.getString("cookieSet")).then((d) => {
         if (!d.statusChanged) return;
