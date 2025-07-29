@@ -54,6 +54,29 @@ const APIProject = {
         const data = await res.json();
         return data;
     },
+    recordView: async (id) => {
+        const opts = {
+            headers: {
+                "User-Agent": consts.UserAgent,
+                Accept: "application/json",
+                "Content-Length": "0",
+                Origin: "https://scratch.mit.edu",
+                Referer: `https://scratch.mit.edu/projects/${id}/`,
+                "Cache-Control": "max-age=0, no-cache",
+                Pragma: "no-cache",
+            },
+            referrer: `https://scratch.mit.edu/projects/${id}`,
+            method: "POST"
+        };
+
+        try {
+            const res = await fetch(`https://api.scratch.mit.edu/proxy/projects/${id}/views`, opts);
+            return res.status === 200;
+        } catch (error) {
+            console.warn("Failed to record project view:", error);
+            return false;
+        }
+    },
     getComments: async (projectID, author, limit = 20, offset = 0, includeReplies = true) => {
         const res = await fetch(`https://api.scratch.mit.edu/users/${author}/projects/${projectID}/comments?offset=${offset}&limit=${limit}`);
         const data = await res.json();
