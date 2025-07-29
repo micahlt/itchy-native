@@ -74,14 +74,11 @@ export default function UserComments() {
     }, []);
 
     const postComment = (content) => {
-        let authorID = null, parentID = null;
-        if (!!reply?.author?.image) {
-            authorID = (/https:\/\/cdn2.scratch.mit.edu\/get_image\/user\/(\d+)_60x60.png/g).exec(reply.author.image)[1]
-        }
+        let parentID = null;
         if (!!reply?.id) {
             parentID = reply.id.split("comments-")[1];
         }
-        ScratchAPIWrapper.user.postComment(username, content, csrf, parentID, authorID).then((postedID) => {
+        ScratchAPIWrapper.user.postComment(username, content, csrf, parentID, reply.author.id).then((postedID) => {
             setRerenderComments(!rerenderComments);
             if (!!postedID) {
                 if (!!reply) {

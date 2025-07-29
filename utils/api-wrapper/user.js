@@ -84,6 +84,9 @@ const APIUser = {
             const posterImage = element
                 .querySelector("img.avatar")
                 .getAttribute("src");
+            const posterId = element
+                .querySelector(".comment > .info > div > .reply")
+                .getAttribute("data-commentee-id");
 
             // get replies
             let replies = [];
@@ -115,6 +118,9 @@ const APIUser = {
                 const posterImage = reply
                     .querySelector("img.avatar")
                     .getAttribute("src");
+                const posterId = element
+                    .querySelector(".comment > .info > div > .reply")
+                    .getAttribute("data-commentee-id");
 
                 replies.push({
                     id: commentID,
@@ -122,7 +128,8 @@ const APIUser = {
                     content: decode(commentContent),
                     author: {
                         username: commentPoster,
-                        image: `https:${posterImage}`
+                        image: `https:${posterImage}`,
+                        id: posterId
                     },
                     datetime_created: new Date(commentTime),
                     includesReplies: true
@@ -135,7 +142,8 @@ const APIUser = {
                 replies: replies,
                 author: {
                     username: commentPoster,
-                    image: `https:${posterImage}`
+                    image: `https:${posterImage}`,
+                    id: posterId
                 },
                 datetime_created: new Date(commentTime),
                 includesReplies: true
