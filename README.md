@@ -1,6 +1,8 @@
+![](https://raw.githubusercontent.com/micahlt/itchy-native/refs/heads/master/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp)
+
 # Itchy Native
 
-Itchy Native is an experimental multiplatform rewrite of the [Itchy Ionic](https://github.com/scratch-client-4/itchy-ionic) app, built with React Native + Expo.
+Itchy Native is a mobile app that acts as a client for the [Scratch](https://scratch.mit.edu) website.  It is the next-gen React Native rewrite of the original [Itchy](https://github.com/scratch-client-4/itchy-ionic) app.  Launching officially on iOS and Android in September 2025.
 
 ## Installation
 
