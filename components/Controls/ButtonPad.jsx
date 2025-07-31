@@ -1,13 +1,15 @@
 import { useRef, useState } from "react";
-import { View, Text } from "react-native";
+import { View, Text, useWindowDimensions } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { useTheme } from "../../utils/theme";
 
 export default function ButtonPad({ onControlPress = () => { }, mapping = {} }) {
     const { colors } = useTheme();
+    const { width } = useWindowDimensions();
     const heldDirections = useRef(new Set());
 
-    const buttonSize = 70; // Increased from 60
+    // Responsive sizing based on screen width
+    const buttonSize = Math.max(50, Math.min(70, width * 0.15)); // 9.5% of screen width, min 50, max 70
 
     const handlePress = (direction) => {
         if (!heldDirections.current.has(direction)) {
@@ -62,7 +64,7 @@ export default function ButtonPad({ onControlPress = () => { }, mapping = {} }) 
                         style,
                     ]}
                 >
-                    <Text style={{ color: isPressed ? colors.text : colors.backgroundTertiary, fontSize: 18, fontWeight: "bold" }}>
+                    <Text style={{ color: isPressed ? colors.text : colors.backgroundTertiary, fontSize: Math.max(14, Math.min(18, buttonSize * 0.26)), fontWeight: "bold" }}>
                         {label.toUpperCase()}
                     </Text>
                 </View>

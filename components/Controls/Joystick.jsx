@@ -1,15 +1,17 @@
 import { useRef, useState } from "react";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../../utils/theme";
 
 export default function Joystick({ onControlPress = () => { }, mapping = {} }) {
     const { colors } = useTheme();
+    const { width } = useWindowDimensions();
 
-    const joystickRadius = 90; // Radius of the joystick container
-    const handleRadius = 30; // Radius of the joystick handle
+    // Responsive sizing based on screen width
+    const joystickRadius = Math.max(60, Math.min(90, width * 0.40)); // 12% of screen width, min 60, max 90
+    const handleRadius = joystickRadius / 3; // Keep proportional relationship
 
     const handleX = useSharedValue(0);
     const handleY = useSharedValue(0);
@@ -23,7 +25,7 @@ export default function Joystick({ onControlPress = () => { }, mapping = {} }) {
 
     const calculateDirections = (dx, dy) => {
         const directions = [];
-        const threshold = 20; // Increased threshold for better diagonal detection
+        const threshold = joystickRadius * 0.22; // Dynamic threshold based on joystick size
 
         // Check vertical directions
         if (dy < -threshold) directions.push(mapping.up);
@@ -119,7 +121,7 @@ export default function Joystick({ onControlPress = () => { }, mapping = {} }) {
                 <MaterialIcons
                     name="circle"
                     color={isPressed ? colors.text : colors.backgroundSecondary} // Change color when pressed
-                    size={36}
+                    size={Math.max(24, handleRadius * 1.2)} // Responsive icon size
                 />
             </Animated.View>
         </View>

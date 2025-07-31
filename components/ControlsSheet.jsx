@@ -84,7 +84,7 @@ export default function ControlsSheet({ onControlPress = () => { }, onClose = ()
             <BottomSheetView style={{ backgroundColor: colors.backgroundTertiary, padding: 5, flexDirection: "column", alignItems: "center", justifyContent: "flex-start", height: "100%" }}>
                 {currentMapping?.controlOptions ? (
                     <>
-                        <View style={{ flex: 0, flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%" }}>
+                        <View style={{ flex: 0, flexDirection: "row", alignItems: "center", justifyContent: "space-between", width: "100%", paddingHorizontal: Math.max(10, width * 0.02) }}>
                             {currentMapping.controlOptions.showPrimaryController && <>
                                 {currentMapping.controlOptions.primaryController === "joystick" && <Joystick onControlPress={onControlPressProxy} mapping={currentMapping.controls.primary} />}
                                 {currentMapping.controlOptions.primaryController === "dpad" && <Dpad onControlPress={onControlPressProxy} mapping={currentMapping.controls.primary} />}

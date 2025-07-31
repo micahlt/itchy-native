@@ -1,15 +1,17 @@
 import { useRef, useState } from "react";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../../utils/theme";
 
 export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
     const { colors } = useTheme();
+    const { width } = useWindowDimensions();
     const heldDirections = useRef(new Set());
 
-    const buttonSize = 60; // Increased from 50
-    const iconSize = 32; // Increased from 24
+    // Responsive sizing based on screen width
+    const buttonSize = Math.max(40, Math.min(60, width * 0.30)); // 8% of screen width, min 40, max 60
+    const iconSize = Math.max(20, Math.min(32, buttonSize * 0.53)); // Proportional to button size
 
     const handlePress = (direction) => {
         if (!heldDirections.current.has(direction)) {
@@ -63,7 +65,7 @@ export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
                         style,
                     ]}
                 >
-                    <MaterialIcons name={icon} color={colors.text} size={iconSize} />
+                    <MaterialIcons name={icon} color={isPressed ? colors.text : colors.backgroundTertiary} size={iconSize} />
                 </View>
             </PanGestureHandler>
         );
@@ -85,8 +87,8 @@ export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
                     position: "absolute",
                     top: 1,
                     left: buttonSize,
-                    borderTopLeftRadius: 8,
-                    borderTopRightRadius: 8,
+                    borderTopLeftRadius: Math.max(6, buttonSize * 0.13),
+                    borderTopRightRadius: Math.max(6, buttonSize * 0.13),
                     borderWidth: 0,
                     marginBottom: 0
                 }}
@@ -100,8 +102,8 @@ export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
                     position: "absolute",
                     top: buttonSize,
                     left: 0,
-                    borderTopLeftRadius: 8,
-                    borderBottomLeftRadius: 8,
+                    borderTopLeftRadius: Math.max(6, buttonSize * 0.13),
+                    borderBottomLeftRadius: Math.max(6, buttonSize * 0.13),
                     borderWidth: 0
                 }}
             />
@@ -127,8 +129,8 @@ export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
                     position: "absolute",
                     top: buttonSize,
                     left: buttonSize * 2,
-                    borderTopRightRadius: 8,
-                    borderBottomRightRadius: 8,
+                    borderTopRightRadius: Math.max(6, buttonSize * 0.13),
+                    borderBottomRightRadius: Math.max(6, buttonSize * 0.13),
                     borderWidth: 0
                 }}
             />
@@ -141,8 +143,8 @@ export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
                     position: "absolute",
                     top: buttonSize * 2,
                     left: buttonSize,
-                    borderBottomLeftRadius: 8,
-                    borderBottomRightRadius: 8,
+                    borderBottomLeftRadius: Math.max(6, buttonSize * 0.13),
+                    borderBottomRightRadius: Math.max(6, buttonSize * 0.13),
                     borderWidth: 0
                 }}
             />
