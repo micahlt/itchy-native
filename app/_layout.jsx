@@ -117,7 +117,7 @@ export default function App() {
                             <Stack.Screen name="projects/[id]/index" options={{
                                 animation: "fade_from_bottom",
                                 headerBackButtonDisplayMode: "minimal",
-                                headerBackVisible: true,
+                                headerBackVisible: Platform.OS === "ios" ? true : false,
                                 headerRight: () =>
                                     <MaterialIcons name='question-answer' size={24} color={colors.textSecondary} />
                             }} />
