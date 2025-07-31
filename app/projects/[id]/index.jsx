@@ -94,35 +94,36 @@ export default function Project() {
     }
   }
 
-const twJSInject = `
+  const twJSInject = `
     window.ReactNativeWebView.postMessage("Itchy Custom Code initialized");
-    
-    // Wait for DOM to be fully loaded before applying styles
-    function applyStyles() {
-      try {
-        document.documentElement.style.setProperty('--ui-white', '${colors.backgroundSecondary}');
-        const advancedBtn = document.querySelector("img[title='Open advanced settings']");
-        const fullscreenBtn = document.querySelector("img[title='Full Screen Control']");
-        if (advancedBtn) advancedBtn.style.filter = "invert(0.7)";
-        if (fullscreenBtn) fullscreenBtn.style.filter = "contrast(0) brightness(1.4)";
-        window.ReactNativeWebView.postMessage("Styles applied successfully");
-      } catch (err) {
-        window.ReactNativeWebView.postMessage("Style application error: " + err.message);
-      }
-    }
-    
-    // Apply styles when DOM is ready
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', applyStyles);
-    } else {
-      applyStyles();
-    }
-    
-    (function () {
-    if (window.itchyInputInitialized) return;
-    window.itchyInputInitialized = true;
-    
-    window.ReactNativeWebView.postMessage("Initializing input system...");
+
+// Wait for DOM to be fully loaded before applying styles
+function applyStyles() {
+  try {
+    document.documentElement.style.setProperty('--ui-white', '${colors.backgroundSecondary}');
+    const advancedBtn = document.querySelector("img[title='Open advanced settings']");
+    const fullscreenBtn = document.querySelector("span[role='button']:has(img[title='Full Screen Control'])");
+    if (advancedBtn) advancedBtn.style.filter = "invert(0.7)";
+    // if (fullscreenBtn) fullscreenBtn.style.filter = "contrast(0) brightness(1.4)";
+    if (fullscreenBtn) fullscreenBtn.style.display = "none";
+    window.ReactNativeWebView.postMessage("Styles applied successfully");
+  } catch (err) {
+    window.ReactNativeWebView.postMessage("Style application error: " + err.message);
+  }
+}
+
+// Apply styles when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', applyStyles);
+} else {
+  applyStyles();
+}
+
+(function () {
+  if (window.itchyInputInitialized) return;
+  window.itchyInputInitialized = true;
+
+  window.ReactNativeWebView.postMessage("Initializing input system...");
 
     const SIGNALING_MESSAGE = 'signaling-message';
     const INPUT_MESSAGE = 'forwarded-input';
@@ -171,7 +172,7 @@ const twJSInject = `
 
       peerConnection.onconnectionstatechange = () => {
         sendToReact({ type: RTC_STATE_MESSAGE, payload: peerConnection.connectionState });
-        
+
         // Send project metadata when connection is established
         if (peerConnection.connectionState === 'connected') {
           sendProjectMetadata();
@@ -195,7 +196,7 @@ const twJSInject = `
 
     function setupDataChannel() {
       sendToReact("Setting up data channel");
-      
+
       dataChannel.onopen = () => {
         sendToReact("Data channel opened");
         // Send project metadata when data channel opens
@@ -206,7 +207,7 @@ const twJSInject = `
         console.log("Data channel message received:", event.data);
         try {
           const message = JSON.parse(event.data);
-          
+
           if (message.type === INPUT_MESSAGE) {
             handleRemoteInput(message.payload);
           } else {
@@ -276,13 +277,13 @@ const twJSInject = `
       } else if (msg.candidate) {
         try {
           await peerConnection.addIceCandidate(new RTCIceCandidate(msg.candidate));
-          } catch (e) {
-            sendToReact({ type: ERROR_MESSAGE, payload: e.message });
-            }
-            } else {
-              sendToReact({ type: ERROR_MESSAGE, payload: msg });
-          }
-          }
+        } catch (e) {
+          sendToReact({ type: ERROR_MESSAGE, payload: e.message });
+        }
+      } else {
+        sendToReact({ type: ERROR_MESSAGE, payload: msg });
+      }
+    }
 
     // ---------- Input ----------
     function handleRemoteInput(input) {
@@ -291,117 +292,120 @@ const twJSInject = `
         bubbles: true,
         clientX: input.x,
         clientY: input.y,
-        });
+      });
       canvas.dispatchEvent(event);
+    }
+
+    function updateVMKeysPressed() {
+      const keyboard = window.vm?.runtime?.ioDevices?.keyboard;
+      if (keyboard) {
+        // Replace the internal list directly with a copy of our current set
+        keyboard._keysPressed = Array.from(activeKeys);
       }
-      
-      function updateVMKeysPressed() {
-        const keyboard = window.vm?.runtime?.ioDevices?.keyboard;
-        if (keyboard) {
-          // Replace the internal list directly with a copy of our current set
-          keyboard._keysPressed = Array.from(activeKeys);
-        }
-      }
+    }
 
     // ---------- Messaging Bridge ----------
     function sendToReact(message) {
-        window.ReactNativeWebView?.postMessage(JSON.stringify(message));
+      window.ReactNativeWebView?.postMessage(JSON.stringify(message));
+    }
+
+    // ---------- WebSocket Setup ----------
+    window.addEventListener("message", async (e) => {
+      try {
+        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        const { type } = data;
+
+        window.ReactNativeWebView.postMessage("Message received: " + type);
+
+        // Handle project metadata transmission
+        if (type === "project-metadata" && dataChannel && dataChannel.readyState === 'open') {
+          const metadataMessage = {
+            type: 'PROJECT_METADATA',
+            payload: data.metadata
+          };
+          dataChannel.send(JSON.stringify(metadataMessage));
+          sendToReact({ type: 'metadata-sent', payload: data.metadata });
+          return;
         }
-        
-        // ---------- WebSocket Setup ----------
-        window.addEventListener("message", (e) => {
-      const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-      const { type } = data;
-      
-      // Handle project metadata transmission
-      if (type === "project-metadata" && dataChannel && dataChannel.readyState === 'open') {
-        const metadataMessage = {
-          type: 'PROJECT_METADATA',
-          payload: data.metadata
-        };
-        dataChannel.send(JSON.stringify(metadataMessage));
-        sendToReact({ type: 'metadata-sent', payload: data.metadata });
-        return;
-      }
-      
-      if (type == "endMultiPlaySession") {
-        // Clean up connections and reset state
-        if (dataChannel) {
-          dataChannel.close();
-          dataChannel = null;
+
+        if (type == "endMultiPlaySession") {
+          // Clean up connections and reset state
+          if (dataChannel) {
+            dataChannel.close();
+            dataChannel = null;
+          }
+          if (peerConnection) {
+            peerConnection.close();
+            peerConnection = null;
+          }
+          if (signalingSocket) {
+            signalingSocket.close();
+            signalingSocket = null;
+          }
+          if (canvasStream) {
+            canvasStream.getTracks().forEach(track => track.stop());
+            canvasStream = null;
+          }
+
+          // Reset state variables
+          roomCode = null;
+          peerJoined = false;
+
+          sendToReact({ type: 'session-ended' });
+          return;
         }
-        if (peerConnection) {
-          peerConnection.close();
-          peerConnection = null;
+
+        if (type == "startMultiPlaySession") {
+          if (!!signalingSocket) return;
+          signalingSocket = new WebSocket(SIGNALING_SERVER_URL);
+          signalingSocket.onopen = () => {
+            signalingSocket.send(JSON.stringify({ type: 'create' }));
+            sendToReact({ type: 'signaling-open' });
+          };
+
+          signalingSocket.onmessage = async (event) => {
+            const msg = JSON.parse(event.data);
+
+            if (msg.type === 'room-created') {
+              roomCode = msg.payload.roomCode;
+              sendToReact({ type: 'room-created', roomCode });
+            }
+
+            else if (msg.type === 'peer-joined') {
+              peerJoined = true;
+              if (!peerConnection) {
+                setupPeerConnection();
+              }
+              sendToReact({ type: 'peer-joined' });
+              if (peerConnection) {
+                await createAndSendOffer();
+              }
+            }
+
+            else if (msg.type === 'signal') {
+              await handleSignalingMessage(msg.payload);
+            }
+
+            else if (msg.type === 'peer-disconnected') {
+              sendToReact({ type: 'peer-disconnected' });
+              peerConnection?.close();
+              peerConnection = null;
+              peerJoined = false;
+            }
+
+            else if (msg.type === 'join-failed') {
+              sendToReact({ type: ERROR_MESSAGE, payload: 'Peer failed to join' });
+            }
+
+            else {
+              sendToReact({ type: ERROR_MESSAGE, payload: msg.type });
+            }
+          };
+
+          signalingSocket.onerror = (err) => {
+            sendToReact({ type: ERROR_MESSAGE, payload: 'WebSocket error: ' + err.message });
+          };
         }
-        if (signalingSocket) {
-          signalingSocket.close();
-          signalingSocket = null;
-        }
-        if (canvasStream) {
-          canvasStream.getTracks().forEach(track => track.stop());
-          canvasStream = null;
-        }
-        
-        // Reset state variables
-        roomCode = null;
-        peerJoined = false;
-        
-        sendToReact({ type: 'session-ended' });
-        return;
-      }
-      
-      if (type == "startMultiPlaySession") {
-      if (!!signalingSocket) return;
-    signalingSocket = new WebSocket(SIGNALING_SERVER_URL);
-    signalingSocket.onopen = () => {
-      signalingSocket.send(JSON.stringify({ type: 'create' }));
-      sendToReact({ type: 'signaling-open' });
-    };
-
-    signalingSocket.onmessage = async (event) => {
-      const msg = JSON.parse(event.data);
-
-      if (msg.type === 'room-created') {
-        roomCode = msg.payload.roomCode;
-        sendToReact({ type: 'room-created', roomCode });
-      }
-
-      else if (msg.type === 'peer-joined') {
-        peerJoined = true;
-        if (!peerConnection) {
-            setupPeerConnection();
-        }
-        sendToReact({ type: 'peer-joined' });
-        if (peerConnection) {
-          await createAndSendOffer();
-        }
-      }
-
-      else if (msg.type === 'signal') {
-        await handleSignalingMessage(msg.payload);
-      }
-
-      else if (msg.type === 'peer-disconnected') {
-        sendToReact({ type: 'peer-disconnected' });
-        peerConnection?.close();
-        peerConnection = null;
-        peerJoined = false;
-      }
-
-      else if (msg.type === 'join-failed') {
-        sendToReact({ type: ERROR_MESSAGE, payload: 'Peer failed to join' });
-      }
-
-      else {
-        sendToReact({ type: ERROR_MESSAGE, payload: msg.type });
-      }
-    };
-
-    signalingSocket.onerror = (err) => {
-      sendToReact({ type: ERROR_MESSAGE, payload: 'WebSocket error: ' + err.message });
-    };
-}
       } catch (err) {
         window.ReactNativeWebView.postMessage("Message handler error: " + err.message);
       }
@@ -414,44 +418,49 @@ const twJSInject = `
     // Enhanced VM waiting with better iOS compatibility
     let vmCheckAttempts = 0;
     const maxVMCheckAttempts = 100; // 10 seconds max
-    
-    const waitForVM = setInterval(() => {
-        vmCheckAttempts++;
-        window.ReactNativeWebView.postMessage("VM check attempt " + vmCheckAttempts + ", VM exists: " + !!window.vm);
-        
-        const vm = window.vm;
-        const keyboard = vm?.runtime?.ioDevices?.keyboard;
-        
-        if (keyboard && keyboard._keysPressed && typeof keyboard._keyStringToScratchKey === 'function') {
-            clearInterval(waitForVM);
-            window.ReactNativeWebView.postMessage("VM ready! Setting up input handlers...");
 
-      // Start the message listener for keyboard input
-      window.addEventListener("message", (e) => {
-        try {
-          const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
-          const { key, type } = data;
-          
-          if (!key || !type || !['keydown', 'keyup'].includes(type)) return;
-          
-          const scratchKey = keyboard._keyStringToScratchKey(key);
-          if (scratchKey === undefined) return; // Skip invalid keys
-          
-          if (type === "keydown") {
-            activeKeys.add(scratchKey);
-          } else if (type === "keyup") {
-            activeKeys.delete(scratchKey);
+    const waitForVM = setInterval(() => {
+      vmCheckAttempts++;
+      window.ReactNativeWebView.postMessage("VM check attempt " + vmCheckAttempts + ", VM exists: " + !!window.vm);
+
+      const vm = window.vm;
+      const keyboard = vm?.runtime?.ioDevices?.keyboard;
+
+      if (keyboard && keyboard._keysPressed && typeof keyboard._keyStringToScratchKey === 'function') {
+        clearInterval(waitForVM);
+        window.ReactNativeWebView.postMessage("VM ready! Setting up input handlers...");
+
+        // Start the message listener for keyboard input
+        window.addEventListener("message", (e) => {
+          try {
+            const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+            const { key, type } = data;
+
+            if (!key || !type || !['keydown', 'keyup'].includes(type)) return;
+
+            const scratchKey = keyboard._keyStringToScratchKey(key);
+            if (scratchKey === undefined) {
+              window.ReactNativeWebView.postMessage("Invalid key: " + key);
+              return;
+            }
+
+            if (type === "keydown") {
+              activeKeys.add(scratchKey);
+            } else if (type === "keyup") {
+              activeKeys.delete(scratchKey);
+            }
+
+            updateVMKeysPressed();
+            window.ReactNativeWebView.postMessage("Key event: " + key + " (" + type + ") -> " + scratchKey + " | Active: [" + Array.from(activeKeys).join(", ") + "]");
+          } catch (err) {
+            window.ReactNativeWebView.postMessage("Error parsing itchy key message: " + err.message);
           }
-          
-          updateVMKeysPressed();
-          window.ReactNativeWebView?.postMessage("Active: [" + Array.from(activeKeys).join(", ") + "]");
-        } catch (err) {
-          console.error("Error parsing itchy key message:", err);
-        }
+        });
+      }
     }, 100);
 
 })();
-true;`
+`
 
 
   const openOnlineConfigSheet = () => {
@@ -580,7 +589,7 @@ true;`
               marginTop: 5,
               width: isMaxed ? width : width - 40,
               aspectRatio: 480 / 425,
-              margin: "auto", 
+              margin: "auto",
               borderRadius: 10,
             }}
             androidLayerType="hardware"
@@ -595,7 +604,11 @@ true;`
             onMessage={webViewMessageHandler}
             onLayout={(event) => {
               const { y, height } = event.nativeEvent.layout;
-              setControlsHeight(appHeight - (y + height + 10 + insets.top));
+              if (Platform.OS === "ios") {
+                setControlsHeight(appHeight - (y + height + 10 + insets.top));
+              } else {
+                setControlsHeight(appHeight - (y + height - 12));
+              }
             }}
           />
           {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
@@ -617,19 +630,21 @@ true;`
               tintColor: colors.accent
             })} />
           </ScrollView>}
-          {metadata?.remix?.parent && <RemixNotice originalProjectID={metadata?.remix?.parent} />}
-          {metadata?.instructions && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16 }}>
-            <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</Text>
-            <LinkifiedText style={{ color: colors.text }} text={metadata?.instructions} />
-          </Card>}
-          {metadata?.description && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16 }}>
-            <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Credits</Text>
-            <LinkifiedText style={{ color: colors.text }} text={metadata?.description} />
-          </Card>}
-          {dateInfo && <Card style={{ margin: 20, marginTop: 0, marginBottom: 30, padding: 16 }}>
-            <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Created {dateInfo.created}</Text>
-            {dateInfo.modified != dateInfo.created && <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Modified {dateInfo.modified}</Text>}
-          </Card>}
+          {!isMaxed && <>
+            {metadata?.remix?.parent && <RemixNotice originalProjectID={metadata?.remix?.parent} />}
+            {metadata?.instructions && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16 }}>
+              <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</Text>
+              <LinkifiedText style={{ color: colors.text }} text={metadata?.instructions} />
+            </Card>}
+            {metadata?.description && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16 }}>
+              <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Credits</Text>
+              <LinkifiedText style={{ color: colors.text }} text={metadata?.description} />
+            </Card>}
+            {dateInfo && <Card style={{ margin: 20, marginTop: 0, marginBottom: 30, padding: 16 }}>
+              <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Created {dateInfo.created}</Text>
+              {dateInfo.modified != dateInfo.created && <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Modified {dateInfo.modified}</Text>}
+            </Card>}
+          </>}
         </ScrollView>
         <ControlsSheet onControlPress={sendKeyEvent} onClose={() => setControlsOpen(false)} opened={controlsOpen} height={controlsHeight} projectId={id} />
       </View>
