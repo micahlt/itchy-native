@@ -79,10 +79,11 @@ export default function Project() {
     console.log("Toggling interaction:", interaction);
     if (interaction == "love") {
       ScratchAPIWrapper.project.setInteraction("loves", !interactions.loved, id, username, token, storage.getString("csrfToken"), storage.getString("cookieSet")).then((d) => {
+        console.log("Love interaction response:", d);
         if (!d.statusChanged) return;
         setInteractions({ ...interactions, loved: !interactions.loved });
         setMetadata({ ...metadata, stats: { ...metadata.stats, loves: metadata.stats.loves + (interactions.loved ? -1 : 1) } });
-      });
+      }).catch(console.error);
     } else if (interaction == "favorite") {
       ScratchAPIWrapper.project.setInteraction("favorites", !interactions.favorited, id, username, token, storage.getString("csrfToken"), storage.getString("cookieSet")).then((d) => {
         if (!d.statusChanged) return;
@@ -287,17 +288,17 @@ export default function Project() {
         
         // ---------- WebSocket Setup ----------
         window.addEventListener("message", (e) => {
-      sendToReact("message got" + e)
-      const { type } = e.data;
+      const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+      const { type } = data;
       
       // Handle project metadata transmission
       if (type === "project-metadata" && dataChannel && dataChannel.readyState === 'open') {
         const metadataMessage = {
           type: 'PROJECT_METADATA',
-          payload: e.data.metadata
+          payload: data.metadata
         };
         dataChannel.send(JSON.stringify(metadataMessage));
-        sendToReact({ type: 'metadata-sent', payload: e.data.metadata });
+        sendToReact({ type: 'metadata-sent', payload: data.metadata });
         return;
       }
       
@@ -390,18 +391,23 @@ export default function Project() {
     if (keyboard && keyboard._keysPressed) {
         clearInterval(waitForVM);
 
-      // Start the message listener
+      // Start the message listener for keyboard input
       window.addEventListener("message", (e) => {
         try {
-          const { key, type } = JSON.parse(e.data);
-          if (!type) return;
-
+          const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+          const { key, type } = data;
+          
+          if (!key || !type || !['keydown', 'keyup'].includes(type)) return;
+          
+          const scratchKey = keyboard._keyStringToScratchKey(key);
+          if (scratchKey === undefined) return; // Skip invalid keys
+          
           if (type === "keydown") {
-            activeKeys.add(keyboard._keyStringToScratchKey(key));
+            activeKeys.add(scratchKey);
           } else if (type === "keyup") {
-            activeKeys.delete(keyboard._keyStringToScratchKey(key));
+            activeKeys.delete(scratchKey);
           }
-
+          
           updateVMKeysPressed();
           window.ReactNativeWebView?.postMessage("Active: [" + Array.from(activeKeys).join(", ") + "]");
         } catch (err) {
