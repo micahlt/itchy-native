@@ -36,7 +36,7 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
         if (!user || !comment) return false;
         if (user.username === context.owner) return true;
         return false;
-    }, [user, comment, csrf]);
+    }, [user, comment, context, csrf]);
 
     const openOnScratch = useCallback(() => {
         switch (context.type) {
@@ -44,7 +44,7 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
                 linkWithFallback(`https://scratch.mit.edu/users/${context.owner}#${comment.id}`, colors.accent);
                 break;
             case "project":
-                linkWithFallback(`https://scratch.mit.edu/projects/${context.projectID}/comments#comments-${comment.id}`, colors.accent);
+                linkWithFallback(`https://scratch.mit.edu/projects/${context.projectID}#comments-${comment.id}`, colors.accent);
                 break;
             case "studio":
                 linkWithFallback(`https://scratch.mit.edu/studios/${context.studioID}/comments#comments-${comment.id}`, colors.accent);
