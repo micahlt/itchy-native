@@ -54,8 +54,17 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
         }}>
             <TextInput
                 placeholder="Add a comment..."
-                style={{ width: width - 66, color: colors.text, marginVertical: 16 }}
-                multiline={false}
+                style={{
+                    width: width - 66,
+                    color: colors.text,
+                    marginVertical: 16,
+                    minHeight: 20,
+                    maxHeight: 100,
+                    textAlignVertical: 'top'
+                }}
+                multiline={true}
+                value={content}
+                onChangeText={setContent}
                 ref={inputRef}
             />
             <TouchableOpacity onPress={() => {
