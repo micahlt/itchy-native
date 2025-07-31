@@ -47,7 +47,8 @@ const APIProject = {
                 Pragma: "no-cache",
             },
             referrer: `https://scratch.mit.edu/projects/${id}`,
-            method: value === true ? "POST" : "DELETE"
+            method: value === true ? "POST" : "DELETE",
+            body: value === true ? "" : undefined
         };
 
         const res = await fetch(`https://api.scratch.mit.edu/proxy/projects/${id}/${interaction}/user/${username}`, opts);
