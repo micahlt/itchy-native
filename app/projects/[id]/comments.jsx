@@ -62,7 +62,6 @@ export default function ProjectComments() {
 
     const postComment = (content) => {
         let authorID = null, parentID = null;
-        console.log("Replying to,", reply);
         if (!!reply?.id) {
             // Find the top-level comment ID
             if (reply.parent_id) {
@@ -77,7 +76,6 @@ export default function ProjectComments() {
             }
             authorID = reply.author.id;
         }
-        console.log("Posting comment", content, csrf, user.token, parentID, authorID);
         ScratchAPIWrapper.project.postComment(id, content, csrf, user.token, parentID, authorID).then((postedID) => {
             setRerenderComments(!rerenderComments);
             if (!!postedID) {
@@ -95,7 +93,7 @@ export default function ProjectComments() {
                         }
                         return c;
                     }));
-                    router.setParams({ comment_id: postedID });
+                    router.setParams({ comment_id: `comments-${postedID}` });
                     setCommentContent("");
                     setReply(undefined);
                 } else {
@@ -103,7 +101,7 @@ export default function ProjectComments() {
                         const c = [{ author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png`, id: user.id }, content, datetime_created: new Date(), id: postedID, replies: [], includesReplies: true }, ...prev];
                         return uniqueArray(c);
                     });
-                    router.setParams({ comment_id: postedID });
+                    router.setParams({ comment_id: `comments-${postedID}` });
                     setCommentContent("");
                 }
             } else {

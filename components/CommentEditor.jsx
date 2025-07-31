@@ -23,7 +23,7 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
             } else {
                 bottomAnim.value = withTiming(height - (insets.bottom - 25))
             }
-    });
+        });
 
         const hideSub = Keyboard.addListener('keyboardDidHide', () => {
             setKeyboardHeight(0);
@@ -52,10 +52,16 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
         <View style={{
             paddingHorizontal: 15, backgroundColor: colors.backgroundTertiary, flexDirection: "row", paddingBottom: insets.bottom, alignItems: "center"
         }}>
-            <TextInput placeholder="Add a comment..." style={{ width: width - 66, color: colors.text, marginVertical: 16 }} multiline={true} value={content} onChangeText={setContent} ref={inputRef} />
+            <TextInput
+                placeholder="Add a comment..."
+                style={{ width: width - 66, color: colors.text, marginVertical: 16 }}
+                multiline={false}
+                ref={inputRef}
+            />
             <TouchableOpacity onPress={() => {
                 onSubmit(content);
                 setContent("");
+                inputRef.current?.blur();
             }} style={{ width: 24, flexGrow: 1, marginLeft: 10 }}>
                 <MaterialIcons name="send" size={24} color={colors.accent} />
             </TouchableOpacity>
