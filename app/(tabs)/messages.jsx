@@ -19,7 +19,8 @@ export default function Messages() {
     const [filters, setFilters] = useState({
         studio: false,
         comment: false,
-        interaction: false
+        interaction: false,
+        forum: false
     });
 
     useEffect(() => {
@@ -49,7 +50,7 @@ export default function Messages() {
 
     const filteredMessages = useMemo(() => {
         // If no filters are active, show all messages
-        const hasActiveFilters = filters.studio || filters.comment || filters.interaction;
+        const hasActiveFilters = filters.studio || filters.comment || filters.interaction || filters.forum;
         if (!hasActiveFilters) {
             return messages;
         }
@@ -69,9 +70,12 @@ export default function Messages() {
                 message.type === "favoriteproject" ||
                 message.type === "followuser";
 
+            const isForumMessage = message.type === "forumpost";
+
             return (filters.studio && isStudioMessage) ||
                 (filters.comment && isCommentMessage) ||
-                (filters.interaction && isInteractionMessage);
+                (filters.interaction && isInteractionMessage) ||
+                (filters.forum && isForumMessage);
         });
     }, [messages, filters]);
 
@@ -86,12 +90,13 @@ export default function Messages() {
         setFilters({
             studio: false,
             comment: false,
-            interaction: false
+            interaction: false,
+            forum: false
         });
     }, []);
 
     const renderFilterChips = () => {
-        const hasActiveFilters = filters.studio || filters.comment || filters.interaction;
+        const hasActiveFilters = filters.studio || filters.comment || filters.interaction || filters.forum;
 
         return (
             <ScrollView
@@ -129,6 +134,13 @@ export default function Messages() {
                     color={filters.interaction ? colors.accent : colors.textSecondary}
                     mode={filters.interaction ? "filled" : "outlined"}
                     onPress={() => toggleFilter('interaction')}
+                />
+                <Chip.Icon
+                    icon="forum"
+                    text="Forum Posts"
+                    color={filters.forum ? colors.accent : colors.textSecondary}
+                    mode={filters.forum ? "filled" : "outlined"}
+                    onPress={() => toggleFilter('forum')}
                 />
             </ScrollView>
         );
