@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, ScrollView, TextInput, TouchableOpacity, Clipboard } from "react-native";
-import { Pressable } from "react-native-gesture-handler";
+import { Pressable } from "react-native";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../utils/theme";

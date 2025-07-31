@@ -40,6 +40,7 @@ export default function Project() {
   const [roomCode, setRoomCode] = useState("");
   const [connectionStatus, setConnectionStatus] = useState("idle");
   const [peerConnected, setPeerConnected] = useState(false);
+  const [isMaxed, setIsMaxed] = useState(false);
 
   const sendKeyEvent = (key, type, source = "local") => {
     const message = JSON.stringify({ key, type });
@@ -93,14 +94,35 @@ export default function Project() {
     }
   }
 
-  const twJSInject = `
+const twJSInject = `
     window.ReactNativeWebView.postMessage("Itchy Custom Code initialized");
-    document.documentElement.style.setProperty('--ui-white', '${colors.backgroundSecondary}');
-    document.querySelector("img[title='Open advanced settings']").style.filter = "invert(0.7)";
-    document.querySelector("img[title='Full Screen Control']").style.filter = "contrast(0) brightness(1.4)";
+    
+    // Wait for DOM to be fully loaded before applying styles
+    function applyStyles() {
+      try {
+        document.documentElement.style.setProperty('--ui-white', '${colors.backgroundSecondary}');
+        const advancedBtn = document.querySelector("img[title='Open advanced settings']");
+        const fullscreenBtn = document.querySelector("img[title='Full Screen Control']");
+        if (advancedBtn) advancedBtn.style.filter = "invert(0.7)";
+        if (fullscreenBtn) fullscreenBtn.style.filter = "contrast(0) brightness(1.4)";
+        window.ReactNativeWebView.postMessage("Styles applied successfully");
+      } catch (err) {
+        window.ReactNativeWebView.postMessage("Style application error: " + err.message);
+      }
+    }
+    
+    // Apply styles when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', applyStyles);
+    } else {
+      applyStyles();
+    }
+    
     (function () {
     if (window.itchyInputInitialized) return;
     window.itchyInputInitialized = true;
+    
+    window.ReactNativeWebView.postMessage("Initializing input system...");
 
     const SIGNALING_MESSAGE = 'signaling-message';
     const INPUT_MESSAGE = 'forwarded-input';
@@ -379,17 +401,30 @@ export default function Project() {
     signalingSocket.onerror = (err) => {
       sendToReact({ type: ERROR_MESSAGE, payload: 'WebSocket error: ' + err.message });
     };
-}});
+}
+      } catch (err) {
+        window.ReactNativeWebView.postMessage("Message handler error: " + err.message);
+      }
+    });
 
 
 
     const activeKeys = new Set();
 
-    // Wait for the VM to be ready
+    // Enhanced VM waiting with better iOS compatibility
+    let vmCheckAttempts = 0;
+    const maxVMCheckAttempts = 100; // 10 seconds max
+    
     const waitForVM = setInterval(() => {
-        const keyboard = window.vm?.runtime?.ioDevices?.keyboard;
-    if (keyboard && keyboard._keysPressed) {
-        clearInterval(waitForVM);
+        vmCheckAttempts++;
+        window.ReactNativeWebView.postMessage("VM check attempt " + vmCheckAttempts + ", VM exists: " + !!window.vm);
+        
+        const vm = window.vm;
+        const keyboard = vm?.runtime?.ioDevices?.keyboard;
+        
+        if (keyboard && keyboard._keysPressed && typeof keyboard._keyStringToScratchKey === 'function') {
+            clearInterval(waitForVM);
+            window.ReactNativeWebView.postMessage("VM ready! Setting up input handlers...");
 
       // Start the message listener for keyboard input
       window.addEventListener("message", (e) => {
@@ -413,12 +448,7 @@ export default function Project() {
         } catch (err) {
           console.error("Error parsing itchy key message:", err);
         }
-      });
-
-      // Keep syncing held keys to the VM at ~60fps
-      setInterval(updateVMKeysPressed, 16);
-    }   
-  }, 100);
+    }, 100);
 
 })();
 true;`
@@ -535,18 +565,22 @@ true;`
         <Stack.Screen
           options={{
             title: metadata?.title || "Loading...",
-            headerRight: () => <><MaterialIcons.Button onPressIn={() => setControlsOpen(true)} name='videogame-asset' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /><MaterialIcons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='question-answer' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /></>
+            headerShown: !isMaxed,
+            headerRight: () => <><MaterialIcons.Button onPressIn={() => {
+              setControlsOpen(true);
+              setIsMaxed(true);
+            }} name='videogame-asset' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /><MaterialIcons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='question-answer' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /></>
           }}
         />
-        <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 10 }}>
+        <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 10, paddingTop: isMaxed ? insets.top : 0 }}>
           <WebView
             source={{ uri: twLink }}
             containerStyle={{
               flex: 0,
               marginTop: 5,
-              width: width - 40,
+              width: isMaxed ? width : width - 40,
               aspectRatio: 480 / 425,
-              margin: "auto",
+              margin: "auto", 
               borderRadius: 10,
             }}
             androidLayerType="hardware"
@@ -561,10 +595,11 @@ true;`
             onMessage={webViewMessageHandler}
             onLayout={(event) => {
               const { y, height } = event.nativeEvent.layout;
-              setControlsHeight(appHeight - (y + height + insets.top));
+              setControlsHeight(appHeight - (y + height + 10 + insets.top));
             }}
           />
           {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
+            {isMaxed && <Chip.Icon icon="close-fullscreen" text="Exit Play Mode" onPress={() => setIsMaxed(false)} />}
             <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/users/${metadata?.author?.username}`)} textStyle={{ fontWeight: 'bold' }} />
             <Chip.Icon icon='tap-and-play' text="MultiPlay" color="#47b5ff" mode="filled" onPress={openOnlineConfigSheet} />
             <Chip.Icon icon='favorite' text={approximateNumber(metadata.stats.loves)} color="#ff4750" mode={interactions.loved ? "filled" : "outlined"} onPress={() => toggleInteraction("love")} />

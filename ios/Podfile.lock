@@ -61,6 +61,7 @@ PODS:
   - hermes-engine (0.76.9):
     - hermes-engine/Pre-built (= 0.76.9)
   - hermes-engine/Pre-built (0.76.9)
+  - JitsiWebRTC (124.0.2)
   - libavif/core (0.11.1)
   - libavif/libdav1d (0.11.1):
     - libavif/core
@@ -1368,6 +1369,8 @@ PODS:
     - SDWebImageSVGCoder (>= 1.7.0)
     - SwiftUIIntrospect (~> 1.0)
     - Yoga
+  - react-native-cookies (6.2.1):
+    - React-Core
   - react-native-mmkv (3.2.0):
     - DoubleConversion
     - glog
@@ -1455,6 +1458,9 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-webrtc (124.0.5):
+    - JitsiWebRTC (~> 124.0.0)
+    - React-Core
   - react-native-webview (13.12.5):
     - DoubleConversion
     - glog
@@ -1748,6 +1754,8 @@ PODS:
     - React-logger
     - React-perflogger
     - React-utils (= 0.76.9)
+  - RNDeviceInfo (14.0.4):
+    - React-Core
   - RNGestureHandler (2.20.2):
     - DoubleConversion
     - glog
@@ -1988,8 +1996,10 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-bottom-tabs (from `../node_modules/react-native-bottom-tabs`)
+  - "react-native-cookies (from `../node_modules/@react-native-cookies/cookies`)"
   - react-native-mmkv (from `../node_modules/react-native-mmkv`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-webrtc (from `../node_modules/react-native-webrtc`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-nativeconfig (from `../node_modules/react-native/ReactCommon`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
@@ -2018,6 +2028,7 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -2026,6 +2037,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - JitsiWebRTC
     - libavif
     - libdav1d
     - SDWebImage
@@ -2138,10 +2150,14 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
   react-native-bottom-tabs:
     :path: "../node_modules/react-native-bottom-tabs"
+  react-native-cookies:
+    :path: "../node_modules/@react-native-cookies/cookies"
   react-native-mmkv:
     :path: "../node_modules/react-native-mmkv"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-webrtc:
+    :path: "../node_modules/react-native-webrtc"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-nativeconfig:
@@ -2198,6 +2214,8 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
@@ -2231,6 +2249,7 @@ SPEC CHECKSUMS:
   fmt: 01b82d4ca6470831d1cc0852a1af644be019e8f6
   glog: 08b301085f15bcbb6ff8632a8ebaf239aae04e6a
   hermes-engine: 9e868dc7be781364296d6ee2f56d0c1a9ef0bb11
+  JitsiWebRTC: b47805ab5668be38e7ee60e2258f49badfe8e1d0
   libavif: 84bbb62fb232c3018d6f1bab79beea87e35de7b7
   libdav1d: 23581a4d8ec811ff171ed5e2e05cd27bad64c39f
   RCT-Folly: ea9d9256ba7f9322ef911169a9f696e5857b9e17
@@ -2263,8 +2282,10 @@ SPEC CHECKSUMS:
   React-Mapbuffer: 9343a5c14536d4463c80f09a960653d754daae21
   React-microtasksnativemodule: c7cafd8f4470cf8a4578ee605daa4c74d3278bf8
   react-native-bottom-tabs: 49203f1aa715f5b5e0bc250e9e2e706ee19ae028
+  react-native-cookies: d648ab7025833b977c0b19e142503034f5f29411
   react-native-mmkv: d9353f0f66264a54b7131459dd23b8eae0a04f36
   react-native-safe-area-context: 3ec0dbf4635e3344cb1303d15fcc4a22876b3e59
+  react-native-webrtc: 62659d18a13f6b50ad95c99a9a48cf9872a15815
   react-native-webview: e20ba089a590ed5a914f4c1ec9d0afdd8b3f4987
   React-nativeconfig: 415626a63057638759bcc75e0a96e2e07771a479
   React-NativeModulesApple: d33b55553c6957ff94835574636838d78121a1c6
@@ -2293,6 +2314,7 @@ SPEC CHECKSUMS:
   React-utils: 59c5bbbc0e72be22c9d6eceb40afadf9be872819
   ReactCodegen: 049be6309e06c1027544819670913680f2029b8e
   ReactCommon: b2eb96a61b826ff327a773a74357b302cf6da678
+  RNDeviceInfo: d863506092aef7e7af3a1c350c913d867d795047
   RNGestureHandler: de2b7ccdbf18766609fb9490c7f11c18805705a3
   RNReanimated: 758e433dea58eb219208bd209ef91a6f8ee096fb
   RNScreens: 2fe3d999c2dee6ef1d5e863fec0fb6f7de60c45a

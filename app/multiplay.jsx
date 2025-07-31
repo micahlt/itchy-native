@@ -22,10 +22,12 @@ import { Stack } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import ControlsSheet from '../components/ControlsSheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Chip from '../components/Chip';
+import { useNavigation } from 'expo-router';
 
 const SIGNALING_SERVER_URL = 'wss://itchyws.micahlindley.com';
 
-export default function VideoClient() {
+export default function MultiPlay() {
     const [roomCode, setRoomCode] = useState('');
     const [status, setStatus] = useState('Idle');
     const [remoteStream, setRemoteStream] = useState(null);
@@ -38,6 +40,7 @@ export default function VideoClient() {
     const [loading, setLoading] = useState(false);
     const [controlsOpen, setControlsOpen] = useState(false);
     const [controlsHeight, setControlsHeight] = useState(300);
+    const nav = useNavigation();
     const insets = useSafeAreaInsets();
 
     // Cleanup on component unmount
@@ -245,8 +248,8 @@ export default function VideoClient() {
 
     return (
         <>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: insets.bottom + 20 }}>
-                <Stack.Screen options={{ title: 'MultiPlay', headerRight: () => <><MaterialIcons.Button onPressIn={() => setControlsOpen(true)} name='videogame-asset' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />{remoteStream && <MaterialIcons.Button name="stop-circle" onPressIn={disconnect} size={24} backgroundColor={"transparent"} style={{ paddingRight: 0 }} color={colors.text} />}</> }} />
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: insets.bottom + 20, paddingTop: insets.top }}>
+                <Stack.Screen options={{ headerShown: false, title: 'MultiPlay', headerRight: () => <><MaterialIcons.Button onPressIn={() => setControlsOpen(true)} name='videogame-asset' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />{remoteStream && <MaterialIcons.Button name="stop-circle" onPressIn={disconnect} size={24} backgroundColor={"transparent"} style={{ paddingRight: 0 }} color={colors.text} />}</> }} />
                 {!remoteStream && <View style={{ flexDirection: "row", columnGap: 15, alignItems: "center", justifyContent: "center", marginTop: 10 }}>
                     <TextInput
                         style={{
@@ -259,12 +262,12 @@ export default function VideoClient() {
                         onChangeText={setRoomCode}
                     />
                     <Pressable title="Join Room" style={{ margin: "auto" }} onPress={joinRoom}>
-                        <Text style={{ color: colors.buttonText, paddingHorizontal: 20, paddingVertical: 14, borderRadius: 10, backgroundColor: colors.accent, alignItems: "center", display: "flex", justifyContent: "center" }}>CONNECT</Text>
+                        <Text style={{ color: "white", paddingHorizontal: 20, paddingVertical: 14, borderRadius: 10, backgroundColor: colors.accent, alignItems: "center", display: "flex", justifyContent: "center" }}>CONNECT</Text>
                     </Pressable>
                 </View>}
                 <Text style={{ color: colors.textSecondary, opacity: 0.5, marginVertical: 10 }}>Status: {status}</Text>
-                <View style={{ width: width - 30, aspectRatio: 480 / 360, borderWidth: 2, borderRadius: 10, overflow: "hidden" }}>
-                    {!!remoteStream ? (
+                {!!remoteStream ? (
+                    <View style={{ width: width - 30, aspectRatio: 480 / 360, borderWidth: 2, borderRadius: 10, overflow: "hidden" }}>
                         <RTCView
                             streamURL={remoteStream.toURL()}
                             style={{ height: "100%", width: "100%" }}
@@ -274,14 +277,13 @@ export default function VideoClient() {
                                 setControlsHeight(appHeight - (y + height + insets.top + 20));
                             }}
                         />
-                    ) : (
+                    </View>) : loading && <View style={{ width: width - 30, aspectRatio: 480 / 360, borderWidth: 2, borderRadius: 10, overflow: "hidden" }}>
                         <View style={{ alignItems: "center", height: "100%", width: "100%", justifyContent: "center" }}>
-                            {loading && <ActivityIndicator size={50} color={colors.accent} />}
+                            <ActivityIndicator size={50} color={colors.accent} />
                         </View>
-                    )}
-                </View>
+                    </View>}
                 {projectMetadata && (
-                    <Card style={{ paddingHorizontal: 15, paddingVertical: 10, marginTop: 15 }}>
+                    <Card style={{ paddingHorizontal: 15, paddingVertical: 10, marginVertical: 15 }}>
                         <Text style={{ color: colors.accent, fontSize: 18, fontWeight: "bold" }}>
                             {projectMetadata.title}
                         </Text>
@@ -316,6 +318,9 @@ export default function VideoClient() {
                     <Text style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>MultiPlay is the first-ever online multiplayer platform for local multiplayer style Scratch games, built-in to Itchy!  You can host a game, make a join code, and send it to a friend to allow them to see and control game you're playing.  Combine this with Itchy's customizable control setups and you can play local multiplayer games with keyboard controls on your phone.</Text>
                     <Text style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>It's worth noting that MultiPlay is still in the alpha stage, so you may encounter connection issues, lag, random inputs, and other stuff like that.</Text>
                 </Card>}
+                <ScrollView horizontal={true} style={{ flex: 1, marginTop: 10 }}>
+                    <Chip.Icon icon="exit-to-app" text="Leave MultiPlay" onPress={() => nav.goBack()} />
+                </ScrollView>
             </ScrollView>
             <ControlsSheet onControlPress={sendKeyEvent} onClose={() => setControlsOpen(false)} opened={controlsOpen} height={controlsHeight} projectId={projectMetadata?.id} />
         </>

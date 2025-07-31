@@ -115,8 +115,9 @@ export default function App() {
                         }}>
                             <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: "default" }} />
                             <Stack.Screen name="projects/[id]/index" options={{
-                                presentation: "modal",
                                 animation: "fade_from_bottom",
+                                headerBackButtonDisplayMode: "minimal",
+                                headerBackVisible: true,
                                 headerRight: () =>
                                     <MaterialIcons name='question-answer' size={24} color={colors.textSecondary} />
                             }} />
@@ -173,7 +174,6 @@ export default function App() {
                                 title: "Log In"
                             }} />
                             <Stack.Screen name="multiplay" options={{
-                                presentation: "modal",
                                 animation: "fade_from_bottom",
                                 title: "MultiPlay"
                             }} />

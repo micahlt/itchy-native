@@ -69,7 +69,7 @@ export default function ControlsSheet({ onControlPress = () => { }, onClose = ()
             index={opened ? 0 : -1}
             enablePanDownToClose={true}
             enableDynamicSizing={false}
-            snapPoints={[passedHeight]}
+            snapPoints={[passedHeight, width * 1.1]}
             enableOverDrag={true}
             enableContentPanningGesture={false}
             enableHandlePanningGesture={true}
