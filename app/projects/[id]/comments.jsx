@@ -35,12 +35,12 @@ export default function ProjectComments() {
                 if (offset === 0) {
                     setComments(d);
                 } else {
-                    setComments([...comments, ...d]);
+                    setComments((prev) => [...prev, ...d]);
                 }
                 setLoading(false);
             }).catch(console.error);
         }).catch(console.error);
-    }, [offset]);
+    }, [offset, id]);
 
     useEffect(() => {
         if (!comment_id || !!hasScrolledToSelected) return;
@@ -62,17 +62,36 @@ export default function ProjectComments() {
 
     const postComment = (content) => {
         let authorID = null, parentID = null;
+        console.log("Replying to,", reply);
         if (!!reply?.id) {
-            parentID = reply.id;
+            // Find the top-level comment ID
+            if (reply.parent_id) {
+                // If reply has parent_id, use it (this would be for replies from API)
+                parentID = reply.parent_id;
+            } else {
+                // Check if this reply is nested under a top-level comment
+                const topLevelComment = comments.find(c =>
+                    c.id === reply.id || (c.replies && c.replies.some(r => r.id === reply.id))
+                );
+                parentID = topLevelComment?.id || reply.id;
+            }
             authorID = reply.author.id;
         }
+        console.log("Posting comment", content, csrf, user.token, parentID, authorID);
         ScratchAPIWrapper.project.postComment(id, content, csrf, user.token, parentID, authorID).then((postedID) => {
             setRerenderComments(!rerenderComments);
             if (!!postedID) {
                 if (!!reply) {
                     setComments((prev) => prev.map(c => {
+                        // If replying to a top-level comment, add to its replies
                         if (c.id === reply.id) {
-                            c.replies.push({ author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png`, id: user.id }, content, datetime_created: new Date(), id: postedID, parentID: reply.id, includesReplies: true, replies: [] });
+                            const newReply = { author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png`, id: user.id }, content, datetime_created: new Date(), id: postedID, parentID: c.id, includesReplies: true, replies: [] };
+                            return { ...c, replies: [...c.replies, newReply] };
+                        }
+                        // If replying to a reply, find the top-level comment that contains this reply
+                        else if (c.replies && c.replies.some(r => r.id === reply.id)) {
+                            const newReply = { author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png`, id: user.id }, content, datetime_created: new Date(), id: postedID, parentID: c.id, includesReplies: true, replies: [] };
+                            return { ...c, replies: [...c.replies, newReply] };
                         }
                         return c;
                     }));
@@ -136,7 +155,7 @@ export default function ProjectComments() {
                 }}
             />
             <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : undefined} style={{ flex: 1 }}>
-                <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={(item) => item.id} onEndReached={endReached} onEndReachedThreshold={1.2} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
+                <FlatList ref={scrollRef} contentContainerStyle={{ padding: 10, paddingBottom: 100 }} style={{ flex: 1 }} data={comments} renderItem={renderComment} keyExtractor={(item) => item.id} onEndReached={endReached} onEndReachedThreshold={1.2} onRefresh={refresh} refreshing={loading} onScrollToIndexFailed={({
                     index,
                 }) => {
                     scrollRef.current?.scrollToOffset({
