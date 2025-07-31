@@ -110,7 +110,7 @@ export default function Messages() {
                     />
                 )}
                 <Chip.Icon
-                    icon="business"
+                    icon="collections"
                     text="Studios"
                     color={filters.studio ? colors.accent : colors.textSecondary}
                     mode={filters.studio ? "filled" : "outlined"}

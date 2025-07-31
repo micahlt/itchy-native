@@ -6,6 +6,7 @@ import { useCallback, useMemo } from "react";
 import { decode } from 'html-entities';
 import { useRouter } from "expo-router";
 import { useMMKVString } from "react-native-mmkv";
+import timeago from "time-ago";
 
 export default function Message({ message }) {
     const { colors } = useTheme();
@@ -107,6 +108,10 @@ export default function Message({ message }) {
         }
     }, [message]);
 
+    const timeAgoDate = useMemo(() => {
+        return timeago.ago(message.datetime_created);
+    }, [message]);
+
     return (
         <Pressable android_ripple={{ color: colors.ripple, foreground: true }} onPress={openMessage}>
             <View style={{ paddingHorizontal: 20, paddingVertical: 15, borderBottomWidth: 1, borderBottomColor: colors.backgroundTertiary, backgroundColor: colors.background, flexDirection: "row" }}>
@@ -136,6 +141,7 @@ export default function Message({ message }) {
                                 <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 1, fontWeight: "bold" }}> {message.comment_obj_title}</Text>
                             </TouchableOpacity>
                         </>}
+                        <Text style={{ color: colors.textSecondary, fontStyle: 'italic', opacity: 0.6 }}> {timeAgoDate}</Text>
                     </View>
                     {message.type == "addcomment" ? <View style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10, marginTop: 5, marginRight: "auto", backgroundColor: colors.backgroundSecondary }}>
                         <Text style={{ color: colors.text, marginRight: "auto" }}>{bodyText}</Text>
