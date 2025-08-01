@@ -159,6 +159,8 @@ export default function ControlsScreen() {
                     })
                     router.dismissTo(`/projects/${id}/controls/find`);
                     return;
+                } else {
+                    console.log(data);
                 }
             });
     }

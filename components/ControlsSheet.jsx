@@ -51,7 +51,7 @@ export default function ControlsSheet({ onControlPress = () => { }, onClose = ()
     }
 
     useEffect(() => {
-        fetch(`https://itchy-controldb.vercel.app/api/controllermapping?projectId=${projectId}&mappingId=${localControllerMappings[projectId] ? localControllerMappings[projectId] : ""}`)
+        fetch(`https://itchy-controldb.vercel.app/api/controllermapping?projectId=${projectId}&mappingId=${localControllerMappings ? (localControllerMappings[projectId] ? localControllerMappings[projectId] : "") : ""}`)
             .then((response) => response.json())
             .then((data) => {
                 if (!data.error) {

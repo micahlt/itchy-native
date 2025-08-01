@@ -147,7 +147,7 @@ export default function MultiPlay() {
     const startPeerConnection = (code) => {
         console.log("Starting peer connection...");
         const pc = new RTCPeerConnection({
-            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }],
+            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun1.l.google.com:19302' }, { urls: 'stun2.l.google.com:19302' }, { urls: 'stun3.l.google.com:19302' }, { urls: 'stun4.l.google.com:19302' }],
         });
 
         pc.onicecandidate = (event) => {

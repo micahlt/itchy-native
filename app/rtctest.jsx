@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { View, Text, Button, TextInput } from "react-native";
 import { RTCPeerConnection, RTCSessionDescription, RTCIceCandidate } from "react-native-webrtc";
 
-const SIGNALING_SERVER_URL = "ws://temp.micahlindley.com";
+const SIGNALING_SERVER_URL = "wss://itchyws.micahlindley.com";
 
 const configuration = {
     iceServers: [
