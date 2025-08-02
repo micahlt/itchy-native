@@ -4,6 +4,7 @@ import { Pressable } from "react-native";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../utils/theme";
+import linkWithFallback from "../utils/linkWithFallback";
 
 export default function MultiPlayConfigSheet({
     roomCode = "",
@@ -107,9 +108,13 @@ export default function MultiPlayConfigSheet({
                     </View>
                 )}
 
-                <Text selectable={true} style={{ color: colors.textSecondary, fontSize: 14, margin: "auto", marginBottom: 5 }}>
+                {connectionStatus === "failed" && <Text style={{ color: colors.textSecondary, fontSize: 14, margin: "auto", marginBottom: 5, textAlign: "center" }}>
+                    Connection failed. It's likely that your network or the person connecting does not support WebRTC connections. See the <Text style={{ color: colors.accent }} onPress={() => linkWithFallback("https://itchy.micahlindley.com/multiplay", colors.accent)}>Itchy MultiPlay FAQ</Text> for more details.
+                </Text>}
+
+                {connectionStatus !== "failed" && <Text selectable={true} style={{ color: colors.textSecondary, fontSize: 14, margin: "auto", marginBottom: 5 }}>
                     {roomCode ? "Share this code with a friend:" : "Create a new multiplayer game session."}
-                </Text>
+                </Text>}
 
                 {roomCode ? <View>
                     <Text style={{
@@ -156,7 +161,7 @@ export default function MultiPlayConfigSheet({
                         fontSize: 16,
                         fontWeight: "bold"
                     }}>
-                        {connectionStatus !== "idle" ? "COnnecting..." : "Start MultiPlay"}
+                        {connectionStatus !== "idle" && connectionStatus !== "failed" ? "Connecting..." : "Start MultiPlay"}
                     </Text>
                 </Pressable>}
             </View>

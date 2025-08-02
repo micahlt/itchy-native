@@ -494,11 +494,16 @@ if (document.readyState === 'loading') {
           setConnectionStatus(d.payload);
           if (d.payload === "connected") {
             setIsConnected(true);
-          } else if (d.payload === "disconnected" || d.payload === "failed" || d.payload === "closed") {
+          } else if (d.payload === "disconnected" || d.payload === "closed") {
             setIsConnected(false);
             setPeerConnected(false);
             setRoomCode("");
             setConnectionStatus("idle");
+          } else if (d.payload === "failed") {
+            setIsConnected(false);
+            setPeerConnected(false);
+            setRoomCode("");
+            setConnectionStatus("failed");
           }
           break;
         case "peer-disconnected":
