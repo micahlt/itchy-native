@@ -24,6 +24,7 @@ import ControlsSheet from '../components/ControlsSheet';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Chip from '../components/Chip';
 import { useNavigation } from 'expo-router';
+import linkWithFallback from '../utils/linkWithFallback';
 
 const SIGNALING_SERVER_URL = 'wss://itchyws.micahlindley.com';
 
@@ -318,8 +319,9 @@ export default function MultiPlay() {
                     <Text style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>MultiPlay is the first-ever online multiplayer platform for local multiplayer style Scratch games, built-in to Itchy!  You can host a game, make a join code, and send it to a friend to allow them to see and control game you're playing.  Combine this with Itchy's customizable control setups and you can play local multiplayer games with keyboard controls on your phone.</Text>
                     <Text style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>It's worth noting that MultiPlay is still in the alpha stage, so you may encounter connection issues, lag, random inputs, and other stuff like that.</Text>
                 </Card>}
-                <ScrollView horizontal={true} style={{ flex: 1, marginTop: 10 }}>
+                <ScrollView horizontal={true} style={{ flex: 1, marginTop: 10 }} contentContainerStyle={{ columnGap: 5 }} >
                     <Chip.Icon icon="exit-to-app" text="Leave MultiPlay" onPress={() => nav.goBack()} />
+                    <Chip.Icon icon="help" text="MultiPlay FAQ" onPress={() => linkWithFallback("https://itchy.micahlindley.com/multiplay", colors.accent)} color={colors.accent} />
                 </ScrollView>
             </ScrollView>
             <ControlsSheet onControlPress={sendKeyEvent} onClose={() => setControlsOpen(false)} opened={controlsOpen} height={controlsHeight} projectId={projectMetadata?.id} />

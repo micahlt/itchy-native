@@ -53,7 +53,8 @@
         "foregroundImage": "./assets/icon-foreground.png",
         "monochromeImage": "./assets/icon-monochrome.png"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": true
     },
     "ios": {
       "bundleIdentifier": "org.scratchclient4.itchy",

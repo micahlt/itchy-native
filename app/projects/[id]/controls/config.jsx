@@ -13,7 +13,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 export default function ControlsScreen() {
     const { id } = useLocalSearchParams();
     const { colors, isDark } = useTheme();
-    const insets = useSafeAreaInsets(); // Add this line
+    const insets = useSafeAreaInsets();
     const [project, setProject] = useState();
     const [currentMapping, setCurrentMapping] = useMMKVObject("currentMapping");
     const [controls, setControls] = useState(currentMapping || {
@@ -134,6 +134,46 @@ export default function ControlsScreen() {
         />
     );
 
+    const applyPreset = (controlType, preset) => {
+        const presets = {
+            wasd: { up: 'W', down: 'S', left: 'A', right: 'D' },
+            arrows: { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight' },
+            ijkl: { up: 'I', down: 'K', left: 'J', right: 'L' },
+        };
+
+        if (preset === 'custom') return; // Don't change anything for custom option
+
+        setControls((prev) => ({
+            ...prev,
+            controls: {
+                ...prev.controls,
+                [controlType]: {
+                    ...prev.controls[controlType],
+                    ...presets[preset],
+                },
+            },
+        }));
+    };
+
+    const getSelectedPreset = (controlType) => {
+        const current = controls?.controls?.[controlType];
+        if (!current) return 'custom';
+
+        // Check WASD preset
+        if (current.up === 'W' && current.down === 'S' && current.left === 'A' && current.right === 'D') {
+            return 'wasd';
+        }
+        // Check Arrow keys preset
+        if (current.up === 'ArrowUp' && current.down === 'ArrowDown' && current.left === 'ArrowLeft' && current.right === 'ArrowRight') {
+            return 'arrows';
+        }
+        // Check IJKL preset
+        if (current.up === 'I' && current.down === 'K' && current.left === 'J' && current.right === 'L') {
+            return 'ijkl';
+        }
+        return 'custom';
+    };
+
     const handleSave = () => {
         fetch(`https://itchy-controldb.vercel.app/api/controllermapping?projectId=${id}&username=${username}`, {
             method: "PUT",
@@ -251,6 +291,20 @@ export default function ControlsScreen() {
                     </View>
                     <Text style={s.sectionHeader}>Left Control</Text>
                     <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
+                        <Text style={s.settingTitle}>Preset</Text>
+                        <SelectorComponent
+                            searchable={false}
+                            options={[
+                                { label: "Custom", value: "custom" },
+                                { label: "WASD", value: "wasd" },
+                                { label: "Arrow Keys", value: "arrows" },
+                                { label: "IJKL", value: "ijkl" },
+                            ]}
+                            selectedValue={getSelectedPreset('primary')}
+                            onValueChange={(value) => applyPreset('primary', value)}
+                        />
+                    </View>
+                    <View style={{ ...s.settingContainer }}>
                         <Text style={s.settingTitle}>Up</Text>
                         <SelectorComponent
                             options={controlOptions}
@@ -328,6 +382,20 @@ export default function ControlsScreen() {
                     </View>
                     <Text style={s.sectionHeader}>Right Control</Text>
                     <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
+                        <Text style={s.settingTitle}>Preset</Text>
+                        <SelectorComponent
+                            searchable={false}
+                            options={[
+                                { label: "Custom", value: "custom" },
+                                { label: "WASD", value: "wasd" },
+                                { label: "Arrow Keys", value: "arrows" },
+                                { label: "IJKL", value: "ijkl" },
+                            ]}
+                            selectedValue={getSelectedPreset('secondary')}
+                            onValueChange={(value) => applyPreset('secondary', value)}
+                        />
+                    </View>
+                    <View style={{ ...s.settingContainer }}>
                         <Text style={s.settingTitle}>Up</Text>
                         <SelectorComponent
                             options={controlOptions}
