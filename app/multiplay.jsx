@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     View,
     Text,
     TextInput,
-    SafeAreaView,
     Alert,
     Pressable,
     ActivityIndicator,
@@ -25,6 +24,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Chip from '../components/Chip';
 import { useNavigation } from 'expo-router';
 import linkWithFallback from '../utils/linkWithFallback';
+import { useMMKVObject } from 'react-native-mmkv';
 
 const SIGNALING_SERVER_URL = 'wss://itchyws.micahlindley.com';
 
@@ -41,8 +41,28 @@ export default function MultiPlay() {
     const [loading, setLoading] = useState(false);
     const [controlsOpen, setControlsOpen] = useState(false);
     const [controlsHeight, setControlsHeight] = useState(300);
+    const [user] = useMMKVObject("user");
+    console.log(user);
     const nav = useNavigation();
     const insets = useSafeAreaInsets();
+
+    // Check if user is under 13 years old
+    const isUserUnder13 = () => {
+        if (!user || !user.birthMonth || !user.birthYear) return false;
+
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-11
+
+        const age = currentYear - user.birthYear;
+
+        // If they haven't had their birthday this year yet, subtract 1 from age
+        if (currentMonth < user.birthMonth) {
+            return (age - 1) < 13;
+        }
+
+        return age < 13;
+    };
 
     // Cleanup on component unmount
     useEffect(() => {
@@ -254,18 +274,56 @@ export default function MultiPlay() {
                 {!remoteStream && <View style={{ flexDirection: "row", columnGap: 15, alignItems: "center", justifyContent: "center", marginTop: 10 }}>
                     <TextInput
                         style={{
-                            color: colors.text, minWidth: 200, fontFamily: "monospace", fontSize: 26, textAlign: "center", borderColor: colors.backgroundSecondary, borderWidth: 1, borderRadius: 10, height: 50, flexGrow: 1
+                            color: isUserUnder13() ? colors.textSecondary : colors.text,
+                            minWidth: 200,
+                            fontFamily: "monospace",
+                            fontSize: 26,
+                            textAlign: "center",
+                            borderColor: isUserUnder13() ? colors.textSecondary : colors.backgroundSecondary,
+                            borderWidth: 1,
+                            borderRadius: 10,
+                            height: 50,
+                            flexGrow: 1,
+                            opacity: isUserUnder13() ? 0.5 : 1
                         }}
                         value={roomCode}
-                        placeholder="room code"
+                        placeholder={isUserUnder13() ? "age restricted" : "room code"}
                         autoCapitalize="characters"
                         maxLength={6}
                         onChangeText={setRoomCode}
+                        editable={!isUserUnder13()}
                     />
-                    <Pressable title="Join Room" style={{ margin: "auto" }} onPress={joinRoom}>
-                        <Text style={{ color: "white", paddingHorizontal: 20, paddingVertical: 14, borderRadius: 10, backgroundColor: colors.accent, alignItems: "center", display: "flex", justifyContent: "center" }}>CONNECT</Text>
+                    <Pressable
+                        title="Join Room"
+                        style={{ margin: "auto", opacity: isUserUnder13() ? 0.5 : 1 }}
+                        onPress={isUserUnder13() ? null : joinRoom}
+                        disabled={isUserUnder13()}
+                    >
+                        <Text style={{
+                            color: "white",
+                            paddingHorizontal: 20,
+                            paddingVertical: 14,
+                            borderRadius: 10,
+                            backgroundColor: isUserUnder13() ? colors.textSecondary : colors.accent,
+                            alignItems: "center",
+                            display: "flex",
+                            justifyContent: "center"
+                        }}>CONNECT</Text>
                     </Pressable>
                 </View>}
+                {isUserUnder13() && !remoteStream && (
+                    <Card style={{ paddingHorizontal: 15, paddingVertical: 10, marginTop: 15, backgroundColor: colors.backgroundSecondary }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                            <MaterialIcons name="info" size={20} color={colors.accent} style={{ marginRight: 8 }} />
+                            <Text style={{ color: colors.accent, fontSize: 16, fontWeight: "bold" }}>
+                                Age Restriction
+                            </Text>
+                        </View>
+                        <Text style={{ color: colors.text, lineHeight: 17 }}>
+                            MultiPlay is restricted to users who are 13 years of age or older. This restriction is in place to comply with online privacy and safety regulations.
+                        </Text>
+                    </Card>
+                )}
                 <Text style={{ color: colors.textSecondary, opacity: 0.5, marginVertical: 10 }}>Status: {status}</Text>
                 {!!remoteStream ? (
                     <View style={{ width: width - 30, aspectRatio: 480 / 360, borderWidth: 2, borderRadius: 10, overflow: "hidden" }}>

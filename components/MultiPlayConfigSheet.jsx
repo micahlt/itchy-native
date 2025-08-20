@@ -5,6 +5,8 @@ import { BottomSheetView } from "@gorhom/bottom-sheet";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../utils/theme";
 import linkWithFallback from "../utils/linkWithFallback";
+import { useMMKVObject } from "react-native-mmkv";
+import Card from "./Card";
 
 export default function MultiPlayConfigSheet({
     roomCode = "",
@@ -16,6 +18,25 @@ export default function MultiPlayConfigSheet({
     onClose = () => { }
 }) {
     const { colors } = useTheme();
+    const [user] = useMMKVObject("user");
+
+    // Check if user is under 13 years old
+    const isUserUnder13 = () => {
+        if (!user || !user.birthMonth || !user.birthYear) return false;
+
+        const currentDate = new Date();
+        const currentYear = currentDate.getFullYear();
+        const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-11
+
+        const age = currentYear - user.birthYear;
+
+        // If they haven't had their birthday this year yet, subtract 1 from age
+        if (currentMonth < user.birthMonth) {
+            return (age - 1) < 13;
+        }
+
+        return age < 13;
+    };
 
     const getStatusInfo = () => {
         switch (connectionStatus) {
@@ -77,6 +98,21 @@ export default function MultiPlayConfigSheet({
             }}>
                 Play local-multiplayer games online with WebRTC. Configure your multiplayer settings below to get started. We're assuming you already have your controller mappings set up for this project.
             </Text>
+
+            {isUserUnder13() && (
+                <Card style={{ paddingHorizontal: 15, paddingVertical: 10, marginBottom: 20, backgroundColor: colors.backgroundSecondary }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+                        <MaterialIcons name="info" size={20} color={colors.accent} style={{ marginRight: 8 }} />
+                        <Text style={{ color: colors.accent, fontSize: 16, fontWeight: "bold" }}>
+                            Age Restriction
+                        </Text>
+                    </View>
+                    <Text style={{ color: colors.text, lineHeight: 17 }}>
+                        MultiPlay is restricted to users who are 13 years of age or older. This restriction is in place to comply with online privacy and safety regulations.
+                    </Text>
+                </Card>
+            )}
+
             <View style={{ alignItems: "center", marginBottom: 20 }}>
                 <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
                     <View style={{
@@ -145,23 +181,23 @@ export default function MultiPlayConfigSheet({
                     </TouchableOpacity>
                 </View> : <Pressable
                     android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}
-                    onPress={createRoom}
-                    disabled={connectionStatus !== "idle"}
+                    onPress={isUserUnder13() ? null : createRoom}
+                    disabled={connectionStatus !== "idle" || isUserUnder13()}
                     style={{
                         padding: 10,
                         paddingHorizontal: 20,
                         borderRadius: 5,
                         alignItems: "center",
                         marginHorizontal: 5,
-                        backgroundColor: connectionStatus !== "idle" ? colors.backgroundTertiary : colors.backgroundSecondary,
-                        opacity: connectionStatus !== "idle" ? 0.6 : 1
+                        backgroundColor: (connectionStatus !== "idle" || isUserUnder13()) ? colors.backgroundTertiary : colors.backgroundSecondary,
+                        opacity: (connectionStatus !== "idle" || isUserUnder13()) ? 0.6 : 1
                     }}>
                     <Text style={{
-                        color: connectionStatus !== "idle" ? colors.textSecondary : colors.text,
+                        color: (connectionStatus !== "idle" || isUserUnder13()) ? colors.textSecondary : colors.text,
                         fontSize: 16,
                         fontWeight: "bold"
                     }}>
-                        {connectionStatus !== "idle" && connectionStatus !== "failed" ? "Connecting..." : "Start MultiPlay"}
+                        {isUserUnder13() ? "Age Restricted" : (connectionStatus !== "idle" && connectionStatus !== "failed" ? "Connecting..." : "Start MultiPlay")}
                     </Text>
                 </Pressable>}
             </View>
