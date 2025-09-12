@@ -82,7 +82,8 @@ export default function Message({ message }) {
                 if (message?.comment_type === 0) {
                     router.push(`/projects/${message.comment_obj_id}/comments?comment_id=comments-${message.comment_id}`);
                 } else if (message?.comment_type === 1) {
-                    router.push(`/users/${username}/comments?comment_id=comments-${message.comment_id}`);
+                    console.log(message);
+                    router.push(`/users/${message.comment_obj_title}/comments?comment_id=comments-${message.comment_id}`);
                 } else if (message?.comment_type === 2) {
                     router.push(`/studios/${message.comment_obj_id}/comments?comment_id=${message.comment_id}`)
                 }
@@ -131,8 +132,9 @@ export default function Message({ message }) {
                         </>}
                         {message.type == "addcomment" && message?.comment_type === 1 && <>
                             <Text style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> on</Text>
-                            <TouchableOpacity onPress={() => router.push(`/users/${username}`)}>
-                                <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 1, fontWeight: "bold" }}> your profile</Text>
+                            <TouchableOpacity onPress={() => router.push(`/users/${message.comment_obj_title}`)}>
+                                <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 1, fontWeight: "bold" }}> {message.comment_obj_title == username ? "your profile" : `${message.comment_obj_title}'s profile`}
+                                </Text>
                             </TouchableOpacity>
                         </>}
                         {message.type == "addcomment" && message?.comment_type === 2 && <>
