@@ -1,5 +1,4 @@
 import { useTheme } from '../../utils/theme';
-import { StatusBar } from 'react-native';
 import { useEffect, useState } from 'react';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { useMMKVString } from 'react-native-mmkv';

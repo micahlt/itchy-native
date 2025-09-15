@@ -134,8 +134,32 @@ if (document.readyState === 'loading') {
     const SIGNALING_SERVER_URL = 'wss://itchyws.micahlindley.com';
     let signalingSocket = null;
 
+    // ICE servers configuration with environment variables
     const pcConfig = {
-      iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' }
+        ${process.env.EXPO_PUBLIC_TURN_USERNAME && process.env.EXPO_PUBLIC_TURN_CREDENTIAL && process.env.EXPO_PUBLIC_TURN_SERVER_URL ? `,
+        {
+          urls: "turn:${process.env.EXPO_PUBLIC_TURN_SERVER_URL}:80",
+          username: "${process.env.EXPO_PUBLIC_TURN_USERNAME}",
+          credential: "${process.env.EXPO_PUBLIC_TURN_CREDENTIAL}",
+        },
+        {
+          urls: "turn:${process.env.EXPO_PUBLIC_TURN_SERVER_URL}:80?transport=tcp",
+          username: "${process.env.EXPO_PUBLIC_TURN_USERNAME}",
+          credential: "${process.env.EXPO_PUBLIC_TURN_CREDENTIAL}",
+        },
+        {
+          urls: "turn:${process.env.EXPO_PUBLIC_TURN_SERVER_URL}:443",
+          username: "${process.env.EXPO_PUBLIC_TURN_USERNAME}",
+          credential: "${process.env.EXPO_PUBLIC_TURN_CREDENTIAL}",
+        },
+        {
+          urls: "turns:${process.env.EXPO_PUBLIC_TURN_SERVER_URL}:443?transport=tcp",
+          username: "${process.env.EXPO_PUBLIC_TURN_USERNAME}",
+          credential: "${process.env.EXPO_PUBLIC_TURN_CREDENTIAL}",
+        }` : ''}
+      ]
     };
 
     let peerConnection = null;
@@ -264,14 +288,14 @@ if (document.readyState === 'loading') {
 
       signalingSocket?.send(JSON.stringify({
         type: 'signal',
-        payload: { type: 'offer', sdp: offer, roomCode }
+        payload: { type: 'offer', sdp: offer.sdp, sdpType: offer.type, roomCode }
       }));
     }
 
     async function handleSignalingMessage(msg) {
       sendToReact("Handling signaling message: " + JSON.stringify(msg));
       if (msg.sdp) {
-        const desc = new RTCSessionDescription(msg);
+        const desc = new RTCSessionDescription({ type: msg.type, sdp: msg.sdp });
         await peerConnection.setRemoteDescription(desc);
         sendToReact({ type: "answer-recieved", payload: JSON.stringify(peerConnection) });
       } else if (msg.candidate) {
@@ -356,6 +380,7 @@ if (document.readyState === 'loading') {
         }
 
         if (type == "startMultiPlaySession") {
+          window.ReactNativeWebView.postMessage("Starting MultiPlaySession: " + signalingSocket);
           if (!!signalingSocket) return;
           signalingSocket = new WebSocket(SIGNALING_SERVER_URL);
           signalingSocket.onopen = () => {

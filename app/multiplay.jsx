@@ -111,13 +111,16 @@ export default function MultiPlay() {
                 console.log("Received signal:", payload);
                 const { sdp, candidate } = payload;
                 if (sdp) {
-                    const remoteDescription = sdp;
+                    const remoteDescription = { type: payload.sdpType || 'offer', sdp: sdp };
                     console.log("Received description:", remoteDescription);
 
                     if (remoteDescription.type === 'offer') {
                         setStatus('Received offer. Creating answer...');
                         const pc = pcRef.current;
                         await pc.setRemoteDescription(new RTCSessionDescription(remoteDescription));
+                        pc.onicegatheringstatechange = () => {
+                            console.log("ICE gathering state:", pc.iceGatheringState);
+                        };
                         const answer = await pc.createAnswer();
                         await pc.setLocalDescription(answer);
                         socket.send(JSON.stringify({
@@ -167,9 +170,46 @@ export default function MultiPlay() {
 
     const startPeerConnection = (code) => {
         console.log("Starting peer connection...");
-        const pc = new RTCPeerConnection({
-            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun1.l.google.com:19302' }, { urls: 'stun2.l.google.com:19302' }, { urls: 'stun3.l.google.com:19302' }, { urls: 'stun4.l.google.com:19302' }],
-        });
+
+        // Get TURN credentials from environment variables
+        const turnUsername = process.env.EXPO_PUBLIC_TURN_USERNAME;
+        const turnCredential = process.env.EXPO_PUBLIC_TURN_CREDENTIAL;
+        const turnServerUrl = process.env.EXPO_PUBLIC_TURN_SERVER_URL;
+
+        const iceServers = [
+            { urls: 'stun:stun.l.google.com:19302' }
+        ];
+
+        // Only add TURN servers if credentials are available
+        if (turnUsername && turnCredential && turnServerUrl) {
+            iceServers.push(
+                {
+                    urls: `turn:${turnServerUrl}:80`,
+                    username: turnUsername,
+                    credential: turnCredential,
+                },
+                {
+                    urls: `turn:${turnServerUrl}:80?transport=tcp`,
+                    username: turnUsername,
+                    credential: turnCredential,
+                },
+                {
+                    urls: `turn:${turnServerUrl}:443`,
+                    username: turnUsername,
+                    credential: turnCredential,
+                },
+                {
+                    urls: `turns:${turnServerUrl}:443?transport=tcp`,
+                    username: turnUsername,
+                    credential: turnCredential,
+                }
+            );
+            console.log("TURN servers configured");
+        } else {
+            console.warn("TURN credentials not found, using STUN only");
+        }
+
+        const pc = new RTCPeerConnection({ iceServers });
 
         pc.onicecandidate = (event) => {
             if (event.candidate) {
@@ -179,6 +219,7 @@ export default function MultiPlay() {
                     payload: {
                         roomCode: code,
                         candidate: event.candidate,
+                        type: 'candidate'
                     },
                 }));
             } else {
