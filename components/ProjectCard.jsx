@@ -35,7 +35,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
                     <View style={{
                         backgroundColor: colors.backgroundSecondary, borderRadius: 10, overflow: "hidden", width: width
                     }} >
-                        <Image placeholder={require("../assets/project.png")} placeholderContentFit="cover" source={{ uri: project.thumbnail_url ? `https:${project.thumbnail_url}` : project.image }} style={{ width: width, aspectRatio: "4 / 3", contentFit: "stretch" }} />
+                        <Image placeholder={require("../assets/project.png")} placeholderContentFit="cover" source={{ uri: project.thumbnail_url ? `https:${project.thumbnail_url}` : project.image }} style={{ width: width, aspectRatio: "4 / 3" }} contentFit="fill" />
                         {project?.title && project.title.trim() && <Text style={{ color: colors.text, padding: 10, paddingBottom: (project.creator || project.label || project.author?.username) ? 0 : 10, fontWeight: "bold", fontSize: 14 }} numberOfLines={1}>{project.title}</Text>}
                         {project.creator && <TouchableOpacity
                             onPress={() => openProfile()}

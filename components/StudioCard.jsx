@@ -21,7 +21,7 @@ export default function StudioCard({ studio, width = 250, style = {} }) {
                 <View style={{
                     backgroundColor: colors.backgroundSecondary, borderRadius: 10, overflow: "hidden", width: width
                 }} >
-                    <Image placeholder={require("../assets/project.png")} placeholderContentFit="cover" source={{ uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${studio.id}.png` }} style={{ width: width, aspectRatio: "1.7 / 1", contentFit: "stretch" }} />
+                    <Image placeholder={require("../assets/project.png")} placeholderContentFit="cover" source={{ uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${studio.id}.png` }} style={{ width: width, aspectRatio: "1.7 / 1" }} contentFit="fill" />
                     {studio?.title && studio.title.trim() && <Text style={{ color: colors.text, padding: 10, paddingBottom: (studio.creator || studio.label || studio.author?.username) ? 0 : 10, fontWeight: "bold", fontSize: 14 }} numberOfLines={1}>{studio.title}</Text>}
                 </View>
             </Pressable>
