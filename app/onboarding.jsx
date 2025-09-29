@@ -152,7 +152,7 @@ export default function Onboarding({ }) {
                     // Shadow for Android
                     elevation: 5
                 }} >
-                    <MaterialIcons name={isAtEnd ? "check" : "play-arrow"} size={36} color="white" />
+                    <MaterialIcons name={isAtEnd ? "check" : "arrow-forward"} size={36} color="white" />
                 </View>
             </Pressable>
         </View>

@@ -7,7 +7,6 @@
     "scheme": "itchy",
     "newArchEnabled": true,
     "plugins": [
-      "expo-router",
       [
         "expo-build-properties",
         {
@@ -19,6 +18,7 @@
           }
         }
       ],
+      "expo-router",
       "react-native-bottom-tabs",
       [
         "expo-asset",
