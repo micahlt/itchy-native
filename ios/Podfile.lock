@@ -1345,7 +1345,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-bottom-tabs (0.8.9):
+  - react-native-bottom-tabs (0.9.2):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -2244,6 +2244,20 @@ SPEC CHECKSUMS:
   ExpoModulesCore: 8eec79e1392628058fdde9b2f6ba2ad918c27a55
   ExpoSharing: c4540ef2e6615a92e05d2bddf019e1f58f27119e
   ExpoSystemUI: fb8213e39d19e0861320fa69eb60cad7a839c080
+  EXConstants: a1f35b9aabbb3c6791f8e67722579b1ffcdd3f18
+  Expo: 3e53243e3281214a7d613f8a875c0b732d7512c2
+  ExpoAsset: 0687fe05f5d051c4a34dd1f9440bd00858413cfe
+  ExpoCrypto: 1eaf79360c8135af1f2ebb133394fd3513ca9a3d
+  ExpoFileSystem: c8c19bf80d914c83dda3beb8569d7fb603be0970
+  ExpoFont: 773955186469acc5108ff569712a2d243857475f
+  ExpoHaptics: e01cce0741d68c281853118eb0267f88d42c6b7a
+  ExpoHead: 15cd0b1168451650dafe3983b99beea3befb3590
+  ExpoImage: c37f79e5e97e0a662ed1c4b17363464007da3148
+  ExpoKeepAwake: 2a5f15dd4964cba8002c9a36676319a3394c85c7
+  ExpoLinking: 0381341519ca7180a3a057d20edb1cf6a908aaf4
+  ExpoModulesCore: 8eec79e1392628058fdde9b2f6ba2ad918c27a55
+  ExpoSharing: c4540ef2e6615a92e05d2bddf019e1f58f27119e
+  ExpoSystemUI: fb8213e39d19e0861320fa69eb60cad7a839c080
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
   FBLazyVector: 7605ea4810e0e10ae4815292433c09bf4324ba45
   fmt: 01b82d4ca6470831d1cc0852a1af644be019e8f6
@@ -2268,25 +2282,25 @@ SPEC CHECKSUMS:
   React-FabricComponents: 1887b9027e7da5679f099b999dc56b44dbc7628c
   React-FabricImage: 27996e41c769616bb68f011362bf69c472a6b2f7
   React-featureflags: dc9c91fcd6a75cc95bd7fec184d0be8ad0f26db5
-  React-featureflagsnativemodule: f483a827effd65c0b7b2c827607716c74f2a4ae1
-  React-graphics: fa15bab1a7d44a57eeb54e3185117729b141ed4b
-  React-hermes: ec18c10f5a69d49fb9b5e17ae95494e9ea13d4d3
-  React-idlecallbacksnativemodule: 97ecc9647f7e80ea4c05545c84a86dee05e816d0
-  React-ImageManager: 1a6f5a858f86bc93bf210a88ec5575ff22b69aaa
-  React-jserrorhandler: ea750869c2aa5497b3d9322afe02eb7f756b9696
-  React-jsi: 95f7676103137861b79b0f319467627bcfa629ee
-  React-jsiexecutor: 41e0fe87cda9ea3970ffb872ef10f1ff8dbd1932
-  React-jsinspector: 74c73f2b385b6a7979eddeba055961e9acc3cc42
-  React-jsitracing: 182a6d4af2273f847daa8a3f841fd3ff8212d3f8
-  React-logger: dbca7bdfd4aa5ef69431362bde6b36d49403cb20
-  React-Mapbuffer: 129fa9634f42d88a0c3761d2829db85175b985ee
-  React-microtasksnativemodule: b5151a6d754fbf52292e758c4bb93b7c0d2f0b92
-  react-native-bottom-tabs: 8e1d8ae0a7d3721a450b4596474aab9e69f65ace
-  react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
-  react-native-mmkv: 85dd592df389b10321418162312226b931f97e5f
-  react-native-safe-area-context: 1d6729449d40a99af12ca1ddd88d65c18e2ffa2d
-  react-native-webrtc: 0f1c94069ff1eb9d8fb1618c2dc71f73542c8cfa
-  react-native-webview: a2382d7bf7ed34e98ab8075ff176a4c9959329d6
+  React-featureflagsnativemodule: 954d6631b4dad0b84bca72c4a8492c44fad92f2c
+  React-graphics: 85866d95589b775bcb5f02946a96e948f53088f1
+  React-hermes: ac0bcba26a5d288ebc99b500e1097da2d0297ddf
+  React-idlecallbacksnativemodule: 5a357e35e5a3986faf1b3c46a1996c12075f7946
+  React-ImageManager: 5b3843bea322e4884400f1d78cfde7c435c374bc
+  React-jserrorhandler: 23161cf9fef2da6d56bf5cfda14f4abc8d62b286
+  React-jsi: 496fa2b9d63b726aeb07d0ac800064617d71211d
+  React-jsiexecutor: dd22ab48371b80f37a0a30d0e8915b6d0f43a893
+  React-jsinspector: 3f8d148785a57f082e71382657c5fbe1be75bcdf
+  React-jsitracing: 69456514c86311eb042d824e4cf69f9b524b5b97
+  React-logger: c4052eb941cca9a097ef01b59543a656dc088559
+  React-Mapbuffer: 9343a5c14536d4463c80f09a960653d754daae21
+  React-microtasksnativemodule: c7cafd8f4470cf8a4578ee605daa4c74d3278bf8
+  react-native-bottom-tabs: 49203f1aa715f5b5e0bc250e9e2e706ee19ae028
+  react-native-cookies: d648ab7025833b977c0b19e142503034f5f29411
+  react-native-mmkv: d9353f0f66264a54b7131459dd23b8eae0a04f36
+  react-native-safe-area-context: 3ec0dbf4635e3344cb1303d15fcc4a22876b3e59
+  react-native-webrtc: 62659d18a13f6b50ad95c99a9a48cf9872a15815
+  react-native-webview: e20ba089a590ed5a914f4c1ec9d0afdd8b3f4987
   React-nativeconfig: 415626a63057638759bcc75e0a96e2e07771a479
   React-NativeModulesApple: bffc60f55895c2723b1e5472fa40567fe3df4923
   React-perflogger: 9b4f13c0afe56bc7b4a0e93ec74b1150421ee22d
