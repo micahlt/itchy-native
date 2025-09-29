@@ -13,7 +13,8 @@ import Feed from '../../components/Feed';
 import SignInPrompt from '../../components/SignInPrompt';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import StudioCard from '../../components/StudioCard';
-import Animated, { Easing, runOnJS, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedRef, useAnimatedStyle, useScrollOffset, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { withPause } from 'react-native-redash';
 import { Image } from 'expo-image';
 import { Redirect, router } from 'expo-router';
@@ -32,7 +33,7 @@ export default function HomeScreen() {
     const [token] = useMMKVString("token");
     const insets = useSafeAreaInsets();
     const scrollRef = useAnimatedRef();
-    const scrollOffset = useScrollViewOffset(scrollRef);
+    const scrollOffset = useScrollOffset(scrollRef);
     const panPosition = useSharedValue(0);
     const rotate = useSharedValue(0);
     const isAtTop = useSharedValue(true);
@@ -124,10 +125,10 @@ export default function HomeScreen() {
         .onUpdate((e) => {
             if (!isRefreshing && isAtTop.value && scrollOffset.value <= 0 && e.translationY > 0) {
                 panPosition.value = e.translationY * 0.18 + 0.5 * (1 - Math.min(e.translationY, MAX_PULL_HEIGHT) / MAX_PULL_HEIGHT);
-                if (Math.floor(panPosition.value) % 18 == 0) runOnJS(vib)("tick");
+                if (Math.floor(panPosition.value) % 18 == 0) scheduleOnRN(vib)("tick");
                 if (panPosition.value > REFRESH_TRIGGER_HEIGHT) {
                     if (!didVibrate.value) {
-                        runOnJS(vib)("long");
+                        scheduleOnRN(vib)("long");
                         didVibrate.value = true;
                     }
                 }
@@ -136,8 +137,8 @@ export default function HomeScreen() {
         .onEnd((e) => {
             didVibrate.value = false;
             if (isAtTop.value && panPosition.value > REFRESH_TRIGGER_HEIGHT) {
-                runOnJS(vib)("long");
-                runOnJS(refresh)();
+                scheduleOnRN(vib)("long");
+                scheduleOnRN(refresh)();
             }
             panPosition.value = withSpring(0, { damping: 10, stiffness: 80 });
         });
