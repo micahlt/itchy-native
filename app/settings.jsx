@@ -2,7 +2,7 @@ import { ScrollView, Switch, Text, TouchableOpacity, View, StyleSheet } from 're
 import Pressable from '../components/Pressable';
 import ScratchAPIWrapper from '../utils/api-wrapper';
 import { useTheme } from '../utils/theme';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { version } from "../package.json";
 import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
@@ -17,6 +17,14 @@ export default function SettingsScreen() {
     const [username] = useMMKVString("username");
     const [twConfig, setTWConfig] = useMMKVObject("twConfig");
     const isLiquidPlus = Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
+    // Local state for switches to enable smooth animations
+    const [localSwitchState, setLocalSwitchState] = useState({
+        interpolate: false,
+        autoplay: false,
+        fps60: false,
+        hqPen: false,
+        turbo: false
+    });
     const s = useMemo(() => StyleSheet.create({
         sectionHeader: {
             color: colors.textSecondary,
@@ -55,13 +63,26 @@ export default function SettingsScreen() {
     useEffect(() => {
         if (!twConfig) {
             setTWConfig({})
+        } else {
+            setLocalSwitchState({
+                interpolate: twConfig.interpolate || false,
+                autoplay: twConfig.autoplay || false,
+                fps60: twConfig.fps60 || false,
+                hqPen: twConfig.hqPen || false,
+                turbo: twConfig.turbo || false
+            });
         }
-    }, []);
+    }, [twConfig]);
+
+    const handleSwitchToggle = (key, value) => {
+        setLocalSwitchState(prev => ({ ...prev, [key]: value }));
+        setTWConfig({ ...twConfig, [key]: value });
+    };
 
     return (
         <ScrollView overScrollMode='always' bounces={true}>
             <Text style={s.sectionHeader}>Account</Text>
-            <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
+            <View style={{ ...s.settingContainer, ...s.topSettingContainer, ...(!username && s.bottomSettingContainer) }}>
                 <Text style={s.settingTitle}>{username ? `Signed in as ${username}` : "Signed out"}</Text>
                 <View style={{ borderRadius: 10, overflow: 'hidden', backgroundColor: colors.accent, elevation: 5, marginRight: 10, }}>
                     <Pressable onPress={() => {
@@ -115,10 +136,6 @@ export default function SettingsScreen() {
             </View>
             <View style={s.settingContainer}>
                 <TouchableOpacity onPress={() => router.push("/onboarding")}><Text style={{ color: colors.accent, fontSize: 16, }}>Redo onboarding flow</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={s.settingContainer}>
-                <TouchableOpacity onPress={() => router.push("/rtctest")}><Text style={{ color: colors.accent, fontSize: 16, }}>RTC test</Text>
                 </TouchableOpacity>
             </View>
             <View style={s.settingContainer}>

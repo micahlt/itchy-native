@@ -12,37 +12,37 @@ import { useMMKVBoolean } from "react-native-mmkv";
 import { router, useNavigation } from "expo-router";
 
 const data = [{
-    key: 1,
+    key: 0,
     title: "Welcome to Itchy",
     description: "Itchy is a Scratch client for Android and iOS, designed to provide a seamless experience for Scratch users on mobile devices.",
     imgSrc: onboarding.welcome,
 }, {
-    key: 2,
+    key: 1,
     title: "What's Happening",
     description: "Get the latest updates from your friends on Scratch right on your phone, without having to deal with the desktop Scratch UI.",
     imgSrc: onboarding.feed,
 }, {
-    key: 3,
+    key: 2,
     title: "Messages",
     description: "Check your messages, reply to comments, and stay connected in the smoothest way possible.",
     imgSrc: onboarding.messages,
 }, {
-    key: 4,
+    key: 3,
     title: "TurboWarp",
     description: "Say goodbye to laggy Scratch projects with built-in TurboWarp, featuring faster loading times and 60FPS performance.",
     imgSrc: onboarding.turbowarp,
 }, {
-    key: 5,
+    key: 4,
     title: "Custom Controls",
     description: "For the first time ever, play keyboard-controlled Scratch games on mobile with custom controls that work seamlessly.",
     imgSrc: onboarding.controller,
 }, {
-    key: 6,
+    key: 5,
     title: "Search",
     description: "Easily find projects, studios, and even users with our enhanced search engine.",
     imgSrc: onboarding.search,
 }, {
-    key: 7,
+    key: 6,
     title: "Profiles",
     description: "Visit your friends' profiles, check out their projects, and follow users, all in a mobile-friendly format.",
     imgSrc: onboarding.accounts,
@@ -61,9 +61,14 @@ export default function Onboarding({ }) {
 
     // Update isAtEnd whenever progress changes
     const handleProgressChange = (offsetProgress, absoluteProgress) => {
-        progress.value = absoluteProgress;
-        // If the progress is at or past the last slide, set isAtEnd to true
-        setIsAtEnd(Math.round(absoluteProgress) >= data.length - 1);
+        // Ensure progress is exactly at the last index when we're at the end
+        if (absoluteProgress >= data.length - 1) {
+            progress.value = data.length - 1;
+            setIsAtEnd(true);
+        } else {
+            progress.value = absoluteProgress;
+            setIsAtEnd(false);
+        }
     };
 
     useEffect(() => {
@@ -79,11 +84,7 @@ export default function Onboarding({ }) {
     }, []);
 
     const onPressPagination = (index) => {
-        if (index == data.length - 1) {
-            setIsAtEnd(true);
-        } else {
-            setIsAtEnd(false);
-        }
+        // Remove the manual isAtEnd setting - let handleProgressChange handle it
         carouselRef.current?.scrollTo({
             /**
              * Calculate the difference between the current index and the target index
@@ -119,14 +120,6 @@ export default function Onboarding({ }) {
                 </View>
             )}
         />
-        <Pagination.Basic
-            progress={progress}
-            data={data}
-            dotStyle={{ backgroundColor: "white", borderRadius: 50 }}
-            activeDotStyle={{ backgroundColor: colors.accent, width: 20, height: 6, borderRadius: 3 }}
-            containerStyle={{ gap: 20, marginTop: 10, position: "absolute", bottom: insets.bottom + 20 }}
-            onPress={onPressPagination}
-        />
         <View style={{ position: "absolute", bottom: insets.bottom + 80, width: "100%" }}>
             <Pressable onPress={() => {
                 if (isAtEnd) {
@@ -152,7 +145,7 @@ export default function Onboarding({ }) {
                     // Shadow for Android
                     elevation: 5
                 }} >
-                    <MaterialIcons name={isAtEnd ? "check" : "play-arrow"} size={36} color="white" />
+                    <MaterialIcons name={isAtEnd ? "check" : "arrow-forward"} size={36} color="white" />
                 </View>
             </Pressable>
         </View>
