@@ -88,23 +88,23 @@ export default function SettingsScreen() {
             <Text style={s.sectionHeader}>Player</Text>
             <View style={{ ...s.settingContainer, ...s.topSettingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Frame interpolation</Text>
-                <Switch thumbColor={twConfig?.interpolate ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, interpolate: v })} value={twConfig?.interpolate} />
+                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, interpolate: v })} value={twConfig?.interpolate} />
             </View>
             <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Autoplay</Text>
-                <Switch thumbColor={twConfig?.autoplay ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })} value={twConfig?.autoplay} />
+                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })} value={twConfig?.autoplay} />
             </View>
             <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Force 60 FPS</Text>
-                <Switch thumbColor={twConfig?.fps60 ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, fps60: v })} value={twConfig?.fps60} />
+                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, fps60: v })} value={twConfig?.fps60} />
             </View>
             <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>High-quality pen</Text>
-                <Switch thumbColor={twConfig?.hqPen ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, hqPen: v })} value={twConfig?.hqPen} />
+                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, hqPen: v })} value={twConfig?.hqPen} />
             </View>
             <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Turbo mode</Text>
-                <Switch thumbColor={twConfig?.turbo ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })} value={twConfig?.turbo} />
+                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })} value={twConfig?.turbo} />
             </View>
             <View style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
                 <Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Options provided by </Text><TouchableOpacity onPress={() => linkWithFallback("https://turbowarp.org")}><Text style={{ color: colors.accent, fontSize: 12 }}>TurboWarp</Text></TouchableOpacity>
