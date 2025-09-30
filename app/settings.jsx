@@ -9,12 +9,14 @@ import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import storage from '../utils/storage';
 import linkWithFallback from '../utils/linkWithFallback';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Platform } from "react-native";
 
 export default function SettingsScreen() {
     const { colors, isDark } = useTheme();
     const router = useRouter();
     const [username] = useMMKVString("username");
     const [twConfig, setTWConfig] = useMMKVObject("twConfig");
+    const isLiquidPlus = Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
     const s = useMemo(() => StyleSheet.create({
         sectionHeader: {
             color: colors.textSecondary,
@@ -84,23 +86,23 @@ export default function SettingsScreen() {
                 </TouchableOpacity>
             </View>}
             <Text style={s.sectionHeader}>Player</Text>
-            <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
+            <View style={{ ...s.settingContainer, ...s.topSettingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Frame interpolation</Text>
                 <Switch thumbColor={twConfig?.interpolate ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, interpolate: v })} value={twConfig?.interpolate} />
             </View>
-            <View style={s.settingContainer}>
+            <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Autoplay</Text>
                 <Switch thumbColor={twConfig?.autoplay ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })} value={twConfig?.autoplay} />
             </View>
-            <View style={s.settingContainer}>
+            <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Force 60 FPS</Text>
                 <Switch thumbColor={twConfig?.fps60 ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, fps60: v })} value={twConfig?.fps60} />
             </View>
-            <View style={s.settingContainer}>
+            <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>High-quality pen</Text>
                 <Switch thumbColor={twConfig?.hqPen ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, hqPen: v })} value={twConfig?.hqPen} />
             </View>
-            <View style={s.settingContainer}>
+            <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Turbo mode</Text>
                 <Switch thumbColor={twConfig?.turbo ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })} value={twConfig?.turbo} />
             </View>
