@@ -20,6 +20,7 @@ export default function App() {
     const [cookieSet, setCookieSet] = useMMKVString("cookieSet");
     const [localControllerMappings, setLocalControllerMappings] = useMMKVObject("localControllerMappings");
     const [savedLogins, setSavedLogins] = useMMKVObject("savedLogins", encryptedStorage);
+    const isLiquidPlus = Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
     useEffect(() => {
         setColors(theme === "dark" ? darkColors : lightColors);
         if (!twConfig) {
@@ -113,12 +114,11 @@ export default function App() {
                             headerTintColor: colors.text,
                             // fixes back button artifact for iOS, check how it impacts android
                             headerLeft: () => null,
-                            headerTransparent: true,
+                            headerTransparent: isLiquidPlus,
                             headerStyle: {
-                            backgroundColor: "transparent", // no fallback bg
-                            paddingTop: 40 // dysfunctional unfortunatley but would be needed because now content doesnt have top padding to account for header
+                                backgroundColor: "transparent", // no fallback bg
                             },
-                            
+
                         }}>
                             <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: "default" }} />
                             <Stack.Screen name="projects/[id]/index" options={{

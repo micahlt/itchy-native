@@ -79,7 +79,7 @@ export default function SettingsScreen() {
     };
 
     return (
-        <ScrollView overScrollMode='always' bounces={true} style={{ paddingTop: 100 }}>
+        <ScrollView overScrollMode='always' bounces={true}>
             <Text style={s.sectionHeader}>Account</Text>
             <View style={{ ...s.settingContainer, ...s.topSettingContainer, ...(!username && s.bottomSettingContainer) }}>
                 <Text style={s.settingTitle}>{username ? `Signed in as ${username}` : "Signed out"}</Text>
