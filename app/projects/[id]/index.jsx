@@ -657,7 +657,7 @@ if (document.readyState === 'loading') {
               onControlPress={sendKeyEvent}
               projectId={id}
               showConfiguration={true}
-              style={{ margin: 20, marginTop: 0, marginBottom: 10 }}
+              style={{ margin: 20, marginTop: 0, marginBottom: 0 }}
             />
             {metadata?.instructions && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16, borderRadius: dimensions.mediumRadius }}>
               <ItchyText style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</ItchyText>
