@@ -1,4 +1,5 @@
-import { View, Text } from "react-native"
+import { View } from "react-native"
+import ItchyText from "./ItchyText"
 import Chip from "./Chip"
 import { decode } from "html-entities"
 import { useTheme } from "../utils/theme"
@@ -60,7 +61,7 @@ export default function Comment({ comment, isReply = false, showReplies = true, 
                 <Card style={{ backgroundColor: colors.backgroundSecondary, padding: 15, borderRadius: 10, marginLeft: isReply ? 10 : 0, marginBottom: replies.length > 0 ? 10 : 0, borderColor: colors.accent, borderWidth: isSelected ? 2 : 0 }} onPress={onPressHandler} onLongPress={onLongPressHandler}>
                     <View style={{ flexDirection: "row", alignItems: "top", justifyContent: "space-between" }}>
                         <Chip.Image text={comment.author.username} imageURL={comment.author.image} mode="outlined" style={{ marginRight: "auto", marginBottom: 8 }} textStyle={{ fontWeight: "bold" }} onPress={openAuthor} />
-                        <Text style={{ color: colors.textSecondary, fontSize: 12, marginTop: 2 }}>{timestamp}</Text>
+                        <ItchyText style={{ color: colors.textSecondary, fontSize: 12, marginTop: 2 }}>{timestamp}</ItchyText>
                     </View>
                     <LinkifiedText style={{ color: colors.text, fontSize: 14 }} text={content} />
                 </Card>

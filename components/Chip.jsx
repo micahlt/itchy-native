@@ -1,21 +1,22 @@
 import { Image } from "expo-image";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
 import { MaterialIcons } from "@expo/vector-icons";
 import tinycolor from "tinycolor2";
 import { useCallback, useMemo } from "react";
+import ItchyText from "./ItchyText";
 
 const ImageChip = ({ imageURL = "", text = "", onPress = () => { }, textStyle, mode = "filled", style = {}, provider = "native" }) => {
     const { colors } = useTheme();
     const onPressFn = useCallback(() => {
         onPress();
     }, [onPress]);
-    return <View style={{ marginRight: "auto", flexDirection: "row", borderRadius: 20, height: 32, overflow: "hidden", borderColor: mode == "outlined" ? colors.backgroundTertiary : "transparent", borderWidth: mode == "outlined" ? 1 : 0, ...style }}>
-        <Pressable provider={provider} style={{ alignItems: "center", gap: 5, paddingRight: 12, borderRadius: 20, height: 32, marginRight: "auto" }} android_ripple={{ borderless: false }} onPress={onPressFn}>
-            <View style={{ flexDirection: "row", alignItems: "center", height: 32, gap: 5 }}>
-                <Image source={{ uri: imageURL }} style={{ width: 32, height: 32, aspectRatio: 1, borderRadius: 16, backgroundColor: '#ffffff' }} />
-                <Text style={{ color: colors.text, marginLeft: 4, ...textStyle }}>{text}</Text>
+    return <View style={{ marginRight: "auto", flexDirection: "row", borderRadius: 100, height: 35, borderColor: mode == "outlined" ? colors.backgroundTertiary : "transparent", borderWidth: mode == "outlined" ? 1.5 : 0, ...style }}>
+        <Pressable provider={provider} style={{ alignItems: "center", gap: 5, paddingRight: 12, borderRadius: 100, height: 35, marginRight: "auto" }} android_ripple={{ borderless: false }} onPress={onPressFn}>
+            <View style={{ flexDirection: "row", alignItems: "center", height: 35, gap: 5 }}>
+                <Image source={{ uri: imageURL }} style={{ width: 32, height: 32, marginTop: -3, aspectRatio: 1, borderRadius: 100, borderWidth: 0, borderColor: 'red', backgroundColor: '#ffffff' }} />
+                <ItchyText style={{ color: colors.text, marginLeft: 4, ...textStyle, marginTop: -4 }}>{text}</ItchyText>
             </View>
         </Pressable>
     </View>;
@@ -34,10 +35,10 @@ const IconChip = ({ icon, text = "", onPress = () => { }, color = "#ff656d", mod
         onPress();
     }, [onPress]);
 
-    return <View style={{ borderRadius: 20, height: 32, overflow: "hidden", flexDirection: 'row' }}>
-        <Pressable style={{ flexDirection: "row", alignItems: "center", gap: 5, backgroundColor: mode == "filled" ? bg : "transparent", paddingRight: 12, borderColor: color, borderWidth: 1, borderRadius: 20, height: 32, }} android_ripple={{ color: colors.ripple, foreground: true, borderless: false }} onPress={onPressFn}>
+    return <View style={{ borderRadius: 100, height: 35, overflow: "visible", flexDirection: 'row' }}>
+        <Pressable style={{ flexDirection: "row", alignItems: "center", gap: 5, backgroundColor: mode == "filled" ? bg : "transparent", paddingRight: 12, borderColor: color, borderWidth: 1.5, borderRadius: 100, height: 32, }} android_ripple={{ color: colors.ripple, foreground: true, borderless: false }} onPress={onPressFn}>
             <MaterialIcons name={icon} size={20} color={color} style={{ paddingLeft: 8 }} />
-            <Text style={{ color: color }}>{text}</Text>
+            <ItchyText style={{ color: color, fontWeight: "bold" }}>{text}</ItchyText>
         </Pressable>
     </View>;
 };

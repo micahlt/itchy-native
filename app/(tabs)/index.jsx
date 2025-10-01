@@ -1,43 +1,130 @@
 const REFRESH_TRIGGER_HEIGHT = 50;
 const MAX_PULL_HEIGHT = 75;
 
-import { Platform, Text, View } from 'react-native';
+import { Platform, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { Gesture, GestureDetector, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { useTheme } from '../../utils/theme';
-import { useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useMMKVBoolean, useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import Feed from '../../components/Feed';
 import SignInPrompt from '../../components/SignInPrompt';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import StudioCard from '../../components/StudioCard';
-import Animated, { Easing, runOnJS, useAnimatedRef, useAnimatedStyle, useScrollViewOffset, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedRef, useAnimatedStyle, useScrollOffset, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 import { withPause } from 'react-native-redash';
-import { Image } from 'expo-image';
 import { Redirect, router } from 'expo-router';
 import HorizontalContentScroller from '../../components/HorizontalContentScroller';
+import FastSquircleView from 'react-native-fast-squircle';
+import ItchyText from '../../components/ItchyText';
+import TexturedButton from '../../components/TexturedButton';
+import { Ionicons } from '@expo/vector-icons';
+
+// Memoized header component to prevent unnecessary re-renders
+const Header = memo(({ insets, colors, headerStyle, logoStyle }) => (
+    <Animated.View style={[headerStyle, { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingTop: insets.top + 5, paddingBottom: 15, paddingHorizontal: 20, gap: 10 }]}>
+        <TouchableOpacity onPress={() => router.push(`/multiplay`)}><Ionicons name="radio" style={{ marginLeft: 7 }} size={26} color={colors.textSecondary} /></TouchableOpacity>
+        <Animated.Image source={require("../../assets/logo-nobg.png")} style={[logoStyle, { height: 65, width: 65 }]} />
+        <TouchableOpacity onPress={() => router.push('/settings')}><Ionicons style={{ marginRight: 7 }} name="settings" size={26} color={colors.textSecondary} /></TouchableOpacity>
+    </Animated.View>
+));
+
+// Memoized studios section
+const FeaturedStudios = memo(({ studios, colors }) => (
+    <>
+        <View style={{
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 20,
+            paddingBottom: 0,
+            paddingTop: 5,
+            gap: 10
+        }}>
+            <MaterialIcons name='photo-filter' size={24} color={colors.text} />
+            <ItchyText style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Featured Studios</ItchyText>
+        </View>
+        <ScrollView horizontal contentContainerStyle={{
+            padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
+        }} showsHorizontalScrollIndicator={false}>
+            {studios.map((item, index) => (<StudioCard key={`studio-${item.id || index}`} studio={item} />))}
+        </ScrollView>
+    </>
+));
 
 export default function HomeScreen() {
     const { colors } = useTheme();
     const [hasOpenedBefore, setHasOpenedBefore] = useMMKVBoolean("hasOpenedBeforeDev");
-    const [exploreData, setExploreData] = useState(null);
-    const [friendsLoves, setFriendsLoves] = useState([]);
-    const [friendsProjects, setFriendsProjects] = useState([]);
-    const [isRefreshing, setIsRefreshing] = useState(false);
-    const [refreshCount, setRefreshCount] = useState(0);
+    // Combine related state to minimize updates
+    const [dataState, setDataState] = useState({
+        exploreData: null,
+        friendsLoves: [],
+        friendsProjects: [],
+        isRefreshing: false,
+        refreshCount: 0
+    });
     const [user] = useMMKVObject("user");
     const [username] = useMMKVString("username");
     const [token] = useMMKVString("token");
     const insets = useSafeAreaInsets();
     const scrollRef = useAnimatedRef();
-    const scrollOffset = useScrollViewOffset(scrollRef);
+    const scrollOffset = useScrollOffset(scrollRef);
     const panPosition = useSharedValue(0);
     const rotate = useSharedValue(0);
     const isAtTop = useSharedValue(true);
     const didVibrate = useSharedValue(false);
     const rotationPaused = useSharedValue(false);
+    const AniamtedSquircleView = Animated.createAnimatedComponent(FastSquircleView);
+
+    // Memoize vib function to prevent recreations
+    const vib = useCallback((length) => {
+        if (length === "tick") {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+        } else if (length === "long") {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
+        }
+    }, []);
+
+    // Optimized load function with batched state updates
+    const load = useCallback(async () => {
+        try {
+            const promises = [ScratchAPIWrapper.explore.getExplore()];
+
+            if (username) {
+                promises.push(
+                    ScratchAPIWrapper.explore.getFriendsLoves(username, token),
+                    ScratchAPIWrapper.explore.getFriendsProjects(username, token)
+                );
+            }
+
+            const results = await Promise.all(promises);
+
+            // Batch all state updates into a single update
+            setDataState(prev => ({
+                ...prev,
+                exploreData: results[0],
+                friendsLoves: results[1] || [],
+                friendsProjects: results[2] || [],
+                isRefreshing: false,
+                refreshCount: prev.refreshCount + 1
+            }));
+
+            setTimeout(() => {
+                rotationPaused.value = true;
+            }, 1500);
+        } catch (error) {
+            console.error('Error loading data:', error);
+            setDataState(prev => ({ ...prev, isRefreshing: false }));
+        }
+    }, [username, token]);
+
+    const refresh = useCallback(() => {
+        rotationPaused.value = false;
+        setDataState(prev => ({ ...prev, isRefreshing: true }));
+        setTimeout(load, 250);
+    }, [load]);
 
     useEffect(() => {
         rotate.value = withPause(
@@ -55,7 +142,9 @@ export default function HomeScreen() {
     const headerStyle = useAnimatedStyle(() => {
         return {
             transform: [
-                { translateY: withSpring(scrollOffset.value, { damping: 100, stiffness: 200 }) },
+                {
+                    translateY: scrollOffset.value
+                },
             ],
         };
     });
@@ -88,46 +177,19 @@ export default function HomeScreen() {
         };
     });
 
-    const load = async () => {
-        const d = await ScratchAPIWrapper.explore.getExplore();
-        setExploreData(d);
-        if (username) {
-            const l = await ScratchAPIWrapper.explore.getFriendsLoves(username, token);
-            setFriendsLoves(l);
-            const p = await ScratchAPIWrapper.explore.getFriendsProjects(username, token);
-            setFriendsProjects(p);
-        }
-        setIsRefreshing(false);
-        setRefreshCount(prev => prev + 1);
-        setTimeout(() => {
-            rotationPaused.value = true;
-        }, 1500);
-    }
+    // ...existing animated styles...
 
-    const refresh = () => {
-        rotationPaused.value = false;
-        setIsRefreshing(true);
-        setTimeout(load, 250);
-    }
-
-    const vib = (length) => {
-        if (length === "tick") {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-        } else if (length === "long") {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
-        }
-    }
-
-    const panGesture = Gesture.Pan()
+    // Memoize pan gesture to prevent recreations
+    const panGesture = useMemo(() => Gesture.Pan()
         .simultaneousWithExternalGesture(scrollRef)
-        .enabled(!isRefreshing)
+        .enabled(!dataState.isRefreshing)
         .onUpdate((e) => {
-            if (!isRefreshing && isAtTop.value && scrollOffset.value <= 0 && e.translationY > 0) {
+            if (!dataState.isRefreshing && isAtTop.value && scrollOffset.value <= 0 && e.translationY > 0) {
                 panPosition.value = e.translationY * 0.18 + 0.5 * (1 - Math.min(e.translationY, MAX_PULL_HEIGHT) / MAX_PULL_HEIGHT);
-                if (Math.floor(panPosition.value) % 18 == 0) runOnJS(vib)("tick");
+                if (Math.floor(panPosition.value) % 18 == 0) scheduleOnRN(vib, "tick");
                 if (panPosition.value > REFRESH_TRIGGER_HEIGHT) {
                     if (!didVibrate.value) {
-                        runOnJS(vib)("long");
+                        scheduleOnRN(vib, "long");
                         didVibrate.value = true;
                     }
                 }
@@ -136,69 +198,82 @@ export default function HomeScreen() {
         .onEnd((e) => {
             didVibrate.value = false;
             if (isAtTop.value && panPosition.value > REFRESH_TRIGGER_HEIGHT) {
-                runOnJS(vib)("long");
-                runOnJS(refresh)();
+                scheduleOnRN(vib, "long");
+                scheduleOnRN(refresh);
             }
-            panPosition.value = withSpring(0, { damping: 10, stiffness: 80 });
-        });
+            panPosition.value = withSpring(0, { damping: 35, stiffness: 400 });
+        }), [dataState.isRefreshing, vib, refresh]);
+
+    // Memoize feed with stable dependency
+    const memoizedFeed = useMemo(() => {
+        return <Feed style={{ margin: 20, marginBottom: 0, marginTop: 15 }} username={username} rerender={dataState.refreshCount} />
+    }, [username, dataState.refreshCount]);
+
+    // Memoize scroll handlers
+    const onScrollBeginDrag = useCallback((e) => {
+        const offsetY = e.nativeEvent.contentOffset.y;
+        isAtTop.value = offsetY <= 0;
+    }, []);
+
+    const onScroll = useCallback((e) => {
+        const offsetY = e.nativeEvent.contentOffset.y;
+        isAtTop.value = offsetY <= 0;
+    }, []);
+
+    // Memoize content style object
+    const containerStyle = useMemo(() => ({
+        backgroundColor: colors.background,
+        marginHorizontal: 1.5,
+        paddingBottom: Platform.OS == "ios" ? 60 : insets.bottom + 20,
+        borderTopLeftRadius: 32,
+        borderTopRightRadius: 32,
+        paddingTop: 8,
+        boxShadow: "0px -2px 10px rgba(0,0,0,0.1)",
+        outlineColor: colors.outline,
+        outlineStyle: "solid",
+        outlineWidth: 1.5,
+        borderWidth: 1,
+        borderColor: colors.background,
+        borderTopWidth: 4,
+        borderTopColor: colors.highlight
+    }), [colors, insets.bottom]);
 
     return (
         <View style={{ backgroundColor: colors.accentTransparent }}>
             {!hasOpenedBefore && <Redirect href="/onboarding" />}
             <GestureDetector gesture={panGesture}>
-                <ScrollView ref={scrollRef} scrollEventThrottle={2} onScrollBeginDrag={(e) => {
-                    const offsetY = e.nativeEvent.contentOffset.y;
-                    isAtTop.value = offsetY <= 0;
-                }}
-                    onScroll={(e) => {
-                        const offsetY = e.nativeEvent.contentOffset.y;
-                        isAtTop.value = offsetY <= 0;
-                    }} showsVerticalScrollIndicator={false}>
-                    <Animated.View style={[headerStyle, { flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingTop: insets.top + 5, paddingBottom: 15, paddingHorizontal: 20, gap: 10 }]}>
-                        <TouchableOpacity onPress={() => router.push(`/multiplay`)}><MaterialIcons name="tap-and-play" style={{ marginLeft: 7 }} size={26} color={colors.textSecondary} /></TouchableOpacity>
-                        <Animated.Image source={require("../../assets/logo-nobg.png")} style={[logoStyle, { height: 65, width: 65 }]} />
-                        <TouchableOpacity onPress={() => router.push('/settings')}><MaterialIcons style={{ marginRight: 7 }} name="settings" size={26} contentFit="cover" color={colors.textSecondary} /></TouchableOpacity>
-                    </Animated.View>
-                    <Animated.View style={[contentStyle, { backgroundColor: colors.background, paddingBottom: Platform.OS == "ios" ? 60 : insets.bottom + 20, borderTopLeftRadius: 20, borderTopRightRadius: 20, paddingTop: 10, boxShadow: "0px -2px 10px rgba(0,0,0,0.1)" }]}>
-                        {!!username ? <Feed style={{ margin: 20, marginBottom: 0, marginTop: 15 }} username={username} rerender={refreshCount} /> : <SignInPrompt />}
+                <ScrollView
+                    ref={scrollRef}
+                    scrollEventThrottle={2}
+                    onScrollBeginDrag={onScrollBeginDrag}
+                    onScroll={onScroll}
+                    showsVerticalScrollIndicator={false}
+                >
+                    <Header insets={insets} colors={colors} headerStyle={headerStyle} logoStyle={logoStyle} />
+                    <AniamtedSquircleView cornerSmoothing={0.6} style={[contentStyle, containerStyle]}>
+                        {!!username ? memoizedFeed : <SignInPrompt />}
 
-                        {exploreData?.featured?.length > 0 &&
-                            <HorizontalContentScroller title="Featured Projects" data={exploreData.featured} iconName="workspace-premium" headerStyle={{ marginTop: 10 }} />}
+                        {dataState.exploreData?.featured?.length > 0 &&
+                            <HorizontalContentScroller title="Featured Projects" data={dataState.exploreData.featured} iconName="workspace-premium" headerStyle={{ marginTop: 10 }} />}
 
-                        {friendsLoves.length > 0 &&
-                            <HorizontalContentScroller title="Friends Loved" data={friendsLoves} iconName="people" />}
+                        {dataState.friendsLoves.length > 0 &&
+                            <HorizontalContentScroller title="Friends Loved" data={dataState.friendsLoves} iconName="people" />}
 
-                        {friendsProjects.length > 0 &&
-                            <HorizontalContentScroller title="Created by Friends" data={friendsProjects} iconName="people" />}
+                        {dataState.friendsProjects.length > 0 &&
+                            <HorizontalContentScroller title="Created by Friends" data={dataState.friendsProjects} iconName="people" />}
 
-                        {exploreData?.topLoved?.length > 0 &&
-                            <HorizontalContentScroller title="Top Loved" data={exploreData.topLoved} iconName="favorite" />}
+                        {dataState.exploreData?.topLoved?.length > 0 &&
+                            <HorizontalContentScroller title="Top Loved" data={dataState.exploreData.topLoved} iconName="favorite" />}
 
-                        {exploreData?.featuredStudios?.length > 0 && <>
-                            <View style={{
-                                flexDirection: "row",
-                                alignItems: "center",
-                                padding: 20,
-                                paddingBottom: 0,
-                                paddingTop: 5,
-                                gap: 10
-                            }}>
-                                <MaterialIcons name='photo-filter' size={24} color={colors.text} />
-                                <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Featured Studios</Text>
-                            </View>
-                            <ScrollView horizontal contentContainerStyle={{
-                                padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
-                            }} showsHorizontalScrollIndicator={false}>
-                                {exploreData?.featuredStudios?.map((item, index) => (<StudioCard key={index} studio={item} />))}
-                            </ScrollView>
-                        </>}
+                        {dataState.exploreData?.featuredStudios?.length > 0 &&
+                            <FeaturedStudios studios={dataState.exploreData.featuredStudios} colors={colors} />}
 
-                        {exploreData?.topRemixed?.length > 0 &&
-                            <HorizontalContentScroller title="Top Remixed" data={exploreData.topRemixed} iconName="sync" />}
+                        {dataState.exploreData?.topRemixed?.length > 0 &&
+                            <HorizontalContentScroller title="Top Remixed" data={dataState.exploreData.topRemixed} iconName="sync" />}
 
-                        {exploreData?.newest?.length > 0 &&
-                            <HorizontalContentScroller title="Newest Projects" data={exploreData.newest} iconName="more-time" />}
-                    </Animated.View>
+                        {dataState.exploreData?.newest?.length > 0 &&
+                            <HorizontalContentScroller title="Newest Projects" data={dataState.exploreData.newest} iconName="more-time" />}
+                    </AniamtedSquircleView>
                 </ScrollView>
             </GestureDetector>
         </View>

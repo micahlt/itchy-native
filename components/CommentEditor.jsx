@@ -1,4 +1,5 @@
-import { View, TextInput, TouchableOpacity, useWindowDimensions, Text, Keyboard, Platform } from "react-native"
+import { View, TextInput, TouchableOpacity, useWindowDimensions, Keyboard, Platform } from "react-native"
+import ItchyText from "./ItchyText";
 import { MaterialIcons } from "@expo/vector-icons"
 import { useEffect, useRef, useState } from "react"
 import { useTheme } from "../utils/theme";
@@ -44,7 +45,7 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
 
     return <Animated.View style={{ position: 'absolute', bottom: bottomAnim }}>
         {!!reply && <View style={{ paddingHorizontal: 15, paddingTop: 15, marginBottom: -3, zIndex: 1, backgroundColor: colors.backgroundTertiary, flexDirection: "row", justifyContent: "flex-start", gap: 8, alignItems: "center" }}>
-            <Text style={{ color: colors.text, fontSize: 12, lineHeight: 12 }}>Replying to <Text style={{ fontWeight: "bold" }}>{reply.author.username}</Text></Text>
+            <ItchyText style={{ color: colors.text, fontSize: 12, lineHeight: 12 }}>Replying to <ItchyText style={{ fontWeight: "bold" }}>{reply.author.username}</ItchyText></ItchyText>
             <TouchableOpacity onPress={onClearReply} style={{ marginTop: -2 }}>
                 <MaterialIcons name="cancel" size={16} color={colors.textSecondary} />
             </TouchableOpacity>

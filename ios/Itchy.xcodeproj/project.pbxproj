@@ -16,6 +16,10 @@
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		B287641DB63744A5AB795EF5 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = E014A2A34AC5406CA343729F /* noop-file.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		C4C16F39DEA58F7EFB2B5824 /* Pods_Itchy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85B80D676785932FF82C1F92 /* Pods_Itchy.framework */; };
+		C9DBECA680F74ED692A4B9AA /* Inter_400Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B9E25279CD964531AA142375 /* Inter_400Regular.ttf */; };
+		25F026650FDC479BB5CDBC10 /* Inter_700Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 606CF2EF49C44518A86582DA /* Inter_700Bold.ttf */; };
+		6F61646382954888B8130582 /* Inter_900Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8A454F23D7DC4023B1A42173 /* Inter_900Black.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +39,9 @@
 		E014A2A34AC5406CA343729F /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "Itchy/noop-file.swift"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Itchy/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		B9E25279CD964531AA142375 /* Inter_400Regular.ttf */ = {isa = PBXFileReference; name = "Inter_400Regular.ttf"; path = "../node_modules/@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		606CF2EF49C44518A86582DA /* Inter_700Bold.ttf */ = {isa = PBXFileReference; name = "Inter_700Bold.ttf"; path = "../node_modules/@expo-google-fonts/inter/700Bold/Inter_700Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8A454F23D7DC4023B1A42173 /* Inter_900Black.ttf */ = {isa = PBXFileReference; name = "Inter_900Black.ttf"; path = "../node_modules/@expo-google-fonts/inter/900Black/Inter_900Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +155,16 @@
 			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
+		EC4AD32D5823409FA71F4791 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B9E25279CD964531AA142375 /* Inter_400Regular.ttf */,
+				606CF2EF49C44518A86582DA /* Inter_700Bold.ttf */,
+				8A454F23D7DC4023B1A42173 /* Inter_900Black.ttf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -212,7 +229,10 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				74337403E6D9269EBC0DF8B5 /* PrivacyInfo.xcprivacy in Resources */,
+				4FC8659B572D8FE85CCBF17F /* PrivacyInfo.xcprivacy in Resources */,
+				C9DBECA680F74ED692A4B9AA /* Inter_400Regular.ttf in Resources */,
+				25F026650FDC479BB5CDBC10 /* Inter_700Bold.ttf in Resources */,
+				6F61646382954888B8130582 /* Inter_900Black.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

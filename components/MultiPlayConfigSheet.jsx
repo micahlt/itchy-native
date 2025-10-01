@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, ScrollView, TextInput, TouchableOpacity, Clipboard } from "react-native";
+import { View, TouchableOpacity } from "react-native";
+import ItchyText from "./ItchyText";
 import { Pressable } from "react-native";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -67,49 +68,49 @@ export default function MultiPlayConfigSheet({
     return (
         <BottomSheetView style={{ padding: 20, paddingTop: 10 }}>
             <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}>
-                <Text style={{
+                <ItchyText style={{
                     color: colors.text,
                     fontSize: 18,
                     fontWeight: "bold",
                     marginRight: 10
                 }}>
                     MultiPlay Setup
-                </Text>
+                </ItchyText>
                 <View style={{
                     backgroundColor: colors.accent,
                     borderRadius: 5,
                     paddingHorizontal: 8,
                     paddingVertical: 2
                 }}>
-                    <Text style={{
+                    <ItchyText style={{
                         color: "white",
                         fontSize: 12,
                         fontWeight: "bold"
                     }}>
                         ALPHA
-                    </Text>
+                    </ItchyText>
                 </View>
             </View>
-            <Text style={{
+            <ItchyText style={{
                 color: colors.textSecondary,
                 fontSize: 14,
                 opacity: 0.5,
                 marginBottom: 20
             }}>
                 Play local-multiplayer games online with WebRTC. Configure your multiplayer settings below to get started. We're assuming you already have your controller mappings set up for this project.
-            </Text>
+            </ItchyText>
 
             {isUserUnder13() && (
                 <Card style={{ paddingHorizontal: 15, paddingVertical: 10, marginBottom: 20, backgroundColor: colors.backgroundSecondary }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
                         <MaterialIcons name="info" size={20} color={colors.accent} style={{ marginRight: 8 }} />
-                        <Text style={{ color: colors.accent, fontSize: 16, fontWeight: "bold" }}>
+                        <ItchyText style={{ color: colors.accent, fontSize: 16, fontWeight: "bold" }}>
                             Age Restriction
-                        </Text>
+                        </ItchyText>
                     </View>
-                    <Text style={{ color: colors.text, lineHeight: 17 }}>
+                    <ItchyText style={{ color: colors.text, lineHeight: 17 }}>
                         MultiPlay is restricted to users who are 13 years of age or older. This restriction is in place to comply with online privacy and safety regulations.
-                    </Text>
+                    </ItchyText>
                 </Card>
             )}
 
@@ -122,9 +123,9 @@ export default function MultiPlayConfigSheet({
                         backgroundColor: statusInfo.color,
                         marginRight: 8
                     }} />
-                    <Text style={{ color: statusInfo.color, fontSize: 14, fontWeight: "500" }}>
+                    <ItchyText style={{ color: statusInfo.color, fontSize: 14, fontWeight: "500" }}>
                         {statusInfo.text}
-                    </Text>
+                    </ItchyText>
                 </View>
 
                 {peerConnected && connected && (
@@ -138,22 +139,22 @@ export default function MultiPlayConfigSheet({
                         alignItems: "center"
                     }}>
                         <MaterialIcons name="people" size={16} color={colors.accent} />
-                        <Text style={{ color: colors.accent, fontSize: 14, marginLeft: 5, fontWeight: "500" }}>
+                        <ItchyText style={{ color: colors.accent, fontSize: 14, marginLeft: 5, fontWeight: "500" }}>
                             A player is connected to your game.
-                        </Text>
+                        </ItchyText>
                     </View>
                 )}
 
-                {connectionStatus === "failed" && <Text style={{ color: colors.textSecondary, fontSize: 14, margin: "auto", marginBottom: 5, textAlign: "center" }}>
-                    Connection failed. It's likely that your network or the person connecting does not support WebRTC connections. See the <Text style={{ color: colors.accent }} onPress={() => linkWithFallback("https://itchy.micahlindley.com/multiplay", colors.accent)}>Itchy MultiPlay FAQ</Text> for more details.
-                </Text>}
+                {connectionStatus === "failed" && <ItchyText style={{ color: colors.textSecondary, fontSize: 14, margin: "auto", marginBottom: 5, textAlign: "center" }}>
+                    Connection failed. It's likely that your network or the person connecting does not support WebRTC connections. See the <ItchyText style={{ color: colors.accent }} onPress={() => linkWithFallback("https://itchy.micahlindley.com/multiplay", colors.accent)}>Itchy MultiPlay FAQ</ItchyText> for more details.
+                </ItchyText>}
 
-                {connectionStatus !== "failed" && <Text selectable={true} style={{ color: colors.textSecondary, fontSize: 14, margin: "auto", marginBottom: 5 }}>
+                {connectionStatus !== "failed" && <ItchyText selectable={true} style={{ color: colors.textSecondary, fontSize: 14, margin: "auto", marginBottom: 5 }}>
                     {roomCode ? "Share this code with a friend:" : "Create a new multiplayer game session."}
-                </Text>}
+                </ItchyText>}
 
                 {roomCode ? <View>
-                    <Text style={{
+                    <ItchyText style={{
                         color: colors.text,
                         fontSize: 32,
                         backgroundColor: colors.accentTransparent,
@@ -164,7 +165,7 @@ export default function MultiPlayConfigSheet({
                         margin: "auto"
                     }}>
                         {roomCode}
-                    </Text>
+                    </ItchyText>
                     <TouchableOpacity
                         style={{
                             flexDirection: "row",
@@ -175,9 +176,9 @@ export default function MultiPlayConfigSheet({
                         onPress={() => disconnect()}
                     >
                         <MaterialIcons name="exit-to-app" size={24} color={colors.accent} />
-                        <Text style={{ color: colors.accent, fontSize: 16, marginLeft: 5 }}>
+                        <ItchyText style={{ color: colors.accent, fontSize: 16, marginLeft: 5 }}>
                             Stop Hosting
-                        </Text>
+                        </ItchyText>
                     </TouchableOpacity>
                 </View> : <Pressable
                     android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}
@@ -192,13 +193,13 @@ export default function MultiPlayConfigSheet({
                         backgroundColor: (connectionStatus !== "idle" || isUserUnder13()) ? colors.backgroundTertiary : colors.backgroundSecondary,
                         opacity: (connectionStatus !== "idle" || isUserUnder13()) ? 0.6 : 1
                     }}>
-                    <Text style={{
+                    <ItchyText style={{
                         color: (connectionStatus !== "idle" || isUserUnder13()) ? colors.textSecondary : colors.text,
                         fontSize: 16,
                         fontWeight: "bold"
                     }}>
                         {isUserUnder13() ? "Age Restricted" : (connectionStatus !== "idle" && connectionStatus !== "failed" ? "Connecting..." : "Start MultiPlay")}
-                    </Text>
+                    </ItchyText>
                 </Pressable>}
             </View>
         </BottomSheetView>

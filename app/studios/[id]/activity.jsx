@@ -1,8 +1,6 @@
-import { useMMKVString } from "react-native-mmkv";
 import { useEffect, useState } from "react";
-import { Text, ScrollView } from "react-native";
+import { ScrollView } from "react-native";
 import { useTheme } from "../../../utils/theme";
-import FeedItem from "../../../components/FeedItem";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import { Stack, useLocalSearchParams } from "expo-router";

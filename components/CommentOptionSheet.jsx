@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import ItchyText from './ItchyText';
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from '../utils/theme';
 import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
@@ -117,28 +118,28 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
             borderTopLeftRadius: 10, borderTopRightRadius: 10, shadowColor: "#000",
         }} backdropMaskColor="#000000aa" onClose={() => setComment(undefined)} enableDynamicSizing={true} enablePanDownToClose={true} backgroundStyle={{ backgroundColor: colors.backgroundSecondary }} backdropComponent={renderBackdrop} bottomInset={insets.bottom} handleIndicatorStyle={{ backgroundColor: colors.textSecondary }}>
             <BottomSheetView onLayout={onViewLayout} style={{ paddingBottom: 10, backgroundColor: colors.backgroundSecondary }}>
-                <Text style={{ color: colors.text, fontSize: 22, fontWeight: 'bold', marginBottom: 10, paddingHorizontal: 15 }}>Comment</Text>
+                <ItchyText style={{ color: colors.text, fontSize: 22, fontWeight: 'bold', marginBottom: 10, paddingHorizontal: 15 }}>Comment</ItchyText>
                 <View style={{ paddingHorizontal: 5 }}><Comment comment={comment} showReplies={false} isReply={false} fullWidth={true} /></View>
                 {canDelete && <Pressable android_ripple={{ color: "#ffffff22", borderless: false, foreground: true }} onPress={deleteComment} style={{
                     paddingHorizontal: 20, paddingVertical: 10, flexDirection: "row", alignItems: "center", gap: 10, borderColor: colors.backgroundTertiary,
                     borderBottomWidth: 0.5,
                     borderTopWidth: 0.5
                 }}>
-                    <MaterialIcons name="delete" color={colors.accent} size={22} /><Text style={{ color: colors.accent, fontSize: 16 }}>Delete</Text>
+                    <MaterialIcons name="delete" color={colors.accent} size={22} /><ItchyText style={{ color: colors.accent, fontSize: 16 }}>Delete</ItchyText>
                 </Pressable>}
                 <Pressable android_ripple={{ color: "#ffffff22", borderless: false, foreground: true }} onPress={openOnScratch} style={{
                     paddingHorizontal: 20, paddingVertical: 10, flexDirection: "row", alignItems: "center", gap: 10, borderColor: colors.backgroundTertiary,
                     borderBottomWidth: 0.5,
                     borderTopWidth: 0.5
                 }}>
-                    <MaterialIcons name="exit-to-app" color={colors.accent} size={22} /><Text style={{ color: colors.accent, fontSize: 16 }}>Open on Scratch</Text>
+                    <MaterialIcons name="exit-to-app" color={colors.accent} size={22} /><ItchyText style={{ color: colors.accent, fontSize: 16 }}>Open on Scratch</ItchyText>
                 </Pressable>
                 <Pressable android_ripple={{ color: "#ffffff22", borderless: false, foreground: true }} onPress={openOnScratch} style={{
                     paddingHorizontal: 20, paddingVertical: 10, flexDirection: "row", alignItems: "center", gap: 10, borderColor: colors.backgroundTertiary,
                     borderBottomWidth: 0.5,
                     borderTopWidth: 0.5
                 }}>
-                    <MaterialIcons name="flag" color={colors.accent} size={22} /><Text style={{ color: colors.accent, fontSize: 16 }}>Report comment</Text>
+                    <MaterialIcons name="flag" color={colors.accent} size={22} /><ItchyText style={{ color: colors.accent, fontSize: 16 }}>Report comment</ItchyText>
                 </Pressable>
             </BottomSheetView>
         </BottomSheet >

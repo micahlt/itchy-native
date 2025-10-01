@@ -1,4 +1,5 @@
-import { View, useWindowDimensions, ScrollView, Text, RefreshControl } from "react-native";
+import { View, useWindowDimensions, ScrollView, RefreshControl } from "react-native";
+import ItchyText from "../../../components/ItchyText";
 import Pressable from "../../../components/Pressable";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
@@ -93,29 +94,29 @@ export default function Studio() {
                         <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0 }}>
                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginRight: 10, flex: 1 }}>
                                 {studio?.stats?.followers && <View style={{ alignItems: "center" }}>
-                                    <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{approximateNumber(studio.stats.followers)}</Text>
-                                    <Text style={{ color: colors.text, fontSize: 12 }}>Followers</Text>
+                                    <ItchyText style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{approximateNumber(studio.stats.followers)}</ItchyText>
+                                    <ItchyText style={{ color: colors.text, fontSize: 12 }}>Followers</ItchyText>
                                 </View>}
                                 {studio?.stats?.managers && <View style={{ alignItems: "center" }}>
-                                    <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{approximateNumber(studio.stats.managers)}</Text>
-                                    <Text style={{ color: colors.text, fontSize: 12 }}>Managers</Text>
+                                    <ItchyText style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{approximateNumber(studio.stats.managers)}</ItchyText>
+                                    <ItchyText style={{ color: colors.text, fontSize: 12 }}>Managers</ItchyText>
                                 </View>
                                 }
                                 {studio?.history?.created && <View style={{ alignItems: "center" }}>
-                                    <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{new Date(studio.history.created).getFullYear()}</Text>
-                                    <Text style={{ color: colors.text, fontSize: 12 }}>Created</Text>
+                                    <ItchyText style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{new Date(studio.history.created).getFullYear()}</ItchyText>
+                                    <ItchyText style={{ color: colors.text, fontSize: 12 }}>Created</ItchyText>
                                 </View>}
                             </View>
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>
                             <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
                                 <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/studios/${id}/activity`)}>
-                                    <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Activity</Text>
+                                    <ItchyText style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Activity</ItchyText>
                                 </Pressable>
                             </View>
                             {followingStatus !== undefined && <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
                                 <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={changeFollowingStatus}>
-                                    <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>{followingStatus === true ? "Unfollow" : "Follow"}</Text>
+                                    <ItchyText style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>{followingStatus === true ? "Unfollow" : "Follow"}</ItchyText>
                                 </Pressable>
                             </View>}
                         </View>

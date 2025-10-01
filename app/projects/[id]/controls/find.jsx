@@ -1,4 +1,5 @@
-import { View, Text, RefreshControl, FlatList, ToastAndroid } from "react-native";
+import { View, RefreshControl, FlatList, ToastAndroid } from "react-native";
+import ItchyText from "../../../../components/ItchyText";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useTheme } from "../../../../utils/theme";
 import { TextInput } from "react-native-gesture-handler";
@@ -71,25 +72,25 @@ export default function FindControls() {
             <Card style={{ padding: 10 }} onPress={() => setControllerForProject(item)}>
                 <View style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 10 }}>
                     <View style={{ flex: 1 }}>
-                        <Text style={{ color: colors.textSecondary, fontSize: 16, marginBottom: 8 }}>Left: <Text style={{ fontWeight: "bold", color: colors.accent, textTransform: 'capitalize' }}>{item.controlOptions.primaryController || "Unknown"}</Text></Text>
+                        <ItchyText style={{ color: colors.textSecondary, fontSize: 16, marginBottom: 8 }}>Left: <ItchyText style={{ fontWeight: "bold", color: colors.accent, textTransform: 'capitalize' }}>{item.controlOptions.primaryController || "Unknown"}</ItchyText></ItchyText>
                         {Object.keys(item.controls.primary).map((key) => (
-                            <Text key={key} style={{ color: colors.textSecondary, fontSize: 12 }}>
-                                {key.toUpperCase()}: <Text style={{ fontWeight: "bold", color: colors.text }}>
+                            <ItchyText key={key} style={{ color: colors.textSecondary, fontSize: 12 }}>
+                                {key.toUpperCase()}: <ItchyText style={{ fontWeight: "bold", color: colors.text }}>
                                     {controlOptionToFullName(item.controls.primary[key])}
-                                </Text>
-                            </Text>
+                                </ItchyText>
+                            </ItchyText>
                         ))}
                     </View>
                     <View style={{ flex: 1 }}>
-                        <Text style={{ color: colors.textSecondary, fontSize: 16, marginBottom: 8 }}>Right: <Text style={{ fontWeight: "bold", color: colors.accent, textTransform: 'capitalize' }}>{item.controlOptions.secondaryController}</Text></Text>
+                        <ItchyText style={{ color: colors.textSecondary, fontSize: 16, marginBottom: 8 }}>Right: <ItchyText style={{ fontWeight: "bold", color: colors.accent, textTransform: 'capitalize' }}>{item.controlOptions.secondaryController}</ItchyText></ItchyText>
                         {Object.keys(item.controls.secondary).map((key) => (
-                            <Text key={key} style={{ color: colors.textSecondary, fontSize: 12 }}>{key.toUpperCase()}: <Text style={{ fontWeight: "bold", color: colors.text }}>{controlOptionToFullName(item.controls.secondary[key])}</Text></Text>
+                            <ItchyText key={key} style={{ color: colors.textSecondary, fontSize: 12 }}>{key.toUpperCase()}: <ItchyText style={{ fontWeight: "bold", color: colors.text }}>{controlOptionToFullName(item.controls.secondary[key])}</ItchyText></ItchyText>
                         ))}
                     </View>
                 </View>
-                <Text style={{ color: colors.textSecondary, fontSize: 12, marginHorizontal: 10, marginBottom: 10 }}>{item.controls.extra.length > 0 && <Text style={{ color: colors.textSecondary, fontSize: 12, marginHorizontal: 10 }}>EXTRAS: {item.controls.extra.map((key) => (
-                    <Text key={key} style={{ fontWeight: "bold", color: colors.text }}>{controlOptionToFullName(key)} </Text>
-                ))}  —  </Text>}mapping created by <Text style={{ fontWeight: "bold", color: colors.text }}>{item.username || "Unknown"}</Text></Text>
+                <ItchyText style={{ color: colors.textSecondary, fontSize: 12, marginHorizontal: 10, marginBottom: 10 }}>{item.controls.extra.length > 0 && <ItchyText style={{ color: colors.textSecondary, fontSize: 12, marginHorizontal: 10 }}>EXTRAS: {item.controls.extra.map((key) => (
+                    <ItchyText key={key} style={{ fontWeight: "bold", color: colors.text }}>{controlOptionToFullName(key)} </ItchyText>
+                ))}  —  </ItchyText>}mapping created by <ItchyText style={{ fontWeight: "bold", color: colors.text }}>{item.username || "Unknown"}</ItchyText></ItchyText>
             </Card>
         );
     };
@@ -176,18 +177,18 @@ export default function FindControls() {
                         <Fragment key="empty-state">
                             {!isLoading && <View style={{ padding: 20, alignItems: "center" }} >
                                 <MaterialIcons name="videogame-asset-off" size={64} color={colors.textSecondary} style={{ marginBottom: 20 }} />
-                                <Text style={{ color: colors.textSecondary, fontSize: 16 }}>No controller mappings found for this project.</Text>
+                                <ItchyText style={{ color: colors.textSecondary, fontSize: 16 }}>No controller mappings found for this project.</ItchyText>
                                 <TouchableOpacity onPress={makeNewMapping} style={{ padding: 8 }}>
-                                    <Text style={{ color: colors.accent, fontWeight: "bold", fontSize: 16 }}>Create your own mapping</Text>
+                                    <ItchyText style={{ color: colors.accent, fontWeight: "bold", fontSize: 16 }}>Create your own mapping</ItchyText>
                                 </TouchableOpacity>
                             </View>}
                         </Fragment>
                     ) : (
                         <View style={{ padding: 20, alignItems: "center" }} key="no-results">
                             <MaterialIcons name="search-off" size={64} color={colors.textSecondary} style={{ marginBottom: 20 }} />
-                            <Text style={{ color: colors.textSecondary, fontSize: 16 }}>No controller mappings match that username.</Text>
+                            <ItchyText style={{ color: colors.textSecondary, fontSize: 16 }}>No controller mappings match that username.</ItchyText>
                             <TouchableOpacity onPress={makeNewMapping} style={{ padding: 8 }}>
-                                <Text style={{ color: colors.accent, fontWeight: "bold", fontSize: 16 }}>Create your own mapping</Text>
+                                <ItchyText style={{ color: colors.accent, fontWeight: "bold", fontSize: 16 }}>Create your own mapping</ItchyText>
                             </TouchableOpacity>
                         </View>
                     )

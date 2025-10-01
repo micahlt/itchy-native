@@ -2,8 +2,7 @@
   "expo": {
     "name": "Itchy",
     "slug": "itchy-native",
-    "packageName": "org.scratchclient4.itchy",
-    "version": "2.5.4",
+    "version": "2.5.5",
     "scheme": "itchy",
     "newArchEnabled": true,
     "plugins": [
@@ -11,10 +10,15 @@
         "expo-build-properties",
         {
           "ios": {
-            "useFrameworks": "static"
+            "useFrameworks": "static",
+            "reactNativeReleaseLevel": "experimental"
           },
           "android": {
-            "kotlinVersion": "1.9.24"
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 34,
+            "buildToolsVersion": "35.0.0",
+            "kotlinVersion": "1.9.25",
+            "reactNativeReleaseLevel": "experimental"
           }
         }
       ],
@@ -37,6 +41,16 @@
             "enforceNavigationBarContrast": false
           }
         }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./node_modules/@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf",
+            "./node_modules/@expo-google-fonts/inter/700Bold/Inter_700Bold.ttf",
+            "./node_modules/@expo-google-fonts/inter/900Black/Inter_900Black.ttf"
+          ]
+        }
       ]
     ],
     "splash": {
@@ -45,16 +59,15 @@
     },
     "userInterfaceStyle": "automatic",
     "android": {
-      "versionCode": 51,
+      "versionCode": 52,
       "package": "org.scratchclient4.itchy",
-      "packageName": "org.scratchclient4.itchy",
       "adaptiveIcon": {
         "backgroundColor": "#0082FF",
         "foregroundImage": "./assets/icon-foreground.png",
         "monochromeImage": "./assets/icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": true
+      "predictiveBackGestureEnabled": false
     },
     "ios": {
       "bundleIdentifier": "org.scratchclient4.itchy",

@@ -1,4 +1,5 @@
-import { FlatList, RefreshControl, Text, ScrollView, View } from "react-native";
+import { FlatList, RefreshControl, ScrollView, View, Platform } from "react-native";
+import ItchyText from "../../components/ItchyText";
 import { useTheme } from "../../utils/theme";
 import { useMMKVString } from "react-native-mmkv";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -7,9 +8,11 @@ import Message from "../../components/Message";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SignInPrompt from "../../components/SignInPrompt";
 import Chip from "../../components/Chip";
+import FastSquircleView from "react-native-fast-squircle";
+import Animated from "react-native-reanimated";
 
 export default function Messages() {
-    const { colors, isDark } = useTheme();
+    const { colors, dimensions, isDark } = useTheme();
     const [username] = useMMKVString("username");
     const [token] = useMMKVString("token");
     const [messages, setMessages] = useState([]);
@@ -22,6 +25,8 @@ export default function Messages() {
         interaction: false,
         forum: false
     });
+    const AnimatedSquircleView = Animated.createAnimatedComponent(FastSquircleView);
+
 
     useEffect(() => {
         if (!username || !token) return;
@@ -97,12 +102,11 @@ export default function Messages() {
 
     const renderFilterChips = () => {
         const hasActiveFilters = filters.studio || filters.comment || filters.interaction || filters.forum;
-
         return (
             <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ paddingHorizontal: 12, paddingVertical: 10, gap: 10 }}
+                contentContainerStyle={{ paddingHorizontal: 12, paddingTop: 10, gap: 5, paddingBottom: 0 }}
                 style={{ maxHeight: 60 }}
             >
                 {hasActiveFilters && (
@@ -146,22 +150,6 @@ export default function Messages() {
         );
     };
 
-    const renderHeader = () => {
-        return (
-            <View style={{ backgroundColor: colors.background }}>
-                <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, marginVertical: 20, marginBottom: 10, marginHorizontal: 15 }}>Messages</Text>
-            </View>
-        );
-    };
-
-    const renderStickyFilters = () => {
-        return (
-            <View style={{ backgroundColor: colors.background }}>
-                {renderFilterChips()}
-            </View>
-        );
-    };
-
     const renderMessage = (m) => {
         return <Message message={m.item} />
     };
@@ -169,37 +157,43 @@ export default function Messages() {
 
     if (!username || !token) {
         return <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.background }}>
-            <Text style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, marginBottom: 10, marginHorizontal: 20 }}>Messages</Text>
+            <ItchyText style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, marginBottom: 10, marginHorizontal: 20 }}>Messages</ItchyText>
             <SignInPrompt />
         </SafeAreaView>
     }
 
-    return <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
-        <FlatList
-            data={[{}, ...filteredMessages]}
-            style={{ backgroundColor: colors.background }}
-            renderItem={(item) => {
-                if (item.index === 0) {
-                    return renderStickyFilters();
-                }
-                return renderMessage({ item: item.item });
-            }}
-            keyExtractor={(item, index) => {
-                if (index === 0) return "sticky-filters";
-                return item.id;
-            }}
-            ListHeaderComponent={renderHeader}
-            stickyHeaderIndices={[1]}
-            onRefresh={() => {
-                setOffset(0);
-                loadMessages();
-            }}
-            refreshing={loading}
-            refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}
-            onEndReachedThreshold={1.2}
-            onEndReached={() => {
-                if (loading) return;
-                setOffset(messages.length);
-            }} />
+    return <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.accentTransparent }}>
+        <ItchyText style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, marginTop: 20, marginHorizontal: 15 }}>Messages</ItchyText>
+        {renderFilterChips()}
+        <AnimatedSquircleView cornerSmoothing={0.6} style={{
+            backgroundColor: colors.background, marginTop: 0, marginHorizontal: 1.5, paddingBottom: Platform.OS == "ios" ? 60 : 0, borderTopLeftRadius: 32, borderTopRightRadius: 32, boxShadow: "0px -2px 10px rgba(0,0,0,0.15)", outlineColor: colors.outline,
+            outlineStyle: "solid",
+            outlineWidth: dimensions.outlineWidth,
+            borderWidth: 0.1,
+            borderColor: colors.background,
+            borderTopWidth: 4,
+            borderTopColor: colors.highlight,
+            flex: 1,
+            overflow: 'visible'
+        }}>
+            <FastSquircleView style={{ flex: 1, overflow: "hidden", borderTopLeftRadius: dimensions.largeRadius, borderTopRightRadius: dimensions.largeRadius, marginTop: -4 }}>
+                <FlatList
+                    data={filteredMessages}
+                    style={{ backgroundColor: colors.background }}
+                    renderItem={(item) => renderMessage({ item: item.item })}
+                    keyExtractor={(item) => item.id}
+                    onRefresh={() => {
+                        setOffset(0);
+                        loadMessages();
+                    }}
+                    refreshing={loading}
+                    refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}
+                    onEndReachedThreshold={1.2}
+                    onEndReached={() => {
+                        if (loading) return;
+                        setOffset(messages.length);
+                    }} />
+            </FastSquircleView>
+        </AnimatedSquircleView>
     </SafeAreaView>
 }

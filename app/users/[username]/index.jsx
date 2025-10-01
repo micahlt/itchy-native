@@ -1,4 +1,5 @@
-import { View, useWindowDimensions, ScrollView, Text, RefreshControl } from "react-native";
+import { View, useWindowDimensions, ScrollView, RefreshControl } from "react-native";
+import ItchyText from "../../../components/ItchyText";
 import Pressable from "../../../components/Pressable";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
@@ -10,9 +11,9 @@ import { Image } from "expo-image";
 import approximateNumber from "approximate-number";
 import { MaterialIcons } from "@expo/vector-icons";
 import linkWithFallback from "../../../utils/linkWithFallback";
-import StudioCard from "../../../components/StudioCard";
 import { useMMKVString } from "react-native-mmkv";
 import HorizontalContentScroller from "../../../components/HorizontalContentScroller";
+import TexturedButton from "../../../components/TexturedButton";
 
 export default function User() {
     const { username } = useLocalSearchParams();
@@ -104,40 +105,28 @@ export default function User() {
                         <Image source={{ uri: profile.profile.images["90x90"] }} placeholder={require("../../../assets/avatar.png")} placeholderContentFit="cover" style={{ height: 75, width: 75, borderRadius: 75, marginRight: 25, backgroundColor: "white" }} />
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginRight: 10, flex: 1 }}>
                             <Pressable style={{ alignItems: "center" }} onPress={() => router.push(`users/${username}/followers`)} android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}>
-                                <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{profileStats?.followers}</Text>
-                                <Text style={{ color: colors.text, fontSize: 12 }}>Followers</Text>
+                                <ItchyText style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{profileStats?.followers}</ItchyText>
+                                <ItchyText style={{ color: colors.text, fontSize: 12 }}>Followers</ItchyText>
                             </Pressable>
                             <Pressable style={{ alignItems: "center" }} onPress={() => router.push(`users/${username}/following`)} android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}>
-                                <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{profileStats?.following}</Text>
-                                <Text style={{ color: colors.text, fontSize: 12 }}>Following</Text>
+                                <ItchyText style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{profileStats?.following}</ItchyText>
+                                <ItchyText style={{ color: colors.text, fontSize: 12 }}>Following</ItchyText>
                             </Pressable>
                             <View style={{ alignItems: "center" }}>
-                                <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{new Date(profile.history.joined).getFullYear()}</Text>
-                                <Text style={{ color: colors.text, fontSize: 12 }}>Joined </Text>
+                                <ItchyText style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{new Date(profile.history.joined).getFullYear()}</ItchyText>
+                                <ItchyText style={{ color: colors.text, fontSize: 12 }}>Joined </ItchyText>
                             </View>
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>
                         {myUsername === username && <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
                             <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={openProfile}>
-                                <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Edit Profile</Text>
+                                <ItchyText style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Edit Profile</ItchyText>
                             </Pressable>
                         </View>}
-                        <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
-                            <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/users/${username}/about`)}>
-                                <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>About</Text>
-                            </Pressable>
-                        </View>
-                        <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
-                            <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/users/${username}/activity`)}>
-                                <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Activity</Text>
-                            </Pressable>
-                        </View>
-                        {followingStatus !== undefined && <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
-                            <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={changeFollowingStatus}>
-                                <Text style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>{followingStatus === true ? "Unfollow" : "Follow"}</Text>
-                            </Pressable>
-                        </View>}
+                        <TexturedButton style={{ flex: 1 }} onPress={() => router.push(`/users/${username}/about`)}>About</TexturedButton>
+                        <TexturedButton style={{ flex: 1 }} onPress={() => router.push(`/users/${username}/activity`)}>Activity</TexturedButton>
+                        {followingStatus !== undefined && <TexturedButton style={{ flex: 1 }} onPress={changeFollowingStatus}>{followingStatus === true ? "Unfollow" : "Follow"}</TexturedButton>}
                     </View>
                     {profile.featuredProject && <ProjectCard project={profile.featuredProject} width={width - 40} style={{ margin: "auto", marginTop: 0 }} />}
 
