@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import ItchyText from "./ItchyText";
-import { ScrollView } from "react-native-gesture-handler";
+import { FlatList } from "react-native-gesture-handler";
 import { useTheme } from "../utils/theme";
 import ProjectCard from "./ProjectCard";
 import StudioCard from "./StudioCard";
@@ -27,18 +27,27 @@ export default function HorizontalContentScroller({ data, itemType = "projects",
             <View style={{ flex: 1 }} />
             {!!onShowMore && <TexturedButton onPress={onShowMore}>More</TexturedButton>}
         </View>
-        <ScrollView
+        <FlatList
             horizontal
+            data={data}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item, index }) => {
+                if (itemType == "projects") {
+                    return <ProjectCard project={item} />;
+                }
+                if (itemType == "studios") {
+                    return <StudioCard studio={item} />;
+                }
+                return null;
+            }}
             nestedScrollEnabled={true}
             keyboardShouldPersistTaps="handled"
             scrollEnabled={!!data?.length}
             contentContainerStyle={{
-                padding: 20, paddingTop: 10, paddingBottom: 10, columnGap: 10
+                padding: 20, paddingTop: 10, paddingBottom: 10
             }}
+            ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
             showsHorizontalScrollIndicator={false}
-        >
-            {itemType == "projects" && data?.map((item, index) => (<ProjectCard key={index} project={item} />))}
-            {itemType == "studios" && data?.map((item, index) => (<StudioCard key={index} studio={item} />))}
-        </ScrollView>
+        />
     </>
 };

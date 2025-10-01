@@ -30,7 +30,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
             <FastSquircleView cornerSmoothing={0.6} style={{ width, borderRadius: 16, overflow: "hidden", ...style }}>
                 <Pressable
                     provider="gesture-handler"
-                    android_ripple={{ borderless: false, foreground: true, color: colors.ripple }}
+                    android_ripple={{ borderless: true, foreground: true, color: colors.ripple }}
                     onPress={openProject}
                 >
                     <FastSquircleView cornerSmoothing={0.6} style={{

@@ -14,13 +14,12 @@ import SignInPrompt from '../../components/SignInPrompt';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import StudioCard from '../../components/StudioCard';
 import Animated, { Easing, useAnimatedRef, useAnimatedStyle, useScrollOffset, useSharedValue, withRepeat, withSpring, withTiming } from 'react-native-reanimated';
-import { scheduleOnRN } from 'react-native-worklets';
+import { runOnJS } from 'react-native-worklets';
 import { withPause } from 'react-native-redash';
 import { Redirect, router } from 'expo-router';
 import HorizontalContentScroller from '../../components/HorizontalContentScroller';
 import FastSquircleView from 'react-native-fast-squircle';
 import ItchyText from '../../components/ItchyText';
-import TexturedButton from '../../components/TexturedButton';
 import { Ionicons } from '@expo/vector-icons';
 
 // Memoized header component to prevent unnecessary re-renders
@@ -186,10 +185,10 @@ export default function HomeScreen() {
         .onUpdate((e) => {
             if (!dataState.isRefreshing && isAtTop.value && scrollOffset.value <= 0 && e.translationY > 0) {
                 panPosition.value = e.translationY * 0.18 + 0.5 * (1 - Math.min(e.translationY, MAX_PULL_HEIGHT) / MAX_PULL_HEIGHT);
-                if (Math.floor(panPosition.value) % 18 == 0) scheduleOnRN(vib, "tick");
+                if (Math.floor(panPosition.value) % 18 == 0) runOnJS(vib)("tick");
                 if (panPosition.value > REFRESH_TRIGGER_HEIGHT) {
                     if (!didVibrate.value) {
-                        scheduleOnRN(vib, "long");
+                        runOnJS(vib)("long");
                         didVibrate.value = true;
                     }
                 }
@@ -198,8 +197,8 @@ export default function HomeScreen() {
         .onEnd((e) => {
             didVibrate.value = false;
             if (isAtTop.value && panPosition.value > REFRESH_TRIGGER_HEIGHT) {
-                scheduleOnRN(vib, "long");
-                scheduleOnRN(refresh);
+                runOnJS(vib)("long");
+                runOnJS(refresh)();
             }
             panPosition.value = withSpring(0, { damping: 35, stiffness: 400 });
         }), [dataState.isRefreshing, vib, refresh]);
@@ -252,27 +251,28 @@ export default function HomeScreen() {
                     <Header insets={insets} colors={colors} headerStyle={headerStyle} logoStyle={logoStyle} />
                     <AniamtedSquircleView cornerSmoothing={0.6} style={[contentStyle, containerStyle]}>
                         {!!username ? memoizedFeed : <SignInPrompt />}
+                        {true && <>
+                            {dataState.exploreData?.featured?.length > 0 &&
+                                <HorizontalContentScroller title="Featured Projects" data={dataState.exploreData.featured} iconName="workspace-premium" headerStyle={{ marginTop: 10 }} />}
 
-                        {dataState.exploreData?.featured?.length > 0 &&
-                            <HorizontalContentScroller title="Featured Projects" data={dataState.exploreData.featured} iconName="workspace-premium" headerStyle={{ marginTop: 10 }} />}
+                            {dataState.friendsLoves.length > 0 &&
+                                <HorizontalContentScroller title="Friends Loved" data={dataState.friendsLoves} iconName="people" />}
 
-                        {dataState.friendsLoves.length > 0 &&
-                            <HorizontalContentScroller title="Friends Loved" data={dataState.friendsLoves} iconName="people" />}
+                            {dataState.friendsProjects.length > 0 &&
+                                <HorizontalContentScroller title="Created by Friends" data={dataState.friendsProjects} iconName="people" />}
 
-                        {dataState.friendsProjects.length > 0 &&
-                            <HorizontalContentScroller title="Created by Friends" data={dataState.friendsProjects} iconName="people" />}
+                            {dataState.exploreData?.topLoved?.length > 0 &&
+                                <HorizontalContentScroller title="Top Loved" data={dataState.exploreData.topLoved} iconName="favorite" />}
 
-                        {dataState.exploreData?.topLoved?.length > 0 &&
-                            <HorizontalContentScroller title="Top Loved" data={dataState.exploreData.topLoved} iconName="favorite" />}
+                            {dataState.exploreData?.featuredStudios?.length > 0 &&
+                                <FeaturedStudios studios={dataState.exploreData.featuredStudios} colors={colors} />}
 
-                        {dataState.exploreData?.featuredStudios?.length > 0 &&
-                            <FeaturedStudios studios={dataState.exploreData.featuredStudios} colors={colors} />}
+                            {dataState.exploreData?.topRemixed?.length > 0 &&
+                                <HorizontalContentScroller title="Top Remixed" data={dataState.exploreData.topRemixed} iconName="sync" />}
 
-                        {dataState.exploreData?.topRemixed?.length > 0 &&
-                            <HorizontalContentScroller title="Top Remixed" data={dataState.exploreData.topRemixed} iconName="sync" />}
-
-                        {dataState.exploreData?.newest?.length > 0 &&
-                            <HorizontalContentScroller title="Newest Projects" data={dataState.exploreData.newest} iconName="more-time" />}
+                            {dataState.exploreData?.newest?.length > 0 &&
+                                <HorizontalContentScroller title="Newest Projects" data={dataState.exploreData.newest} iconName="more-time" />}
+                        </>}
                     </AniamtedSquircleView>
                 </ScrollView>
             </GestureDetector>

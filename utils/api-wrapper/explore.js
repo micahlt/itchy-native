@@ -2,11 +2,13 @@ import fetch from "../fetch-provider";
 
 const APIExplore = {
     getExplore: async () => {
+        console.log("Getting explore")
         const res = await fetch("https://api.scratch.mit.edu/proxy/featured", {
             headers: {
                 "Origin": "https://scratch.mit.edu"
             }
         });
+        console.log(res.status)
         const data = await res.json();
         return {
             featured: data.community_featured_projects,
