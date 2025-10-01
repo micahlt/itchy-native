@@ -17,7 +17,7 @@ import timeago from "time-ago";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
 import RemixNotice from "../../../components/RemixNotice";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import ControlsSheet from "../../../components/ControlsSheet";
+import Controls from "../../../components/Controls";
 import MultiPlayConfigSheet from "../../../components/MultiPlayConfigSheet";
 import BottomSheet from "@gorhom/bottom-sheet";
 
@@ -27,8 +27,6 @@ export default function Project() {
   const { width } = useWindowDimensions();
   const [metadata, setMetadata] = useState(null);
   const [interactions, setInteractions] = useState({ loved: false, favorited: false });
-  const [controlsOpen, setControlsOpen] = useState(false);
-  const [controlsHeight, setControlsHeight] = useState(300);
   const [username] = useMMKVString("username");
   const [token] = useMMKVString("token");
   const router = useRouter();
@@ -606,10 +604,7 @@ if (document.readyState === 'loading') {
           options={{
             title: metadata?.title || "Loading...",
             headerShown: !isMaxed,
-            headerRight: () => <><MaterialIcons.Button onPressIn={() => {
-              setControlsOpen(true);
-              setIsMaxed(true);
-            }} name='videogame-asset' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /><MaterialIcons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='question-answer' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /></>
+            headerRight: () => <><MaterialIcons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='question-answer' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /></>
           }}
         />
         <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 10, paddingTop: isMaxed ? insets.top : 0 }}>
@@ -635,11 +630,6 @@ if (document.readyState === 'loading') {
             onMessage={webViewMessageHandler}
             onLayout={(event) => {
               const { y, height } = event.nativeEvent.layout;
-              if (Platform.OS === "ios") {
-                setControlsHeight(appHeight - (y + height + 10 + insets.top));
-              } else {
-                setControlsHeight(appHeight - (y + height - 12));
-              }
             }}
           />
           {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
@@ -663,6 +653,12 @@ if (document.readyState === 'loading') {
           </ScrollView>}
           {!isMaxed && <>
             {metadata?.remix?.parent && <RemixNotice originalProjectID={metadata?.remix?.parent} />}
+            <Controls
+              onControlPress={sendKeyEvent}
+              projectId={id}
+              showConfiguration={true}
+              style={{ margin: 20, marginTop: 0, marginBottom: 10 }}
+            />
             {metadata?.instructions && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16, borderRadius: dimensions.mediumRadius }}>
               <ItchyText style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</ItchyText>
               <LinkifiedText style={{ color: colors.text }} text={metadata?.instructions} />
@@ -677,7 +673,6 @@ if (document.readyState === 'loading') {
             </Card>}
           </>}
         </ScrollView>
-        <ControlsSheet onControlPress={sendKeyEvent} onClose={() => setControlsOpen(false)} opened={controlsOpen} height={controlsHeight} projectId={id} />
       </View>
       <BottomSheet
         ref={onlineConfigSheetRef}

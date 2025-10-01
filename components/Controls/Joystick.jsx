@@ -1,16 +1,15 @@
 import { useRef, useState } from "react";
 import { PanGestureHandler, State } from "react-native-gesture-handler";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 import Animated, { useSharedValue, useAnimatedStyle } from "react-native-reanimated";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../../utils/theme";
 
-export default function Joystick({ onControlPress = () => { }, mapping = {} }) {
-    const { colors } = useTheme();
-    const { width } = useWindowDimensions();
+export default function Joystick({ onControlPress = () => { }, mapping = {}, containerWidth = 300 }) {
+    const { colors, dimensions } = useTheme();
 
-    // Responsive sizing based on screen width
-    const joystickRadius = Math.max(60, Math.min(90, width * 0.40)); // 12% of screen width, min 60, max 90
+    // Responsive sizing based on container width
+    const joystickRadius = Math.max(60, Math.min(90, containerWidth * 0.22)); // 20% of container width, min 60, max 90
     const handleRadius = joystickRadius / 3; // Keep proportional relationship
 
     const handleX = useSharedValue(0);
@@ -98,10 +97,11 @@ export default function Joystick({ onControlPress = () => { }, mapping = {} }) {
                 width: joystickRadius * 2,
                 height: joystickRadius * 2,
                 borderRadius: joystickRadius,
-                backgroundColor: colors.backgroundSecondary,
+                backgroundColor: "rgba(0,0,0,0.1)",
                 justifyContent: "center",
                 alignItems: "center",
                 position: "relative",
+                boxShadow: "0px 4px 10px 0px #0000001A inset, 0px 4px 5px 0px #FFFFFF1A"
             }}
         >
             <Animated.View
@@ -110,19 +110,19 @@ export default function Joystick({ onControlPress = () => { }, mapping = {} }) {
                         width: handleRadius * 2,
                         height: handleRadius * 2,
                         borderRadius: handleRadius,
-                        backgroundColor: colors.backgroundTertiary,
+                        backgroundColor: isPressed
+                            ? "rgba(255, 255, 255, 0.8)"
+                            : "rgba(255, 255, 255, 0.6)",
                         position: "absolute",
                         justifyContent: "center",
                         alignItems: "center",
+                        outlineColor: "rgba(255, 255, 255, 0.15)",
+                        outlineWidth: 2,
+                        boxShadow: "box-shadow: 0px 8px 6px 0px rgba(255, 255, 255, 0.2) inset, 0px 4px 5px 0px rgba(255, 255, 255, 0.5) inset, 0px 4px 14px 5px rgba(0, 0, 0, 0.4)"
                     },
                     handleStyle,
                 ]}
             >
-                <MaterialIcons
-                    name="circle"
-                    color={isPressed ? colors.text : colors.backgroundSecondary} // Change color when pressed
-                    size={Math.max(24, handleRadius * 1.2)} // Responsive icon size
-                />
             </Animated.View>
         </View>
     </PanGestureHandler>);

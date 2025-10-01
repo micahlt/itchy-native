@@ -31,12 +31,14 @@ export default function ExtraButton({ onControlPress = () => { }, keyboardKey = 
                     width: buttonSize,
                     height: buttonSize,
                     backgroundColor: isPressed
-                        ? colors.background // Change background when pressed
-                        : colors.backgroundSecondary,
+                        ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.2)",
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: buttonSize / 2,
                     margin: Math.max(8, buttonSize * 0.15), // Responsive margin
+                    boxShadow: "0px 4px 14px 0px rgba(0, 0, 0, 0.1), 0px 6px 10px 0px rgba(255, 255, 255, 0.15) inset, 0px 2px 5px 0px rgba(255, 255, 255, 0.2) inset",
+                    outlineColor: "rgba(69, 137, 236, 1)",
+                    outlineWidth: 1.5
                 }}
             >
                 <ItchyText style={{ fontSize: fontSize, color: isPressed ? colors.text : colors.backgroundTertiary, fontWeight: "bold" }}>

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
     View,
-    Text,
     TextInput,
     Alert,
     Pressable,
@@ -9,6 +8,7 @@ import {
     useWindowDimensions,
     ScrollView,
 } from 'react-native';
+import ItchyText from '../components/ItchyText';
 import {
     RTCView,
     RTCPeerConnection,

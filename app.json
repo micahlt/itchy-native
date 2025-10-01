@@ -2,7 +2,7 @@
   "expo": {
     "name": "Itchy",
     "slug": "itchy-native",
-    "version": "2.5.5",
+    "version": "2.5.6",
     "scheme": "itchy",
     "newArchEnabled": true,
     "plugins": [
@@ -59,7 +59,7 @@
     },
     "userInterfaceStyle": "automatic",
     "android": {
-      "versionCode": 52,
+      "versionCode": 53,
       "package": "org.scratchclient4.itchy",
       "adaptiveIcon": {
         "backgroundColor": "#0082FF",

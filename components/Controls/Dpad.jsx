@@ -1,16 +1,15 @@
 import { useRef, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../../utils/theme";
 
-export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
+export default function Dpad({ onControlPress = () => { }, mapping = {}, containerWidth = 300 }) {
     const { colors } = useTheme();
-    const { width } = useWindowDimensions();
     const heldDirections = useRef(new Set());
 
-    // Responsive sizing based on screen width
-    const buttonSize = Math.max(40, Math.min(60, width * 0.30)); // 8% of screen width, min 40, max 60
+    // Responsive sizing based on container width
+    const buttonSize = Math.max(40, Math.min(60, containerWidth * 0.15)); // 12% of container width, min 40, max 60
     const iconSize = Math.max(20, Math.min(32, buttonSize * 0.53)); // Proportional to button size
 
     const handlePress = (direction) => {
@@ -55,12 +54,11 @@ export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
                             width: buttonSize,
                             height: buttonSize,
                             backgroundColor: isPressed
-                                ? colors.background // Slightly darker color
-                                : colors.backgroundSecondary,
+                                ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.2)",
                             justifyContent: "center",
                             alignItems: "center",
-                            borderWidth: 0,
-                            borderColor: colors.backgroundSecondary,
+                            borderColor: "rgba(69, 137, 236, 1)",
+                            boxShadow: "box-shadow: 0px 8px 6px 0px rgba(255, 255, 255, 0.2) inset, 0px 4px 5px 0px rgba(255, 255, 255, 0.5) inset, 0px 4px 14px 5px rgba(0, 0, 0, 0.4)"
                         },
                         style,
                     ]}
@@ -89,7 +87,11 @@ export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
                     left: buttonSize,
                     borderTopLeftRadius: Math.max(6, buttonSize * 0.13),
                     borderTopRightRadius: Math.max(6, buttonSize * 0.13),
-                    borderWidth: 0,
+                    borderTopWidth: 1.5,
+                    borderLeftWidth: 1.5,
+                    borderRightWidth: 1.5,
+                    borderBottomWidth: 0,
+                    borderColor: "rgba(69, 137, 236, 1)",
                     marginBottom: 0
                 }}
             />
@@ -104,7 +106,12 @@ export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
                     left: 0,
                     borderTopLeftRadius: Math.max(6, buttonSize * 0.13),
                     borderBottomLeftRadius: Math.max(6, buttonSize * 0.13),
-                    borderWidth: 0
+                    borderTopWidth: 1.5,
+                    borderLeftWidth: 1.5,
+                    borderBottomWidth: 1.5,
+                    borderRightWidth: 0,
+                    borderColor: "rgba(69, 137, 236, 1)",
+                    boxShadow: "-5px 4px 8px rgba(0,0,0,0.1)"
                 }}
             />
 
@@ -116,8 +123,8 @@ export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
                     left: buttonSize,
                     width: buttonSize,
                     height: buttonSize,
-                    backgroundColor: colors.backgroundSecondary,
-                    borderWidth: 0,
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    borderWidth: 0
                 }}
             />
 
@@ -131,7 +138,12 @@ export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
                     left: buttonSize * 2,
                     borderTopRightRadius: Math.max(6, buttonSize * 0.13),
                     borderBottomRightRadius: Math.max(6, buttonSize * 0.13),
-                    borderWidth: 0
+                    borderTopWidth: 1.5,
+                    borderRightWidth: 1.5,
+                    borderBottomWidth: 1.5,
+                    borderLeftWidth: 0,
+                    borderColor: "rgba(69, 137, 236, 1)",
+                    boxShadow: "5px 4px 8px rgba(0,0,0,0.1)"
                 }}
             />
 
@@ -145,7 +157,12 @@ export default function Dpad({ onControlPress = () => { }, mapping = {} }) {
                     left: buttonSize,
                     borderBottomLeftRadius: Math.max(6, buttonSize * 0.13),
                     borderBottomRightRadius: Math.max(6, buttonSize * 0.13),
-                    borderWidth: 0
+                    borderBottomWidth: 1.5,
+                    borderLeftWidth: 1.5,
+                    borderRightWidth: 1.5,
+                    borderTopWidth: 0,
+                    borderColor: "rgba(69, 137, 236, 1)",
+                    boxShadow: "0 4px 8px rgba(0,0,0,0.1)"
                 }}
             />
         </View>

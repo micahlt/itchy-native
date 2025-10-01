@@ -1,16 +1,15 @@
 import { useRef, useState } from "react";
-import { View, useWindowDimensions } from "react-native";
+import { View } from "react-native";
 import ItchyText from "../ItchyText";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { useTheme } from "../../utils/theme";
 
-export default function ButtonPad({ onControlPress = () => { }, mapping = {} }) {
+export default function ButtonPad({ onControlPress = () => { }, mapping = {}, containerWidth = 300 }) {
     const { colors } = useTheme();
-    const { width } = useWindowDimensions();
     const heldDirections = useRef(new Set());
 
-    // Responsive sizing based on screen width
-    const buttonSize = Math.max(50, Math.min(70, width * 0.15)); // 9.5% of screen width, min 50, max 70
+    // Responsive sizing based on container width
+    const buttonSize = Math.max(50, Math.min(70, containerWidth * 0.15)); // 8% of container width, min 50, max 70
 
     const handlePress = (direction) => {
         if (!heldDirections.current.has(direction)) {
@@ -55,12 +54,14 @@ export default function ButtonPad({ onControlPress = () => { }, mapping = {} }) 
                             height: buttonSize,
                             borderRadius: buttonSize / 2, // Make the button circular
                             backgroundColor: isPressed
-                                ? colors.background // Slightly darker color
-                                : colors.backgroundSecondary,
+                                ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.2)",
                             justifyContent: "center",
                             alignItems: "center",
                             borderWidth: 0,
                             borderColor: colors.backgroundSecondary,
+                            boxShadow: "0px 4px 14px 0px rgba(0, 0, 0, 0.1), 0px 6px 10px 0px rgba(255, 255, 255, 0.15) inset, 0px 2px 5px 0px rgba(255, 255, 255, 0.2) inset",
+                            outlineColor: "rgba(69, 137, 236, 1)",
+                            outlineWidth: 1.5
                         },
                         style,
                     ]}
