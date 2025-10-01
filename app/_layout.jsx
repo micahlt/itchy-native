@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Stack from 'expo-router/stack';
 import { ThemeProvider } from '../utils/theme';
 import { Platform, useColorScheme, View } from 'react-native';
@@ -20,7 +20,7 @@ export default function App() {
     const [cookieSet, setCookieSet] = useMMKVString("cookieSet");
     const [localControllerMappings, setLocalControllerMappings] = useMMKVObject("localControllerMappings");
     const [savedLogins, setSavedLogins] = useMMKVObject("savedLogins", encryptedStorage);
-    const isLiquidPlus = Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
+    const isLiquidPlus = useMemo(() => Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26, [Platform]);
     useEffect(() => {
         setColors(theme === "dark" ? darkColors : lightColors);
         if (!twConfig) {
@@ -116,7 +116,7 @@ export default function App() {
                             headerLeft: () => null,
                             headerTransparent: isLiquidPlus,
                             headerStyle: {
-                                backgroundColor: "transparent", // no fallback bg
+                                backgroundColor: isLiquidPlus ? "transparent" : colors.background, // no fallback bg
                             },
 
                         }}>

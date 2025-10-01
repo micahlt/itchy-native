@@ -61,8 +61,7 @@ export default function HomeScreen() {
         exploreData: null,
         friendsLoves: [],
         friendsProjects: [],
-        isRefreshing: false,
-        refreshCount: 0
+        isRefreshing: false
     });
     const [user] = useMMKVObject("user");
     const [username] = useMMKVString("username");
@@ -107,7 +106,6 @@ export default function HomeScreen() {
                 friendsLoves: results[1] || [],
                 friendsProjects: results[2] || [],
                 isRefreshing: false,
-                refreshCount: prev.refreshCount + 1
             }));
 
             setTimeout(() => {
@@ -205,8 +203,8 @@ export default function HomeScreen() {
 
     // Memoize feed with stable dependency
     const memoizedFeed = useMemo(() => {
-        return <Feed style={{ margin: 20 }} username={username} rerender={dataState.refreshCount} />
-    }, [username, dataState.refreshCount]);
+        return <Feed style={{ margin: 20 }} username={username} />
+    }, [username]);
 
     // Memoize scroll handlers
     const onScrollBeginDrag = useCallback((e) => {
@@ -226,15 +224,16 @@ export default function HomeScreen() {
         paddingBottom: Platform.OS == "ios" ? 60 : insets.bottom + 20,
         borderTopLeftRadius: 32,
         borderTopRightRadius: 32,
+        borderRadius: 0,
         paddingTop: 8,
-        boxShadow: "0px -2px 10px rgba(0,0,0,0.1)",
         outlineColor: colors.outline,
         outlineStyle: "solid",
         outlineWidth: 1.5,
         borderWidth: 1,
         borderColor: colors.background,
         borderTopWidth: 4,
-        borderTopColor: colors.highlight
+        borderTopColor: colors.highlight,
+        boxShadow: "0px -2px 10px rgba(0,0,0,0.15)",
     }), [colors, insets.bottom]);
 
     return (

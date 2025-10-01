@@ -127,7 +127,7 @@ export default function Search() {
           onPress={() => setType("users")}
         />
       </View>
-      <AniamtedSquircleView cornerSmoothing={0.6} style={{
+      <FastSquircleView cornerSmoothing={0.6} style={{
         backgroundColor: colors.background, marginTop: 8, marginHorizontal: 1.5, paddingBottom: Platform.OS == "ios" ? 60 : 0, borderTopLeftRadius: 32, borderTopRightRadius: 32, boxShadow: "0px -2px 10px rgba(0,0,0,0.15)", outlineColor: colors.outline,
         outlineStyle: "solid",
         outlineWidth: dimensions.outlineWidth,
@@ -170,7 +170,7 @@ export default function Search() {
             </View>}
           />
         </FastSquircleView>
-      </AniamtedSquircleView>
+      </FastSquircleView>
     </SafeAreaView>
   );
 }
