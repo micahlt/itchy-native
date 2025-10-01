@@ -25,7 +25,7 @@ export default function ItchyText({ style = {}, children, numberOfLines = undefi
     const memoizedComponent = useMemo(() => {
         return <Text style={{
             fontFamily: familyFromWeight,
-            letterSpacing: -0.4,
+            letterSpacing: -0.5,
             ...style,
             fontWeight: "normal"
         }} numberOfLines={numberOfLines}>{children}</Text>

@@ -128,7 +128,7 @@ export default function Search() {
         />
       </View>
       <FastSquircleView cornerSmoothing={0.6} style={{
-        backgroundColor: colors.background, marginTop: 8, marginHorizontal: 1.5, paddingBottom: Platform.OS == "ios" ? 60 : 0, borderTopLeftRadius: 32, borderTopRightRadius: 32, boxShadow: "0px -2px 10px rgba(0,0,0,0.15)", outlineColor: colors.outline,
+        backgroundColor: colors.background, marginTop: 8, marginHorizontal: 1.5, paddingBottom: Platform.OS == "ios" ? 60 : 0, borderTopLeftRadius: 32, borderTopRightRadius: 32, outlineColor: colors.outline,
         outlineStyle: "solid",
         outlineWidth: dimensions.outlineWidth,
         borderWidth: 0.1,
@@ -136,7 +136,8 @@ export default function Search() {
         borderTopWidth: 4,
         borderTopColor: colors.highlight,
         flex: 1,
-        overflow: 'visible'
+        overflow: 'visible',
+        boxShadow: "0px -2px 10px rgba(0,0,0,0.15)"
       }}>
         <FastSquircleView style={{ flex: 1, overflow: "hidden", borderTopLeftRadius: dimensions.largeRadius, borderTopRightRadius: dimensions.largeRadius, marginTop: -4 }}>
           <FlashList

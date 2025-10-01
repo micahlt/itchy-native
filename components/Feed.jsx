@@ -31,7 +31,7 @@ export default function Feed({ username, style, rerender }) {
             <ItchyText style={{ color: colors.text, fontSize: 20, fontWeight: "bold", flexGrow: 1 }}>What's Happening</ItchyText>
             <TexturedButton onPress={() => router.push("feed")}>More</TexturedButton>
         </View>
-        <SquircleView cornerSmoothing={0.6} style={{ backgroundColor: colors.accent, padding: 10, borderRadius: dimensions.mediumRadius, marginTop: 0, ...style }}>
+        <SquircleView cornerSmoothing={0.6} style={{ backgroundColor: colors.accent, padding: 10, borderRadius: dimensions.mediumRadius, marginTop: 0, ...style, marginBottom: 10 }}>
             {feed.map((item) => <FeedItem key={item.id} item={item} />)}
         </SquircleView>
     </>

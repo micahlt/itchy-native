@@ -38,11 +38,11 @@ const FeaturedStudios = memo(({ studios, colors }) => (
             flexDirection: "row",
             alignItems: "center",
             padding: 20,
-            paddingBottom: 0,
+            paddingBottom: 10,
             paddingTop: 5,
             gap: 10
         }}>
-            <MaterialIcons name='photo-filter' size={24} color={colors.text} />
+            <Ionicons name='bookmarks' size={24} color={colors.text} />
             <ItchyText style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>Featured Studios</ItchyText>
         </View>
         <ScrollView horizontal contentContainerStyle={{
@@ -251,7 +251,7 @@ export default function HomeScreen() {
                     <AniamtedSquircleView cornerSmoothing={0.6} style={[contentStyle, containerStyle]}>
                         {!!username ? memoizedFeed : <SignInPrompt />}
                         {dataState.exploreData?.featured?.length > 0 &&
-                            <HorizontalContentScroller title="Featured Projects" data={dataState.exploreData.featured} iconName="workspace-premium" headerStyle={{ marginTop: 10 }} />}
+                            <HorizontalContentScroller title="Featured Projects" data={dataState.exploreData.featured} iconName="sparkles" headerStyle={{ marginTop: 10 }} />}
 
                         {dataState.friendsLoves.length > 0 &&
                             <HorizontalContentScroller title="Friends Loved" data={dataState.friendsLoves} iconName="people" />}
@@ -260,7 +260,7 @@ export default function HomeScreen() {
                             <HorizontalContentScroller title="Created by Friends" data={dataState.friendsProjects} iconName="people" />}
 
                         {dataState.exploreData?.topLoved?.length > 0 &&
-                            <HorizontalContentScroller title="Top Loved" data={dataState.exploreData.topLoved} iconName="favorite" />}
+                            <HorizontalContentScroller title="Top Loved" data={dataState.exploreData.topLoved} iconName="heart" />}
 
                         {dataState.exploreData?.featuredStudios?.length > 0 &&
                             <FeaturedStudios studios={dataState.exploreData.featuredStudios} colors={colors} />}
@@ -269,7 +269,7 @@ export default function HomeScreen() {
                             <HorizontalContentScroller title="Top Remixed" data={dataState.exploreData.topRemixed} iconName="sync" />}
 
                         {dataState.exploreData?.newest?.length > 0 &&
-                            <HorizontalContentScroller title="Newest Projects" data={dataState.exploreData.newest} iconName="more-time" />}
+                            <HorizontalContentScroller title="Newest Projects" data={dataState.exploreData.newest} iconName="time" />}
                     </AniamtedSquircleView>
                 </ScrollView>
             </GestureDetector>
