@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Dimensions, Text, useWindowDimensions, View } from "react-native";
+import ItchyText from "../components/ItchyText";
+import { Dimensions, useWindowDimensions, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { useTheme } from "../utils/theme";
 import Carousel, { Pagination } from "react-native-reanimated-carousel";
@@ -114,8 +115,8 @@ export default function Onboarding({ }) {
                         source={item.imgSrc}
                         style={{ height: width * 0.6, width: width * 0.6, marginHorizontal: "auto" }}
                     />
-                    <Text style={{ textAlign: "center", fontSize: 30, fontWeight: "bold", color: "#fff" }}>{item.title}</Text>
-                    <Text style={{ textAlign: "center", fontSize: 16, color: "#fff", marginTop: 10, paddingHorizontal: 36, marginBottom: 70 }}>{item.description}</Text>
+                    <ItchyText style={{ textAlign: "center", fontSize: 30, fontWeight: "bold", color: "#fff" }}>{item.title}</ItchyText>
+                    <ItchyText style={{ textAlign: "center", fontSize: 16, color: "#fff", marginTop: 10, paddingHorizontal: 36, marginBottom: 70 }}>{item.description}</ItchyText>
                 </View>
             )}
         />

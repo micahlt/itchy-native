@@ -1,4 +1,5 @@
-import { View, Text, useWindowDimensions, ScrollView, Share, Platform } from "react-native";
+import { View, useWindowDimensions, ScrollView, Share, Platform } from "react-native";
+import ItchyText from "../../../components/ItchyText";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
@@ -22,7 +23,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 
 export default function Project() {
   const { id } = useLocalSearchParams();
-  const { colors, isDark } = useTheme();
+  const { colors, dimensions, isDark } = useTheme();
   const { width } = useWindowDimensions();
   const [metadata, setMetadata] = useState(null);
   const [interactions, setInteractions] = useState({ loved: false, favorited: false });
@@ -643,7 +644,7 @@ if (document.readyState === 'loading') {
           />
           {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
             {isMaxed && <Chip.Icon icon="close-fullscreen" text="Exit Play Mode" onPress={() => setIsMaxed(false)} />}
-            <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/users/${metadata?.author?.username}`)} textStyle={{ fontWeight: 'bold' }} />
+            <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/users/${metadata?.author?.username}`)} textStyle={{ fontWeight: 'bold' }} mode="outlined" />
             <Chip.Icon icon='tap-and-play' text="MultiPlay" color="#47b5ff" mode="filled" onPress={openOnlineConfigSheet} />
             <Chip.Icon icon='favorite' text={approximateNumber(metadata.stats.loves)} color="#ff4750" mode={interactions.loved ? "filled" : "outlined"} onPress={() => toggleInteraction("love")} />
             <Chip.Icon icon='star' text={approximateNumber(metadata.stats.favorites)} color="#ddbf37" mode={interactions.favorited ? "filled" : "outlined"} onPress={() => toggleInteraction("favorite")} />
@@ -662,17 +663,17 @@ if (document.readyState === 'loading') {
           </ScrollView>}
           {!isMaxed && <>
             {metadata?.remix?.parent && <RemixNotice originalProjectID={metadata?.remix?.parent} />}
-            {metadata?.instructions && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16 }}>
-              <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</Text>
+            {metadata?.instructions && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16, borderRadius: dimensions.mediumRadius }}>
+              <ItchyText style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</ItchyText>
               <LinkifiedText style={{ color: colors.text }} text={metadata?.instructions} />
             </Card>}
-            {metadata?.description && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16 }}>
-              <Text style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Credits</Text>
+            {metadata?.description && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16, borderRadius: dimensions.mediumRadius }}>
+              <ItchyText style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Credits</ItchyText>
               <LinkifiedText style={{ color: colors.text }} text={metadata?.description} />
             </Card>}
-            {dateInfo && <Card style={{ margin: 20, marginTop: 0, marginBottom: 30, padding: 16 }}>
-              <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Created {dateInfo.created}</Text>
-              {dateInfo.modified != dateInfo.created && <Text style={{ color: colors.textSecondary, fontSize: 12 }}>Modified {dateInfo.modified}</Text>}
+            {dateInfo && <Card style={{ margin: 20, marginTop: 0, marginBottom: 30, padding: 16, borderRadius: dimensions.mediumRadius }}>
+              <ItchyText style={{ color: colors.textSecondary, fontSize: 12 }}>Created {dateInfo.created}</ItchyText>
+              {dateInfo.modified != dateInfo.created && <ItchyText style={{ color: colors.textSecondary, fontSize: 12 }}>Modified {dateInfo.modified}</ItchyText>}
             </Card>}
           </>}
         </ScrollView>

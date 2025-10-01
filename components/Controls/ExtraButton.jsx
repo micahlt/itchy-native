@@ -1,5 +1,6 @@
 import { PanGestureHandler, State } from "react-native-gesture-handler";
-import { View, Text, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
+import ItchyText from "../ItchyText";
 import { useTheme } from "../../utils/theme";
 import { useState } from "react";
 import { controlOptionToShortName } from "../../utils/controlOptions";
@@ -38,9 +39,9 @@ export default function ExtraButton({ onControlPress = () => { }, keyboardKey = 
                     margin: Math.max(8, buttonSize * 0.15), // Responsive margin
                 }}
             >
-                <Text style={{ fontSize: fontSize, color: isPressed ? colors.text : colors.backgroundTertiary, fontWeight: "bold" }}>
+                <ItchyText style={{ fontSize: fontSize, color: isPressed ? colors.text : colors.backgroundTertiary, fontWeight: "bold" }}>
                     {controlOptionToShortName(keyboardKey)}
-                </Text>
+                </ItchyText>
             </View>
         </PanGestureHandler>
     );

@@ -1,4 +1,5 @@
-import { ScrollView, Switch, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { ScrollView, Switch, TouchableOpacity, View, StyleSheet } from 'react-native';
+import ItchyText from '../components/ItchyText';
 import Pressable from '../components/Pressable';
 import ScratchAPIWrapper from '../utils/api-wrapper';
 import { useTheme } from '../utils/theme';
@@ -8,7 +9,6 @@ import { version } from "../package.json";
 import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import storage from '../utils/storage';
 import linkWithFallback from '../utils/linkWithFallback';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SettingsScreen() {
     const { colors, isDark } = useTheme();
@@ -58,9 +58,9 @@ export default function SettingsScreen() {
 
     return (
         <ScrollView overScrollMode='always' bounces={true}>
-            <Text style={s.sectionHeader}>Account</Text>
+            <ItchyText style={s.sectionHeader}>Account</ItchyText>
             <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
-                <Text style={s.settingTitle}>{username ? `Signed in as ${username}` : "Signed out"}</Text>
+                <ItchyText style={s.settingTitle}>{username ? `Signed in as ${username}` : "Signed out"}</ItchyText>
                 <View style={{ borderRadius: 10, overflow: 'hidden', backgroundColor: colors.accent, elevation: 5, marginRight: 10, }}>
                     <Pressable onPress={() => {
                         if (username) {
@@ -75,56 +75,56 @@ export default function SettingsScreen() {
                             router.push("/login");
                         }
                     }} style={{ paddingVertical: 5, paddingHorizontal: 10 }} android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}>
-                        <Text style={{ color: "white", fontWeight: 'bold', fontSize: 12 }}>{username ? "LOG OUT" : "LOG IN"}</Text>
+                        <ItchyText style={{ color: "white", fontWeight: 'bold', fontSize: 12 }}>{username ? "LOG OUT" : "LOG IN"}</ItchyText>
                     </Pressable>
                 </View>
             </View>
             {username && <View style={{ ...s.settingContainer, ...s.bottomSettingContainer }}>
-                <TouchableOpacity onPress={() => router.push(`/users/${username}`)}><Text style={{ color: colors.accent, fontSize: 16, }}>Open your profile</Text>
+                <TouchableOpacity onPress={() => router.push(`/users/${username}`)}><ItchyText style={{ color: colors.accent, fontSize: 16, }}>Open your profile</ItchyText>
                 </TouchableOpacity>
             </View>}
-            <Text style={s.sectionHeader}>Player</Text>
+            <ItchyText style={s.sectionHeader}>Player</ItchyText>
             <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
-                <Text style={s.settingTitle}>Frame interpolation</Text>
+                <ItchyText style={s.settingTitle}>Frame interpolation</ItchyText>
                 <Switch thumbColor={twConfig?.interpolate ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, interpolate: v })} value={twConfig?.interpolate} />
             </View>
             <View style={s.settingContainer}>
-                <Text style={s.settingTitle}>Autoplay</Text>
+                <ItchyText style={s.settingTitle}>Autoplay</ItchyText>
                 <Switch thumbColor={twConfig?.autoplay ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })} value={twConfig?.autoplay} />
             </View>
             <View style={s.settingContainer}>
-                <Text style={s.settingTitle}>Force 60 FPS</Text>
+                <ItchyText style={s.settingTitle}>Force 60 FPS</ItchyText>
                 <Switch thumbColor={twConfig?.fps60 ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, fps60: v })} value={twConfig?.fps60} />
             </View>
             <View style={s.settingContainer}>
-                <Text style={s.settingTitle}>High-quality pen</Text>
+                <ItchyText style={s.settingTitle}>High-quality pen</ItchyText>
                 <Switch thumbColor={twConfig?.hqPen ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, hqPen: v })} value={twConfig?.hqPen} />
             </View>
             <View style={s.settingContainer}>
-                <Text style={s.settingTitle}>Turbo mode</Text>
+                <ItchyText style={s.settingTitle}>Turbo mode</ItchyText>
                 <Switch thumbColor={twConfig?.turbo ? colors.accent : colors.backgroundTertiary} trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })} value={twConfig?.turbo} />
             </View>
             <View style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
-                <Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Options provided by </Text><TouchableOpacity onPress={() => linkWithFallback("https://turbowarp.org")}><Text style={{ color: colors.accent, fontSize: 12 }}>TurboWarp</Text></TouchableOpacity>
+                <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Options provided by </ItchyText><TouchableOpacity onPress={() => linkWithFallback("https://turbowarp.org")}><ItchyText style={{ color: colors.accent, fontSize: 12 }}>TurboWarp</ItchyText></TouchableOpacity>
             </View>
-            <Text style={s.sectionHeader}>About</Text>
+            <ItchyText style={s.sectionHeader}>About</ItchyText>
             <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
-                <Text style={{ color: colors.text, fontSize: 16 }}>Itchy v{version}</Text>
+                <ItchyText style={{ color: colors.text, fontSize: 16 }}>Itchy v{version}</ItchyText>
             </View>
             <View style={s.settingContainer}>
-                <TouchableOpacity onPress={() => router.push("/onboarding")}><Text style={{ color: colors.accent, fontSize: 16, }}>Redo onboarding flow</Text>
+                <TouchableOpacity onPress={() => router.push("/onboarding")}><ItchyText style={{ color: colors.accent, fontSize: 16, }}>Redo onboarding flow</ItchyText>
                 </TouchableOpacity>
             </View>
             <View style={s.settingContainer}>
-                <TouchableOpacity onPress={() => router.push("/rtctest")}><Text style={{ color: colors.accent, fontSize: 16, }}>RTC test</Text>
+                <TouchableOpacity onPress={() => router.push("/rtctest")}><ItchyText style={{ color: colors.accent, fontSize: 16, }}>RTC test</ItchyText>
                 </TouchableOpacity>
             </View>
             <View style={s.settingContainer}>
-                <TouchableOpacity onPress={() => linkWithFallback("https://itchy.micahlindley.com/privacy.html")}><Text style={{ color: colors.accent, fontSize: 16, }}>Privacy Policy</Text>
+                <TouchableOpacity onPress={() => linkWithFallback("https://itchy.micahlindley.com/privacy.html")}><ItchyText style={{ color: colors.accent, fontSize: 16, }}>Privacy Policy</ItchyText>
                 </TouchableOpacity>
             </View>
             <View style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
-                <Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Made </Text><TouchableOpacity onPress={() => linkWithFallback("https://github.com/micahlt")}><Text style={{ color: colors.accent, fontSize: 12 }}>open source</Text></TouchableOpacity><Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}> with ❤️</Text>
+                <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Made </ItchyText><TouchableOpacity onPress={() => linkWithFallback("https://github.com/micahlt")}><ItchyText style={{ color: colors.accent, fontSize: 12 }}>open source</ItchyText></TouchableOpacity><ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}> with ❤️</ItchyText>
             </View>
             <View style={{ height: 120 }}></View>
         </ScrollView>

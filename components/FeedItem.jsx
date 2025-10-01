@@ -1,4 +1,5 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
+import ItchyText from "./ItchyText";
 import Pressable from "./Pressable";
 import { useMemo } from "react";
 import { Image } from "expo-image";
@@ -68,8 +69,8 @@ export default function FeedItem({ item, textColor = "white", type = "whatshappe
                     <Image source={{ uri: `https://uploads.scratch.mit.edu/get_image/user/${item.actor_id || item.recipient_id}_50x50.png` }} style={{ width: 36, height: 36, borderRadius: 25, backgroundColor: "white", marginRight: 10 }} />
                 </TouchableOpacity>
                 <View style={{ width: "85%" }}>
-                    <Text style={{ color: textColor, fontSize: 14, fontWeight: "bold" }}>{item.actor_username || item.recipient_username} <Text style={{ fontWeight: "normal" }}>{activityType}</Text> {item.followed_username || item.parent_title || item.title || item.project_title || item.gallery_title}{preposition && <><Text style={{ fontWeight: "normal" }}>{preposition}</Text>{item.gallery_title || item.title}</>}</Text>
-                    <Text style={{ fontWeight: "normal", color: textColor, fontSize: 10 }}>{type === "useractivity" ? item.datetime_created : timeago.ago(item.datetime_created)}</Text>
+                    <ItchyText style={{ color: textColor, fontSize: 14, fontWeight: "bold" }}>{item.actor_username || item.recipient_username} <ItchyText style={{ fontWeight: "normal" }}>{activityType}</ItchyText> {item.followed_username || item.parent_title || item.title || item.project_title || item.gallery_title}{preposition && <><ItchyText style={{ fontWeight: "normal" }}>{preposition}</ItchyText>{item.gallery_title || item.title}</>}</ItchyText>
+                    <ItchyText style={{ fontWeight: "normal", color: textColor, fontSize: 10 }}>{type === "useractivity" ? item.datetime_created : timeago.ago(item.datetime_created)}</ItchyText>
                 </View>
             </View>
         </Pressable>

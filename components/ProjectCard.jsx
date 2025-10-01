@@ -1,13 +1,14 @@
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
+import ItchyText from "./ItchyText";
 import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
-import { Image } from "expo-image";
+import { Image } from "react-native";
 import { useRouter } from "expo-router";
-import Chip from "./Chip";
 import { useCallback, useRef } from "react";
+import FastSquircleView from "react-native-fast-squircle";
 
 export default function ProjectCard({ project, width = 250, style = {} }) {
-    const { colors } = useTheme();
+    const { colors, dimensions } = useTheme();
     const router = useRouter();
     const childPressedRef = useRef(false);
 
@@ -26,39 +27,27 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
 
     if (!!project) {
         return (
-            <View style={{ width, ...style, borderRadius: 10, overflow: "hidden" }}>
+            <FastSquircleView cornerSmoothing={0.6} style={{ width, borderRadius: 16, overflow: "hidden", ...style }}>
                 <Pressable
                     provider="gesture-handler"
-                    android_ripple={{ borderless: false, foreground: true, color: "#ffffff" }}
+                    android_ripple={{ borderless: false, foreground: true, color: colors.ripple }}
                     onPress={openProject}
                 >
-                    <View style={{
-                        backgroundColor: colors.backgroundSecondary, borderRadius: 10, overflow: "hidden", width: width
-                    }} >
+                    <FastSquircleView cornerSmoothing={0.6} style={{
+                        backgroundColor: colors.background, borderRadius: 16, overflow: "hidden", width: width, borderColor: colors.outline, borderWidth: dimensions.outlineWidth, ...style
+                    }}>
                         <Image placeholder={require("../assets/project.png")} placeholderContentFit="cover" source={{ uri: project.thumbnail_url ? `https:${project.thumbnail_url}` : project.image }} style={{ width: width, aspectRatio: "4 / 3" }} contentFit="fill" />
-                        {project?.title && project.title.trim() && <Text style={{ color: colors.text, padding: 10, paddingBottom: (project.creator || project.label || project.author?.username) ? 0 : 10, fontWeight: "bold", fontSize: 14 }} numberOfLines={1}>{project.title}</Text>}
-                        {project.creator && <TouchableOpacity
+                        {project?.title && project.title.trim() && <ItchyText style={{ color: colors.text, padding: 10, paddingBottom: (project.creator || project.label || project.author?.username) ? 0 : 10, fontWeight: "bold", fontSize: 16 }} numberOfLines={1}>{project.title}</ItchyText>}
+                        {(project.creator || project.author?.username) && <TouchableOpacity
                             onPress={() => openProfile()}
+                            style={{ padding: 10, paddingTop: 2, backgroundColor: "transparent" }}
                         >
-                            <Text style={{ color: colors.accent, padding: 10, paddingTop: 2, fontSize: 12 }} numberOfLines={1}>{project.creator}</Text>
+                            <ItchyText style={{ color: colors.accent, fontSize: 14 }} numberOfLines={1}>{project.creator || project.author?.username}</ItchyText>
                         </TouchableOpacity>}
-                        {project.author?.username && <View
-                            // For Chip.Image, set childPressedRef before navigation
-                            onTouchStart={() => { childPressedRef.current = true; }}
-                        >
-                            <Chip.Image
-                                provider="gesture-handler"
-                                imageURL={project.author.profile.images["90x90"]}
-                                text={project.author.username}
-                                onPress={openProfile}
-                                textStyle={{ fontSize: 12, fontWeight: "bold", color: colors.accent }}
-                                style={{ flexDirection: "row", marginRight: "auto", marginBottom: 8, marginLeft: 8, marginTop: 6, backgroundColor: colors.backgroundTertiary }}
-                            />
-                        </View>}
-                        {project.label && <Text style={{ color: colors.text, padding: 10, paddingTop: project.title.trim() ? 5 : 10, fontSize: 12, opacity: 0.7 }} numberOfLines={1}>{project.label}</Text>}
-                    </View>
+                        {project.label && <ItchyText style={{ color: colors.text, padding: 10, paddingTop: project.title.trim() ? 5 : 10, fontSize: 12, opacity: 0.7 }} numberOfLines={1}>{project.label}</ItchyText>}
+                    </FastSquircleView>
                 </Pressable>
-            </View>
+            </FastSquircleView>
         );
     }
 }

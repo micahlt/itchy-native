@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Button, TextInput } from "react-native";
+import { View, Button, TextInput } from "react-native";
+import ItchyText from "../components/ItchyText";
 import { RTCPeerConnection, RTCSessionDescription, RTCIceCandidate } from "react-native-webrtc";
 
 const SIGNALING_SERVER_URL = "wss://itchyws.micahlindley.com";
@@ -177,10 +178,10 @@ export default function WebRTCExample() {
             />
             <Button title="Join Room" onPress={joinRoom} />
             <Button title="Send Test Message" onPress={sendTestMessage} disabled={!connected} />
-            <Text>Connection: {connected ? "Connected" : "Disconnected"}</Text>
+            <ItchyText>Connection: {connected ? "Connected" : "Disconnected"}</ItchyText>
             <View style={{ marginTop: 20, flex: 1 }}>
                 {log.map((line, i) => (
-                    <Text key={i} style={{ color: "white" }}>{line}</Text>
+                    <ItchyText key={i} style={{ color: "white" }}>{line}</ItchyText>
                 ))}
             </View>
         </View>

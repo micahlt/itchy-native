@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
-import { View, Text, useWindowDimensions } from "react-native";
+import { View, useWindowDimensions } from "react-native";
+import ItchyText from "../ItchyText";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { useTheme } from "../../utils/theme";
 
@@ -64,9 +65,9 @@ export default function ButtonPad({ onControlPress = () => { }, mapping = {} }) 
                         style,
                     ]}
                 >
-                    <Text style={{ color: isPressed ? colors.text : colors.backgroundTertiary, fontSize: Math.max(14, Math.min(18, buttonSize * 0.26)), fontWeight: "bold" }}>
+                    <ItchyText style={{ color: isPressed ? colors.text : colors.backgroundTertiary, fontSize: Math.max(14, Math.min(18, buttonSize * 0.26)), fontWeight: "bold" }}>
                         {label.toUpperCase()}
-                    </Text>
+                    </ItchyText>
                 </View>
             </PanGestureHandler>
         );

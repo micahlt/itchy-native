@@ -1,10 +1,12 @@
 import React from 'react';
 import { useColorScheme } from 'react-native';
 import { lightColors, darkColors } from './colors';
+import { dimensions } from './dimensions';
 
 export const ThemeContext = React.createContext({
     isDark: false,
     colors: lightColors,
+    dimensions: dimensions,
     setScheme: () => { },
 });
 
@@ -26,6 +28,7 @@ export const ThemeProvider = (props) => {
         isDark,
         // Chaning color schemes according to theme
         colors: isDark ? darkColors : lightColors,
+        dimensions: dimensions,
         // Overrides the isDark value will cause re-render inside the context.  
         setScheme: (scheme) => setIsDark(scheme === "dark"),
     };

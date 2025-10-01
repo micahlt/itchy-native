@@ -1,5 +1,6 @@
 import { router, Stack, useLocalSearchParams } from "expo-router";
-import { ScrollView, Text, useWindowDimensions, View } from "react-native";
+import { ScrollView, useWindowDimensions, View } from "react-native";
+import ItchyText from "../../../../components/ItchyText";
 import { StyleSheet } from "react-native";
 import { useTheme } from "../../../../utils/theme";
 import APIProject from "../../../../utils/api-wrapper/project";
@@ -213,12 +214,12 @@ export default function ControlsScreen() {
                 contentContainerStyle={{ paddingBottom: insets.bottom * 4 }} // Add paddingBottom here
             >
                 {project && <>
-                    <Text style={s.sectionHeader}>Preferences</Text>
+                    <ItchyText style={s.sectionHeader}>Preferences</ItchyText>
                     <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
-                        <Text style={s.settingTitle}><Text style={{ color: colors.accent, fontWeight: "bold" }}>{project.title}</Text> by {project.author?.username}</Text>
+                        <ItchyText style={s.settingTitle}><ItchyText style={{ color: colors.accent, fontWeight: "bold" }}>{project.title}</ItchyText> by {project.author?.username}</ItchyText>
                     </View>
                     <View style={{ ...s.settingContainer }}>
-                        <Text style={s.settingTitle}>Left Control</Text>
+                        <ItchyText style={s.settingTitle}>Left Control</ItchyText>
                         <SelectorComponent
                             searchable={false}
                             options={[
@@ -240,7 +241,7 @@ export default function ControlsScreen() {
                         />
                     </View>
                     <View style={{ ...s.settingContainer }}>
-                        <Text style={s.settingTitle}>Right Control</Text>
+                        <ItchyText style={s.settingTitle}>Right Control</ItchyText>
                         <SelectorComponent
                             searchable={false}
                             options={[
@@ -262,7 +263,7 @@ export default function ControlsScreen() {
                         />
                     </View>
                     <View style={{ ...s.settingContainer, ...s.bottomSettingContainer }}>
-                        <Text style={s.settingTitle}>Extra Controls</Text>
+                        <ItchyText style={s.settingTitle}>Extra Controls</ItchyText>
                         <SelectorComponent
                             searchable={false}
                             options={[
@@ -289,9 +290,9 @@ export default function ControlsScreen() {
                             }}
                         />
                     </View>
-                    <Text style={s.sectionHeader}>Left Control</Text>
+                    <ItchyText style={s.sectionHeader}>Left Control</ItchyText>
                     <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
-                        <Text style={s.settingTitle}>Preset</Text>
+                        <ItchyText style={s.settingTitle}>Preset</ItchyText>
                         <SelectorComponent
                             searchable={false}
                             options={[
@@ -305,7 +306,7 @@ export default function ControlsScreen() {
                         />
                     </View>
                     <View style={{ ...s.settingContainer }}>
-                        <Text style={s.settingTitle}>Up</Text>
+                        <ItchyText style={s.settingTitle}>Up</ItchyText>
                         <SelectorComponent
                             options={controlOptions}
                             selectedValue={controls?.controls?.primary?.up || 0}
@@ -324,7 +325,7 @@ export default function ControlsScreen() {
                         />
                     </View>
                     <View style={{ ...s.settingContainer }}>
-                        <Text style={s.settingTitle}>Down</Text>
+                        <ItchyText style={s.settingTitle}>Down</ItchyText>
                         <SelectorComponent
                             options={controlOptions}
                             selectedValue={controls?.controls?.primary?.down || 0}
@@ -343,7 +344,7 @@ export default function ControlsScreen() {
                         />
                     </View>
                     <View style={{ ...s.settingContainer }}>
-                        <Text style={s.settingTitle}>Left</Text>
+                        <ItchyText style={s.settingTitle}>Left</ItchyText>
                         <SelectorComponent
                             options={controlOptions}
                             selectedValue={controls?.controls?.primary?.left || 0}
@@ -362,7 +363,7 @@ export default function ControlsScreen() {
                         />
                     </View>
                     <View style={{ ...s.settingContainer, ...s.bottomSettingContainer }}>
-                        <Text style={s.settingTitle}>Right</Text>
+                        <ItchyText style={s.settingTitle}>Right</ItchyText>
                         <SelectorComponent
                             options={controlOptions}
                             selectedValue={controls?.controls?.primary?.right || 0}
@@ -380,9 +381,9 @@ export default function ControlsScreen() {
                             }}
                         />
                     </View>
-                    <Text style={s.sectionHeader}>Right Control</Text>
+                    <ItchyText style={s.sectionHeader}>Right Control</ItchyText>
                     <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
-                        <Text style={s.settingTitle}>Preset</Text>
+                        <ItchyText style={s.settingTitle}>Preset</ItchyText>
                         <SelectorComponent
                             searchable={false}
                             options={[
@@ -396,7 +397,7 @@ export default function ControlsScreen() {
                         />
                     </View>
                     <View style={{ ...s.settingContainer }}>
-                        <Text style={s.settingTitle}>Up</Text>
+                        <ItchyText style={s.settingTitle}>Up</ItchyText>
                         <SelectorComponent
                             options={controlOptions}
                             selectedValue={controls?.controls?.secondary?.up || 0}
@@ -415,7 +416,7 @@ export default function ControlsScreen() {
                         />
                     </View>
                     <View style={{ ...s.settingContainer }}>
-                        <Text style={s.settingTitle}>Down</Text>
+                        <ItchyText style={s.settingTitle}>Down</ItchyText>
                         <SelectorComponent
                             options={controlOptions}
                             selectedValue={controls?.controls?.secondary?.down || 0}
@@ -434,7 +435,7 @@ export default function ControlsScreen() {
                         />
                     </View>
                     <View style={{ ...s.settingContainer }}>
-                        <Text style={s.settingTitle}>Left</Text>
+                        <ItchyText style={s.settingTitle}>Left</ItchyText>
                         <SelectorComponent
                             options={controlOptions}
                             selectedValue={controls?.controls?.secondary?.left || 0}
@@ -453,7 +454,7 @@ export default function ControlsScreen() {
                         />
                     </View>
                     <View style={{ ...s.settingContainer, ...s.bottomSettingContainer }}>
-                        <Text style={s.settingTitle}>Right</Text>
+                        <ItchyText style={s.settingTitle}>Right</ItchyText>
                         <SelectorComponent
                             options={controlOptions}
                             selectedValue={controls?.controls?.secondary?.right || 0}
@@ -471,10 +472,10 @@ export default function ControlsScreen() {
                             }}
                         />
                     </View>
-                    <Text style={s.sectionHeader}>Extra Controls</Text>
+                    <ItchyText style={s.sectionHeader}>Extra Controls</ItchyText>
                     {Array.from({ length: controls?.controlOptions?.extrasCount || 0 }).map((_, index) => (
                         <View key={index} style={{ ...s.settingContainer, ...(index === 0 ? s.topSettingContainer : {}), ...(index === (controls?.controlOptions?.extrasCount || 0) - 1 ? s.bottomSettingContainer : {}) }}>
-                            <Text style={s.settingTitle}>Extra {index + 1}</Text>
+                            <ItchyText style={s.settingTitle}>Extra {index + 1}</ItchyText>
                             <SelectorComponent
                                 options={controlOptions}
                                 selectedValue={controls?.controls?.extra?.[index] || 0}

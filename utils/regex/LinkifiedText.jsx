@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { Text } from "react-native";
+import ItchyText from "../../components/ItchyText";
 import { useTheme } from "../theme";
 import { useEffect, useState } from "react";
 const username = /(@[\d_\-a-zA-Z]+)/;
@@ -58,19 +58,19 @@ export default function LinkifiedText({ text, ...props }) {
     }, [text]);
 
     return (
-        <Text {...props}>
+        <ItchyText {...props}>
             {textParts.map((part, index) => {
                 if (part.match(username)) {
-                    return <Text style={{ ...props.style, color: colors.accent }} onPress={() => router.push(`/users/${part.split('@')[1]}`)} key={index}>{part}</Text>
+                    return <ItchyText style={{ ...props.style, color: colors.accent }} onPress={() => router.push(`/users/${part.split('@')[1]}`)} key={index}>{part}</ItchyText>
                 } else if (part.match(project)) {
                     const projectID = part.match(project)[1];
-                    return <Text style={{ ...props.style, color: colors.accent }} onPress={() => router.push(`/projects/${projectID}`)} key={index}>project:{projectID}</Text>
+                    return <ItchyText style={{ ...props.style, color: colors.accent }} onPress={() => router.push(`/projects/${projectID}`)} key={index}>project:{projectID}</ItchyText>
                 } else if (part.match(studio)) {
                     const studioID = part.match(studio)[1];
-                    return <Text style={{ ...props.style, color: colors.accent }} onPress={() => router.push(`/studios/${studioID}`)} key={index}>studio:{studioID}</Text>;
+                    return <ItchyText style={{ ...props.style, color: colors.accent }} onPress={() => router.push(`/studios/${studioID}`)} key={index}>studio:{studioID}</ItchyText>;
                 }
-                return <Text key={index}>{part}</Text>
+                return <ItchyText key={index}>{part}</ItchyText>
             })}
-        </Text>
+        </ItchyText>
     );
 }

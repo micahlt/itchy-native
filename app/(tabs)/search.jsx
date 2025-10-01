@@ -1,12 +1,12 @@
 import {
   View,
-  FlatList,
   TextInput,
   useWindowDimensions,
   RefreshControl,
+  Platform,
 } from "react-native";
 import { useTheme } from "../../utils/theme";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import APIExplore from "../../utils/api-wrapper/explore";
 import ProjectCard from "../../components/ProjectCard";
 import { useEffect, useRef, useState } from "react";
@@ -15,15 +15,20 @@ import StudioCard from "../../components/StudioCard";
 import { useFocusEffect } from "expo-router";
 import searchForUser from "../../utils/searchForUser";
 import UserCard from "../../components/UserCard";
+import { FlashList } from "@shopify/flash-list";
+import FastSquircleView from "react-native-fast-squircle";
+import Animated from "react-native-reanimated";
 
 export default function Search() {
-  const { colors, isDark } = useTheme();
+  const { colors, dimensions, isDark } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [type, setType] = useState("projects");
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const searchBarRef = useRef(null);
   const { width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const AniamtedSquircleView = Animated.createAnimatedComponent(FastSquircleView);
 
   useFocusEffect(() => {
     if (searchBarRef.current) {
@@ -63,8 +68,31 @@ export default function Search() {
   return (
     <SafeAreaView
       edges={["top"]}
-      style={{ flex: 1, backgroundColor: colors.background }}
+      style={{ flex: 1, backgroundColor: colors.accentTransparent }}
     >
+      <TextInput
+        ref={searchBarRef}
+        placeholder="Find projects, users..."
+        inputMode="search"
+        enterKeyHint="search"
+        style={{
+          backgroundColor: "transparent",
+          color: colors.text,
+          fontSize: 18,
+          width: "100%",
+          fontFamily: Platform.select({
+            android: 'Inter_400Regular',
+            ios: 'Inter-Regular',
+          }),
+          letterSpacing: -0.4,
+          fontSize: 22,
+          marginLeft: 24, marginTop: 10, marginBottom: 2
+        }}
+        placeholderTextColor={colors.textSecondary}
+        onSubmitEditing={search}
+        clearButtonMode="always"
+        onChangeText={(t) => setQuery(t)}
+      />
       <View
         style={{
           flexDirection: "row",
@@ -96,92 +124,58 @@ export default function Search() {
           onPress={() => setType("users")}
         />
       </View>
-      <FlatList
-        data={results}
-        renderItem={({ item }) => renderItem(item, width, type)}
-        stickyHeaderIndices={[0]}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        columnWrapperStyle={{ gap: 10 }}
-        contentContainerStyle={{
-          marginHorizontal: 20,
-          gap: 10,
-          paddingBottom: 100,
-        }}
-        refreshing={isLoading}
-        refreshControl={
-          <RefreshControl
+      <AniamtedSquircleView cornerSmoothing={0.6} style={{
+        backgroundColor: colors.background, marginTop: 8, marginHorizontal: 1.5, paddingBottom: Platform.OS == "ios" ? 60 : 0, borderTopLeftRadius: 32, borderTopRightRadius: 32, boxShadow: "0px -2px 10px rgba(0,0,0,0.15)", outlineColor: colors.outline,
+        outlineStyle: "solid",
+        outlineWidth: dimensions.outlineWidth,
+        borderWidth: 0.1,
+        borderColor: colors.background,
+        borderTopWidth: 4,
+        borderTopColor: colors.highlight,
+        flex: 1,
+        overflow: 'visible'
+      }}>
+        <FastSquircleView style={{ flex: 1, overflow: "hidden", borderTopLeftRadius: dimensions.largeRadius, borderTopRightRadius: dimensions.largeRadius, marginTop: -4 }}>
+          <FlashList
+            data={results}
+            renderItem={({ item }) => renderItem(item, width, type)}
+            keyExtractor={(item) => item.id}
+            numColumns={2}
+            columnWrapperStyle={{ gap: 10 }}
+            contentContainerStyle={{
+              marginHorizontal: 15,
+              paddingTop: 0,
+              gap: 30,
+              marginTop: -12,
+              paddingBottom: 100,
+              borderRadius: 32,
+              overflow: 'hidden'
+            }}
             refreshing={isLoading}
-            tintColor={"white"}
-            progressBackgroundColor={colors.accent}
-            colors={isDark ? ["black"] : ["white"]}
-          />
-        }
-        onRefresh={search}
-        ListHeaderComponent={
-          <>
-            <View
-              style={{
-                backgroundColor: colors.background,
-                zIndex: 0,
-                height: 40,
-              }}
-            ></View>
-            <View
-              style={{
-                backgroundColor: colors.backgroundSecondary,
-                paddingVertical: 15,
-                paddingLeft: 15,
-                paddingRight: 9,
-                marginBottom: 5,
-                borderRadius: 10,
-                marginTop: -30,
-                zIndex: 1,
-                elevation: 3,
-                shadowColor: "#000",
-                shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                shadowOpacity: 0.2,
-                shadowRadius: 3,
-              }}
-            >
-              <TextInput
-                ref={searchBarRef}
-                placeholder="Search"
-                inputMode="search"
-                enterKeyHint="search"
-                style={{
-                  backgroundColor: "transparent",
-                  color: colors.text,
-                  fontSize: 18,
-                  width: "100%",
-                  
-                }}
-                placeholderTextColor={colors.textSecondary}
-                inlineImageLeft={isDark ? "search_24_white" : "search_24_black"}
-                inlineImagePadding={28}
-                onSubmitEditing={search}
-                clearButtonMode="always"
-                onChangeText={(t) => setQuery(t)}
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoading}
+                tintColor={"white"}
+                progressBackgroundColor={colors.accent}
+                colors={isDark ? ["black"] : ["white"]}
               />
-            </View>
-          </>
-        }
-      />
+            }
+            onRefresh={search}
+          />
+        </FastSquircleView>
+      </AniamtedSquircleView>
     </SafeAreaView>
   );
 }
 
 function renderItem(item, width, type) {
   if (type === "projects") {
-    return <ProjectCard project={item} width={(width - 50) / 2} />;
+    return <ProjectCard project={item} style={{ marginBottom: 5 }} width={(width - 40) / 2} />;
   }
   if (type === "studios") {
-    return <StudioCard studio={item} width={(width - 50) / 2} />;
+    return <StudioCard studio={item} style={{ marginBottom: 5 }} width={(width - 40) / 2} />;
   }
   if (type === "users") {
-    return <UserCard user={item} width={(width - 50) / 2} />;
+    return <UserCard user={item} style={{ marginBottom: 5 }} width={(width - 40) / 2} />;
   }
 }

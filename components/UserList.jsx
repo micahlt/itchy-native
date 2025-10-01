@@ -1,4 +1,5 @@
-import { View, Text, Image, FlatList } from "react-native";
+import { View, Image, FlatList } from "react-native";
+import ItchyText from "./ItchyText";
 import Pressable from "./Pressable"
 import { useTheme } from "../utils/theme";
 import { useRouter } from "expo-router";
@@ -16,7 +17,7 @@ export default function UserList({ users = [], onEndReached }) {
                 <View style={{ marginRight: 15, borderRadius: 25, overflow: "hidden", height: 36, width: 36 }}>
                     <Image source={{ uri: user.profile.images["60x60"] }} placeholder={require("../assets/avatar.png")} placeholderContentFit="cover" style={{ width: 36, height: 36, backgroundColor: "white" }} />
                 </View>
-                <Text style={{ fontSize: 14, fontWeight: "bold", color: colors.text }}>{user.username}</Text>
+                <ItchyText style={{ fontSize: 14, fontWeight: "bold", color: colors.text }}>{user.username}</ItchyText>
             </View>
         </Pressable>
     }} style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 5 }} onEndReached={onEndReached} onEndReachedThreshold={1.2} />

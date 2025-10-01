@@ -1,4 +1,5 @@
-import { View, ScrollView, Text } from "react-native";
+import { View, ScrollView } from "react-native";
+import ItchyText from "../../../components/ItchyText";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useState } from "react";
@@ -29,15 +30,15 @@ export default function About() {
             {!!profile && (
                 <ScrollView style={{ padding: 10 }}>
                     <Card style={{ marginBottom: 10, padding: 16 }}>
-                        <Text style={{ fontWeight: "bold", color: colors.accent, fontSize: 16, marginBottom: 10 }}>About Me</Text>
+                        <ItchyText style={{ fontWeight: "bold", color: colors.accent, fontSize: 16, marginBottom: 10 }}>About Me</ItchyText>
                         <LinkifiedText style={{ color: colors.text, }} text={profile.profile.bio} />
                     </Card>
                     <Card style={{ marginBottom: 10, padding: 16 }}>
-                        <Text style={{ fontWeight: "bold", color: colors.accent, fontSize: 16, marginBottom: 10 }}>What I'm Working On</Text>
+                        <ItchyText style={{ fontWeight: "bold", color: colors.accent, fontSize: 16, marginBottom: 10 }}>What I'm Working On</ItchyText>
                         <LinkifiedText style={{ color: colors.text, }} text={profile.profile.status} />
                     </Card>
                     <Card style={{ marginBottom: 10, padding: 16 }}>
-                        <Text style={{ color: colors.text }}>Joined <Text style={{ fontWeight: "bold" }}>{timeago.ago(profile.history.joined)}</Text>   |   from <Text style={{ fontWeight: "bold" }}>{profile.profile.country}  {flag(profile.profile.country)}</Text></Text>
+                        <ItchyText style={{ color: colors.text }}>Joined <ItchyText style={{ fontWeight: "bold" }}>{timeago.ago(profile.history.joined)}</ItchyText>   |   from <ItchyText style={{ fontWeight: "bold" }}>{profile.profile.country}  {flag(profile.profile.country)}</ItchyText></ItchyText>
                     </Card>
                 </ScrollView>
             )

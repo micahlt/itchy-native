@@ -1,4 +1,5 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
+import ItchyText from "./ItchyText";
 import Pressable from "./Pressable";
 import { Image } from "expo-image";
 import { useTheme } from "../utils/theme";
@@ -123,31 +124,31 @@ export default function Message({ message }) {
                 </View>
                 <View style={{ maxWidth: "85%" }}>
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
-                        <Text style={{ color: colors.text, fontWeight: 'bold' }}>{headerText}</Text>
+                        <ItchyText style={{ color: colors.text, fontWeight: 'bold' }}>{headerText}</ItchyText>
                         {message.type == "addcomment" && message?.comment_type === 0 && <>
-                            <Text style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> on</Text>
+                            <ItchyText style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> on</ItchyText>
                             <TouchableOpacity onPress={() => router.push(`/projects/${message.comment_obj_id}`)}>
-                                <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 1, fontWeight: "bold" }}> {message.comment_obj_title}</Text>
+                                <ItchyText style={{ color: colors.accent, fontStyle: 'italic', opacity: 1, fontWeight: "bold" }}> {message.comment_obj_title}</ItchyText>
                             </TouchableOpacity>
                         </>}
                         {message.type == "addcomment" && message?.comment_type === 1 && <>
-                            <Text style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> on</Text>
+                            <ItchyText style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> on</ItchyText>
                             <TouchableOpacity onPress={() => router.push(`/users/${message.comment_obj_title}`)}>
-                                <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 1, fontWeight: "bold" }}> {message.comment_obj_title == username ? "your profile" : `${message.comment_obj_title}'s profile`}
-                                </Text>
+                                <ItchyText style={{ color: colors.accent, fontStyle: 'italic', opacity: 1, fontWeight: "bold" }}> {message.comment_obj_title == username ? "your profile" : `${message.comment_obj_title}'s profile`}
+                                </ItchyText>
                             </TouchableOpacity>
                         </>}
                         {message.type == "addcomment" && message?.comment_type === 2 && <>
-                            <Text style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> in</Text>
+                            <ItchyText style={{ color: colors.text, fontStyle: 'italic', opacity: 0.6 }}> in</ItchyText>
                             <TouchableOpacity onPress={() => router.push(`/studios/${message.comment_obj_id}`)}>
-                                <Text style={{ color: colors.accent, fontStyle: 'italic', opacity: 1, fontWeight: "bold" }}> {message.comment_obj_title}</Text>
+                                <ItchyText style={{ color: colors.accent, fontStyle: 'italic', opacity: 1, fontWeight: "bold" }}> {message.comment_obj_title}</ItchyText>
                             </TouchableOpacity>
                         </>}
-                        <Text style={{ color: colors.textSecondary, fontStyle: 'italic', opacity: 0.6 }}> {timeAgoDate}</Text>
+                        <ItchyText style={{ color: colors.textSecondary, fontStyle: 'italic', opacity: 0.6 }}> {timeAgoDate}</ItchyText>
                     </View>
                     {message.type == "addcomment" ? <View style={{ paddingVertical: 10, paddingHorizontal: 15, borderRadius: 10, marginTop: 5, marginRight: "auto", backgroundColor: colors.backgroundSecondary }}>
-                        <Text style={{ color: colors.text, marginRight: "auto" }}>{bodyText}</Text>
-                    </View> : <Text style={{ color: colors.text, marginRight: 64 }}>{bodyText}</Text>}
+                        <ItchyText style={{ color: colors.text, marginRight: "auto" }}>{bodyText}</ItchyText>
+                    </View> : <ItchyText style={{ color: colors.text, marginRight: 64 }}>{bodyText}</ItchyText>}
                 </View>
             </View>
         </Pressable>

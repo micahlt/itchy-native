@@ -340,7 +340,7 @@ export default function MultiPlay() {
                         onPress={isUserUnder13() ? null : joinRoom}
                         disabled={isUserUnder13()}
                     >
-                        <Text style={{
+                        <ItchyText style={{
                             color: "white",
                             paddingHorizontal: 20,
                             paddingVertical: 14,
@@ -349,23 +349,23 @@ export default function MultiPlay() {
                             alignItems: "center",
                             display: "flex",
                             justifyContent: "center"
-                        }}>CONNECT</Text>
+                        }}>CONNECT</ItchyText>
                     </Pressable>
                 </View>}
                 {isUserUnder13() && !remoteStream && (
                     <Card style={{ paddingHorizontal: 15, paddingVertical: 10, marginTop: 15, backgroundColor: colors.backgroundSecondary }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
                             <MaterialIcons name="info" size={20} color={colors.accent} style={{ marginRight: 8 }} />
-                            <Text style={{ color: colors.accent, fontSize: 16, fontWeight: "bold" }}>
+                            <ItchyText style={{ color: colors.accent, fontSize: 16, fontWeight: "bold" }}>
                                 Age Restriction
-                            </Text>
+                            </ItchyText>
                         </View>
-                        <Text style={{ color: colors.text, lineHeight: 17 }}>
+                        <ItchyText style={{ color: colors.text, lineHeight: 17 }}>
                             MultiPlay is restricted to users who are 13 years of age or older. This restriction is in place to comply with online privacy and safety regulations.
-                        </Text>
+                        </ItchyText>
                     </Card>
                 )}
-                <Text style={{ color: colors.textSecondary, opacity: 0.5, marginVertical: 10 }}>Status: {status}</Text>
+                <ItchyText style={{ color: colors.textSecondary, opacity: 0.5, marginVertical: 10 }}>Status: {status}</ItchyText>
                 {!!remoteStream ? (
                     <View style={{ width: width - 30, aspectRatio: 480 / 360, borderWidth: 2, borderRadius: 10, overflow: "hidden" }}>
                         <RTCView
@@ -384,39 +384,39 @@ export default function MultiPlay() {
                     </View>}
                 {projectMetadata && (
                     <Card style={{ paddingHorizontal: 15, paddingVertical: 10, marginVertical: 15 }}>
-                        <Text style={{ color: colors.accent, fontSize: 18, fontWeight: "bold" }}>
+                        <ItchyText style={{ color: colors.accent, fontSize: 18, fontWeight: "bold" }}>
                             {projectMetadata.title}
-                        </Text>
-                        <Text style={{ color: colors.textSecondary, marginTop: 2 }}>
+                        </ItchyText>
+                        <ItchyText style={{ color: colors.textSecondary, marginTop: 2 }}>
                             by {projectMetadata.author?.username}
-                        </Text>
+                        </ItchyText>
                         {projectMetadata.instructions && (
                             <View style={{ marginTop: 8 }}>
-                                <Text style={{ color: colors.text, fontWeight: "bold", fontSize: 14 }}>
+                                <ItchyText style={{ color: colors.text, fontWeight: "bold", fontSize: 14 }}>
                                     Instructions
-                                </Text>
-                                <Text style={{ color: colors.textSecondary, marginTop: 4, lineHeight: 17 }}>
+                                </ItchyText>
+                                <ItchyText style={{ color: colors.textSecondary, marginTop: 4, lineHeight: 17 }}>
                                     {projectMetadata.instructions}
-                                </Text>
+                                </ItchyText>
                             </View>
                         )}
                         <View style={{ flexDirection: 'row', marginTop: 8, flexWrap: 'wrap', gap: 10 }}>
-                            <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
+                            <ItchyText style={{ color: colors.textSecondary, fontSize: 12 }}>
                                 ❤️ {projectMetadata.stats?.loves || 0}
-                            </Text>
-                            <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
+                            </ItchyText>
+                            <ItchyText style={{ color: colors.textSecondary, fontSize: 12 }}>
                                 ⭐ {projectMetadata.stats?.favorites || 0}
-                            </Text>
-                            <Text style={{ color: colors.textSecondary, fontSize: 12 }}>
+                            </ItchyText>
+                            <ItchyText style={{ color: colors.textSecondary, fontSize: 12 }}>
                                 👁️ {projectMetadata.stats?.views || 0}
-                            </Text>
+                            </ItchyText>
                         </View>
                     </Card>
                 )}
                 {!remoteStream && <Card style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
-                    <Text style={{ color: colors.accent, fontSize: 20, fontWeight: "bold" }}>Introducing MultiPlay</Text>
-                    <Text style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>MultiPlay is the first-ever online multiplayer platform for local multiplayer style Scratch games, built-in to Itchy!  You can host a game, make a join code, and send it to a friend to allow them to see and control game you're playing.  Combine this with Itchy's customizable control setups and you can play local multiplayer games with keyboard controls on your phone.</Text>
-                    <Text style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>It's worth noting that MultiPlay is still in the alpha stage, so you may encounter connection issues, lag, random inputs, and other stuff like that.</Text>
+                    <ItchyText style={{ color: colors.accent, fontSize: 20, fontWeight: "bold" }}>Introducing MultiPlay</ItchyText>
+                    <ItchyText style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>MultiPlay is the first-ever online multiplayer platform for local multiplayer style Scratch games, built-in to Itchy!  You can host a game, make a join code, and send it to a friend to allow them to see and control game you're playing.  Combine this with Itchy's customizable control setups and you can play local multiplayer games with keyboard controls on your phone.</ItchyText>
+                    <ItchyText style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>It's worth noting that MultiPlay is still in the alpha stage, so you may encounter connection issues, lag, random inputs, and other stuff like that.</ItchyText>
                 </Card>}
                 <ScrollView horizontal={true} style={{ flex: 1, marginTop: 10 }} contentContainerStyle={{ columnGap: 5 }} >
                     <Chip.Icon icon="exit-to-app" text="Leave MultiPlay" onPress={() => nav.goBack()} />

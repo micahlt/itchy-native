@@ -1,7 +1,11 @@
 module.exports = function (api) {
     api.cache(true);
     return {
-        presets: ['babel-preset-expo'],
+        "presets": [
+            ["babel-preset-expo", {
+                "jsxImportSource": "@welldone-software/why-did-you-render"
+            }]
+        ],
         plugins: ['react-native-worklets/plugin']
     };
 };

@@ -1,4 +1,5 @@
-import { Text, TextInput, View } from 'react-native';
+import { TextInput, View } from 'react-native';
+import ItchyText from '../components/ItchyText';
 import Pressable from '../components/Pressable';
 import ScratchAPIWrapper from '../utils/api-wrapper';
 import { useTheme } from '../utils/theme';
@@ -10,6 +11,7 @@ import { router } from 'expo-router';
 import { Image } from 'expo-image';
 import { MaterialIcons } from '@expo/vector-icons';
 import encryptedStorage from '../utils/encryptedStorage';
+import TexturedButton from '../components/TexturedButton';
 
 export default function LoginScreen() {
     const { colors } = useTheme();
@@ -49,13 +51,9 @@ export default function LoginScreen() {
                 </View>
                 <TextInput placeholder="Username" style={{ backgroundColor: colors.backgroundSecondary, color: colors.text, padding: 10, margin: 10, borderBottomColor: "silver", borderBottomWidth: 1 }} underlineColorAndroid={colors.text} placeholderTextColor={colors.textSecondary} onChangeText={(t) => setUsername(t)} value={username} importantForAutofill='yes' autoComplete="username" autoCapitalize="none" autoCorrect={false} autoFocus={true} returnKeyType="next" onSubmitEditing={() => passwordInput?.current?.focus()} submitBehavior="submit" />
                 <TextInput placeholder="Password" ref={passwordInput} style={{ backgroundColor: colors.backgroundSecondary, color: colors.text, padding: 10, margin: 10, borderBottomColor: "silver", borderBottomWidth: 1 }} underlineColorAndroid={colors.text} placeholderTextColor={colors.textSecondary} secureTextEntry={true} onChangeText={(t) => setPassword(t)} value={password} importantForAutofill='yes' autoComplete="password" autoCapitalize="none" autoCorrect={false} onSubmitEditing={() => logIn()} />
-                <View style={{ borderRadius: 10, overflow: 'hidden', backgroundColor: colors.accent, margin: 10, elevation: 2 }}>
-                    <Pressable onPress={() => logIn()} style={{ padding: 10 }} android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}>
-                        <Text style={{ color: colors.text, textAlign: "center", fontWeight: "bold", color: "white" }}>Log In</Text>
-                    </Pressable>
-                </View>
-                {error && <Text style={{ color: "#f85a5a", textAlign: "center", fontSize: 16, marginBottom: 5 }}>{error}</Text>}
-                <Text style={{ color: colors.text, textAlign: "center", opacity: 0.5, fontSize: 12 }}>Your username and password will be sent directly to Scratch's servers and not shared with any third parties.</Text>
+                <TexturedButton style={{ marginVertical: 10, margin: "auto", paddingHorizontal: 10, backgroundColor: colors.accent, outlineColor: colors.accentOverlay, borderTopColor: "rgba(255,255,255,0.2)" }} textStyle={{ color: "white" }}>Log In</TexturedButton>
+                {error && <ItchyText style={{ color: "#f85a5a", textAlign: "center", fontSize: 16, marginBottom: 5 }}>{error}</ItchyText>}
+                <ItchyText style={{ color: colors.text, textAlign: "center", opacity: 0.5, fontSize: 12 }}>Your username and password will be sent directly to Scratch's servers and not shared with any third parties.</ItchyText>
             </Card>
         </View>
     );

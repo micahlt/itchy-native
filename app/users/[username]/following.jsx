@@ -1,4 +1,5 @@
-import { View, ScrollView, Text } from "react-native";
+import { View } from "react-native";
+import ItchyText from "../../../components/ItchyText";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useState } from "react";

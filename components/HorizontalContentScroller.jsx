@@ -1,10 +1,12 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
+import ItchyText from "./ItchyText";
 import { ScrollView } from "react-native-gesture-handler";
 import { useTheme } from "../utils/theme";
 import ProjectCard from "./ProjectCard";
 import StudioCard from "./StudioCard";
 import Pressable from "./Pressable";
 import { MaterialIcons } from "@expo/vector-icons";
+import TexturedButton from "./TexturedButton";
 
 export default function HorizontalContentScroller({ data, itemType = "projects", iconName, headerStyle = {}, title = "Projects", onShowMore = null, itemCount = null }) {
     const { colors } = useTheme();
@@ -21,14 +23,9 @@ export default function HorizontalContentScroller({ data, itemType = "projects",
                 ...headerStyle
             }}>
             {iconName ? <MaterialIcons name={iconName} size={24} color={colors.text} /> : null}
-            <Text style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>{title} {itemCount && <Text style={{ color: colors.textSecondary, fontWeight: "normal" }}>({itemCount == 100 ? "100+" : itemCount})</Text>}</Text>
+            <ItchyText style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>{title} {itemCount && <ItchyText style={{ color: colors.textSecondary, fontWeight: "normal" }}>({itemCount == 100 ? "100+" : itemCount})</ItchyText>}</ItchyText>
             <View style={{ flex: 1 }} />
-            {!!onShowMore && <View style={{ flexDirection: "row", alignItems: "center", borderColor: colors.textSecondary, borderWidth: 1, borderRadius: 16, overflow: "hidden", height: 30, opacity: 0.7 }}>
-                <Pressable onPress={onShowMore} android_ripple={{ color: colors.ripple }} style={{ alignItems: 'center', flexDirection: 'row', gap: 4, height: 32, paddingVertical: 4, paddingHorizontal: 10, }}>
-                    <Text style={{ color: colors.textSecondary, fontSize: 14 }}>More</Text>
-                    <MaterialIcons name='arrow-forward' size={14} color={colors.textSecondary} />
-                </Pressable>
-            </View>}
+            {!!onShowMore && <TexturedButton onPress={onShowMore}>More</TexturedButton>}
         </View>
         <ScrollView
             horizontal

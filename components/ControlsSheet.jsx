@@ -1,7 +1,8 @@
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { useEffect, useRef } from "react";
 import * as Haptics from 'expo-haptics';
-import { Text, useWindowDimensions, View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
+import ItchyText from "./ItchyText";
 import { useTheme } from "../utils/theme";
 import Joystick from "./Controls/Joystick";
 import Dpad from "./Controls/Dpad";
@@ -103,12 +104,12 @@ export default function ControlsSheet({ onControlPress = () => { }, onClose = ()
                         </View>}
                     </>
                 ) : (
-                    <Text style={{ color: colors.text }}>Loading controls...</Text>
+                    <ItchyText style={{ color: colors.text }}>Loading controls...</ItchyText>
                 )}
                 <View style={{ flex: 1, justifyContent: "flex-end", alignItems: "center", width: "100%", paddingHorizontal: 20, paddingVertical: 10 }}>
-                    {currentMapping?.username && <Text style={{ color: colors.text, opacity: 0.4, marginBottom: -10 }}>Current control setup provided by @{currentMapping.username}</Text>}
+                    {currentMapping?.username && <ItchyText style={{ color: colors.text, opacity: 0.4, marginBottom: -10 }}>Current control setup provided by @{currentMapping.username}</ItchyText>}
                     <TouchableOpacity onPress={() => router.push(`/projects/${projectId}/controls/find`)} style={{ padding: 20, flexDirection: "row", alignItems: "center", }} android_ripple={{ color: colors.accentTransparent, radius: 30 }}>
-                        <MaterialIcons name="settings" backgroundColor="transparent" color={colors.textSecondary} size={16} /><Text style={{ marginLeft: 10, color: colors.textSecondary, fontSize: 16, fontWeight: "bold" }}>Configure Controls</Text>
+                        <MaterialIcons name="settings" backgroundColor="transparent" color={colors.textSecondary} size={16} /><ItchyText style={{ marginLeft: 10, color: colors.textSecondary, fontSize: 16, fontWeight: "bold" }}>Configure Controls</ItchyText>
                     </TouchableOpacity>
                 </View>
             </BottomSheetView>

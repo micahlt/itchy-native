@@ -53,6 +53,12 @@
     <true/>
     <key>ReactNativeReleaseLevel</key>
     <string>experimental</string>
+    <key>UIAppFonts</key>
+    <array>
+      <string>Inter_400Regular.ttf</string>
+      <string>Inter_700Bold.ttf</string>
+      <string>Inter_900Black.ttf</string>
+    </array>
     <key>UILaunchStoryboardName</key>
     <string>SplashScreen</string>
     <key>UIRequiredDeviceCapabilities</key>
