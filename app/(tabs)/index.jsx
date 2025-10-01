@@ -205,7 +205,7 @@ export default function HomeScreen() {
 
     // Memoize feed with stable dependency
     const memoizedFeed = useMemo(() => {
-        return <Feed style={{ margin: 20, marginBottom: 0, marginTop: 15 }} username={username} rerender={dataState.refreshCount} />
+        return <Feed style={{ margin: 20 }} username={username} rerender={dataState.refreshCount} />
     }, [username, dataState.refreshCount]);
 
     // Memoize scroll handlers
@@ -251,28 +251,26 @@ export default function HomeScreen() {
                     <Header insets={insets} colors={colors} headerStyle={headerStyle} logoStyle={logoStyle} />
                     <AniamtedSquircleView cornerSmoothing={0.6} style={[contentStyle, containerStyle]}>
                         {!!username ? memoizedFeed : <SignInPrompt />}
-                        {true && <>
-                            {dataState.exploreData?.featured?.length > 0 &&
-                                <HorizontalContentScroller title="Featured Projects" data={dataState.exploreData.featured} iconName="workspace-premium" headerStyle={{ marginTop: 10 }} />}
+                        {dataState.exploreData?.featured?.length > 0 &&
+                            <HorizontalContentScroller title="Featured Projects" data={dataState.exploreData.featured} iconName="workspace-premium" headerStyle={{ marginTop: 10 }} />}
 
-                            {dataState.friendsLoves.length > 0 &&
-                                <HorizontalContentScroller title="Friends Loved" data={dataState.friendsLoves} iconName="people" />}
+                        {dataState.friendsLoves.length > 0 &&
+                            <HorizontalContentScroller title="Friends Loved" data={dataState.friendsLoves} iconName="people" />}
 
-                            {dataState.friendsProjects.length > 0 &&
-                                <HorizontalContentScroller title="Created by Friends" data={dataState.friendsProjects} iconName="people" />}
+                        {dataState.friendsProjects.length > 0 &&
+                            <HorizontalContentScroller title="Created by Friends" data={dataState.friendsProjects} iconName="people" />}
 
-                            {dataState.exploreData?.topLoved?.length > 0 &&
-                                <HorizontalContentScroller title="Top Loved" data={dataState.exploreData.topLoved} iconName="favorite" />}
+                        {dataState.exploreData?.topLoved?.length > 0 &&
+                            <HorizontalContentScroller title="Top Loved" data={dataState.exploreData.topLoved} iconName="favorite" />}
 
-                            {dataState.exploreData?.featuredStudios?.length > 0 &&
-                                <FeaturedStudios studios={dataState.exploreData.featuredStudios} colors={colors} />}
+                        {dataState.exploreData?.featuredStudios?.length > 0 &&
+                            <FeaturedStudios studios={dataState.exploreData.featuredStudios} colors={colors} />}
 
-                            {dataState.exploreData?.topRemixed?.length > 0 &&
-                                <HorizontalContentScroller title="Top Remixed" data={dataState.exploreData.topRemixed} iconName="sync" />}
+                        {dataState.exploreData?.topRemixed?.length > 0 &&
+                            <HorizontalContentScroller title="Top Remixed" data={dataState.exploreData.topRemixed} iconName="sync" />}
 
-                            {dataState.exploreData?.newest?.length > 0 &&
-                                <HorizontalContentScroller title="Newest Projects" data={dataState.exploreData.newest} iconName="more-time" />}
-                        </>}
+                        {dataState.exploreData?.newest?.length > 0 &&
+                            <HorizontalContentScroller title="Newest Projects" data={dataState.exploreData.newest} iconName="more-time" />}
                     </AniamtedSquircleView>
                 </ScrollView>
             </GestureDetector>
