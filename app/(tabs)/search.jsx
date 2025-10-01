@@ -18,6 +18,9 @@ import UserCard from "../../components/UserCard";
 import { FlashList } from "@shopify/flash-list";
 import FastSquircleView from "react-native-fast-squircle";
 import Animated from "react-native-reanimated";
+import ItchyText from "../../components/ItchyText";
+import { Ionicons } from "@expo/vector-icons";
+import { opacity } from "react-native-redash";
 
 export default function Search() {
   const { colors, dimensions, isDark } = useTheme();
@@ -161,6 +164,10 @@ export default function Search() {
               />
             }
             onRefresh={search}
+            ListEmptyComponent={<View style={{ alignItems: "center", flex: 1, justifyContent: "center" }}>
+              <Ionicons name="search-circle" size={128} color={colors.backgroundTertiary} />
+              <ItchyText style={{ textAlign: "center", fontWeight: "bold", color: colors.textSecondary, opacity: 0.6 }}>Search for something to get started</ItchyText>
+            </View>}
           />
         </FastSquircleView>
       </AniamtedSquircleView>
