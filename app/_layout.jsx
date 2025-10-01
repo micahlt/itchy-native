@@ -111,7 +111,14 @@ export default function App() {
                                 fontWeight: "bold",
                             },
                             headerTintColor: colors.text,
-                            headerLeft: () => Platform.OS === "ios" ? <></> : <View style={{ width: 4 }}></View>
+                            // fixes back button artifact for iOS, check how it impacts android
+                            headerLeft: () => null,
+                            headerTransparent: true,
+                            headerStyle: {
+                            backgroundColor: "transparent", // no fallback bg
+                            paddingTop: 40 // dysfunctional unfortunatley but would be needed because now content doesnt have top padding to account for header
+                            },
+                            
                         }}>
                             <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: "default" }} />
                             <Stack.Screen name="projects/[id]/index" options={{

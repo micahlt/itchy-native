@@ -37,3 +37,6 @@ virtualDrive.bat
 
 # typescript
 *.tsbuildinfo
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md

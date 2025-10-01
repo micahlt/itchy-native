@@ -9,13 +9,14 @@ import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import storage from '../utils/storage';
 import linkWithFallback from '../utils/linkWithFallback';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Platform } from "react-native";
 
 export default function SettingsScreen() {
     const { colors, isDark } = useTheme();
     const router = useRouter();
     const [username] = useMMKVString("username");
     const [twConfig, setTWConfig] = useMMKVObject("twConfig");
-
+    const isLiquidPlus = Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
     // Local state for switches to enable smooth animations
     const [localSwitchState, setLocalSwitchState] = useState({
         interpolate: false,
@@ -24,7 +25,6 @@ export default function SettingsScreen() {
         hqPen: false,
         turbo: false
     });
-
     const s = useMemo(() => StyleSheet.create({
         sectionHeader: {
             color: colors.textSecondary,
@@ -107,25 +107,25 @@ export default function SettingsScreen() {
                 </TouchableOpacity>
             </View>}
             <Text style={s.sectionHeader}>Player</Text>
-            <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
+            <View style={{ ...s.settingContainer, ...s.topSettingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Frame interpolation</Text>
-                <Switch trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => handleSwitchToggle('interpolate', v)} value={localSwitchState.interpolate} />
+                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, interpolate: v })} value={twConfig?.interpolate} />
             </View>
-            <View style={s.settingContainer}>
+            <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Autoplay</Text>
-                <Switch trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => handleSwitchToggle('autoplay', v)} value={localSwitchState.autoplay} />
+                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })} value={twConfig?.autoplay} />
             </View>
-            <View style={s.settingContainer}>
+            <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Force 60 FPS</Text>
-                <Switch trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => handleSwitchToggle('fps60', v)} value={localSwitchState.fps60} />
+                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, fps60: v })} value={twConfig?.fps60} />
             </View>
-            <View style={s.settingContainer}>
+            <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>High-quality pen</Text>
-                <Switch trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => handleSwitchToggle('hqPen', v)} value={localSwitchState.hqPen} />
+                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, hqPen: v })} value={twConfig?.hqPen} />
             </View>
-            <View style={s.settingContainer}>
+            <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Turbo mode</Text>
-                <Switch trackColor={{ false: '#686868', true: '#93b5f1' }} onValueChange={(v) => handleSwitchToggle('turbo', v)} value={localSwitchState.turbo} />
+                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })} value={twConfig?.turbo} />
             </View>
             <View style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
                 <Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Options provided by </Text><TouchableOpacity onPress={() => linkWithFallback("https://turbowarp.org")}><Text style={{ color: colors.accent, fontSize: 12 }}>TurboWarp</Text></TouchableOpacity>
