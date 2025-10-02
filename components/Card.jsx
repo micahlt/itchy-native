@@ -10,7 +10,7 @@ export default function Card({ onPress, children, style = {}, pressableStyle = {
                 backgroundColor: colors.backgroundSecondary,
                 overflow: 'hidden', borderRadius: dimensions.largeRadius, elevation: 2, ...style
             }}>
-                <Pressable android_ripple={{ color: colors.ripple, foreground: true, borderless: true }} onLongPress={onLongPress} onPress={onPress} style={{ ...pressableStyle }}>
+                <Pressable android_ripple={{ color: colors.ripple, foreground: true, borderless: true }} onLongPress={onLongPress} onPress={onPress} style={{ flex: 1, ...pressableStyle }}>
                     {children}
                 </Pressable>
             </FastSquircleView>

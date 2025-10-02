@@ -319,7 +319,7 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
                     }, animatedTitleStyle]}>
                         <Ionicons name="game-controller" size={24} style={{ marginRight: 10, marginLeft: 20 }} color="#ffffff" />
                         <ItchyText style={{
-                            color: colors.backgroundTertiary,
+                            color: "#ffffff",
                             fontSize: 16,
                             fontWeight: "bold",
                             textAlign: "left"

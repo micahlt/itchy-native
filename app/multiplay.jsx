@@ -419,8 +419,8 @@ export default function MultiPlay() {
                     <ItchyText style={{ color: colors.textSecondary, marginTop: 8, lineHeight: 17 }}>It's worth noting that MultiPlay is still in the alpha stage, so you may encounter connection issues, lag, random inputs, and other stuff like that.</ItchyText>
                 </Card>}
                 <ScrollView horizontal={true} style={{ flex: 1, marginTop: 10 }} contentContainerStyle={{ columnGap: 5 }} >
-                    <Chip.Icon icon="exit-to-app" text="Leave MultiPlay" onPress={() => nav.goBack()} />
-                    <Chip.Icon icon="help" text="MultiPlay FAQ" onPress={() => linkWithFallback("https://itchy.micahlindley.com/multiplay", colors.accent)} color={colors.accent} />
+                    <Chip.Icon icon="exit" text="Leave MultiPlay" onPress={() => nav.goBack()} />
+                    <Chip.Icon icon="help-circle" text="MultiPlay FAQ" onPress={() => linkWithFallback("https://itchy.micahlindley.com/multiplay", colors.accent)} color={colors.accent} />
                 </ScrollView>
             </ScrollView>
             <ControlsSheet onControlPress={sendKeyEvent} onClose={() => setControlsOpen(false)} opened={controlsOpen} height={controlsHeight} projectId={projectMetadata?.id} />
