@@ -163,6 +163,28 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
 
         return {
             opacity,
+            overflow: 'hidden'
+        };
+    });
+
+    const animatedButtonsStyle = useAnimatedStyle(() => {
+        const opacity = interpolate(
+            animatedHeight.value,
+            [0, 0.7, 1],
+            [0, 0, 1],
+            Extrapolate.CLAMP
+        );
+
+        const translateY = interpolate(
+            animatedHeight.value,
+            [0, 1],
+            [50, 0], // When collapsed (0), push down by 50px. When expanded (1), at normal position (0)
+            Extrapolate.CLAMP
+        );
+
+        return {
+            opacity,
+            transform: [{ translateY }],
         };
     });
 
@@ -188,7 +210,7 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
         );
 
         return {
-            height: height,
+            height: height
             // Remove paddingVertical from here since LinearGradient will handle its own padding
         };
     });
@@ -308,7 +330,7 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
                     {/* Collapsed title */}
                     <Animated.View style={[{
                         position: 'absolute',
-                        top: 0,
+                        top: -2,
                         left: 0,
                         right: 0,
                         height: collapsedHeight - 10,
@@ -388,14 +410,16 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
 
             {/* Close and Configure buttons */}
             <Animated.View style={[{
-                marginTop: -68,
+                position: 'absolute',
+                bottom: 30, // Position just slightly below the squircle
+                left: 0,
+                right: 0,
                 zIndex: -1,
                 alignItems: "center",
                 width: "100%",
                 flexDirection: 'row',
-                margin: 'auto',
-                flex: 1
-            }, animatedContentStyle]}>
+                justifyContent: 'center'
+            }, animatedButtonsStyle]}>
                 <Pressable
                     onPress={toggleCollapse}
                     style={{
@@ -477,7 +501,8 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
                     alignItems: "center",
                     width: "100%",
                     paddingHorizontal: 20,
-                    paddingVertical: 5
+                    paddingVertical: 5,
+                    marginTop: 50
                 }, animatedContentStyle]}>
                     {currentMapping?.username && (
                         <ItchyText style={{
