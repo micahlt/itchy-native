@@ -22,7 +22,7 @@ const ImageChip = ({ imageURL = "", text = "", onPress = () => { }, textStyle, m
     </View>;
 };
 
-const IconChip = ({ icon, text = "", onPress = () => { }, color = "#ff656d", mode = "outlined", textStyle = {} }) => {
+const IconChip = ({ icon, text = "", onPress = () => { }, color = "#ff656d", mode = "outlined", textStyle = {}, style = {} }) => {
     const { colors, isDark } = useTheme();
     const bg = useMemo(() => {
         if (isDark) {
@@ -35,7 +35,7 @@ const IconChip = ({ icon, text = "", onPress = () => { }, color = "#ff656d", mod
         onPress();
     }, [onPress]);
 
-    return <View style={{ borderRadius: 100, height: 35, overflow: "visible", flexDirection: 'row' }}>
+    return <View style={{ borderRadius: 100, height: 35, overflow: "visible", flexDirection: 'row', ...style }}>
         <Pressable style={{ flexDirection: "row", alignItems: "center", gap: 5, backgroundColor: mode == "filled" ? bg : "transparent", paddingRight: 12, borderColor: color, borderWidth: 1.5, borderRadius: 100, height: 32, }} android_ripple={{ color: colors.ripple, foreground: true, borderless: false }} onPress={onPressFn}>
             <Ionicons name={icon} size={20} color={color} style={{ paddingLeft: 8 }} />
             <ItchyText style={{ color: color, fontWeight: "bold" }}>{text}</ItchyText>

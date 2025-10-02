@@ -9,6 +9,8 @@ import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import storage from '../utils/storage';
 import linkWithFallback from '../utils/linkWithFallback';
 import { Platform } from "react-native";
+import FastSquircleView from 'react-native-fast-squircle';
+import Chip from '../components/Chip';
 
 export default function SettingsScreen() {
     const { colors, isDark } = useTheme();
@@ -33,12 +35,13 @@ export default function SettingsScreen() {
             marginTop: 10
         },
         settingContainer: {
+            borderLeftWidth: 1.5,
+            borderRightWidth: 1.5,
             backgroundColor: colors.backgroundSecondary,
             flexDirection: 'row',
             justifyContent: "space-between",
             alignItems: 'center',
             borderColor: colors.backgroundTertiary,
-            borderBottomWidth: 0.5,
             height: 50,
             marginHorizontal: 15,
             paddingHorizontal: 20,
@@ -47,11 +50,12 @@ export default function SettingsScreen() {
         topSettingContainer: {
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
+            borderTopWidth: 1.5
         },
         bottomSettingContainer: {
             borderBottomLeftRadius: 10,
             borderBottomRightRadius: 10,
-            borderBottomWidth: 0,
+            borderBottomWidth: 1.5
         },
         settingTitle: {
             color: colors.text,
@@ -81,69 +85,65 @@ export default function SettingsScreen() {
     return (
         <ScrollView overScrollMode='always' bounces={true}>
             <Text style={s.sectionHeader}>Account</Text>
-            <View style={{ ...s.settingContainer, ...s.topSettingContainer, ...(!username && s.bottomSettingContainer) }}>
+            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer, ...(!username && s.bottomSettingContainer) }}>
                 <Text style={s.settingTitle}>{username ? `Signed in as ${username}` : "Signed out"}</Text>
-                <View style={{ borderRadius: 10, overflow: 'hidden', backgroundColor: colors.accent, elevation: 5, marginRight: 10, }}>
-                    <Pressable onPress={() => {
-                        if (username) {
-                            ScratchAPIWrapper.auth.logout(storage.getString("cookieSet")).then(() => {
-                                storage.clearAll();
-                            }).catch((e) => {
-                                console.error(e);
-                                console.error("Proceeding with login anyway.");
-                                storage.clearAll();
-                            });
-                        } else {
-                            router.push("/login");
-                        }
-                    }} style={{ paddingVertical: 5, paddingHorizontal: 10 }} android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}>
-                        <Text style={{ color: "white", fontWeight: 'bold', fontSize: 12 }}>{username ? "LOG OUT" : "LOG IN"}</Text>
-                    </Pressable>
-                </View>
-            </View>
-            {username && <View style={{ ...s.settingContainer, ...s.bottomSettingContainer }}>
+                <Chip.Icon text={username ? 'Log Out' : 'Log In'} icon="key" color={colors.accent} style={{ marginTop: 3 }} onPress={() => {
+                    if (username) {
+                        ScratchAPIWrapper.auth.logout(storage.getString("cookieSet")).then(() => {
+                            storage.clearAll();
+                        }).catch((e) => {
+                            console.error(e);
+                            console.error("Proceeding with login anyway.");
+                            storage.clearAll();
+                        });
+                    } else {
+                        router.push("/login");
+                    }
+                }} />
+            </FastSquircleView>
+            {username && <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.bottomSettingContainer }}>
                 <TouchableOpacity onPress={() => router.push(`/users/${username}`)}><Text style={{ color: colors.accent, fontSize: 16, }}>Open your profile</Text>
                 </TouchableOpacity>
-            </View>}
+            </FastSquircleView>}
             <Text style={s.sectionHeader}>Player</Text>
-            <View style={{ ...s.settingContainer, ...s.topSettingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
+            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Frame interpolation</Text>
                 <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, interpolate: v })} value={twConfig?.interpolate} />
-            </View>
-            <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
+            </FastSquircleView>
+            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Autoplay</Text>
                 <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })} value={twConfig?.autoplay} />
-            </View>
-            <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
+            </FastSquircleView>
+            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Force 60 FPS</Text>
                 <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, fps60: v })} value={twConfig?.fps60} />
-            </View>
-            <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
+            </FastSquircleView>
+            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>High-quality pen</Text>
                 <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, hqPen: v })} value={twConfig?.hqPen} />
-            </View>
-            <View style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
+            </FastSquircleView>
+            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
                 <Text style={s.settingTitle}>Turbo mode</Text>
                 <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })} value={twConfig?.turbo} />
-            </View>
-            <View style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
+            </FastSquircleView>
+            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
                 <Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Options provided by </Text><TouchableOpacity onPress={() => linkWithFallback("https://turbowarp.org")}><Text style={{ color: colors.accent, fontSize: 12 }}>TurboWarp</Text></TouchableOpacity>
-            </View>
+            </FastSquircleView>
             <Text style={s.sectionHeader}>About</Text>
-            <View style={{ ...s.settingContainer, ...s.topSettingContainer }}>
+            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer }}>
                 <Text style={{ color: colors.text, fontSize: 16 }}>Itchy v{version}</Text>
-            </View>
-            <View style={s.settingContainer}>
+            </FastSquircleView>
+            <FastSquircleView cornerSmoothing={0.6} style={s.settingContainer}>
                 <TouchableOpacity onPress={() => router.push("/onboarding")}><Text style={{ color: colors.accent, fontSize: 16, }}>Redo onboarding flow</Text>
                 </TouchableOpacity>
-            </View>
-            <View style={s.settingContainer}>
+            </FastSquircleView>
+            <FastSquircleView cornerSmoothing={0.6} style={s.settingContainer}>
                 <TouchableOpacity onPress={() => linkWithFallback("https://itchy.micahlindley.com/privacy.html")}><Text style={{ color: colors.accent, fontSize: 16, }}>Privacy Policy</Text>
                 </TouchableOpacity>
-            </View>
-            <View style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
+            </FastSquircleView>
+            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
                 <Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Made </Text><TouchableOpacity onPress={() => linkWithFallback("https://github.com/micahlt")}><Text style={{ color: colors.accent, fontSize: 12 }}>open source</Text></TouchableOpacity><Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}> with ❤️</Text>
-            </View>
+            </FastSquircleView>
             <View style={{ height: 120 }}></View>
         </ScrollView>
     );
