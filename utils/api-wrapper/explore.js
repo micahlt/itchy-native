@@ -51,6 +51,7 @@ const APIExplore = {
         return data;
     },
     getFeed: async (username, token, offset = 0, limit = 4) => {
+        console.log("Getting feed")
         const res = await fetch(`https://api.scratch.mit.edu/users/${username}/following/users/activity?limit=${limit}&offset=${offset}`, {
             headers: {
                 "x-token": token,

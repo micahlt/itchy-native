@@ -6,8 +6,7 @@ import * as Haptics from 'expo-haptics';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { Gesture, GestureDetector, ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { useTheme } from '../../utils/theme';
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { memo, useCallback, useEffect, useMemo, useState, useRef } from 'react';
 import { useMMKVBoolean, useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import Feed from '../../components/Feed';
 import SignInPrompt from '../../components/SignInPrompt';
@@ -21,6 +20,7 @@ import HorizontalContentScroller from '../../components/HorizontalContentScrolle
 import FastSquircleView from 'react-native-fast-squircle';
 import ItchyText from '../../components/ItchyText';
 import { Ionicons } from '@expo/vector-icons';
+import useSWR from 'swr';
 
 // Memoized header component to prevent unnecessary re-renders
 const Header = memo(({ insets, colors, headerStyle, logoStyle }) => (
@@ -56,13 +56,6 @@ const FeaturedStudios = memo(({ studios, colors }) => (
 export default function HomeScreen() {
     const { colors } = useTheme();
     const [hasOpenedBefore, setHasOpenedBefore] = useMMKVBoolean("hasOpenedBeforeDev");
-    // Combine related state to minimize updates
-    const [dataState, setDataState] = useState({
-        exploreData: null,
-        friendsLoves: [],
-        friendsProjects: [],
-        isRefreshing: false
-    });
     const [user] = useMMKVObject("user");
     const [username] = useMMKVString("username");
     const [token] = useMMKVString("token");
@@ -74,9 +67,55 @@ export default function HomeScreen() {
     const isAtTop = useSharedValue(true);
     const didVibrate = useSharedValue(false);
     const rotationPaused = useSharedValue(false);
+    const feedRef = useRef(null);
     const AniamtedSquircleView = Animated.createAnimatedComponent(FastSquircleView);
 
-    // Memoize vib function to prevent recreations
+    // SWR data fetching for explore data
+    const { data: exploreData, isLoading: exploreLoading, mutate: refreshExplore } = useSWR(
+        'explore',
+        () => ScratchAPIWrapper.explore.getExplore(),
+        {
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
+        }
+    );
+
+    // SWR for friends data
+    const { data: friendsLoves = [], mutate: refreshFriendsLoves } = useSWR(
+        username && token ? ['friendsLoves', username, token] : null,
+        () => ScratchAPIWrapper.explore.getFriendsLoves(username, token),
+        {
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
+        }
+    );
+
+    const { data: friendsProjects = [], mutate: refreshFriendsProjects } = useSWR(
+        username && token ? ['friendsProjects', username, token] : null,
+        () => ScratchAPIWrapper.explore.getFriendsProjects(username, token),
+        {
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
+        }
+    );
+
+    // Simple refresh function using SWR mutate
+    const refresh = useCallback(() => {
+        console.log("Starting refresh");
+        rotationPaused.value = false;
+
+        // Refresh all data sources
+        refreshExplore();
+        refreshFriendsLoves();
+        refreshFriendsProjects();
+        feedRef.current?.refresh();
+
+        // Stop rotation after a delay
+        setTimeout(() => {
+            console.log("Stopping rotation");
+            rotationPaused.value = true;
+        }, 2000);
+    }, [refreshExplore, refreshFriendsLoves, refreshFriendsProjects]);    // Memoize vib function to prevent recreations
     const vib = useCallback((length) => {
         if (length === "tick") {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
@@ -85,49 +124,12 @@ export default function HomeScreen() {
         }
     }, []);
 
-    // Optimized load function with batched state updates
-    const load = useCallback(async () => {
-        try {
-            const promises = [ScratchAPIWrapper.explore.getExplore()];
-
-            if (username) {
-                promises.push(
-                    ScratchAPIWrapper.explore.getFriendsLoves(username, token),
-                    ScratchAPIWrapper.explore.getFriendsProjects(username, token)
-                );
-            }
-
-            const results = await Promise.all(promises);
-
-            // Batch all state updates into a single update
-            setDataState(prev => ({
-                ...prev,
-                exploreData: results[0],
-                friendsLoves: results[1] || [],
-                friendsProjects: results[2] || [],
-                isRefreshing: false,
-            }));
-
-            setTimeout(() => {
-                rotationPaused.value = true;
-            }, 1500);
-        } catch (error) {
-            console.error('Error loading data:', error);
-            setDataState(prev => ({ ...prev, isRefreshing: false }));
-        }
-    }, [username, token]);
-
-    const refresh = useCallback(() => {
-        rotationPaused.value = false;
-        setDataState(prev => ({ ...prev, isRefreshing: true }));
-        setTimeout(load, 250);
-    }, [load]);
-
     useEffect(() => {
         rotate.value = withPause(
             withRepeat(withTiming(360, { duration: 1000, easing: Easing.linear }), -1, false),
             rotationPaused
         );
+        // Start initial rotation, data loads automatically via SWR
         refresh();
         return () => {
             rotationPaused.value = true;
@@ -179,9 +181,8 @@ export default function HomeScreen() {
     // Memoize pan gesture to prevent recreations
     const panGesture = useMemo(() => Gesture.Pan()
         .simultaneousWithExternalGesture(scrollRef)
-        .enabled(!dataState.isRefreshing)
         .onUpdate((e) => {
-            if (!dataState.isRefreshing && isAtTop.value && scrollOffset.value <= 0 && e.translationY > 0) {
+            if (isAtTop.value && scrollOffset.value <= 0 && e.translationY > 0) {
                 panPosition.value = e.translationY * 0.18 + 0.5 * (1 - Math.min(e.translationY, MAX_PULL_HEIGHT) / MAX_PULL_HEIGHT);
                 if (Math.floor(panPosition.value) % 18 == 0) runOnJS(vib)("tick");
                 if (panPosition.value > REFRESH_TRIGGER_HEIGHT) {
@@ -199,11 +200,11 @@ export default function HomeScreen() {
                 runOnJS(refresh)();
             }
             panPosition.value = withSpring(0, { damping: 35, stiffness: 400 });
-        }), [dataState.isRefreshing, vib, refresh]);
+        }), [vib, refresh]);
 
     // Memoize feed with stable dependency
     const memoizedFeed = useMemo(() => {
-        return <Feed style={{ margin: 20 }} username={username} />
+        return <Feed ref={feedRef} style={{ margin: 20 }} username={username} />
     }, [username]);
 
     // Memoize scroll handlers
@@ -250,26 +251,26 @@ export default function HomeScreen() {
                     <Header insets={insets} colors={colors} headerStyle={headerStyle} logoStyle={logoStyle} />
                     <AniamtedSquircleView cornerSmoothing={0.6} style={[contentStyle, containerStyle]}>
                         {!!username ? memoizedFeed : <SignInPrompt />}
-                        {dataState.exploreData?.featured?.length > 0 &&
-                            <HorizontalContentScroller title="Featured Projects" data={dataState.exploreData.featured} iconName="sparkles" headerStyle={{ marginTop: 10 }} />}
+                        {exploreData?.featured?.length > 0 &&
+                            <HorizontalContentScroller title="Featured Projects" data={exploreData.featured} iconName="sparkles" headerStyle={{ marginTop: 10 }} />}
 
-                        {dataState.friendsLoves.length > 0 &&
-                            <HorizontalContentScroller title="Friends Loved" data={dataState.friendsLoves} iconName="people" />}
+                        {friendsLoves.length > 0 &&
+                            <HorizontalContentScroller title="Friends Loved" data={friendsLoves} iconName="people" />}
 
-                        {dataState.friendsProjects.length > 0 &&
-                            <HorizontalContentScroller title="Created by Friends" data={dataState.friendsProjects} iconName="people" />}
+                        {friendsProjects.length > 0 &&
+                            <HorizontalContentScroller title="Created by Friends" data={friendsProjects} iconName="people" />}
 
-                        {dataState.exploreData?.topLoved?.length > 0 &&
-                            <HorizontalContentScroller title="Top Loved" data={dataState.exploreData.topLoved} iconName="heart" />}
+                        {exploreData?.topLoved?.length > 0 &&
+                            <HorizontalContentScroller title="Top Loved" data={exploreData.topLoved} iconName="heart" />}
 
-                        {dataState.exploreData?.featuredStudios?.length > 0 &&
-                            <FeaturedStudios studios={dataState.exploreData.featuredStudios} colors={colors} />}
+                        {exploreData?.featuredStudios?.length > 0 &&
+                            <FeaturedStudios studios={exploreData.featuredStudios} colors={colors} />}
 
-                        {dataState.exploreData?.topRemixed?.length > 0 &&
-                            <HorizontalContentScroller title="Top Remixed" data={dataState.exploreData.topRemixed} iconName="sync" />}
+                        {exploreData?.topRemixed?.length > 0 &&
+                            <HorizontalContentScroller title="Top Remixed" data={exploreData.topRemixed} iconName="sync" />}
 
-                        {dataState.exploreData?.newest?.length > 0 &&
-                            <HorizontalContentScroller title="Newest Projects" data={dataState.exploreData.newest} iconName="time" />}
+                        {exploreData?.newest?.length > 0 &&
+                            <HorizontalContentScroller title="Newest Projects" data={exploreData.newest} iconName="time" />}
                     </AniamtedSquircleView>
                 </ScrollView>
             </GestureDetector>

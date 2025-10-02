@@ -11,6 +11,7 @@ import APIAuth from '../utils/api-wrapper/auth';
 import storage from '../utils/storage';
 import encryptedStorage from '../utils/encryptedStorage';
 import { router } from 'expo-router';
+import { SWRConfig } from 'swr';
 
 export default function App() {
     const theme = useColorScheme();
@@ -94,115 +95,124 @@ export default function App() {
 
     if (!!colors) {
         return (
-            <ThemeProvider>
-                <GestureHandlerRootView>
-                    <View style={{ backgroundColor: colors.background, flex: 1 }}>
-                        <Stack screenOptions={{
-                            contentStyle: {
-                                backgroundColor: colors.background,
-                                color: colors.text
-                            },
-                            headerShown: true,
-                            headerBackButtonDisplayMode: "default",
-                            headerStyle: {
-                                backgroundColor: colors.background,
-                            },
-                            headerTitleStyle: {
-                                color: colors.text,
-                                fontWeight: "bold",
-                            },
-                            headerTintColor: colors.text,
-                            // fixes back button artifact for iOS, check how it impacts android
-                            headerLeft: () => null,
-                            headerTransparent: isLiquidPlus,
-                            headerStyle: {
-                                backgroundColor: isLiquidPlus ? "transparent" : colors.background, // no fallback bg
-                            },
+            <SWRConfig
+                value={{
+                    dedupingInterval: 2000,
+                    revalidateOnFocus: false,
+                    revalidateOnReconnect: false,
+                    errorRetryCount: 2,
+                }}
+            >
+                <ThemeProvider>
+                    <GestureHandlerRootView>
+                        <View style={{ backgroundColor: colors.background, flex: 1 }}>
+                            <Stack screenOptions={{
+                                contentStyle: {
+                                    backgroundColor: colors.background,
+                                    color: colors.text
+                                },
+                                headerShown: true,
+                                headerBackButtonDisplayMode: "default",
+                                headerStyle: {
+                                    backgroundColor: colors.background,
+                                },
+                                headerTitleStyle: {
+                                    color: colors.text,
+                                    fontWeight: "bold",
+                                },
+                                headerTintColor: colors.text,
+                                // fixes back button artifact for iOS, check how it impacts android
+                                headerLeft: () => null,
+                                headerTransparent: isLiquidPlus,
+                                headerStyle: {
+                                    backgroundColor: isLiquidPlus ? "transparent" : colors.background, // no fallback bg
+                                },
 
-                        }}>
-                            <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: "default" }} />
-                            <Stack.Screen name="projects/[id]/index" options={{
-                                animation: "fade_from_bottom",
-                                headerBackButtonDisplayMode: "minimal",
-                                headerBackVisible: Platform.OS === "ios" ? true : false,
-                                headerRight: () =>
-                                    <MaterialIcons name='question-answer' size={24} color={colors.textSecondary} />
-                            }} />
-                            <Stack.Screen name="projects/[id]/comments" options={{
-                                presentation: "modal",
-                                animation: "fade_from_bottom"
-                            }} />
-                            <Stack.Screen name="studios/[id]/index" options={{
-                                presentation: "modal",
-                                animation: "fade_from_bottom",
-                                headerRight: () =>
-                                    <MaterialIcons name='launch' size={24} color={colors.textSecondary} />
-                            }} />
-                            <Stack.Screen name="studios/[id]/comments" options={{
-                                presentation: "modal",
-                                animation: "fade_from_bottom"
-                            }} />
-                            <Stack.Screen name="users/[username]/index" options={{
-                                presentation: "modal",
-                                animation: "fade_from_bottom",
-                                headerRight: () =>
-                                    <MaterialIcons name='launch' size={24} color={colors.textSecondary} />
-                            }} />
-                            <Stack.Screen name="users/[username]/about" options={{
-                                presentation: "modal",
-                                animation: "fade_from_bottom",
-                            }} />
-                            <Stack.Screen name="users/[username]/activity" options={{
-                                presentation: "modal",
-                                animation: "fade_from_bottom",
-                                title: "loading...",
-                            }} />
-                            <Stack.Screen name="users/[username]/comments" options={{
-                                presentation: "modal",
-                                animation: "fade_from_bottom",
-                            }} />
-                            <Stack.Screen name="feed" options={{
-                                presentation: "modal",
-                                animation: "fade_from_bottom",
-                                headerTitle: "What's Happening"
-                            }} />
-                            <Stack.Screen name="onboarding" options={{
-                                animation: "fade_from_bottom",
-                                headerShown: false
-                            }} />
-                            <Stack.Screen name="settings" options={{
-                                presentation: "modal",
-                                animation: "fade_from_bottom",
-                                headerTitle: "Settings"
-                            }} />
-                            <Stack.Screen name="login" options={{
-                                presentation: "modal",
-                                animation: "default",
-                                title: "Log In"
-                            }} />
-                            <Stack.Screen name="multiplay" options={{
-                                animation: "fade_from_bottom",
-                                title: "MultiPlay"
-                            }} />
-                            <Stack.Screen name="projects/[id]/controls/find" options={{
-                                presentation: "modal",
-                                animation: "fade_from_bottom",
-                                title: "Find Controller Setups"
-                            }} />
-                            <Stack.Screen name="projects/[id]/controls/config" options={{
-                                presentation: "modal",
-                                animation: "fade_from_bottom",
-                                title: "Controller Config"
-                            }} />
-                            <Stack.Screen name="error" options={{
-                                presentation: "modal",
-                                animation: "fade",
-                                title: "Error"
-                            }} />
-                        </Stack>
-                    </View>
-                </GestureHandlerRootView>
-            </ThemeProvider>
+                            }}>
+                                <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: "default" }} />
+                                <Stack.Screen name="projects/[id]/index" options={{
+                                    animation: "fade_from_bottom",
+                                    headerBackButtonDisplayMode: "minimal",
+                                    headerBackVisible: Platform.OS === "ios" ? true : false,
+                                    headerRight: () =>
+                                        <MaterialIcons name='question-answer' size={24} color={colors.textSecondary} />
+                                }} />
+                                <Stack.Screen name="projects/[id]/comments" options={{
+                                    presentation: "modal",
+                                    animation: "fade_from_bottom"
+                                }} />
+                                <Stack.Screen name="studios/[id]/index" options={{
+                                    presentation: "modal",
+                                    animation: "fade_from_bottom",
+                                    headerRight: () =>
+                                        <MaterialIcons name='launch' size={24} color={colors.textSecondary} />
+                                }} />
+                                <Stack.Screen name="studios/[id]/comments" options={{
+                                    presentation: "modal",
+                                    animation: "fade_from_bottom"
+                                }} />
+                                <Stack.Screen name="users/[username]/index" options={{
+                                    presentation: "modal",
+                                    animation: "fade_from_bottom",
+                                    headerRight: () =>
+                                        <MaterialIcons name='launch' size={24} color={colors.textSecondary} />
+                                }} />
+                                <Stack.Screen name="users/[username]/about" options={{
+                                    presentation: "modal",
+                                    animation: "fade_from_bottom",
+                                }} />
+                                <Stack.Screen name="users/[username]/activity" options={{
+                                    presentation: "modal",
+                                    animation: "fade_from_bottom",
+                                    title: "loading...",
+                                }} />
+                                <Stack.Screen name="users/[username]/comments" options={{
+                                    presentation: "modal",
+                                    animation: "fade_from_bottom",
+                                }} />
+                                <Stack.Screen name="feed" options={{
+                                    presentation: "modal",
+                                    animation: "fade_from_bottom",
+                                    headerTitle: "What's Happening"
+                                }} />
+                                <Stack.Screen name="onboarding" options={{
+                                    animation: "fade_from_bottom",
+                                    headerShown: false
+                                }} />
+                                <Stack.Screen name="settings" options={{
+                                    presentation: "modal",
+                                    animation: "fade_from_bottom",
+                                    headerTitle: "Settings"
+                                }} />
+                                <Stack.Screen name="login" options={{
+                                    presentation: "modal",
+                                    animation: "default",
+                                    title: "Log In"
+                                }} />
+                                <Stack.Screen name="multiplay" options={{
+                                    animation: "fade_from_bottom",
+                                    title: "MultiPlay"
+                                }} />
+                                <Stack.Screen name="projects/[id]/controls/find" options={{
+                                    presentation: "modal",
+                                    animation: "fade_from_bottom",
+                                    title: "Find Controller Setups"
+                                }} />
+                                <Stack.Screen name="projects/[id]/controls/config" options={{
+                                    presentation: "modal",
+                                    animation: "fade_from_bottom",
+                                    title: "Controller Config"
+                                }} />
+                                <Stack.Screen name="error" options={{
+                                    presentation: "modal",
+                                    animation: "fade",
+                                    title: "Error"
+                                }} />
+                            </Stack>
+                        </View>
+                    </GestureHandlerRootView>
+                </ThemeProvider>
+            </SWRConfig>
         );
     }
 }
