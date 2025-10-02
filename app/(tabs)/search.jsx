@@ -106,14 +106,14 @@ export default function Search() {
         }}
       >
         <Chip.Icon
-          icon="smart-display"
+          icon="play"
           text="Projects"
           color={colors.accent}
           mode={type == "projects" && "filled"}
           onPress={() => setType("projects")}
         />
         <Chip.Icon
-          icon="collections"
+          icon="albums"
           text="Studios"
           color={colors.accent}
           mode={type == "studios" && "filled"}

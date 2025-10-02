@@ -123,7 +123,7 @@ export default function Studio() {
                         <Card style={{ padding: 20, marginHorizontal: 20 }}>
                             <LinkifiedText style={{ color: colors.text }} text={studio.description} />
                         </Card>
-                        <HorizontalContentScroller data={projects} itemType="projects" itemCount={studio.stats.projects} headerStyle={{ marginTop: 20 }} iconName="video-library" onShowMore={() => router.push(`/studios/${id}/projects`)} title="Projects" />
+                        <HorizontalContentScroller data={projects} itemType="projects" itemCount={studio.stats.projects} headerStyle={{ marginTop: 20 }} iconName="play" onShowMore={() => router.push(`/studios/${id}/projects`)} title="Projects" />
                     </>}
             </ScrollView>
         </View>

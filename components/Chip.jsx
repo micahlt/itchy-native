@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import { View } from "react-native";
 import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import tinycolor from "tinycolor2";
 import { useCallback, useMemo } from "react";
 import ItchyText from "./ItchyText";
@@ -37,7 +37,7 @@ const IconChip = ({ icon, text = "", onPress = () => { }, color = "#ff656d", mod
 
     return <View style={{ borderRadius: 100, height: 35, overflow: "visible", flexDirection: 'row' }}>
         <Pressable style={{ flexDirection: "row", alignItems: "center", gap: 5, backgroundColor: mode == "filled" ? bg : "transparent", paddingRight: 12, borderColor: color, borderWidth: 1.5, borderRadius: 100, height: 32, }} android_ripple={{ color: colors.ripple, foreground: true, borderless: false }} onPress={onPressFn}>
-            <MaterialIcons name={icon} size={20} color={color} style={{ paddingLeft: 8 }} />
+            <Ionicons name={icon} size={20} color={color} style={{ paddingLeft: 8 }} />
             <ItchyText style={{ color: color, fontWeight: "bold" }}>{text}</ItchyText>
         </Pressable>
     </View>;

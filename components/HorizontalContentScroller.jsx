@@ -24,7 +24,7 @@ export default function HorizontalContentScroller({ data, itemType = "projects",
             {iconName ? <Ionicons name={iconName} size={24} color={colors.text} /> : null}
             <ItchyText style={{ color: colors.text, fontSize: 20, fontWeight: "bold" }}>{title} {itemCount && <ItchyText style={{ color: colors.textSecondary, fontWeight: "normal" }}>({itemCount == 100 ? "100+" : itemCount})</ItchyText>}</ItchyText>
             <View style={{ flex: 1 }} />
-            {!!onShowMore && <TexturedButton onPress={onShowMore}>More</TexturedButton>}
+            {!!onShowMore && <TexturedButton onPress={onShowMore} icon="arrow-forward">More</TexturedButton>}
         </View>
         <FlatList
             horizontal

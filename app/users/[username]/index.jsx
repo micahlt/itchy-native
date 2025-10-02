@@ -119,22 +119,18 @@ export default function User() {
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>
-                        {myUsername === username && <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
-                            <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={openProfile}>
-                                <ItchyText style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Edit Profile</ItchyText>
-                            </Pressable>
-                        </View>}
+                        {myUsername === username && <TexturedButton style={{ flex: 1 }} onPress={openProfile}>Edit Profile</TexturedButton>}
                         <TexturedButton style={{ flex: 1 }} onPress={() => router.push(`/users/${username}/about`)}>About</TexturedButton>
                         <TexturedButton style={{ flex: 1 }} onPress={() => router.push(`/users/${username}/activity`)}>Activity</TexturedButton>
                         {followingStatus !== undefined && <TexturedButton style={{ flex: 1 }} onPress={changeFollowingStatus}>{followingStatus === true ? "Unfollow" : "Follow"}</TexturedButton>}
                     </View>
                     {profile.featuredProject && <ProjectCard project={profile.featuredProject} width={width - 40} style={{ margin: "auto", marginTop: 0 }} />}
 
-                    <HorizontalContentScroller title="Created Projects" data={projects} iconName="auto-awesome" headerStyle={{ marginTop: 16 }} onShowMore={() => router.push(`/users/${username}/projects`)} />
+                    <HorizontalContentScroller title="Created Projects" data={projects} iconName="sparkles" headerStyle={{ marginTop: 16 }} onShowMore={() => router.push(`/users/${username}/projects`)} />
 
                     <HorizontalContentScroller title="Favorites" data={favorites} iconName="star" headerStyle={{ marginTop: 5 }} onShowMore={() => router.push(`/users/${username}/favorites`)} />
 
-                    <HorizontalContentScroller title="Curated Studios" data={curatedStudios} itemType="studios" iconName="collections" headerStyle={{ marginTop: 5 }} onShowMore={() => router.push(`/users/${username}/studios`)} />
+                    <HorizontalContentScroller title="Curated Studios" data={curatedStudios} itemType="studios" iconName="albums" headerStyle={{ marginTop: 5 }} onShowMore={() => router.push(`/users/${username}/studios`)} />
                 </>)}
             </ScrollView>
 

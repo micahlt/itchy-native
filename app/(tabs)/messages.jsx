@@ -119,28 +119,28 @@ export default function Messages() {
                     />
                 )}
                 <Chip.Icon
-                    icon="collections"
+                    icon="albums"
                     text="Studios"
                     color={filters.studio ? colors.accent : colors.textSecondary}
                     mode={filters.studio ? "filled" : "outlined"}
                     onPress={() => toggleFilter('studio')}
                 />
                 <Chip.Icon
-                    icon="comment"
+                    icon="chatbubble"
                     text="Comments"
                     color={filters.comment ? colors.accent : colors.textSecondary}
                     mode={filters.comment ? "filled" : "outlined"}
                     onPress={() => toggleFilter('comment')}
                 />
                 <Chip.Icon
-                    icon="favorite"
+                    icon="star"
                     text="Interactions"
                     color={filters.interaction ? colors.accent : colors.textSecondary}
                     mode={filters.interaction ? "filled" : "outlined"}
                     onPress={() => toggleFilter('interaction')}
                 />
                 <Chip.Icon
-                    icon="forum"
+                    icon="chatbox"
                     text="Forum Posts"
                     color={filters.forum ? colors.accent : colors.textSecondary}
                     mode={filters.forum ? "filled" : "outlined"}
