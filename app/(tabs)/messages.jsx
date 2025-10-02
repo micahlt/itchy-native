@@ -1,4 +1,4 @@
-import { FlatList, RefreshControl, ScrollView, View, Platform } from "react-native";
+import { RefreshControl, ScrollView, Platform } from "react-native";
 import ItchyText from "../../components/ItchyText";
 import { useTheme } from "../../utils/theme";
 import { useMMKVString } from "react-native-mmkv";
@@ -10,6 +10,7 @@ import SignInPrompt from "../../components/SignInPrompt";
 import Chip from "../../components/Chip";
 import FastSquircleView from "react-native-fast-squircle";
 import Animated from "react-native-reanimated";
+import { FlashList } from "@shopify/flash-list";
 
 export default function Messages() {
     const { colors, dimensions, isDark } = useTheme();
@@ -27,7 +28,6 @@ export default function Messages() {
     });
     const AnimatedSquircleView = Animated.createAnimatedComponent(FastSquircleView);
 
-
     useEffect(() => {
         if (!username || !token) return;
         setOffset(0);
@@ -43,7 +43,7 @@ export default function Messages() {
                 // Dedupe messages based on ID before concatenating
                 const existingIds = new Set(messages.map(m => m.id));
                 const newMessages = d.filter(m => !existingIds.has(m.id));
-                setMessages(messages.concat(newMessages));
+                setMessages(prev => prev.concat(newMessages));
             }
             setLoading(false);
         });
@@ -111,7 +111,7 @@ export default function Messages() {
             >
                 {hasActiveFilters && (
                     <Chip.Icon
-                        icon="clear"
+                        icon="close"
                         text="Clear Filters"
                         color={"red"}
                         mode="filled"
@@ -165,7 +165,7 @@ export default function Messages() {
     return <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.accentTransparent }}>
         <ItchyText style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, marginTop: 20, marginHorizontal: 15 }}>Messages</ItchyText>
         {renderFilterChips()}
-        <AnimatedSquircleView cornerSmoothing={0.6} style={{
+        <FastSquircleView cornerSmoothing={0.6} style={{
             backgroundColor: colors.background, marginTop: 0, marginHorizontal: 1.5, paddingBottom: Platform.OS == "ios" ? 60 : 0, borderTopLeftRadius: 32, borderTopRightRadius: 32, outlineColor: colors.outline,
             outlineStyle: "solid",
             outlineWidth: dimensions.outlineWidth,
@@ -177,24 +177,24 @@ export default function Messages() {
             overflow: 'visible',
             boxShadow: "0px -2px 10px rgba(0,0,0,0.15)"
         }}>
-            <FastSquircleView style={{ flex: 1, overflow: "hidden", borderTopLeftRadius: dimensions.largeRadius, borderTopRightRadius: dimensions.largeRadius, marginTop: -4 }}>
-                <FlatList
+            <FastSquircleView style={{ flex: 1, overflow: "hidden", borderTopLeftRadius: dimensions.largeRadius, borderTopRightRadius: dimensions.largeRadius, marginTop: -4, borderBottomWidth: 2, borderBottomColor: "red" }}>
+                <FlashList
                     data={filteredMessages}
-                    style={{ backgroundColor: colors.background }}
+                    style={{ backgroundColor: colors.background, flex: 1 }}
                     renderItem={(item) => renderMessage({ item: item.item })}
                     keyExtractor={(item) => item.id}
                     onRefresh={() => {
                         setOffset(0);
                         loadMessages();
                     }}
-                    refreshing={loading}
                     refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />}
                     onEndReachedThreshold={1.2}
                     onEndReached={() => {
                         if (loading) return;
+                        setLoading(true);
                         setOffset(messages.length);
                     }} />
             </FastSquircleView>
-        </AnimatedSquircleView>
+        </FastSquircleView>
     </SafeAreaView>
 }
