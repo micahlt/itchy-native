@@ -16,6 +16,7 @@ import LinkifiedText from "../../../utils/regex/LinkifiedText";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMMKVString } from "react-native-mmkv";
 import HorizontalContentScroller from "../../../components/HorizontalContentScroller";
+import TexturedButton from "../../../components/TexturedButton";
 
 export default function Studio() {
     const { id } = useLocalSearchParams();
@@ -109,16 +110,9 @@ export default function Studio() {
                             </View>
                         </View>
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>
-                            <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
-                                <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={() => router.push(`/studios/${id}/activity`)}>
-                                    <ItchyText style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>Activity</ItchyText>
-                                </Pressable>
-                            </View>
-                            {followingStatus !== undefined && <View style={{ flex: 1, borderRadius: 10, backgroundColor: colors.backgroundSecondary, overflow: 'hidden', elevation: 2 }}>
-                                <Pressable android_ripple={{ color: colors.ripple, borderless: true, foreground: true }} style={{ padding: 8 }} onPress={changeFollowingStatus}>
-                                    <ItchyText style={{ color: colors.text, flex: 1, textAlign: "center", fontWeight: "bold", fontSize: 12 }}>{followingStatus === true ? "Unfollow" : "Follow"}</ItchyText>
-                                </Pressable>
-                            </View>}
+                            <TexturedButton style={{ flex: 1 }} onPress={() => router.push(`/studios/${id}/activity`)}>Activity</TexturedButton>
+
+                            {followingStatus !== undefined && <TexturedButton style={{ flex: 1 }} onPress={changeFollowingStatus}>{followingStatus === true ? "Unfollow" : "Follow"}</TexturedButton>}
                         </View>
                         <Card style={{ padding: 20, marginHorizontal: 20 }}>
                             <LinkifiedText style={{ color: colors.text }} text={studio.description} />
