@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Platform, Text } from "react-native";
 
-export default function ItchyText({ style = {}, children, numberOfLines = undefined }) {
+export default function ItchyText({ style = {}, children, numberOfLines = undefined, ...props }) {
     const familyFromWeight = useMemo(() => {
         switch (style.fontWeight || "regular") {
             case "bold":
@@ -28,7 +28,7 @@ export default function ItchyText({ style = {}, children, numberOfLines = undefi
             letterSpacing: -0.5,
             ...style,
             fontWeight: "normal"
-        }} numberOfLines={numberOfLines}>{children}</Text>
+        }} numberOfLines={numberOfLines} {...props}>{children}</Text>
     }, [style, children, numberOfLines]);
     return memoizedComponent;
 }

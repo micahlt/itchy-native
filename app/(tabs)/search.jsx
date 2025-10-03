@@ -108,21 +108,21 @@ export default function Search() {
         <Chip.Icon
           icon="play"
           text="Projects"
-          color={colors.accent}
+          color={type == "projects" ? colors.accent : colors.textSecondary}
           mode={type == "projects" && "filled"}
           onPress={() => setType("projects")}
         />
         <Chip.Icon
           icon="albums"
           text="Studios"
-          color={colors.accent}
+          color={type == "studios" ? colors.accent : colors.textSecondary}
           mode={type == "studios" && "filled"}
           onPress={() => setType("studios")}
         />
         <Chip.Icon
           icon="person"
           text="Users"
-          color={colors.accent}
+          color={type == "users" ? colors.accent : colors.textSecondary}
           mode={type == "users" && "filled"}
           onPress={() => setType("users")}
         />
