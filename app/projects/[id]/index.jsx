@@ -67,6 +67,10 @@ export default function Project() {
         return;
       }
       setMetadata(d);
+      // Record project view after successfully loading project
+      if (d.author?.username && username && token) {
+        ScratchAPIWrapper.project.recordView(id, d.author.username, token, storage.getString("csrfToken"));
+      }
     }).catch(console.error);
     if (!!username) {
       ScratchAPIWrapper.project.getInteractions(id, username, token).then((d) => {
