@@ -96,7 +96,7 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
                     </ItchyText>
                 </View>
             ) : (
-                feed.map((item) => <FeedItem key={item.id} item={item} />)
+                feed.map((item) => <FeedItem key={item.id} item={item} backgroundColor={colors.accent} />)
             )}
         </SquircleView>
     </>

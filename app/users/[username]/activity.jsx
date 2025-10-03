@@ -31,7 +31,7 @@ export default function UserActivity({ }) {
             }}
         />
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: insets.bottom + 35 }}>
-            {feed.map((item) => <FeedItem key={item.id} item={item} textColor={colors.text} type="useractivity" />)}
+            {feed.map((item) => <FeedItem key={item.id} item={item} textColor={colors.text} backgroundColor={colors.background} type="useractivity" />)}
         </ScrollView>
     </>
 }
