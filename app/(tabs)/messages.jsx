@@ -163,7 +163,7 @@ export default function Messages() {
     }
 
     return <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: colors.accentTransparent }}>
-        <ItchyText style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, marginTop: 20, marginHorizontal: 15 }}>Messages</ItchyText>
+        <ItchyText style={{ color: colors.text, fontWeight: 'bold', fontSize: 24, marginTop: 10, marginHorizontal: 15 }}>Messages</ItchyText>
         {renderFilterChips()}
         <FastSquircleView cornerSmoothing={0.6} style={{
             backgroundColor: colors.background, marginTop: 0, marginHorizontal: 1.5, paddingBottom: Platform.OS == "ios" ? 60 : 0, borderTopLeftRadius: 32, borderTopRightRadius: 32, outlineColor: colors.outline,
