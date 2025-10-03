@@ -81,6 +81,11 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
             padding: 10,
             borderRadius: dimensions.mediumRadius,
             marginTop: 0,
+            borderWidth: 0.1,
+            borderTopWidth: 4,
+            borderColor: colors.ripple,
+            outlineColor: colors.outline,
+            outlineWidth: dimensions.outlineWidth,
             ...style,
             marginBottom: 10,
             minHeight: feed.length === 0 ? 100 : 'auto'

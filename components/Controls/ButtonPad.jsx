@@ -28,7 +28,6 @@ export default function ButtonPad({ onControlPress = () => { }, mapping = {}, co
     const CircleButton = ({ direction, label, style }) => {
         const [isPressed, setIsPressed] = useState(false);
         const labelText = useMemo(() => {
-            console.log(label)
             switch (label) {
                 case "ArrowUp":
                     return "↑";
