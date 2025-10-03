@@ -42,12 +42,12 @@ const MAPPING_CONFIG = {
             right: "D",
         },
         secondary: {
-            up: "E",
-            down: " ",
-            left: "Q",
-            right: "E",
+            up: "ArrowUp",
+            down: "ArrowDown",
+            left: "ArrowLeft",
+            right: "ArrowRight",
         },
-        extra: []
+        extra: [" "]
     },
 }
 
@@ -128,7 +128,7 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
         const borderRadius = interpolate(
             animatedHeight.value,
             [0, 1],
-            [collapsedHeight / 2, dimensions.largeRadius], // Pill shape when collapsed
+            [collapsedHeight / 2, 50], // Pill shape when collapsed
             Extrapolate.CLAMP
         );
 
@@ -324,7 +324,7 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
                 disabled={!isCollapsed}
             >
                 <AnimatedFastSquircleView
-                    cornerSmoothing={0.8}
+                    cornerSmoothing={0.6}
                     style={animatedSquircleStyle}
                 >
                     {/* Collapsed title */}

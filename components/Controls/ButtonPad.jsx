@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 import ItchyText from "../ItchyText";
 import { PanGestureHandler } from "react-native-gesture-handler";
@@ -27,6 +27,23 @@ export default function ButtonPad({ onControlPress = () => { }, mapping = {}, co
 
     const CircleButton = ({ direction, label, style }) => {
         const [isPressed, setIsPressed] = useState(false);
+        const labelText = useMemo(() => {
+            console.log(label)
+            switch (label) {
+                case "ArrowUp":
+                    return "↑";
+                case "ArrowDown":
+                    return "↓ ";
+                case "ArrowLeft":
+                    return "←";
+                case "ArrowRight":
+                    return "→";
+                case " ":
+                    return "␣";
+                default:
+                    return label.toUpperCase();
+            }
+        }, [label])
 
         return (
             <PanGestureHandler
@@ -67,7 +84,7 @@ export default function ButtonPad({ onControlPress = () => { }, mapping = {}, co
                     ]}
                 >
                     <ItchyText style={{ color: isPressed ? colors.text : colors.backgroundTertiary, fontSize: Math.max(14, Math.min(18, buttonSize * 0.26)), fontWeight: "bold" }}>
-                        {label.toUpperCase()}
+                        {labelText}
                     </ItchyText>
                 </View>
             </PanGestureHandler>

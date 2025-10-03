@@ -89,7 +89,7 @@ export function controlOptionToShortName(key = "") {
         "ArrowDown": "↓",
         "ArrowLeft": "←",
         "ArrowRight": "→",
-        " ": "Spc",
+        " ": "␣",
         "Enter": "Etr",
         "Escape": "Esc",
         "Backspace": "Bksp",
