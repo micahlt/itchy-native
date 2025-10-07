@@ -335,7 +335,18 @@ if (document.readyState === 'loading') {
     // ---------- WebSocket Setup ----------
     window.addEventListener("message", async (e) => {
       try {
-        const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+        // Some messages are plain strings (logs) while others are JSON.
+        // Try to parse JSON, but fall back to a raw wrapper when parsing fails.
+        let data;
+        if (typeof e.data === 'string') {
+          try {
+            data = JSON.parse(e.data);
+          } catch (err) {
+            data = { __raw: e.data };
+          }
+        } else {
+          data = e.data;
+        }
         const { type } = data;
 
         window.ReactNativeWebView.postMessage("Message received: " + type);
@@ -454,10 +465,22 @@ if (document.readyState === 'loading') {
         clearInterval(waitForVM);
         window.ReactNativeWebView.postMessage("VM ready! Setting up input handlers...");
 
-        // Start the message listener for keyboard input
+        // Start the message listener for keyboard input. Accept either JSON messages
+        // or plain strings; if parsing fails we ignore non-JSON messages.
         window.addEventListener("message", (e) => {
           try {
-            const data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+            let data;
+            if (typeof e.data === 'string') {
+              try {
+                data = JSON.parse(e.data);
+              } catch (err) {
+                // Not JSON — ignore plain string messages for key handling
+                return;
+              }
+            } else {
+              data = e.data;
+            }
+
             const { key, type } = data;
 
             if (!key || !type || !['keydown', 'keyup'].includes(type)) return;
