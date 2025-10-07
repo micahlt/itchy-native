@@ -79,17 +79,18 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
         <SquircleView cornerSmoothing={0.6} style={{
             backgroundColor: colors.accent,
             padding: 10,
-            paddingTop: 3,
+            paddingTop: 10,
             borderRadius: dimensions.mediumRadius,
             marginTop: 0,
-            borderWidth: 0.1,
-            borderTopWidth: 4,
+            borderWidth: 0,
+            borderTopWidth: 0,
             borderColor: colors.ripple,
             outlineColor: colors.outline,
             outlineWidth: dimensions.outlineWidth,
             ...style,
             marginBottom: 10,
-            minHeight: feed.length === 0 ? 100 : 'auto'
+            minHeight: feed.length === 0 ? 100 : 'auto',
+            boxShadow: "0px 8px 6px 0px #ffffff22 inset, 0px 3px 0px 0px #FFFFFF33 inset"
         }}>
             {feed.length === 0 ? (
                 <View style={{

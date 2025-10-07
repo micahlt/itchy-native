@@ -230,11 +230,8 @@ export default function HomeScreen() {
         outlineColor: colors.outline,
         outlineStyle: "solid",
         outlineWidth: 1.5,
-        borderWidth: 1,
-        borderColor: colors.background,
-        borderTopWidth: 4,
         borderTopColor: colors.highlight,
-        boxShadow: "0px -2px 10px rgba(0,0,0,0.15)",
+        boxShadow: "0px -2px 10px rgba(0,0,0,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset"
     }), [colors, insets.bottom]);
 
     return (

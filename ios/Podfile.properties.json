@@ -3,8 +3,6 @@
   "EX_DEV_CLIENT_NETWORK_INSPECTOR": "true",
   "newArchEnabled": "true",
   "ios.useFrameworks": "static",
-  "apple.extraPods": "[]",
-  "apple.ccacheEnabled": "false",
-  "apple.privacyManifestAggregationEnabled": "true",
-  "ios.forceStaticLinking": "[]"
+  "ios.forceStaticLinking": "[]",
+  "apple.privacyManifestAggregationEnabled": "true"
 }

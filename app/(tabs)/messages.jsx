@@ -175,7 +175,7 @@ export default function Messages() {
             borderTopColor: colors.highlight,
             flex: 1,
             overflow: 'visible',
-            boxShadow: "0px -2px 10px rgba(0,0,0,0.15)"
+            boxShadow: "0px -2px 10px rgba(0,0,0,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset"
         }}>
             <FastSquircleView style={{ flex: 1, overflow: "hidden", borderTopLeftRadius: dimensions.largeRadius, borderTopRightRadius: dimensions.largeRadius, marginTop: -4 }}>
                 <FlashList

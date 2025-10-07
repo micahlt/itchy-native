@@ -8,16 +8,11 @@ const {
 /** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname);
 
-config.watchFolders = [
-    path.resolve(__dirname, "../react-native-bottom-tabs") // path to your local package
-];
-
 config.resolver = {
     ...config.resolver,
     // Allow metro to resolve symlinked packages
     nodeModulesPaths: [
         path.resolve(__dirname, "node_modules"),
-        path.resolve(__dirname, "../react-native-bottom-tabs"),
     ],
     alias: {
         'react': require.resolve('react'),

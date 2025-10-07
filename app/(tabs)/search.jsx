@@ -131,13 +131,10 @@ export default function Search() {
         backgroundColor: colors.background, marginTop: 8, marginHorizontal: 1.5, paddingBottom: Platform.OS == "ios" ? 60 : 0, borderTopLeftRadius: 32, borderTopRightRadius: 32, outlineColor: colors.outline,
         outlineStyle: "solid",
         outlineWidth: dimensions.outlineWidth,
-        borderWidth: 0.1,
-        borderColor: colors.background,
-        borderTopWidth: 4,
         borderTopColor: colors.highlight,
         flex: 1,
         overflow: 'visible',
-        boxShadow: "0px -2px 10px rgba(0,0,0,0.15)"
+        boxShadow: "0px -2px 10px rgba(0,0,0,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset"
       }}>
         <FastSquircleView style={{ flex: 1, overflow: "hidden", borderTopLeftRadius: dimensions.largeRadius, borderTopRightRadius: dimensions.largeRadius, marginTop: -4 }}>
           <FlashList
