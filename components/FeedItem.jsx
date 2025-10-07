@@ -53,15 +53,15 @@ export default function FeedItem({ item, textColor = "white", type = "whatshappe
                 return { name: "heart", color: "#df1a3a" }
             case "shareproject":
             case "remixproject":
-                return { name: "sync", color: "#ffffff" }
+                return { name: "sync", color: colors.text }
             case "followstudio":
             case "becomecurator":
             case "becomeownerstudio":
-                return { name: "albums", color: "#ffffff" }
+                return { name: "albums", color: colors.text }
             case "addproject":
-                return { name: "person", color: "#ffffff" }
+                return { name: "person", color: colors.text }
             case "followuser":
-                return { name: "person", color: "#ffffff" }
+                return { name: "person", color: colors.text }
         }
     }, [item]);
 

@@ -13,7 +13,7 @@ import FastSquircleView from 'react-native-fast-squircle';
 import Chip from '../components/Chip';
 
 export default function SettingsScreen() {
-    const { colors, isDark } = useTheme();
+    const { colors, dimensions, isDark } = useTheme();
     const router = useRouter();
     const [username] = useMMKVString("username");
     const [twConfig, setTWConfig] = useMMKVObject("twConfig");
@@ -48,13 +48,13 @@ export default function SettingsScreen() {
             paddingRight: 8
         },
         topSettingContainer: {
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
+            borderTopLeftRadius: dimensions.mediumRadius,
+            borderTopRightRadius: dimensions.mediumRadius,
             borderTopWidth: 1.5
         },
         bottomSettingContainer: {
-            borderBottomLeftRadius: 10,
-            borderBottomRightRadius: 10,
+            borderBottomLeftRadius: dimensions.mediumRadius,
+            borderBottomRightRadius: dimensions.mediumRadius,
             borderBottomWidth: 1.5
         },
         settingTitle: {
@@ -87,7 +87,7 @@ export default function SettingsScreen() {
             <Text style={s.sectionHeader}>Account</Text>
             <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer, ...(!username && s.bottomSettingContainer) }}>
                 <Text style={s.settingTitle}>{username ? `Signed in as ${username}` : "Signed out"}</Text>
-                <Chip.Icon text={username ? 'Log Out' : 'Log In'} icon="key" color={colors.accent} style={{ marginTop: 3 }} onPress={() => {
+                <Chip.Icon mode="filled" text={username ? 'Log Out' : 'Log In'} icon="key" color={username ? "#ff5555" : colors.accent} style={{ marginTop: 3 }} onPress={() => {
                     if (username) {
                         ScratchAPIWrapper.auth.logout(storage.getString("cookieSet")).then(() => {
                             storage.clearAll();

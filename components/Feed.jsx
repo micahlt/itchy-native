@@ -79,6 +79,7 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
         <SquircleView cornerSmoothing={0.6} style={{
             backgroundColor: colors.accent,
             padding: 10,
+            paddingTop: 3,
             borderRadius: dimensions.mediumRadius,
             marginTop: 0,
             borderWidth: 0.1,

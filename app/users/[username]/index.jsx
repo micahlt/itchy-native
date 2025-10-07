@@ -119,10 +119,10 @@ export default function User() {
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>
-                        {myUsername === username && <TexturedButton style={{ flex: 1 }} onPress={openProfile}>Edit Profile</TexturedButton>}
-                        <TexturedButton style={{ flex: 1 }} onPress={() => router.push(`/users/${username}/about`)}>About</TexturedButton>
-                        <TexturedButton style={{ flex: 1 }} onPress={() => router.push(`/users/${username}/activity`)}>Activity</TexturedButton>
-                        {followingStatus !== undefined && <TexturedButton style={{ flex: 1 }} onPress={changeFollowingStatus}>{followingStatus === true ? "Unfollow" : "Follow"}</TexturedButton>}
+                        {myUsername === username && <TexturedButton size={10} style={{ flex: 1 }} onPress={openProfile}>Edit Profile</TexturedButton>}
+                        <TexturedButton size={11} style={{ flex: 1 }} onPress={() => router.push(`/users/${username}/about`)}>About</TexturedButton>
+                        <TexturedButton size={11} style={{ flex: 1 }} onPress={() => router.push(`/users/${username}/activity`)}>Activity</TexturedButton>
+                        {followingStatus !== undefined && <TexturedButton size={11} style={{ flex: 1 }} onPress={changeFollowingStatus}>{followingStatus === true ? "Unfollow" : "Follow"}</TexturedButton>}
                     </View>
                     {profile.featuredProject && <ProjectCard project={profile.featuredProject} width={width - 40} style={{ margin: "auto", marginTop: 0 }} />}
 
