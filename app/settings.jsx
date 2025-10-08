@@ -1,5 +1,5 @@
-import { ScrollView, Switch, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
-import Pressable from '../components/Pressable';
+import { ScrollView, Switch, TouchableOpacity, View, StyleSheet } from 'react-native';
+import ItchyText from '../components/ItchyText';
 import ScratchAPIWrapper from '../utils/api-wrapper';
 import { useTheme } from '../utils/theme';
 import { useEffect, useMemo, useState } from 'react';
@@ -84,9 +84,9 @@ export default function SettingsScreen() {
 
     return (
         <ScrollView overScrollMode='always' bounces={true}>
-            <Text style={s.sectionHeader}>Account</Text>
+            <ItchyText style={s.sectionHeader}>Account</ItchyText>
             <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer, ...(!username && s.bottomSettingContainer) }}>
-                <Text style={s.settingTitle}>{username ? `Signed in as ${username}` : "Signed out"}</Text>
+                <ItchyText style={s.settingTitle}>{username ? `Signed in as ` : "Signed out"}{username && <ItchyText style={{ fontWeight: "bold" }}>{username}</ItchyText>}</ItchyText>
                 <Chip.Icon mode="filled" text={username ? 'Log Out' : 'Log In'} icon="key" color={username ? "#ff5555" : colors.accent} style={{ marginTop: 3 }} onPress={() => {
                     if (username) {
                         ScratchAPIWrapper.auth.logout(storage.getString("cookieSet")).then(() => {
@@ -102,47 +102,47 @@ export default function SettingsScreen() {
                 }} />
             </FastSquircleView>
             {username && <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.bottomSettingContainer }}>
-                <TouchableOpacity onPress={() => router.push(`/users/${username}`)}><Text style={{ color: colors.accent, fontSize: 16, }}>Open your profile</Text>
+                <TouchableOpacity onPress={() => router.push(`/users/${username}`)}><ItchyText style={{ color: colors.accent, fontSize: 16, }}>Open your profile</ItchyText>
                 </TouchableOpacity>
             </FastSquircleView>}
-            <Text style={s.sectionHeader}>Player</Text>
+            <ItchyText style={s.sectionHeader}>Player</ItchyText>
             <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
-                <Text style={s.settingTitle}>Frame interpolation</Text>
+                <ItchyText style={s.settingTitle}>Frame interpolation</ItchyText>
                 <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, interpolate: v })} value={twConfig?.interpolate} />
             </FastSquircleView>
             <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
-                <Text style={s.settingTitle}>Autoplay</Text>
+                <ItchyText style={s.settingTitle}>Autoplay</ItchyText>
                 <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })} value={twConfig?.autoplay} />
             </FastSquircleView>
             <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
-                <Text style={s.settingTitle}>Force 60 FPS</Text>
+                <ItchyText style={s.settingTitle}>Force 60 FPS</ItchyText>
                 <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, fps60: v })} value={twConfig?.fps60} />
             </FastSquircleView>
             <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
-                <Text style={s.settingTitle}>High-quality pen</Text>
+                <ItchyText style={s.settingTitle}>High-quality pen</ItchyText>
                 <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, hqPen: v })} value={twConfig?.hqPen} />
             </FastSquircleView>
             <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
-                <Text style={s.settingTitle}>Turbo mode</Text>
+                <ItchyText style={s.settingTitle}>Turbo mode</ItchyText>
                 <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })} value={twConfig?.turbo} />
             </FastSquircleView>
             <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
-                <Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Options provided by </Text><TouchableOpacity onPress={() => linkWithFallback("https://turbowarp.org")}><Text style={{ color: colors.accent, fontSize: 12 }}>TurboWarp</Text></TouchableOpacity>
+                <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Options provided by </ItchyText><TouchableOpacity onPress={() => linkWithFallback("https://turbowarp.org")}><ItchyText style={{ color: colors.accent, fontSize: 12 }}>TurboWarp</ItchyText></TouchableOpacity>
             </FastSquircleView>
-            <Text style={s.sectionHeader}>About</Text>
+            <ItchyText style={s.sectionHeader}>About</ItchyText>
             <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer }}>
-                <Text style={{ color: colors.text, fontSize: 16 }}>Itchy v{version}</Text>
+                <ItchyText style={{ color: colors.text, fontSize: 16 }}>Itchy v{version}</ItchyText>
             </FastSquircleView>
             <FastSquircleView cornerSmoothing={0.6} style={s.settingContainer}>
-                <TouchableOpacity onPress={() => router.push("/onboarding")}><Text style={{ color: colors.accent, fontSize: 16, }}>Redo onboarding flow</Text>
+                <TouchableOpacity onPress={() => router.push("/onboarding")}><ItchyText style={{ color: colors.accent, fontSize: 16, }}>Redo onboarding flow</ItchyText>
                 </TouchableOpacity>
             </FastSquircleView>
             <FastSquircleView cornerSmoothing={0.6} style={s.settingContainer}>
-                <TouchableOpacity onPress={() => linkWithFallback("https://itchy.micahlindley.com/privacy.html")}><Text style={{ color: colors.accent, fontSize: 16, }}>Privacy Policy</Text>
+                <TouchableOpacity onPress={() => linkWithFallback("https://itchy.micahlindley.com/privacy.html")}><ItchyText style={{ color: colors.accent, fontSize: 16, }}>Privacy Policy</ItchyText>
                 </TouchableOpacity>
             </FastSquircleView>
             <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
-                <Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Made </Text><TouchableOpacity onPress={() => linkWithFallback("https://github.com/micahlt")}><Text style={{ color: colors.accent, fontSize: 12 }}>open source</Text></TouchableOpacity><Text style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}> with ❤️</Text>
+                <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Made </ItchyText><TouchableOpacity onPress={() => linkWithFallback("https://github.com/micahlt")}><ItchyText style={{ color: colors.accent, fontSize: 12 }}>open source</ItchyText></TouchableOpacity><ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}> with ❤️</ItchyText>
             </FastSquircleView>
             <View style={{ height: 120 }}></View>
         </ScrollView>
