@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useColorScheme } from 'react-native';
+import { useMMKVBoolean } from 'react-native-mmkv';
 import { lightColors, darkColors } from './colors';
 import { dimensions } from './dimensions';
 
@@ -13,25 +14,36 @@ export const ThemeContext = React.createContext({
 export const ThemeProvider = (props) => {
     const colorScheme = useColorScheme(); // Can be dark | light | no-preference
 
-    /*
-    * To enable changing the app theme dynamicly in the app (run-time)
-    * we're gonna use useState so we can override the default device theme
-    */
-    const [isDark, setIsDark] = React.useState(colorScheme === "dark");
+    // Allow a persistent override to force dark mode even if the OS isn't dark.
+    const [forceDark] = useMMKVBoolean('forceDark');
 
-    // Listening to changes of device appearance while in run-time
+    const [isDark, setIsDark] = React.useState(undefined);
+
+    // Listening to changes of device appearance or the stored override while in run-time
     React.useEffect(() => {
-        setIsDark(colorScheme === "dark");
-    }, [colorScheme]);
+        // If the user has explicitly forced dark, respect that and do not follow the OS.
+        if (forceDark === true) {
+            setIsDark(true);
+            return;
+        } else {
+            setIsDark(colorScheme == 'dark');
+        }
+    }, [colorScheme, forceDark]);
 
-    const defaultTheme = {
-        isDark,
-        // Chaning color schemes according to theme
-        colors: isDark ? darkColors : lightColors,
-        dimensions: dimensions,
-        // Overrides the isDark value will cause re-render inside the context.  
-        setScheme: (scheme) => setIsDark(scheme === "dark"),
-    };
+    useEffect(() => {
+        console.log(`IsDark: ${isDark}`);
+    }, [isDark])
+
+    const defaultTheme = useMemo(() => {
+        return {
+            isDark,
+            // Chaning color schemes according to theme
+            colors: isDark ? darkColors : lightColors,
+            dimensions: dimensions,
+            // Overrides the isDark value will cause re-render inside the context.  
+            setScheme: (scheme) => setIsDark(scheme === "dark"),
+        }
+    }, [isDark])
 
     return (
         <ThemeContext.Provider value={defaultTheme}>

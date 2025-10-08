@@ -11,7 +11,7 @@ export const Tabs = withLayoutContext(
 );
 
 export default function TabLayout() {
-    const { colors } = useTheme();
+    const { colors, isDark } = useTheme();
     const [messageCount, setMessageCount] = useState(0);
     const [username] = useMMKVString("username");
 
@@ -24,7 +24,7 @@ export default function TabLayout() {
 
     return (
         <>
-            <SystemBars style="auto" backgroundColor={colors.background} />
+            <SystemBars style={isDark ? "light" : "dark"} backgroundColor={colors.background} />
 
             <Tabs tabBarActiveTintColor={colors.accent} activeIndicatorColor={colors.accentTransparent} ignoresTopSafeArea={true} tabBarStyle={{
                 backgroundColor: colors.backgroundSecondary
@@ -52,17 +52,9 @@ export default function TabLayout() {
                         title: 'Messages',
                         tabBarIcon: () => require("../../assets/icons/messages.png"),
                         tabBarBadge: String(messageCount > 0 ? messageCount : ""),
+                        sceneStyle: { backgroundColor: "green" }
                     }}
                 />
-                {/*<Tabs.Screen
-                    name="settings"
-                    options={{
-                        title: 'Settings',
-                        tabBarIcon: () => require("../../assets/icons/settings.png"),
-
-                    }}
-
-                />*/}
             </Tabs>
         </>
     );

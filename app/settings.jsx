@@ -1,16 +1,16 @@
 import { ScrollView, Switch, TouchableOpacity, View, StyleSheet } from 'react-native';
 import ItchyText from '../components/ItchyText';
 import ScratchAPIWrapper from '../utils/api-wrapper';
-import { useTheme } from '../utils/theme';
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { version } from "../package.json";
-import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
+import { useMMKVObject, useMMKVString, useMMKVBoolean } from 'react-native-mmkv';
 import storage from '../utils/storage';
 import linkWithFallback from '../utils/linkWithFallback';
 import { Platform } from "react-native";
 import FastSquircleView from 'react-native-fast-squircle';
 import Chip from '../components/Chip';
+import { useTheme } from '../utils/theme';
 
 export default function SettingsScreen() {
     const { colors, dimensions, isDark } = useTheme();
@@ -82,6 +82,15 @@ export default function SettingsScreen() {
         setTWConfig({ ...twConfig, [key]: value });
     };
 
+    // Force dark theme setting persisted in MMKV
+    const [forceDark, setForceDark] = useMMKVBoolean('forceDark');
+
+    const handleForceDarkToggle = (v) => {
+        // MMKV boolean hook stores true/false; clear not needed.
+        setForceDark(v);
+        // ThemeProvider reads this MMKV key and will update automatically.
+    };
+
     return (
         <ScrollView overScrollMode='always' bounces={true}>
             <ItchyText style={s.sectionHeader}>Account</ItchyText>
@@ -128,6 +137,14 @@ export default function SettingsScreen() {
             </FastSquircleView>
             <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
                 <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Options provided by </ItchyText><TouchableOpacity onPress={() => linkWithFallback("https://turbowarp.org")}><ItchyText style={{ color: colors.accent, fontSize: 12 }}>TurboWarp</ItchyText></TouchableOpacity>
+            </FastSquircleView>
+            <ItchyText style={s.sectionHeader}>App</ItchyText>
+            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer }}>
+                <ItchyText style={s.settingTitle}>Force dark theme</ItchyText>
+                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => handleForceDarkToggle(v)} value={forceDark === true} />
+            </FastSquircleView>
+            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
+                <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>When enabled, the app will always use the dark theme even if your device is set to light mode.</ItchyText>
             </FastSquircleView>
             <ItchyText style={s.sectionHeader}>About</ItchyText>
             <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer }}>
