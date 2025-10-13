@@ -20,6 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Controls from "../../../components/Controls";
 import MultiPlayConfigSheet from "../../../components/MultiPlayConfigSheet";
 import BottomSheet from "@gorhom/bottom-sheet";
+import { Gesture, GestureDetector, PanGestureHandler } from "react-native-gesture-handler";
 
 export default function Project() {
   const { id } = useLocalSearchParams();
@@ -508,7 +509,7 @@ if (document.readyState === 'loading') {
 
 })();
 `
-
+  const pan = Gesture.Pan();
 
   const openOnlineConfigSheet = () => {
     onlineConfigSheetRef.current?.expand();
@@ -631,30 +632,32 @@ if (document.readyState === 'loading') {
           }}
         />
         <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 10, paddingTop: isMaxed ? insets.top : 0 }}>
-          <WebView
-            source={{ uri: twLink }}
-            containerStyle={{
-              flex: 0,
-              marginTop: 5,
-              width: isMaxed ? width : width - 40,
-              aspectRatio: 480 / 425,
-              margin: "auto",
-              borderRadius: 10,
-            }}
-            androidLayerType="hardware"
-            renderToHardwareTextureAndroid={true}
-            bounces={false}
-            scrollEnabled={false}
-            overScrollMode="never"
-            allowsFullscreenVideo={true}
-            style={{ backgroundColor: "transparent" }}
-            injectedJavaScript={twJSInject}
-            ref={webViewRef}
-            onMessage={webViewMessageHandler}
-            onLayout={(event) => {
-              const { y, height } = event.nativeEvent.layout;
-            }}
-          />
+          <GestureDetector gesture={pan}>
+            <WebView
+              source={{ uri: twLink }}
+              containerStyle={{
+                flex: 0,
+                marginTop: 5,
+                width: isMaxed ? width : width - 40,
+                aspectRatio: 480 / 425,
+                margin: "auto",
+                borderRadius: 10,
+              }}
+              androidLayerType="hardware"
+              renderToHardwareTextureAndroid={true}
+              bounces={false}
+              scrollEnabled={false}
+              overScrollMode="never"
+              allowsFullscreenVideo={true}
+              style={{ backgroundColor: "transparent" }}
+              injectedJavaScript={twJSInject}
+              ref={webViewRef}
+              onMessage={webViewMessageHandler}
+              onLayout={(event) => {
+                const { y, height } = event.nativeEvent.layout;
+              }}
+            />
+          </GestureDetector>
           {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
             {isMaxed && <Chip.Icon icon="close-fullscreen" text="Exit Play Mode" onPress={() => setIsMaxed(false)} />}
             <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/users/${metadata?.author?.username}`)} textStyle={{ fontWeight: 'bold' }} mode="outlined" />

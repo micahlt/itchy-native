@@ -21,7 +21,6 @@ import Animated, {
     Easing,
     interpolate,
     Extrapolate,
-    runOnJS
 } from "react-native-reanimated";
 
 // Create animated FastSquircleView component
@@ -440,6 +439,7 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
                         borderBottomWidth: 4,
                         borderBottomColor: colors.backgroundSecondary
                     }}
+                    disabled={isCollapsed}
                 >
                     <Ionicons
                         name="chevron-up"
@@ -476,6 +476,7 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
                         borderBottomWidth: 4,
                         borderBottomColor: colors.backgroundSecondary
                     }}
+                    disabled={isCollapsed}
                 >
                     <MaterialIcons
                         name="settings"
