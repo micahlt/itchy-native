@@ -43,13 +43,12 @@ export default function MultiPlay() {
   const [loading, setLoading] = useState(false);
   // Controls are rendered inline (collapsible) instead of a separate sheet
   const [user] = useMMKVObject("user");
-  console.log(user);
   const nav = useNavigation();
   const insets = useSafeAreaInsets();
 
   // Check if user is under 13 years old
   const isUserUnder13 = () => {
-    if (!user || !user.birthMonth || !user.birthYear) return false;
+    if (!user || !user.birthMonth || !user.birthYear) return true;
 
     const currentDate = new Date();
     const currentYear = currentDate.getFullYear();
@@ -383,14 +382,7 @@ export default function MultiPlay() {
           />
         </View>
         {isUserUnder13() && !remoteStream && (
-          <Card
-            style={{
-              paddingHorizontal: 15,
-              paddingVertical: 10,
-              marginTop: 15,
-              backgroundColor: colors.backgroundSecondary,
-            }}
-          >
+          <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
             <View
               style={{
                 flexDirection: "row",
@@ -414,12 +406,13 @@ export default function MultiPlay() {
                 Age Restriction
               </ItchyText>
             </View>
-            <ItchyText style={{ color: colors.text, lineHeight: 17 }}>
+            <ItchyText style={{ color: colors.text, lineHeight: 17, marginBottom: 5 }}>
               MultiPlay is restricted to users who are 13 years of age or older.
               This restriction is in place to comply with online privacy and
               safety regulations.
+              {!user ? "We couldn't verify that you are over 13 since you aren't logged in to a Scratch account." : <></>}
             </ItchyText>
-          </Card>
+          </View>
         )}
         {!!remoteStream ? (
           <View
