@@ -274,7 +274,8 @@ export default function SettingsScreen() {
         style={{
           ...s.settingContainer,
           justifyContent: "flex-start",
-          marginTop: -5
+          marginTop: -5,
+          paddingBottom: 5
         }}
       >
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
@@ -300,7 +301,8 @@ export default function SettingsScreen() {
           ...s.settingContainer,
           ...s.bottomSettingContainer,
           justifyContent: "flex-start",
-          marginTop: -5
+          marginTop: -5,
+          paddingBottom: 5
         }}
       >
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>

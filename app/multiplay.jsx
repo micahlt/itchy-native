@@ -3,7 +3,6 @@ import {
   View,
   TextInput,
   Alert,
-  Pressable,
   ActivityIndicator,
   useWindowDimensions,
   ScrollView,
@@ -410,7 +409,7 @@ export default function MultiPlay() {
               MultiPlay is restricted to users who are 13 years of age or older.
               This restriction is in place to comply with online privacy and
               safety regulations.
-              {!user ? "We couldn't verify that you are over 13 since you aren't logged in to a Scratch account." : <></>}
+              {!user ? " We couldn't verify that you are over 13 since you aren't logged in to a Scratch account." : <></>}
             </ItchyText>
           </View>
         )}
@@ -565,7 +564,7 @@ export default function MultiPlay() {
             </Card>
           )}
           {!remoteStream && (
-            <Card style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
+            <Card style={{ paddingHorizontal: 20, paddingVertical: 15, marginTop: 5 }}>
               <ItchyText
                 style={{
                   color: colors.accent,
