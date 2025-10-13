@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
 } from "react-native-gesture-handler";
 import { useTheme } from "../../utils/theme";
-import { memo, useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import {
   useMMKVBoolean,
   useMMKVObject,
@@ -124,6 +124,7 @@ export default function HomeScreen() {
   const [user] = useMMKVObject("user");
   const [username] = useMMKVString("username");
   const [token] = useMMKVString("token");
+  const [experimentalFeed] = useMMKVBoolean("experimentalFeed");
   const insets = useSafeAreaInsets();
   const scrollRef = useAnimatedRef();
   const scrollOffset = useScrollOffset(scrollRef);
@@ -256,8 +257,8 @@ export default function HomeScreen() {
             panPosition.value =
               e.translationY * 0.18 +
               0.5 *
-                (1 -
-                  Math.min(e.translationY, MAX_PULL_HEIGHT) / MAX_PULL_HEIGHT);
+              (1 -
+                Math.min(e.translationY, MAX_PULL_HEIGHT) / MAX_PULL_HEIGHT);
             if (Math.floor(panPosition.value) % 18 == 0) runOnJS(vib)("tick");
             if (panPosition.value > REFRESH_TRIGGER_HEIGHT) {
               if (!didVibrate.value) {
@@ -391,7 +392,7 @@ export default function HomeScreen() {
               />
             )}
             <View style={{ marginTop: 10 }}></View>
-            <TexturedButton
+            {experimentalFeed && <TexturedButton
               onPress={() => router.push("scroll")}
               icon="globe"
               iconSide="left"
@@ -422,7 +423,7 @@ export default function HomeScreen() {
                   </ItchyText>
                 </View>
               </View>
-            </TexturedButton>
+            </TexturedButton>}
           </AniamtedSquircleView>
         </ScrollView>
       </GestureDetector>

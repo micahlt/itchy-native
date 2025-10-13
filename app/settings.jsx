@@ -59,6 +59,7 @@ export default function SettingsScreen() {
           marginHorizontal: 15,
           paddingHorizontal: 20,
           paddingRight: 8,
+          borderBottomWidth: 0.5
         },
         topSettingContainer: {
           borderTopLeftRadius: dimensions.mediumRadius,
@@ -99,6 +100,7 @@ export default function SettingsScreen() {
 
   // Force dark theme setting persisted in MMKV
   const [forceDark, setForceDark] = useMMKVBoolean("forceDark");
+  const [experimentalFeed, setExperimentalFeed] = useMMKVBoolean("experimentalFeed");
 
   const handleForceDarkToggle = (v) => {
     // MMKV boolean hook stores true/false; clear not needed.
@@ -169,7 +171,7 @@ export default function SettingsScreen() {
         style={{
           ...s.settingContainer,
           ...s.topSettingContainer,
-          paddingEnd: isLiquidPlus ? 10 : 0,
+          paddingEnd: 10,
         }}
       >
         <ItchyText style={s.settingTitle}>Frame interpolation</ItchyText>
@@ -183,7 +185,7 @@ export default function SettingsScreen() {
       </FastSquircleView>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 10 : 0 }}
+        style={{ ...s.settingContainer, paddingEnd: 10 }}
       >
         <ItchyText style={s.settingTitle}>Autoplay</ItchyText>
         <Switch
@@ -196,7 +198,7 @@ export default function SettingsScreen() {
       </FastSquircleView>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 10 : 0 }}
+        style={{ ...s.settingContainer, paddingEnd: 10 }}
       >
         <ItchyText style={s.settingTitle}>Force 60 FPS</ItchyText>
         <Switch
@@ -209,7 +211,7 @@ export default function SettingsScreen() {
       </FastSquircleView>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 10 : 0 }}
+        style={{ ...s.settingContainer, paddingEnd: 10 }}
       >
         <ItchyText style={s.settingTitle}>High-quality pen</ItchyText>
         <Switch
@@ -222,7 +224,7 @@ export default function SettingsScreen() {
       </FastSquircleView>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 10 : 0 }}
+        style={{ ...s.settingContainer, paddingEnd: 10 }}
       >
         <ItchyText style={s.settingTitle}>Turbo mode</ItchyText>
         <Switch
@@ -257,6 +259,31 @@ export default function SettingsScreen() {
         cornerSmoothing={0.6}
         style={{ ...s.settingContainer, ...s.topSettingContainer }}
       >
+        <ItchyText style={s.settingTitle}>Enable experimental feed</ItchyText>
+        <Switch
+          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          thumbColor="white"
+          trackColor={{ false: "#686868", true: colors.accent }}
+          onValueChange={(v) => setExperimentalFeed(v)}
+          value={experimentalFeed === true}
+        />
+      </FastSquircleView>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{
+          ...s.settingContainer,
+          justifyContent: "flex-start",
+          marginTop: -5
+        }}
+      >
+        <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
+          Displays an "Explore more" button at the bottom of the screen that opens an experimental infinite-scrolling feed of projects and studios.
+        </ItchyText>
+      </FastSquircleView>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{ ...s.settingContainer }}
+      >
         <ItchyText style={s.settingTitle}>Force dark theme</ItchyText>
         <Switch
           style={{ marginTop: isLiquidPlus ? 10 : 0 }}
@@ -272,6 +299,7 @@ export default function SettingsScreen() {
           ...s.settingContainer,
           ...s.bottomSettingContainer,
           justifyContent: "flex-start",
+          marginTop: -5
         }}
       >
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
