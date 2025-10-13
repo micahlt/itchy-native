@@ -12,6 +12,7 @@ import storage from '../utils/storage';
 import encryptedStorage from '../utils/encryptedStorage';
 import { router } from 'expo-router';
 import { SWRConfig } from 'swr';
+import * as Network from 'expo-network';
 
 export default function App() {
     const [twConfig, setTWConfig] = useMMKVObject("twConfig");
@@ -20,6 +21,23 @@ export default function App() {
     const [localControllerMappings, setLocalControllerMappings] = useMMKVObject("localControllerMappings");
     const [savedLogins, setSavedLogins] = useMMKVObject("savedLogins", encryptedStorage);
     const isLiquidPlus = useMemo(() => Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26, [Platform]);
+
+    // Check network connectivity when app opens
+    useEffect(() => {
+        const checkNetworkConnectivity = async () => {
+            try {
+                const networkState = await Network.getNetworkStateAsync();
+                if (!networkState.isConnected || !networkState.isInternetReachable) {
+                    router.replace('/error?errorText=You appear to be offline. Please check your internet connection and try again.');
+                }
+            } catch (error) {
+                console.warn('Failed to check network state:', error);
+            }
+        };
+
+        checkNetworkConnectivity();
+    }, []);
+
     useEffect(() => {
         if (!!user) {
             APIAuth.getSession(cookieSet).then((d) => {
