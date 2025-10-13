@@ -77,7 +77,8 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
                             onPress={openProfile}
                             style={{
                                 padding: 10,
-                                paddingTop: 2,
+                                paddingTop: 0,
+                                marginTop: -2,
                                 backgroundColor: "transparent",
                                 zIndex: 10 // Ensure this is above other elements
                             }}

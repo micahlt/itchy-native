@@ -2,6 +2,7 @@ export const lightColors = {
   background: "#FAF8F6",
   highlight: "#ffffff",
   topLight: "#FFFFFFAA",
+  chipColor: "#5a5a5a",
   outline: "rgba(48, 48, 48, 0.15)",
   outlineCard: "rgba(48, 48, 48, 0.07)",
   outlineFill: "rgba(54, 105, 154, 0.7)",

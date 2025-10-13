@@ -15,6 +15,7 @@ const ImageChip = ({
   mode = "filled",
   style = {},
   provider = "native",
+  color = ""
 }) => {
   const { colors } = useTheme();
   const onPressFn = useCallback(() => {
@@ -27,7 +28,7 @@ const ImageChip = ({
         flexDirection: "row",
         borderRadius: 100,
         height: 32,
-        borderColor: mode == "outlined" ? colors.chipColor : "transparent",
+        borderColor: mode == "outlined" ? (color || colors.chipColor) : "transparent",
         borderWidth: mode == "outlined" ? 1.5 : 0,
         ...style,
       }}
@@ -68,7 +69,7 @@ const ImageChip = ({
           />
           <ItchyText
             style={{
-              color: colors.chipColor,
+              color: color || colors.chipColor,
               marginLeft: 4,
               ...textStyle,
               marginTop: -4,

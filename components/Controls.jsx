@@ -146,7 +146,7 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
             outlineColor: colors.outline,
             outlineWidth: 2,
             overflow: 'hidden',
-            boxShadow: "0px 10px 20px 0px #FFFFFF40 inset, 0px 2px 1px 0px #FFFFFF40 inset, 0px -5px 0px 0px #0000001A inset, 0px 4px 5px 2px rgba(76, 148, 255, 0.375), 0px 8px 6px 0px #FFFFFF33 inset, 0px 4px 0px 0px #FFFFFF4D inset",
+            boxShadow: "0px 10px 20px 0px #FFFFFF40 inset, 0px 2px 1px 0px #FFFFFF40 inset, 0px -5px 0px 0px #0000001A inset, 0px 2px 5px 2px rgba(76, 148, 255, 0.275), 0px 8px 6px 0px #FFFFFF33 inset, 0px 4px 0px 0px #FFFFFF4D inset",
             width: "100%",
             height: height, // Always use the calculated height
         };
