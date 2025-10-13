@@ -1,6 +1,7 @@
 export const lightColors = {
     background: '#FAF8F6',
     highlight: '#ffffff',
+    topLight: "#FFFFFFAA",
     outline: 'rgba(48, 48, 48, 0.15)',
     backgroundSecondary: '#efedeb',
     backgroundTertiary: '#dddddd',
@@ -27,6 +28,7 @@ export const lightColors = {
 export const darkColors = {
     background: '#000000',
     highlight: '#1d1d1d',
+    topLight: "#FFFFFF11",
     outline: 'rgba(255, 255, 255, 0.15)',
     backgroundSecondary: '#1e1e1e',
     backgroundTertiary: '#363636',

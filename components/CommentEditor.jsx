@@ -69,6 +69,7 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
                             ios: 'Inter-Regular',
                         }),
                         letterSpacing: -0.4,
+                        paddingBottom: 20
                     }}
                     multiline={true}
                     value={content}

@@ -131,8 +131,7 @@ function ThemeConsumerInner({ twConfig }) {
                 headerTransparent: isLiquidPlus,
                 headerStyle: {
                     backgroundColor: isLiquidPlus ? "transparent" : colors.background, // no fallback bg
-                },
-
+                }
             }}>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false, animation: "default" }} />
                 <Stack.Screen name="projects/[id]/index" options={{

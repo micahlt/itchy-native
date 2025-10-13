@@ -12,7 +12,7 @@ import approximateNumber from "approximate-number";
 import { useMMKVString } from "react-native-mmkv";
 import storage from "../../../utils/storage";
 import useTurbowarpLink from "../../../utils/hooks/useTurbowarpLink";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import timeago from "time-ago";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
 import RemixNotice from "../../../components/RemixNotice";
@@ -627,7 +627,7 @@ if (document.readyState === 'loading') {
           options={{
             title: metadata?.title || "Loading...",
             headerShown: !isMaxed,
-            headerRight: () => <><MaterialIcons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='question-answer' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /></>
+            headerRight: () => <><Ionicons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='chatbubble-ellipses' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /></>
           }}
         />
         <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 10, paddingTop: isMaxed ? insets.top : 0 }}>

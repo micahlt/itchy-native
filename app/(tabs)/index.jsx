@@ -21,6 +21,7 @@ import FastSquircleView from 'react-native-fast-squircle';
 import ItchyText from '../../components/ItchyText';
 import { Ionicons } from '@expo/vector-icons';
 import useSWR from 'swr';
+import TexturedButton from '../../components/TexturedButton';
 
 // Memoized header component to prevent unnecessary re-renders
 const Header = memo(({ insets, colors, headerStyle, logoStyle }) => (
@@ -231,7 +232,7 @@ export default function HomeScreen() {
         outlineStyle: "solid",
         outlineWidth: 1.5,
         borderTopColor: colors.highlight,
-        boxShadow: "0px -2px 10px rgba(0,0,0,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset"
+        boxShadow: `0px -2px 10px rgba(0,0,0,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px ${colors.topLight} inset`
     }), [colors, insets.bottom]);
 
     return (
@@ -268,6 +269,8 @@ export default function HomeScreen() {
 
                         {exploreData?.newest?.length > 0 &&
                             <HorizontalContentScroller title="Newest Projects" data={exploreData.newest} iconName="time" />}
+                        <View style={{ marginTop: 10 }}></View>
+                        <TexturedButton onPress={() => router.push("scroll")} icon="globe" iconSide="left" style={{ margin: "auto" }} size={18}><View style={{ flexDirection: "row", alignItems: "center" }}><ItchyText style={{ color: colors.text }}>Explore more </ItchyText><View style={{ backgroundColor: colors.accent, paddingHorizontal: 5, borderRadius: 10, marginLeft: 5 }}><ItchyText style={{ color: "#fff", fontSize: 12, lineHeight: 20, fontWeight: "bold" }}>BETA</ItchyText></View></View></TexturedButton>
                     </AniamtedSquircleView>
                 </ScrollView>
             </GestureDetector>

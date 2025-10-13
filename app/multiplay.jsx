@@ -311,7 +311,7 @@ export default function MultiPlay() {
 
     return (
         <>
-            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 20, paddingTop: insets.top }}>
+            <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 20, paddingTop: insets.top, backgroundColor: colors.accentTransparent }}>
                 <Stack.Screen options={{ headerShown: false, title: 'MultiPlay' }} />
                 <View style={{ flexDirection: "row", columnGap: 15, alignItems: "center", justifyContent: "space-between", marginTop: 10, flex: 1 }}>
                     <TextInput

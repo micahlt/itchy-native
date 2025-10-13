@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMMKVString } from "react-native-mmkv";
 import HorizontalContentScroller from "../../../components/HorizontalContentScroller";
 import TexturedButton from "../../../components/TexturedButton";
+import FastSquircleView from "react-native-fast-squircle";
 
 export default function Studio() {
     const { id } = useLocalSearchParams();
@@ -81,7 +82,7 @@ export default function Studio() {
         <View style={{ flex: 1, backgroundColor: colors.background }}>
             <Stack.Screen
                 options={{
-                    title: studio?.title || "Loading...",
+                    title: studio?.title ? "" : "Loading...",
                     headerRight: () => <>
                         <MaterialIcons.Button onPressIn={() => router.push(`/studios/${id}/comments`)} name='question-answer' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
                         <MaterialIcons.Button onPressIn={openStudio} name='launch' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
@@ -91,8 +92,11 @@ export default function Studio() {
             <ScrollView refreshControl={<RefreshControl refreshing={loading} onRefresh={load} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} contentContainerStyle={{ paddingBottom: insets.bottom + 40 }} style={{ flex: 1 }}>
                 {studio &&
                     <>
-                        <Image source={{ uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${id}.png` }} style={{ width: width, aspectRatio: 1.7 / 1 }} />
-                        <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0 }}>
+                        <ItchyText style={{ color: colors.text, fontSize: 24, fontWeight: 'bold', marginHorizontal: 'auto', textAlign: "center", paddingHorizontal: 15, marginBottom: 15 }}>{studio.title}</ItchyText>
+                        <FastSquircleView co style={{ width: width - 30, aspectRatio: 1.7 / 1, borderRadius: 15, overflow: "hidden", margin: "auto" }} cornerSmoothing={0.6}>
+                            <Image source={{ uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${id}.png` }} style={{ width: "100%", height: "100%" }} />
+                        </FastSquircleView>
+                        <View style={{ flexDirection: "row", alignItems: "center", padding: 15, paddingBottom: 0 }}>
                             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginRight: 10, flex: 1 }}>
                                 {studio?.stats?.followers && <View style={{ alignItems: "center" }}>
                                     <ItchyText style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{approximateNumber(studio.stats.followers)}</ItchyText>
@@ -109,12 +113,12 @@ export default function Studio() {
                                 </View>}
                             </View>
                         </View>
-                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>
+                        <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 15 }}>
                             <TexturedButton style={{ flex: 1 }} onPress={() => router.push(`/studios/${id}/activity`)}>Activity</TexturedButton>
 
                             {followingStatus !== undefined && <TexturedButton style={{ flex: 1 }} onPress={changeFollowingStatus}>{followingStatus === true ? "Unfollow" : "Follow"}</TexturedButton>}
                         </View>
-                        <Card style={{ padding: 20, marginHorizontal: 20 }}>
+                        <Card style={{ padding: 20, marginHorizontal: 15 }}>
                             <LinkifiedText style={{ color: colors.text }} text={studio.description} />
                         </Card>
                         <HorizontalContentScroller data={projects} itemType="projects" itemCount={studio.stats.projects} headerStyle={{ marginTop: 20 }} iconName="play" onShowMore={() => router.push(`/studios/${id}/projects`)} title="Projects" />

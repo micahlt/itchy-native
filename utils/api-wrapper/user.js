@@ -4,6 +4,17 @@ import consts from "./consts";
 import fetch from "../fetch-provider";
 
 const APIUser = {
+    getUserById: async (userId) => {
+        try {
+            const res = await fetch(`https://api.scratch.mit.edu/users/${userId}/`);
+            if (!res.ok) return null;
+            const data = await res.json();
+            return data;
+        } catch (error) {
+            console.warn('Failed to get user by ID:', error);
+            return null;
+        }
+    },
     doesExist: async (username) => {
         const res = await fetch(`https://api.scratch.mit.edu/users/${username}`);
         return res.ok;

@@ -9,7 +9,7 @@ import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import ProjectCard from "../../../components/ProjectCard";
 import { Image } from "expo-image";
 import approximateNumber from "approximate-number";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import linkWithFallback from "../../../utils/linkWithFallback";
 import { useMMKVString } from "react-native-mmkv";
 import HorizontalContentScroller from "../../../components/HorizontalContentScroller";
@@ -93,8 +93,8 @@ export default function User() {
                 options={{
                     title: username,
                     headerRight: () => <>
-                        <MaterialIcons.Button onPressIn={() => router.push(`/users/${username}/comments`)} name='question-answer' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
-                        <MaterialIcons.Button onPressIn={openProfile} name='launch' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
+                        <Ionicons.Button onPressIn={() => router.push(`/users/${username}/comments`)} name='chatbubble-ellipses' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
+                        <Ionicons.Button onPressIn={openProfile} name='open' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />,
                     </>
                 }}
             />
@@ -105,15 +105,15 @@ export default function User() {
                         <Image source={{ uri: profile.profile.images["90x90"] }} placeholder={require("../../../assets/avatar.png")} placeholderContentFit="cover" style={{ height: 75, width: 75, borderRadius: 75, marginRight: 25, backgroundColor: "white" }} />
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginRight: 10, flex: 1 }}>
                             <Pressable style={{ alignItems: "center" }} onPress={() => router.push(`users/${username}/followers`)} android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}>
-                                <ItchyText style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{profileStats?.followers}</ItchyText>
+                                <ItchyText style={{ color: colors.accent, fontWeight: "bold", fontSize: 20 }}>{profileStats?.followers}</ItchyText>
                                 <ItchyText style={{ color: colors.text, fontSize: 12 }}>Followers</ItchyText>
                             </Pressable>
                             <Pressable style={{ alignItems: "center" }} onPress={() => router.push(`users/${username}/following`)} android_ripple={{ color: colors.ripple, borderless: false, foreground: true }}>
-                                <ItchyText style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{profileStats?.following}</ItchyText>
+                                <ItchyText style={{ color: colors.accent, fontWeight: "bold", fontSize: 20 }}>{profileStats?.following}</ItchyText>
                                 <ItchyText style={{ color: colors.text, fontSize: 12 }}>Following</ItchyText>
                             </Pressable>
                             <View style={{ alignItems: "center" }}>
-                                <ItchyText style={{ color: colors.text, fontWeight: "bold", fontSize: 20 }}>{new Date(profile.history.joined).getFullYear()}</ItchyText>
+                                <ItchyText style={{ color: colors.accent, fontWeight: "bold", fontSize: 20 }}>{new Date(profile.history.joined).getFullYear()}</ItchyText>
                                 <ItchyText style={{ color: colors.text, fontSize: 12 }}>Joined </ItchyText>
                             </View>
                         </View>

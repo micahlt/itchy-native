@@ -26,11 +26,21 @@ export default function TabLayout() {
         <>
             <SystemBars style={isDark ? "light" : "dark"} backgroundColor={colors.background} />
 
-            <Tabs tabBarActiveTintColor={colors.accent} activeIndicatorColor={colors.accentTransparent} ignoresTopSafeArea={true} tabBarStyle={{
-                backgroundColor: colors.backgroundSecondary
-            }} screenOptions={{
-                headerShown: false
-            }} sidebarAdaptable={true} translucent={true}>
+            <Tabs
+                tabBarActiveTintColor={colors.accent}
+                activeIndicatorColor={colors.accentTransparent}
+                ignoresTopSafeArea={true}
+                tabBarStyle={{
+                    backgroundColor: colors.backgroundSecondary
+                }}
+                screenOptions={{
+                    headerShown: false,
+                    // ensure the tab bar does not hide or shift when keyboard opens
+                    tabBarHideOnKeyboard: false,
+                }}
+                sidebarAdaptable={true}
+                translucent={false}
+            >
                 <Tabs.Screen
                     name="index"
                     options={{

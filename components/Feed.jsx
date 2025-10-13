@@ -90,7 +90,7 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
             ...style,
             marginBottom: 10,
             minHeight: feed.length === 0 ? 100 : 'auto',
-            boxShadow: "0px 8px 6px 0px #ffffff22 inset, 0px 3px 0px 0px #FFFFFF33 inset"
+            boxShadow: "0px 8px 6px 0px #ffffff22 inset, 0px 4px 0px 0px #FFFFFF33 inset"
         }}>
             {feed.length === 0 ? (
                 <View style={{
