@@ -10,7 +10,7 @@ import ItchyText from "./ItchyText";
 const ImageChip = ({
   imageURL = "",
   text = "",
-  onPress = () => {},
+  onPress = () => { },
   textStyle,
   mode = "filled",
   style = {},
@@ -85,7 +85,7 @@ const ImageChip = ({
 const IconChip = ({
   icon,
   text = "",
-  onPress = () => {},
+  onPress = () => { },
   color = "#ff656d",
   mode = "outlined",
   textStyle = {},
@@ -107,7 +107,7 @@ const IconChip = ({
     <View
       style={{
         borderRadius: 100,
-        height: 35,
+        height: 32,
         overflow: "hidden",
         flexDirection: "row",
         ...style,
