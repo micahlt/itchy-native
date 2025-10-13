@@ -55,7 +55,7 @@ export default function SettingsScreen() {
           justifyContent: "space-between",
           alignItems: "center",
           borderColor: colors.backgroundTertiary,
-          height: 50,
+          minHeight: 50,
           marginHorizontal: 15,
           paddingHorizontal: 20,
           paddingRight: 8,
@@ -74,6 +74,7 @@ export default function SettingsScreen() {
         settingTitle: {
           color: colors.text,
           fontSize: 16,
+          marginTop: -1
         },
       }),
     [isDark]
@@ -134,7 +135,7 @@ export default function SettingsScreen() {
           text={username ? "Log Out" : "Log In"}
           icon="key"
           color={username ? "#ff5555" : colors.accent}
-          style={{ marginTop: 3 }}
+          style={{ marginTop: 0 }}
           onPress={() => {
             if (username) {
               ScratchAPIWrapper.auth
@@ -340,22 +341,32 @@ export default function SettingsScreen() {
           ...s.settingContainer,
           ...s.bottomSettingContainer,
           justifyContent: "flex-start",
+          alignItems: "flex-start",
+          flexDirection: "column",
+          paddingVertical: 15
         }}
       >
-        <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
-          Made{" "}
-        </ItchyText>
-        <TouchableOpacity
-          onPress={() => linkWithFallback("https://github.com/micahlt")}
-        >
-          <ItchyText style={{ color: colors.accent, fontSize: 12 }}>
-            open source
+        <View style={{ flex: 1, flexDirection: "row" }}>
+          <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
+            Made{" "}
           </ItchyText>
-        </TouchableOpacity>
-        <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
-          {" "}
-          with ❤️
-        </ItchyText>
+          <TouchableOpacity
+            onPress={() => linkWithFallback("https://github.com/micahlt/itchy-native")}
+          >
+            <ItchyText style={{ color: colors.accent, fontSize: 12 }}>
+              open source
+            </ItchyText>
+          </TouchableOpacity>
+          <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6, marginRight: "auto" }}>
+            {" "}
+            with ❤️
+          </ItchyText>
+        </View>
+        <View style={{ flex: 1, flexDirection: "row", paddingTop: 8 }}>
+          <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
+            Created by Micah Lindley.  Contributions to code, UI, and graphics made by David Noé and Sean Wallace.  Made possible by open-source projects like TurboWarp, Scratch, React Native, Expo, and many others.
+          </ItchyText>
+        </View>
       </FastSquircleView>
       <View style={{ height: 120 }}></View>
     </ScrollView>
