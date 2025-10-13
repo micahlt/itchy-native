@@ -85,7 +85,7 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
             borderWidth: 0,
             borderTopWidth: 0,
             borderColor: colors.ripple,
-            outlineColor: colors.outline,
+            outlineColor: colors.outlineFill,
             outlineWidth: dimensions.outlineWidth,
             ...style,
             marginBottom: 10,

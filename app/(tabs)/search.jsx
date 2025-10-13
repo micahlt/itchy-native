@@ -6,7 +6,10 @@ import {
   Platform,
 } from "react-native";
 import { useTheme } from "../../utils/theme";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import APIExplore from "../../utils/api-wrapper/explore";
 import ProjectCard from "../../components/ProjectCard";
 import { useEffect, useRef, useState } from "react";
@@ -31,7 +34,8 @@ export default function Search() {
   const searchBarRef = useRef(null);
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const AniamtedSquircleView = Animated.createAnimatedComponent(FastSquircleView);
+  const AniamtedSquircleView =
+    Animated.createAnimatedComponent(FastSquircleView);
 
   useFocusEffect(() => {
     if (searchBarRef.current) {
@@ -82,14 +86,15 @@ export default function Search() {
           backgroundColor: "transparent",
           color: colors.text,
           fontSize: 18,
-          width: "100%",
           fontFamily: Platform.select({
-            android: 'Inter_400Regular',
-            ios: 'Inter-Regular',
+            android: "Inter_400Regular",
+            ios: "Inter-Regular",
           }),
           letterSpacing: -0.4,
           fontSize: 22,
-          marginLeft: 24, marginTop: 10, marginBottom: 2
+          marginHorizontal: 24,
+          marginTop: 10,
+          marginBottom: 2,
         }}
         placeholderTextColor={colors.textSecondary}
         onSubmitEditing={search}
@@ -127,16 +132,35 @@ export default function Search() {
           onPress={() => setType("users")}
         />
       </View>
-      <FastSquircleView cornerSmoothing={0.6} style={{
-        backgroundColor: colors.background, marginTop: 8, marginHorizontal: 1.5, paddingBottom: Platform.OS == "ios" ? 60 : 0, borderTopLeftRadius: 32, borderTopRightRadius: 32, outlineColor: colors.outline,
-        outlineStyle: "solid",
-        outlineWidth: dimensions.outlineWidth,
-        borderTopColor: colors.highlight,
-        flex: 1,
-        overflow: 'visible',
-        boxShadow: "0px -2px 10px rgba(0,0,0,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset"
-      }}>
-        <FastSquircleView style={{ flex: 1, overflow: "hidden", borderTopLeftRadius: dimensions.largeRadius, borderTopRightRadius: dimensions.largeRadius, marginTop: -4 }}>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{
+          backgroundColor: colors.background,
+          marginTop: 8,
+          paddingTop: 4,
+          marginHorizontal: 1.5,
+          paddingBottom: Platform.OS == "ios" ? 60 : 0,
+          borderTopLeftRadius: 32,
+          borderTopRightRadius: 32,
+          outlineColor: colors.outlineCard,
+          outlineStyle: "solid",
+          outlineWidth: dimensions.outlineWidth,
+          borderTopColor: colors.highlight,
+          flex: 1,
+          overflow: "visible",
+          boxShadow:
+            "0px -2px 16px rgba(0,94,185,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
+        }}
+      >
+        <FastSquircleView
+          style={{
+            flex: 1,
+            overflow: "hidden",
+            borderTopLeftRadius: dimensions.largeRadius,
+            borderTopRightRadius: dimensions.largeRadius,
+            marginTop: -4,
+          }}
+        >
           <FlashList
             data={results}
             renderItem={({ item }) => renderItem(item, width, type)}
@@ -150,7 +174,7 @@ export default function Search() {
               marginTop: -12,
               paddingBottom: 100,
               borderRadius: 32,
-              overflow: 'hidden'
+              overflow: "hidden",
             }}
             refreshing={isLoading}
             refreshControl={
@@ -162,10 +186,31 @@ export default function Search() {
               />
             }
             onRefresh={search}
-            ListEmptyComponent={<View style={{ alignItems: "center", flex: 1, justifyContent: "center" }}>
-              <Ionicons name="search-circle" size={128} color={colors.backgroundTertiary} />
-              <ItchyText style={{ textAlign: "center", fontWeight: "bold", color: colors.textSecondary, opacity: 0.6 }}>Search for something to get started</ItchyText>
-            </View>}
+            ListEmptyComponent={
+              <View
+                style={{
+                  alignItems: "center",
+                  flex: 1,
+                  justifyContent: "center",
+                }}
+              >
+                <Ionicons
+                  name="search-circle"
+                  size={128}
+                  color={colors.backgroundTertiary}
+                />
+                <ItchyText
+                  style={{
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    color: colors.textSecondary,
+                    opacity: 0.6,
+                  }}
+                >
+                  Search for something to get started
+                </ItchyText>
+              </View>
+            }
           />
         </FastSquircleView>
       </FastSquircleView>
@@ -175,12 +220,30 @@ export default function Search() {
 
 function renderItem(item, width, type) {
   if (type === "projects") {
-    return <ProjectCard project={item} style={{ marginBottom: 5 }} width={(width - 40) / 2} />;
+    return (
+      <ProjectCard
+        project={item}
+        style={{ marginBottom: 5 }}
+        width={(width - 40) / 2}
+      />
+    );
   }
   if (type === "studios") {
-    return <StudioCard studio={item} style={{ marginBottom: 5 }} width={(width - 40) / 2} />;
+    return (
+      <StudioCard
+        studio={item}
+        style={{ marginBottom: 5 }}
+        width={(width - 40) / 2}
+      />
+    );
   }
   if (type === "users") {
-    return <UserCard user={item} style={{ marginBottom: 5 }} width={(width - 40) / 2} />;
+    return (
+      <UserCard
+        user={item}
+        style={{ marginBottom: 5 }}
+        width={(width - 40) / 2}
+      />
+    );
   }
 }
