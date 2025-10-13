@@ -26,7 +26,7 @@ const ImageChip = ({
         marginRight: "auto",
         flexDirection: "row",
         borderRadius: 100,
-        height: 35,
+        height: 32,
         borderColor: mode == "outlined" ? colors.chipColor : "transparent",
         borderWidth: mode == "outlined" ? 1.5 : 0,
         ...style,
@@ -39,7 +39,7 @@ const ImageChip = ({
           gap: 5,
           paddingRight: 12,
           borderRadius: 100,
-          height: 35,
+          height: 32,
           marginRight: "auto",
         }}
         android_ripple={{ borderless: false }}
@@ -49,15 +49,15 @@ const ImageChip = ({
           style={{
             flexDirection: "row",
             alignItems: "center",
-            height: 35,
+            height: 32,
             gap: 5,
           }}
         >
           <Image
             source={{ uri: imageURL }}
             style={{
-              width: 32,
-              height: 32,
+              width: 29,
+              height: 29,
               marginTop: -3,
               aspectRatio: 1,
               borderRadius: 100,

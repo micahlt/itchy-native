@@ -658,7 +658,7 @@ if (document.readyState === 'loading') {
               }}
             />
           </GestureDetector>
-          {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 10 }} showsHorizontalScrollIndicator={false}>
+          {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 5 }} showsHorizontalScrollIndicator={false}>
             {isMaxed && <Chip.Icon icon="close-fullscreen" text="Exit Play Mode" onPress={() => setIsMaxed(false)} />}
             <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/users/${metadata?.author?.username}`)} textStyle={{ fontWeight: 'bold' }} mode="outlined" />
             <Chip.Icon icon='heart' text={approximateNumber(metadata.stats.loves)} color="#ff4750" mode={interactions.loved ? "filled" : "outlined"} onPress={() => toggleInteraction("love")} />
