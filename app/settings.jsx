@@ -1,167 +1,335 @@
-import { ScrollView, Switch, TouchableOpacity, View, StyleSheet } from 'react-native';
-import ItchyText from '../components/ItchyText';
-import ScratchAPIWrapper from '../utils/api-wrapper';
-import { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'expo-router';
+import {
+  ScrollView,
+  Switch,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+} from "react-native";
+import ItchyText from "../components/ItchyText";
+import ScratchAPIWrapper from "../utils/api-wrapper";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "expo-router";
 import { version } from "../package.json";
-import { useMMKVObject, useMMKVString, useMMKVBoolean } from 'react-native-mmkv';
-import storage from '../utils/storage';
-import linkWithFallback from '../utils/linkWithFallback';
+import {
+  useMMKVObject,
+  useMMKVString,
+  useMMKVBoolean,
+} from "react-native-mmkv";
+import storage from "../utils/storage";
+import linkWithFallback from "../utils/linkWithFallback";
 import { Platform } from "react-native";
-import FastSquircleView from 'react-native-fast-squircle';
-import Chip from '../components/Chip';
-import { useTheme } from '../utils/theme';
+import FastSquircleView from "react-native-fast-squircle";
+import Chip from "../components/Chip";
+import { useTheme } from "../utils/theme";
 
 export default function SettingsScreen() {
-    const { colors, dimensions, isDark } = useTheme();
-    const router = useRouter();
-    const [username] = useMMKVString("username");
-    const [twConfig, setTWConfig] = useMMKVObject("twConfig");
-    const isLiquidPlus = Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
-    // Local state for switches to enable smooth animations
-    const [localSwitchState, setLocalSwitchState] = useState({
-        interpolate: false,
-        autoplay: false,
-        fps60: false,
-        hqPen: false,
-        turbo: false
-    });
-    const s = useMemo(() => StyleSheet.create({
+  const { colors, dimensions, isDark } = useTheme();
+  const router = useRouter();
+  const [username] = useMMKVString("username");
+  const [twConfig, setTWConfig] = useMMKVObject("twConfig");
+  const isLiquidPlus =
+    Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
+  // Local state for switches to enable smooth animations
+  const [localSwitchState, setLocalSwitchState] = useState({
+    interpolate: false,
+    autoplay: false,
+    fps60: false,
+    hqPen: false,
+    turbo: false,
+  });
+  const s = useMemo(
+    () =>
+      StyleSheet.create({
         sectionHeader: {
-            color: colors.textSecondary,
-            fontSize: 12,
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            marginTop: 10
+          color: colors.textSecondary,
+          fontSize: 12,
+          paddingVertical: 10,
+          paddingHorizontal: 20,
+          marginTop: 10,
         },
         settingContainer: {
-            borderLeftWidth: 1.5,
-            borderRightWidth: 1.5,
-            backgroundColor: colors.backgroundSecondary,
-            flexDirection: 'row',
-            justifyContent: "space-between",
-            alignItems: 'center',
-            borderColor: colors.backgroundTertiary,
-            height: 50,
-            marginHorizontal: 15,
-            paddingHorizontal: 20,
-            paddingRight: 8
+          borderLeftWidth: 1.5,
+          borderRightWidth: 1.5,
+          backgroundColor: colors.backgroundSecondary,
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderColor: colors.backgroundTertiary,
+          height: 50,
+          marginHorizontal: 15,
+          paddingHorizontal: 20,
+          paddingRight: 8,
         },
         topSettingContainer: {
-            borderTopLeftRadius: dimensions.mediumRadius,
-            borderTopRightRadius: dimensions.mediumRadius,
-            borderTopWidth: 1.5
+          borderTopLeftRadius: dimensions.mediumRadius,
+          borderTopRightRadius: dimensions.mediumRadius,
+          borderTopWidth: 1.5,
         },
         bottomSettingContainer: {
-            borderBottomLeftRadius: dimensions.mediumRadius,
-            borderBottomRightRadius: dimensions.mediumRadius,
-            borderBottomWidth: 1.5
+          borderBottomLeftRadius: dimensions.mediumRadius,
+          borderBottomRightRadius: dimensions.mediumRadius,
+          borderBottomWidth: 1.5,
         },
         settingTitle: {
-            color: colors.text,
-            fontSize: 16,
-        }
-    }), [isDark]);
+          color: colors.text,
+          fontSize: 16,
+        },
+      }),
+    [isDark]
+  );
 
-    useEffect(() => {
-        if (!twConfig) {
-            setTWConfig({})
-        } else {
-            setLocalSwitchState({
-                interpolate: twConfig.interpolate || false,
-                autoplay: twConfig.autoplay || false,
-                fps60: twConfig.fps60 || false,
-                hqPen: twConfig.hqPen || false,
-                turbo: twConfig.turbo || false
-            });
-        }
-    }, [twConfig]);
+  useEffect(() => {
+    if (!twConfig) {
+      setTWConfig({});
+    } else {
+      setLocalSwitchState({
+        interpolate: twConfig.interpolate || false,
+        autoplay: twConfig.autoplay || false,
+        fps60: twConfig.fps60 || false,
+        hqPen: twConfig.hqPen || false,
+        turbo: twConfig.turbo || false,
+      });
+    }
+  }, [twConfig]);
 
-    const handleSwitchToggle = (key, value) => {
-        setLocalSwitchState(prev => ({ ...prev, [key]: value }));
-        setTWConfig({ ...twConfig, [key]: value });
-    };
+  const handleSwitchToggle = (key, value) => {
+    setLocalSwitchState((prev) => ({ ...prev, [key]: value }));
+    setTWConfig({ ...twConfig, [key]: value });
+  };
 
-    // Force dark theme setting persisted in MMKV
-    const [forceDark, setForceDark] = useMMKVBoolean('forceDark');
+  // Force dark theme setting persisted in MMKV
+  const [forceDark, setForceDark] = useMMKVBoolean("forceDark");
 
-    const handleForceDarkToggle = (v) => {
-        // MMKV boolean hook stores true/false; clear not needed.
-        setForceDark(v);
-        // ThemeProvider reads this MMKV key and will update automatically.
-    };
+  const handleForceDarkToggle = (v) => {
+    // MMKV boolean hook stores true/false; clear not needed.
+    setForceDark(v);
+    // ThemeProvider reads this MMKV key and will update automatically.
+  };
 
-    return (
-        <ScrollView overScrollMode='always' bounces={true}>
-            <ItchyText style={s.sectionHeader}>Account</ItchyText>
-            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer, ...(!username && s.bottomSettingContainer) }}>
-                <ItchyText style={s.settingTitle}>{username ? `Signed in as ` : "Signed out"}{username && <ItchyText style={{ fontWeight: "bold" }}>{username}</ItchyText>}</ItchyText>
-                <Chip.Icon mode="filled" text={username ? 'Log Out' : 'Log In'} icon="key" color={username ? "#ff5555" : colors.accent} style={{ marginTop: 3 }} onPress={() => {
-                    if (username) {
-                        ScratchAPIWrapper.auth.logout(storage.getString("cookieSet")).then(() => {
-                            storage.clearAll();
-                        }).catch((e) => {
-                            console.error(e);
-                            console.error("Proceeding with login anyway.");
-                            storage.clearAll();
-                        });
-                    } else {
-                        router.push("/login");
-                    }
-                }} />
-            </FastSquircleView>
-            {username && <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.bottomSettingContainer }}>
-                <TouchableOpacity onPress={() => router.push(`/users/${username}`)}><ItchyText style={{ color: colors.accent, fontSize: 16, }}>Open your profile</ItchyText>
-                </TouchableOpacity>
-            </FastSquircleView>}
-            <ItchyText style={s.sectionHeader}>Player</ItchyText>
-            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
-                <ItchyText style={s.settingTitle}>Frame interpolation</ItchyText>
-                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, interpolate: v })} value={twConfig?.interpolate} />
-            </FastSquircleView>
-            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
-                <ItchyText style={s.settingTitle}>Autoplay</ItchyText>
-                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })} value={twConfig?.autoplay} />
-            </FastSquircleView>
-            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
-                <ItchyText style={s.settingTitle}>Force 60 FPS</ItchyText>
-                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, fps60: v })} value={twConfig?.fps60} />
-            </FastSquircleView>
-            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
-                <ItchyText style={s.settingTitle}>High-quality pen</ItchyText>
-                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, hqPen: v })} value={twConfig?.hqPen} />
-            </FastSquircleView>
-            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 24 : 0 }}>
-                <ItchyText style={s.settingTitle}>Turbo mode</ItchyText>
-                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })} value={twConfig?.turbo} />
-            </FastSquircleView>
-            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
-                <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Options provided by </ItchyText><TouchableOpacity onPress={() => linkWithFallback("https://turbowarp.org")}><ItchyText style={{ color: colors.accent, fontSize: 12 }}>TurboWarp</ItchyText></TouchableOpacity>
-            </FastSquircleView>
-            <ItchyText style={s.sectionHeader}>App</ItchyText>
-            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer }}>
-                <ItchyText style={s.settingTitle}>Force dark theme</ItchyText>
-                <Switch style={{ marginTop: isLiquidPlus ? 3 : 0 }} thumbColor='white' trackColor={{ false: '#686868', true: colors.accent }} onValueChange={(v) => handleForceDarkToggle(v)} value={forceDark === true} />
-            </FastSquircleView>
-            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
-                <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>When enabled, the app will always use the dark theme even if your device is set to light mode.</ItchyText>
-            </FastSquircleView>
-            <ItchyText style={s.sectionHeader}>About</ItchyText>
-            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.topSettingContainer }}>
-                <ItchyText style={{ color: colors.text, fontSize: 16 }}>Itchy v{version}</ItchyText>
-            </FastSquircleView>
-            <FastSquircleView cornerSmoothing={0.6} style={s.settingContainer}>
-                <TouchableOpacity onPress={() => router.push("/onboarding")}><ItchyText style={{ color: colors.accent, fontSize: 16, }}>Redo onboarding flow</ItchyText>
-                </TouchableOpacity>
-            </FastSquircleView>
-            <FastSquircleView cornerSmoothing={0.6} style={s.settingContainer}>
-                <TouchableOpacity onPress={() => linkWithFallback("https://itchy.micahlindley.com/privacy.html")}><ItchyText style={{ color: colors.accent, fontSize: 16, }}>Privacy Policy</ItchyText>
-                </TouchableOpacity>
-            </FastSquircleView>
-            <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer, ...s.bottomSettingContainer, justifyContent: "flex-start" }}>
-                <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>Made </ItchyText><TouchableOpacity onPress={() => linkWithFallback("https://github.com/micahlt")}><ItchyText style={{ color: colors.accent, fontSize: 12 }}>open source</ItchyText></TouchableOpacity><ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}> with ❤️</ItchyText>
-            </FastSquircleView>
-            <View style={{ height: 120 }}></View>
-        </ScrollView>
-    );
+  return (
+    <ScrollView
+      overScrollMode="always"
+      bounces={true}
+      contentContainerStyle={{ paddingTop: isLiquidPlus ? 60 : 0 }}
+    >
+      <ItchyText style={s.sectionHeader}>Account</ItchyText>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{
+          ...s.settingContainer,
+          ...s.topSettingContainer,
+          ...(!username && s.bottomSettingContainer),
+        }}
+      >
+        <ItchyText style={s.settingTitle}>
+          {username ? `Signed in as ` : "Signed out"}
+          {username && (
+            <ItchyText style={{ fontWeight: "bold" }}>{username}</ItchyText>
+          )}
+        </ItchyText>
+        <Chip.Icon
+          mode="filled"
+          text={username ? "Log Out" : "Log In"}
+          icon="key"
+          color={username ? "#ff5555" : colors.accent}
+          style={{ marginTop: 3 }}
+          onPress={() => {
+            if (username) {
+              ScratchAPIWrapper.auth
+                .logout(storage.getString("cookieSet"))
+                .then(() => {
+                  storage.clearAll();
+                })
+                .catch((e) => {
+                  console.error(e);
+                  console.error("Proceeding with login anyway.");
+                  storage.clearAll();
+                });
+            } else {
+              router.push("/login");
+            }
+          }}
+        />
+      </FastSquircleView>
+      {username && (
+        <FastSquircleView
+          cornerSmoothing={0.6}
+          style={{ ...s.settingContainer, ...s.bottomSettingContainer }}
+        >
+          <TouchableOpacity onPress={() => router.push(`/users/${username}`)}>
+            <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
+              Open your profile
+            </ItchyText>
+          </TouchableOpacity>
+        </FastSquircleView>
+      )}
+      <ItchyText style={s.sectionHeader}>Player</ItchyText>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{
+          ...s.settingContainer,
+          ...s.topSettingContainer,
+          paddingEnd: isLiquidPlus ? 10 : 0,
+        }}
+      >
+        <ItchyText style={s.settingTitle}>Frame interpolation</ItchyText>
+        <Switch
+          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          thumbColor="white"
+          trackColor={{ false: "#686868", true: colors.accent }}
+          onValueChange={(v) => setTWConfig({ ...twConfig, interpolate: v })}
+          value={twConfig?.interpolate}
+        />
+      </FastSquircleView>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 10 : 0 }}
+      >
+        <ItchyText style={s.settingTitle}>Autoplay</ItchyText>
+        <Switch
+          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          thumbColor="white"
+          trackColor={{ false: "#686868", true: colors.accent }}
+          onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })}
+          value={twConfig?.autoplay}
+        />
+      </FastSquircleView>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 10 : 0 }}
+      >
+        <ItchyText style={s.settingTitle}>Force 60 FPS</ItchyText>
+        <Switch
+          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          thumbColor="white"
+          trackColor={{ false: "#686868", true: colors.accent }}
+          onValueChange={(v) => setTWConfig({ ...twConfig, fps60: v })}
+          value={twConfig?.fps60}
+        />
+      </FastSquircleView>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 10 : 0 }}
+      >
+        <ItchyText style={s.settingTitle}>High-quality pen</ItchyText>
+        <Switch
+          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          thumbColor="white"
+          trackColor={{ false: "#686868", true: colors.accent }}
+          onValueChange={(v) => setTWConfig({ ...twConfig, hqPen: v })}
+          value={twConfig?.hqPen}
+        />
+      </FastSquircleView>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{ ...s.settingContainer, paddingEnd: isLiquidPlus ? 10 : 0 }}
+      >
+        <ItchyText style={s.settingTitle}>Turbo mode</ItchyText>
+        <Switch
+          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          thumbColor="white"
+          trackColor={{ false: "#686868", true: colors.accent }}
+          onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })}
+          value={twConfig?.turbo}
+        />
+      </FastSquircleView>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{
+          ...s.settingContainer,
+          ...s.bottomSettingContainer,
+          justifyContent: "flex-start",
+        }}
+      >
+        <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
+          Options provided by{" "}
+        </ItchyText>
+        <TouchableOpacity
+          onPress={() => linkWithFallback("https://turbowarp.org")}
+        >
+          <ItchyText style={{ color: colors.accent, fontSize: 12 }}>
+            TurboWarp
+          </ItchyText>
+        </TouchableOpacity>
+      </FastSquircleView>
+      <ItchyText style={s.sectionHeader}>App</ItchyText>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{ ...s.settingContainer, ...s.topSettingContainer }}
+      >
+        <ItchyText style={s.settingTitle}>Force dark theme</ItchyText>
+        <Switch
+          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          thumbColor="white"
+          trackColor={{ false: "#686868", true: colors.accent }}
+          onValueChange={(v) => handleForceDarkToggle(v)}
+          value={forceDark === true}
+        />
+      </FastSquircleView>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{
+          ...s.settingContainer,
+          ...s.bottomSettingContainer,
+          justifyContent: "flex-start",
+        }}
+      >
+        <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
+          When enabled, the app will always use the dark theme even if your
+          device is set to light mode.
+        </ItchyText>
+      </FastSquircleView>
+      <ItchyText style={s.sectionHeader}>About</ItchyText>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{ ...s.settingContainer, ...s.topSettingContainer }}
+      >
+        <ItchyText style={{ color: colors.text, fontSize: 16 }}>
+          Itchy v{version}
+        </ItchyText>
+      </FastSquircleView>
+      <FastSquircleView cornerSmoothing={0.6} style={s.settingContainer}>
+        <TouchableOpacity onPress={() => router.push("/onboarding")}>
+          <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
+            Redo onboarding flow
+          </ItchyText>
+        </TouchableOpacity>
+      </FastSquircleView>
+      <FastSquircleView cornerSmoothing={0.6} style={s.settingContainer}>
+        <TouchableOpacity
+          onPress={() =>
+            linkWithFallback("https://itchy.micahlindley.com/privacy.html")
+          }
+        >
+          <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
+            Privacy Policy
+          </ItchyText>
+        </TouchableOpacity>
+      </FastSquircleView>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={{
+          ...s.settingContainer,
+          ...s.bottomSettingContainer,
+          justifyContent: "flex-start",
+        }}
+      >
+        <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
+          Made{" "}
+        </ItchyText>
+        <TouchableOpacity
+          onPress={() => linkWithFallback("https://github.com/micahlt")}
+        >
+          <ItchyText style={{ color: colors.accent, fontSize: 12 }}>
+            open source
+          </ItchyText>
+        </TouchableOpacity>
+        <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
+          {" "}
+          with ❤️
+        </ItchyText>
+      </FastSquircleView>
+      <View style={{ height: 120 }}></View>
+    </ScrollView>
+  );
 }
