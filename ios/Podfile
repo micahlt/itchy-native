@@ -20,6 +20,17 @@ platform :ios, podfile_properties['ios.deploymentTarget'] || '15.1'
 
 prepare_react_native_project!
 
+# Force FastSquircle to build as static library
+pre_install do |installer|
+  installer.pod_targets.each do |pod|
+    if pod.name.eql?('react-native-fast-squircle') || pod.name.include?('FastSquircle')
+      def pod.build_type
+        Pod::BuildType.static_library
+      end
+    end
+  end
+end
+
 target 'Itchy' do
   use_expo_modules!
 
