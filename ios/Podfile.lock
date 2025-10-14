@@ -75,6 +75,8 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
+  - ExpoNetwork (8.0.7):
+    - ExpoModulesCore
   - ExpoSharing (14.0.7):
     - ExpoModulesCore
   - ExpoSystemUI (6.0.7):
@@ -2184,6 +2186,7 @@ DEPENDENCIES:
   - ExpoLinearGradient (from `../node_modules/expo-linear-gradient/ios`)
   - ExpoLinking (from `../node_modules/expo-linking/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
+  - ExpoNetwork (from `../node_modules/expo-network/ios`)
   - ExpoSharing (from `../node_modules/expo-sharing/ios`)
   - ExpoSystemUI (from `../node_modules/expo-system-ui/ios`)
   - FastSquircle (from `../node_modules/react-native-fast-squircle`)
@@ -2307,6 +2310,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-linking/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
+  ExpoNetwork:
+    :path: "../node_modules/expo-network/ios"
   ExpoSharing:
     :path: "../node_modules/expo-sharing/ios"
   ExpoSystemUI:
@@ -2487,6 +2492,7 @@ SPEC CHECKSUMS:
   ExpoLinearGradient: f9e7182e5253d53b2de4134b69d70bbfc2d50588
   ExpoLinking: f5c171877e118e792cb9a77e5ade0b080d899b14
   ExpoModulesCore: b6669751e77cb22e718f1200e35ba94ed621ca6d
+  ExpoNetwork: 97073786edfe405aba5d0987a544617ed0671ad1
   ExpoSharing: 6f52a070c3083c11717cf2236ae8fd6ac45bf028
   ExpoSystemUI: 5e7fbe4b716edb9e3a7bc0441e4a3b6b1f9eb1ea
   FastSquircle: a863bec8d1f562d6f295fab0d654e2c2b523c8ca
