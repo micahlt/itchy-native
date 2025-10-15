@@ -93,7 +93,9 @@ export default function Message({ message }) {
                 router.push(`/studios/${message.gallery_id}`);
                 break;
             case "remixproject":
-                return `remixed ${message.parent_title}`;
+                console.log(message)
+                router.push(`/projects/${message.project_id}`);
+                break;
             case "curatorinvite":
                 router.push(`/studios/${message.gallery_id}`);
                 break;
