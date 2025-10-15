@@ -8,6 +8,7 @@ import { decode } from 'html-entities';
 import { useRouter } from "expo-router";
 import { useMMKVString } from "react-native-mmkv";
 import timeago from "time-ago";
+import linkWithFallback from "../utils/linkWithFallback";
 
 export default function Message({ message }) {
     const { colors } = useTheme();
@@ -93,7 +94,6 @@ export default function Message({ message }) {
                 router.push(`/studios/${message.gallery_id}`);
                 break;
             case "remixproject":
-                console.log(message)
                 router.push(`/projects/${message.project_id}`);
                 break;
             case "curatorinvite":
@@ -106,6 +106,7 @@ export default function Message({ message }) {
                 router.push(`/studios/${message.gallery_id}`);
                 break;
             case "forumpost":
+                linkWithFallback(`https://scratch.mit.edu/discuss/topic/${message.topic_id}/`, colors.accent);
                 return `posted in ${message.topic_title}`;
             case "admin":
                 return message.message;
