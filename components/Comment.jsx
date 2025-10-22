@@ -58,7 +58,7 @@ export default function Comment({ comment, isReply = false, showReplies = true, 
         <>
             <View style={{ borderLeftColor: (isSelected || partOfSelection) ? colors.accent : colors.backgroundTertiary, borderLeftWidth: isReply ? 2 : 0, marginBottom: isLastReply ? 0 : 10, marginLeft: isReply ? 8 : 0, width: fullWidth ? "100%" : undefined }
             }>
-                <Card style={{ backgroundColor: colors.background, borderRadius: 15, marginLeft: isReply ? 10 : 0, marginBottom: replies.length > 0 ? 10 : 0, borderColor: colors.accent, borderWidth: isSelected ? 2 : 1, elevation: 0, borderColor: colors.outline }} onPress={onPressHandler} onLongPress={onLongPressHandler} pressableStyle={{ padding: 15 }}>
+                <Card style={{ backgroundColor: colors.background, borderRadius: 15, marginLeft: isReply ? 10 : 0, marginBottom: replies.length > 0 ? 10 : 0, borderColor: colors.accent, borderWidth: isSelected ? 2 : 1, elevation: 0, borderColor: isSelected ? colors.accent : colors.outline }} onPress={onPressHandler} onLongPress={onLongPressHandler} pressableStyle={{ padding: 15 }}>
                     <View style={{ flexDirection: "row", alignItems: "top", justifyContent: "space-between" }}>
                         <Chip.Image text={comment.author.username} imageURL={comment.author.image} mode="outlined" style={{ marginRight: "auto", marginBottom: 8, borderColor: "transparent" }} textStyle={{ fontWeight: "bold" }} onPress={openAuthor} />
                         <ItchyText style={{ color: colors.textSecondary, fontSize: 12, marginTop: 2 }}>{timestamp}</ItchyText>
