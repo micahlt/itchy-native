@@ -100,8 +100,8 @@ android {
         applicationId 'org.scratchclient4.itchy'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 58
-        versionName "2.6.2"
+        versionCode 59
+        versionName "2.6.3"
     }
     signingConfigs {
         debug {

@@ -48,6 +48,12 @@ const data = [{
     description: "Visit your friends' profiles, check out their projects, and follow users, all in a mobile-friendly format.",
     imgSrc: onboarding.accounts,
 },
+{
+    key: 7,
+    title: "Security",
+    description: "Itchy communicates directly with the official Scratch website uses, so your account data stays secure.",
+    imgSrc: onboarding.security
+}
 ];
 const { width, height } = Dimensions.get("screen")
 
