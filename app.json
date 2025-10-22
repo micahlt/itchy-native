@@ -2,7 +2,7 @@
   "expo": {
     "name": "Itchy",
     "slug": "itchy-native",
-    "version": "2.6.1",
+    "version": "2.6.2",
     "scheme": "itchy",
     "newArchEnabled": true,
     "plugins": [
@@ -15,7 +15,7 @@
           },
           "android": {
             "compileSdkVersion": 35,
-            "targetSdkVersion": 34,
+            "targetSdkVersion": 35,
             "buildToolsVersion": "35.0.0",
             "kotlinVersion": "1.9.25",
             "reactNativeReleaseLevel": "experimental"
@@ -59,7 +59,7 @@
     },
     "userInterfaceStyle": "automatic",
     "android": {
-      "versionCode": 56,
+      "versionCode": 58,
       "package": "org.scratchclient4.itchy",
       "adaptiveIcon": {
         "backgroundColor": "#0082FF",

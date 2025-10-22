@@ -1,9 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Stack from 'expo-router/stack';
 import { ThemeProvider, useTheme } from '../utils/theme';
 import { Platform, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { darkColors, lightColors } from '../utils/theme/colors';
 import { useMMKVObject, useMMKVString } from 'react-native-mmkv';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
@@ -15,12 +14,11 @@ import { SWRConfig } from 'swr';
 import * as Network from 'expo-network';
 
 export default function App() {
-    const [twConfig, setTWConfig] = useMMKVObject("twConfig");
+    const [twConfig] = useMMKVObject("twConfig");
     const [user, setUser] = useMMKVObject("user");
-    const [cookieSet, setCookieSet] = useMMKVString("cookieSet");
+    const [cookieSet] = useMMKVString("cookieSet");
     const [localControllerMappings, setLocalControllerMappings] = useMMKVObject("localControllerMappings");
-    const [savedLogins, setSavedLogins] = useMMKVObject("savedLogins", encryptedStorage);
-    const isLiquidPlus = useMemo(() => Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26, [Platform]);
+    const [savedLogins] = useMMKVObject("savedLogins", encryptedStorage);
 
     // Check network connectivity when app opens
     useEffect(() => {
@@ -122,13 +120,11 @@ export default function App() {
 }
 
 function ThemeConsumerInner({ twConfig }) {
-    const { colors, isDark } = useTheme();
+    const { colors } = useTheme();
     const isLiquidPlus = Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
 
     // If colors aren't ready yet, render nothing (prevents flash)
     if (!colors) return null;
-
-    console.log("isDark:", isDark);
 
     return (
         <View style={{ backgroundColor: colors.background, flex: 1 }}>
@@ -186,7 +182,7 @@ function ThemeConsumerInner({ twConfig }) {
                 <Stack.Screen name="users/[username]/activity" options={{
                     presentation: "modal",
                     animation: "fade_from_bottom",
-                    title: "loading...",
+                    headerTitle: "loading...",
                 }} />
                 <Stack.Screen name="users/[username]/comments" options={{
                     presentation: "modal",
@@ -209,26 +205,26 @@ function ThemeConsumerInner({ twConfig }) {
                 <Stack.Screen name="login" options={{
                     presentation: "modal",
                     animation: "default",
-                    title: "Log In"
+                    headerTitle: "Log In"
                 }} />
                 <Stack.Screen name="multiplay" options={{
                     animation: "fade_from_bottom",
-                    title: "MultiPlay"
+                    headerTitle: "MultiPlay"
                 }} />
                 <Stack.Screen name="projects/[id]/controls/find" options={{
                     presentation: "modal",
                     animation: "fade_from_bottom",
-                    title: "Find Controller Setups"
+                    headerTitle: "Find Controller Setups"
                 }} />
                 <Stack.Screen name="projects/[id]/controls/config" options={{
                     presentation: "modal",
                     animation: "fade_from_bottom",
-                    title: "Controller Config"
+                    headerTitle: "Controller Config"
                 }} />
                 <Stack.Screen name="error" options={{
                     presentation: "modal",
                     animation: "fade",
-                    title: "Error"
+                    headerTitle: "Error"
                 }} />
             </Stack>
         </View>

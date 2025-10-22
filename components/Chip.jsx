@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import { View } from "react-native";
 import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import tinycolor from "tinycolor2";
 import { useCallback, useMemo } from "react";
 import ItchyText from "./ItchyText";
@@ -43,7 +43,7 @@ const ImageChip = ({
           height: 32,
           marginRight: "auto",
         }}
-        android_ripple={{ borderless: false }}
+        android_ripple={{ borderless: false, color: colors.ripple }}
         onPress={onPressFn}
       >
         <View

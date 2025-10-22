@@ -39,7 +39,7 @@ export default function StudioComments() {
             if (offset === 0) {
                 setComments(d);
             } else {
-                setComments((prev) => [...prev, ...d]);
+                setComments((prev) => uniqueArray([...prev, ...d]));
             }
             setLoading(false);
         }).catch(console.error);
@@ -180,7 +180,7 @@ export default function StudioComments() {
                     }} refreshControl={<RefreshControl refreshing={loading} tintColor={"white"} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} />
                 )}
                 <CommentEditor onSubmit={postComment} reply={reply} onClearReply={() => setReply(undefined)} />
-                <CommentOptionSheet comment={commentOptionsObj} setComment={setCommentOptionsObj} context={{ type: "studio", studioID: id }} onDeleteCommentID={afterDeleteComment} />
+                {studio ? <CommentOptionSheet comment={commentOptionsObj} setComment={setCommentOptionsObj} context={{ type: "studio", studioID: id, host: studio.host }} onDeleteCommentID={afterDeleteComment} /> : <></>}
             </KeyboardAvoidingView>
         </View>
     );

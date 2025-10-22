@@ -23,7 +23,6 @@ export default function ProjectComments() {
     const [csrf] = useMMKVString("csrfToken");
     const [user] = useMMKVObject("user");
     const [reply, setReply] = useState(undefined);
-    const [commentContent, setCommentContent] = useState("");
     const [rerenderComments, setRerenderComments] = useState(true);
     const [commentOptionsObj, setCommentOptionsObj] = useState(undefined);
 
@@ -35,7 +34,7 @@ export default function ProjectComments() {
                 if (offset === 0) {
                     setComments(d);
                 } else {
-                    setComments((prev) => [...prev, ...d]);
+                    setComments((prev) => uniqueArray([...prev, ...d]));
                 }
                 setLoading(false);
             }).catch(console.error);
@@ -58,7 +57,7 @@ export default function ProjectComments() {
             scrollRef.current.scrollToIndex({ index: commentIndex, animated: true });
             setHasScrolledToSelected(true);
         }
-    }, [comments])
+    }, [comments, comment_id])
 
     const postComment = (content) => {
         let authorID = null, parentID = null;
@@ -75,34 +74,34 @@ export default function ProjectComments() {
                 parentID = topLevelComment?.id || reply.id;
             }
             authorID = reply.author.id;
+            console.log(parentID);
         }
         ScratchAPIWrapper.project.postComment(id, content, csrf, user.token, parentID, authorID).then((postedID) => {
             setRerenderComments(!rerenderComments);
             if (!!postedID) {
+                console.log("Posted ID:", postedID)
                 if (!!reply) {
                     setComments((prev) => prev.map(c => {
                         // If replying to a top-level comment, add to its replies
                         if (c.id === reply.id) {
-                            const newReply = { author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png`, id: user.id }, content, datetime_created: new Date(), id: postedID, parentID: c.id, includesReplies: true, replies: [] };
+                            const newReply = { author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: postedID, parentID: c.id, includesReplies: true, replies: [] };
                             return { ...c, replies: [...c.replies, newReply] };
                         }
                         // If replying to a reply, find the top-level comment that contains this reply
                         else if (c.replies && c.replies.some(r => r.id === reply.id)) {
-                            const newReply = { author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png`, id: user.id }, content, datetime_created: new Date(), id: postedID, parentID: c.id, includesReplies: true, replies: [] };
+                            const newReply = { author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: postedID, parentID: c.id, includesReplies: true, replies: [] };
                             return { ...c, replies: [...c.replies, newReply] };
                         }
                         return c;
                     }));
                     router.setParams({ comment_id: `comments-${postedID}` });
-                    setCommentContent("");
                     setReply(undefined);
                 } else {
                     setComments((prev) => {
-                        const c = [{ author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png`, id: user.id }, content, datetime_created: new Date(), id: postedID, replies: [], includesReplies: true }, ...prev];
+                        const c = [{ author: { username: user.username, image: `https://cdn2.scratch.mit.edu/get_image/user/${user.id}_60x60.png` }, content, datetime_created: new Date(), id: postedID, replies: [], includesReplies: true }, ...prev];
                         return uniqueArray(c);
                     });
                     router.setParams({ comment_id: `comments-${postedID}` });
-                    setCommentContent("");
                 }
             } else {
                 alert("Comment failed to post. Please try again later.");
@@ -133,7 +132,7 @@ export default function ProjectComments() {
 
     const renderComment = useCallback(({ item }) => {
         return <Comment comment={item} selected={comment_id ? comment_id.split("comments-")[1] : undefined} onPress={setReply} onLongPress={openCommentOptions} />;
-    }, [project, rerenderComments]);
+    }, [comments, rerenderComments]);
 
     const endReached = useCallback(() => {
         if (loading) return;
@@ -141,6 +140,7 @@ export default function ProjectComments() {
     }, [loading, offset]);
 
     const refresh = useCallback(() => {
+        setComments([]);
         setOffset(0);
     }, []);
 

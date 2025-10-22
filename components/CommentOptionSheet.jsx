@@ -35,6 +35,8 @@ export default function CommentOptionSheet({ comment, context, setComment = () =
 
     const canDelete = useMemo(() => {
         if (!user || !comment) return false;
+        console.log("Context:", context)
+        if (user.id == context.host) return true;
         if (user.username === context.owner) return true;
         return false;
     }, [user, comment, context, csrf]);

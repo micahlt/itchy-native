@@ -32,7 +32,7 @@ export default function UserComments() {
             if (page === 1) {
                 setComments(d);
             } else {
-                setComments([...comments, ...d]);
+                setComments((prev) => uniqueArray([...prev, ...d]));
             }
             setLoading(false);
         }).catch(console.error);

@@ -665,7 +665,7 @@ if (document.readyState === 'loading') {
             <Chip.Icon icon='star' text={approximateNumber(metadata.stats.favorites)} color="#ddbf37" mode={interactions.favorited ? "filled" : "outlined"} onPress={() => toggleInteraction("favorite")} />
             <Chip.Icon icon='sync' text={approximateNumber(metadata.stats.remixes)} color={isDark ? "#32ee87" : "#0ca852"} mode="filled" />
             <Chip.Icon icon='eye' text={approximateNumber(metadata.stats.views)} color="#47b5ff" mode="filled" />
-            <Chip.Icon icon='radio' text="MultiPlay" color="#47b5ff" mode="filled" onPress={openOnlineConfigSheet} />
+            <Chip.Icon icon='radio' text="MultiPlay" color="#4769ff" mode="filled" onPress={openOnlineConfigSheet} />
             <Chip.Icon icon='share' text="Share" color="#7847ff" mode="filled" onPress={() => Share.share(Platform.OS === "android" ? {
               message: `https://scratch.mit.edu/projects/${id}`,
               dialogTitle: "Share this project"

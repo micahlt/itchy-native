@@ -100,7 +100,7 @@ export default function User() {
             />
 
             <ScrollView refreshControl={<RefreshControl refreshing={loading} onRefresh={load} progressBackgroundColor={colors.accent} colors={isDark ? ["black"] : ["white"]} />} contentContainerStyle={{ paddingBottom: 100 }}>
-                {!!profile && (<>
+                {!!profile ? (<>
                     <View style={{ flexDirection: "row", alignItems: "center", padding: 20, paddingBottom: 0 }}>
                         <Image source={{ uri: profile.profile.images["90x90"] }} placeholder={require("../../../assets/avatar.png")} placeholderContentFit="cover" style={{ height: 75, width: 75, borderRadius: 75, marginRight: 25, backgroundColor: "white" }} />
                         <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-around", marginRight: 10, flex: 1 }}>
@@ -119,19 +119,19 @@ export default function User() {
                         </View>
                     </View>
                     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginVertical: 15, columnGap: 10, paddingHorizontal: 20 }}>
-                        {myUsername === username && <TexturedButton size={10} style={{ flex: 1 }} onPress={openProfile}>Edit Profile</TexturedButton>}
+                        {myUsername === username ? <TexturedButton size={10} style={{ flex: 1 }} onPress={openProfile}>Edit Profile</TexturedButton> : null}
                         <TexturedButton size={11} style={{ flex: 1 }} onPress={() => router.push(`/users/${username}/about`)}>About</TexturedButton>
                         <TexturedButton size={11} style={{ flex: 1 }} onPress={() => router.push(`/users/${username}/activity`)}>Activity</TexturedButton>
-                        {followingStatus !== undefined && <TexturedButton size={11} style={{ flex: 1 }} onPress={changeFollowingStatus}>{followingStatus === true ? "Unfollow" : "Follow"}</TexturedButton>}
+                        {followingStatus !== undefined ? <TexturedButton size={11} style={{ flex: 1 }} onPress={changeFollowingStatus}>{followingStatus === true ? "Unfollow" : "Follow"}</TexturedButton> : null}
                     </View>
-                    {profile.featuredProject && <ProjectCard project={profile.featuredProject} width={width - 40} style={{ margin: "auto", marginTop: 0 }} />}
+                    {profile.featuredProject ? <ProjectCard project={profile.featuredProject} width={width - 40} style={{ margin: "auto", marginTop: 0 }} /> : null}
 
                     <HorizontalContentScroller title="Created Projects" data={projects} iconName="sparkles" headerStyle={{ marginTop: 16 }} onShowMore={() => router.push(`/users/${username}/projects`)} />
 
                     <HorizontalContentScroller title="Favorites" data={favorites} iconName="star" headerStyle={{ marginTop: 5 }} onShowMore={() => router.push(`/users/${username}/favorites`)} />
 
                     <HorizontalContentScroller title="Curated Studios" data={curatedStudios} itemType="studios" iconName="albums" headerStyle={{ marginTop: 5 }} onShowMore={() => router.push(`/users/${username}/studios`)} />
-                </>)}
+                </>) : <></>}
             </ScrollView>
 
         </View>

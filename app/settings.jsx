@@ -142,6 +142,7 @@ export default function SettingsScreen() {
                 .logout(storage.getString("cookieSet"))
                 .then(() => {
                   storage.clearAll();
+                  storage.set("hasOpenedBefore", true);
                 })
                 .catch((e) => {
                   console.error(e);

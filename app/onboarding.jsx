@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import ItchyText from "../components/ItchyText";
-import { Dimensions, useWindowDimensions, View } from "react-native";
+import { Dimensions, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { useTheme } from "../utils/theme";
-import Carousel, { Pagination } from "react-native-reanimated-carousel";
+import Carousel from "react-native-reanimated-carousel";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import Pressable from "../components/Pressable";
 import onboarding from "../assets/onboarding/onboarding";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { useMMKVBoolean } from "react-native-mmkv";
 import { router, useNavigation } from "expo-router";
 
@@ -146,7 +146,7 @@ export default function Onboarding({ }) {
                     // Shadow for Android
                     elevation: 5
                 }} >
-                    <MaterialIcons name={isAtEnd ? "check" : "arrow-forward"} size={36} color="white" />
+                    <Ionicons name={isAtEnd ? "checkmark" : "arrow-forward"} size={36} color="white" />
                 </View>
             </Pressable>
         </View>

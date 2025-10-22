@@ -1,15 +1,13 @@
 import { View, useWindowDimensions, ScrollView, RefreshControl } from "react-native";
 import ItchyText from "../../../components/ItchyText";
-import Pressable from "../../../components/Pressable";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
-import ProjectCard from "../../../components/ProjectCard";
 import { Image } from "expo-image";
 import approximateNumber from "approximate-number";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import linkWithFallback from "../../../utils/linkWithFallback";
 import Card from "../../../components/Card";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
@@ -84,8 +82,8 @@ export default function Studio() {
                 options={{
                     title: studio?.title ? "" : "Loading...",
                     headerRight: () => <>
-                        <MaterialIcons.Button onPressIn={() => router.push(`/studios/${id}/comments`)} name='question-answer' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
-                        <MaterialIcons.Button onPressIn={openStudio} name='launch' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
+                        <Ionicons.Button onPressIn={() => router.push(`/studios/${id}/comments`)} name='chatbubble-ellipses' size={22} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
+                        <Ionicons.Button onPressIn={openStudio} name='open' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} />
                     </>
                 }}
             />
