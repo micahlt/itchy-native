@@ -42,7 +42,7 @@ import useSWR from "swr";
 import TexturedButton from "../../components/TexturedButton";
 
 // Memoized header component to prevent unnecessary re-renders
-const Header = memo(({ insets, colors, headerStyle, logoStyle }) => (
+const Header = memo(({ insets, colors, headerStyle, logoStyle, username }) => (
   <Animated.View
     style={[
       headerStyle,
@@ -69,7 +69,7 @@ const Header = memo(({ insets, colors, headerStyle, logoStyle }) => (
       source={require("../../assets/logo-nobg.png")}
       style={[logoStyle, { height: 65, width: 65 }]}
     />
-    <TouchableOpacity onPress={() => router.push("/settings")}>
+    <TouchableOpacity onPress={() => router.push("/settings")} onLongPress={() => router.push(`/users/${username}`)}>
       <Ionicons
         style={{ marginRight: 7 }}
         name="settings"
@@ -328,6 +328,7 @@ export default function HomeScreen() {
             colors={colors}
             headerStyle={headerStyle}
             logoStyle={logoStyle}
+            username={username}
           />
           <AniamtedSquircleView
             cornerSmoothing={0.6}
