@@ -77,10 +77,8 @@ export default function Project() {
   }, [id]);
 
   const toggleInteraction = (interaction) => {
-    console.log("Toggling interaction:", interaction);
     if (interaction == "love") {
       ScratchAPIWrapper.project.setInteraction("loves", !interactions.loved, id, username, token, storage.getString("csrfToken"), storage.getString("cookieSet")).then((d) => {
-        console.log("Love interaction response:", d);
         if (!d.statusChanged) return;
         setInteractions({ ...interactions, loved: !interactions.loved });
         setMetadata({ ...metadata, stats: { ...metadata.stats, loves: metadata.stats.loves + (interactions.loved ? -1 : 1) } });

@@ -30,7 +30,6 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
     // Expose refresh method to parent
     useImperativeHandle(ref, () => ({
         refresh: () => {
-            console.log("Feed: Refreshing with SWR mutate");
             mutate();
         }
     }), [mutate]);

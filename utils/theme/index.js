@@ -30,10 +30,6 @@ export const ThemeProvider = (props) => {
         }
     }, [colorScheme, forceDark]);
 
-    useEffect(() => {
-        console.log(`IsDark: ${isDark}`);
-    }, [isDark])
-
     const defaultTheme = useMemo(() => {
         return {
             isDark,

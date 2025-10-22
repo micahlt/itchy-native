@@ -2,13 +2,11 @@ import fetch from "../fetch-provider";
 
 const APIExplore = {
     getExplore: async () => {
-        console.log("Getting explore")
         const res = await fetch("https://api.scratch.mit.edu/proxy/featured", {
             headers: {
                 "Origin": "https://scratch.mit.edu"
             }
         });
-        console.log(res.status)
         const data = await res.json();
         return {
             featured: data.community_featured_projects,
@@ -51,7 +49,6 @@ const APIExplore = {
         return data;
     },
     getFeed: async (username, token, offset = 0, limit = 4) => {
-        console.log("Getting feed")
         const res = await fetch(`https://api.scratch.mit.edu/users/${username}/following/users/activity?limit=${limit}&offset=${offset}`, {
             headers: {
                 "x-token": token,

@@ -42,9 +42,6 @@ export default function Search() {
       if (searchBarRef.current) {
         searchBarRef.current.focus();
       }
-      if (!searchHistory) {
-        setSearchHistory([]);
-      }
 
       return () => {
         setQuery("");
@@ -212,7 +209,7 @@ export default function Search() {
               />
             }
             onRefresh={search}
-            ListEmptyComponent={<EmptySearchComponent searchHistory={searchHistory} onHistoryPress={search} colors={colors} />}
+            ListEmptyComponent={<EmptySearchComponent searchHistory={searchHistory} onClearHistory={() => setSearchHistory([])} onHistoryPress={search} colors={colors} />}
           />
         </FastSquircleView>
       </FastSquircleView>
@@ -220,7 +217,7 @@ export default function Search() {
   );
 }
 
-function EmptySearchComponent({ searchHistory, onHistoryPress, colors }) {
+function EmptySearchComponent({ searchHistory, onClearHistory, onHistoryPress, colors }) {
   const hasHistory = searchHistory && searchHistory.length > 0;
 
   return (
@@ -251,7 +248,7 @@ function EmptySearchComponent({ searchHistory, onHistoryPress, colors }) {
 
       {hasHistory && (
         <View
-          style={{ maxHeight: 200, width: "100%" }}
+          style={{ width: "100%" }}
         >
           {searchHistory.map((historyItem, index) => (
             <Card
@@ -290,6 +287,7 @@ function EmptySearchComponent({ searchHistory, onHistoryPress, colors }) {
               </View>
             </Card>
           ))}
+          <Chip.Icon text="Clear history" icon="trash" mode="outlined" onPress={() => setTimeout(onClearHistory, 150)} style={{ marginHorizontal: "auto", marginTop: 10 }} provider="gesture-handler" />
         </View>
       )}
     </View>

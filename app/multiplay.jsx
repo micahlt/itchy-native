@@ -377,7 +377,7 @@ export default function MultiPlay() {
             text={status}
             mode="filled"
             style={{ marginRight: 15 }}
-            color={status == "Connected" ? "#1fa81f" : undefined}
+            color={status == "Connected" ? "#1fa81f" : (status == "Idle" ? colors.accent : undefined)}
           />
         </View>
         {isUserUnder13() && !remoteStream && (

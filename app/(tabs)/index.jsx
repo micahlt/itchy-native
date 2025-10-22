@@ -168,7 +168,6 @@ export default function HomeScreen() {
 
   // Simple refresh function using SWR mutate
   const refresh = useCallback(() => {
-    console.log("Starting refresh");
     rotationPaused.value = false;
 
     // Refresh all data sources
@@ -179,7 +178,6 @@ export default function HomeScreen() {
 
     // Stop rotation after a delay
     setTimeout(() => {
-      console.log("Stopping rotation");
       rotationPaused.value = true;
     }, 2000);
   }, [refreshExplore, refreshFriendsLoves, refreshFriendsProjects]); // Memoize vib function to prevent recreations

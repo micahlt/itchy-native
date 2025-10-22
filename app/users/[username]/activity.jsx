@@ -27,7 +27,7 @@ export default function UserActivity({ }) {
     return <>
         <Stack.Screen
             options={{
-                title: `${username}'s Activity`,
+                headerTitle: `${username}'s Activity`,
             }}
         />
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingHorizontal: 15, paddingBottom: insets.bottom + 35 }}>
