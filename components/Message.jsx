@@ -42,7 +42,7 @@ export default function Message({ message }) {
             case "curatorinvite":
                 return `invited you to curate ${message.title}`;
             case "becomeownerstudio":
-                return `promoted you to curator of ${message.gallery_title}`;
+                return `promoted you to manager of ${message.gallery_title}`;
             case "becomehoststudio":
                 return `made you host of ${message.gallery_title}`;
             case "forumpost":
