@@ -4,6 +4,7 @@ import {
   useWindowDimensions,
   RefreshControl,
   Platform,
+  ScrollView,
 } from "react-native";
 import { useTheme } from "../../utils/theme";
 import {
@@ -12,7 +13,7 @@ import {
 } from "react-native-safe-area-context";
 import APIExplore from "../../utils/api-wrapper/explore";
 import ProjectCard from "../../components/ProjectCard";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Chip from "../../components/Chip";
 import StudioCard from "../../components/StudioCard";
 import { useFocusEffect } from "expo-router";
@@ -20,10 +21,10 @@ import searchForUser from "../../utils/searchForUser";
 import UserCard from "../../components/UserCard";
 import { FlashList } from "@shopify/flash-list";
 import FastSquircleView from "react-native-fast-squircle";
-import Animated from "react-native-reanimated";
 import ItchyText from "../../components/ItchyText";
 import { Ionicons } from "@expo/vector-icons";
-import { opacity } from "react-native-redash";
+import { useMMKVObject } from "react-native-mmkv";
+import Card from "../../components/Card";
 
 export default function Search() {
   const { colors, dimensions, isDark } = useTheme();
@@ -34,33 +35,57 @@ export default function Search() {
   const searchBarRef = useRef(null);
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
-  const AniamtedSquircleView =
-    Animated.createAnimatedComponent(FastSquircleView);
+  const [searchHistory, setSearchHistory] = useMMKVObject("searchHistory");
 
-  useFocusEffect(() => {
-    if (searchBarRef.current) {
-      searchBarRef.current.focus();
+  useFocusEffect(
+    useCallback(() => {
+      if (searchBarRef.current) {
+        searchBarRef.current.focus();
+      }
+      if (!searchHistory) {
+        setSearchHistory([]);
+      }
+
+      return () => {
+        setQuery("");
+        setResults([]);
+      }
+    }, [])
+  );
+
+  const search = (searchQuery = null) => {
+    // Only use searchQuery if it's a string, otherwise use current query state
+    const queryToSearch = (typeof searchQuery === 'string') ? searchQuery : query;
+    if (!queryToSearch || !queryToSearch.trim()) return; // Don't search empty queries
+
+    // Update the query state if a search query was provided (from history)
+    if (typeof searchQuery === 'string') {
+      setQuery(searchQuery);
     }
-  });
 
-  const search = () => {
     setIsLoading(true);
     setResults([]);
+
+    // Update search history - add new query and keep only last 5
+    const currentHistory = searchHistory || [];
+    const newHistory = [queryToSearch.trim(), ...currentHistory.filter(item => item !== queryToSearch.trim())].slice(0, 5);
+    setSearchHistory(newHistory);
+
     switch (type) {
       case "projects":
-        APIExplore.searchForProjects(query).then((data) => {
+        APIExplore.searchForProjects(queryToSearch).then((data) => {
           setResults(data);
           setIsLoading(false);
         });
         break;
       case "studios":
-        APIExplore.searchForStudios(query).then((data) => {
+        APIExplore.searchForStudios(queryToSearch).then((data) => {
           setResults(data);
           setIsLoading(false);
         });
         break;
       case "users":
-        searchForUser(query).then((data) => {
+        searchForUser(queryToSearch).then((data) => {
           setResults(data);
           setIsLoading(false);
         });
@@ -100,6 +125,7 @@ export default function Search() {
         onSubmitEditing={search}
         clearButtonMode="always"
         onChangeText={(t) => setQuery(t)}
+        value={query}
       />
       <View
         style={{
@@ -186,35 +212,87 @@ export default function Search() {
               />
             }
             onRefresh={search}
-            ListEmptyComponent={
-              <View
-                style={{
-                  alignItems: "center",
-                  flex: 1,
-                  justifyContent: "center",
-                }}
-              >
-                <Ionicons
-                  name="search-circle"
-                  size={128}
-                  color={colors.backgroundTertiary}
-                />
-                <ItchyText
-                  style={{
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    color: colors.textSecondary,
-                    opacity: 0.6,
-                  }}
-                >
-                  Search for something to get started
-                </ItchyText>
-              </View>
-            }
+            ListEmptyComponent={<EmptySearchComponent searchHistory={searchHistory} onHistoryPress={search} colors={colors} />}
           />
         </FastSquircleView>
       </FastSquircleView>
     </SafeAreaView>
+  );
+}
+
+function EmptySearchComponent({ searchHistory, onHistoryPress, colors }) {
+  const hasHistory = searchHistory && searchHistory.length > 0;
+
+  return (
+    <View
+      style={{
+        alignItems: "center",
+        flex: 1,
+        justifyContent: "center",
+        paddingHorizontal: 20,
+      }}
+    >
+      <Ionicons
+        name="search-circle"
+        size={128}
+        color={colors.backgroundTertiary}
+      />
+      <ItchyText
+        style={{
+          textAlign: "center",
+          fontWeight: "bold",
+          color: colors.textSecondary,
+          opacity: 0.6,
+          marginBottom: hasHistory ? 20 : 0,
+        }}
+      >
+        {hasHistory ? "Recent searches" : "Search for something to get started"}
+      </ItchyText>
+
+      {hasHistory && (
+        <View
+          style={{ maxHeight: 200, width: "100%" }}
+        >
+          {searchHistory.map((historyItem, index) => (
+            <Card
+              key={index}
+              onPress={() => onHistoryPress(historyItem)}
+              style={{
+                marginBottom: 8
+              }}
+              pressableStyle={{
+                paddingHorizontal: 16,
+                paddingVertical: 12
+              }}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Ionicons
+                  name="time-outline"
+                  size={16}
+                  color={colors.textSecondary}
+                  style={{ marginRight: 12 }}
+                />
+                <ItchyText
+                  style={{
+                    color: colors.text,
+                    fontSize: 16,
+                    flex: 1,
+                  }}
+                >
+                  {historyItem}
+                </ItchyText>
+                <Ionicons
+                  name="arrow-up-outline"
+                  size={16}
+                  color={colors.textSecondary}
+                  style={{ transform: [{ rotate: "45deg" }] }}
+                />
+              </View>
+            </Card>
+          ))}
+        </View>
+      )}
+    </View>
   );
 }
 
