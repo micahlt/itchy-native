@@ -84,7 +84,6 @@ export default function Message({ message }) {
                 if (message?.comment_type === 0) {
                     router.push(`/projects/${message.comment_obj_id}/comments?comment_id=comments-${message.comment_id}`);
                 } else if (message?.comment_type === 1) {
-                    console.log(message);
                     router.push(`/users/${message.comment_obj_title}/comments?comment_id=comments-${message.comment_id}`);
                 } else if (message?.comment_type === 2) {
                     router.push(`/studios/${message.comment_obj_id}/comments?comment_id=${message.comment_id}`)

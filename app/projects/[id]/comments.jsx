@@ -74,12 +74,10 @@ export default function ProjectComments() {
                 parentID = topLevelComment?.id || reply.id;
             }
             authorID = reply.author.id;
-            console.log(parentID);
         }
         ScratchAPIWrapper.project.postComment(id, content, csrf, user.token, parentID, authorID).then((postedID) => {
             setRerenderComments(!rerenderComments);
             if (!!postedID) {
-                console.log("Posted ID:", postedID)
                 if (!!reply) {
                     setComments((prev) => prev.map(c => {
                         // If replying to a top-level comment, add to its replies

@@ -90,7 +90,6 @@ export default function App() {
                         router.dismissTo("/");
                     }).catch((e) => {
                         storage.delete("username");
-                        console.log("DELETING UNAME")
                     });
                 })
             });
@@ -151,7 +150,7 @@ function ThemeConsumerInner({ twConfig }) {
                 <Stack.Screen name="projects/[id]/index" options={{
                     animation: "fade_from_bottom",
                     headerBackButtonDisplayMode: "minimal",
-                    headerBackVisible: Platform.OS === "ios" ? true : false,
+                    headerBackVisible: Platform.OS === "ios",
                     headerRight: () =>
                         <MaterialIcons name='question-answer' size={24} color={colors.textSecondary} />
                 }} />
@@ -182,7 +181,6 @@ function ThemeConsumerInner({ twConfig }) {
                 <Stack.Screen name="users/[username]/activity" options={{
                     presentation: "modal",
                     animation: "fade_from_bottom",
-                    headerTitle: "loading...",
                 }} />
                 <Stack.Screen name="users/[username]/comments" options={{
                     presentation: "modal",

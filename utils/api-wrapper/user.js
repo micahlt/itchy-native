@@ -129,7 +129,7 @@ const APIUser = {
                 const posterImage = reply
                     .querySelector("img.avatar")
                     .getAttribute("src");
-                const posterId = element
+                const posterId = reply
                     .querySelector(".comment > .info > div > .reply")
                     .getAttribute("data-commentee-id");
 

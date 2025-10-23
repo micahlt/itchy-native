@@ -42,7 +42,7 @@ import useSWR from "swr";
 import TexturedButton from "../../components/TexturedButton";
 
 // Memoized header component to prevent unnecessary re-renders
-const Header = memo(({ insets, colors, headerStyle, logoStyle }) => (
+const Header = memo(({ insets, colors, headerStyle, logoStyle, username }) => (
   <Animated.View
     style={[
       headerStyle,
@@ -69,7 +69,7 @@ const Header = memo(({ insets, colors, headerStyle, logoStyle }) => (
       source={require("../../assets/logo-nobg.png")}
       style={[logoStyle, { height: 65, width: 65 }]}
     />
-    <TouchableOpacity onPress={() => router.push("/settings")}>
+    <TouchableOpacity onPress={() => router.push("/settings")} onLongPress={() => router.push(`/users/${username}`)}>
       <Ionicons
         style={{ marginRight: 7 }}
         name="settings"
@@ -168,7 +168,6 @@ export default function HomeScreen() {
 
   // Simple refresh function using SWR mutate
   const refresh = useCallback(() => {
-    console.log("Starting refresh");
     rotationPaused.value = false;
 
     // Refresh all data sources
@@ -179,7 +178,6 @@ export default function HomeScreen() {
 
     // Stop rotation after a delay
     setTimeout(() => {
-      console.log("Stopping rotation");
       rotationPaused.value = true;
     }, 2000);
   }, [refreshExplore, refreshFriendsLoves, refreshFriendsProjects]); // Memoize vib function to prevent recreations
@@ -330,6 +328,7 @@ export default function HomeScreen() {
             colors={colors}
             headerStyle={headerStyle}
             logoStyle={logoStyle}
+            username={username}
           />
           <AniamtedSquircleView
             cornerSmoothing={0.6}

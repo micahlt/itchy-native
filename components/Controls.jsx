@@ -417,7 +417,8 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
                 alignItems: "center",
                 width: "100%",
                 flexDirection: 'row',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                pointerEvents: isCollapsed ? "none" : "auto"
             }, animatedButtonsStyle]}>
                 <Pressable
                     onPress={toggleCollapse}
