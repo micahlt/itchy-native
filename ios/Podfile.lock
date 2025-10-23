@@ -1,7 +1,7 @@
 PODS:
-  - EXConstants (18.0.9):
+  - EXConstants (18.0.10):
     - ExpoModulesCore
-  - Expo (54.0.13):
+  - Expo (54.0.19):
     - ExpoModulesCore
     - hermes-engine
     - RCTRequired
@@ -36,10 +36,10 @@ PODS:
     - ExpoModulesCore
   - ExpoHaptics (15.0.7):
     - ExpoModulesCore
-  - ExpoHead (6.0.12):
+  - ExpoHead (6.0.13):
     - ExpoModulesCore
     - RNScreens
-  - ExpoImage (3.0.9):
+  - ExpoImage (3.0.10):
     - ExpoModulesCore
     - libavif/libdav1d
     - SDWebImage (~> 5.21.0)
@@ -52,7 +52,7 @@ PODS:
     - ExpoModulesCore
   - ExpoLinking (8.0.8):
     - ExpoModulesCore
-  - ExpoModulesCore (3.0.21):
+  - ExpoModulesCore (3.0.22):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -79,7 +79,7 @@ PODS:
     - ExpoModulesCore
   - ExpoSharing (14.0.7):
     - ExpoModulesCore
-  - ExpoSystemUI (6.0.7):
+  - ExpoSystemUI (6.0.8):
     - ExpoModulesCore
   - FastSquircle (1.0.11):
     - hermes-engine
@@ -2479,22 +2479,22 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  EXConstants: 59d46d25b89f88cc38291a56dbce4d550758f72d
-  Expo: aaac5449341fe7f8801076ef0d05c02f2463be15
+  EXConstants: e6e50cdfcb4524f40121d1fdcff24e97b7dcd2fd
+  Expo: ccaaa751e096897c0e898cb5bbca0889a0671d4f
   ExpoAsset: 3c3b7dd9b1318846a02ef05ce420e63d542aeb9f
   ExpoCrypto: 4c50a152f5939e16a2ca10be77b002a3a391c4d3
   ExpoFileSystem: 56f081328f5b48a6dcc8302eee51d4f2d9d0049b
   ExpoFont: b881d43057dceb7b31ff767b24f612609e80f60f
   ExpoHaptics: b48d913e7e5f23816c6f130e525c9a6501b160b5
-  ExpoHead: d492cf47f030fd5c9a19cf03e98086e2b3fc2a41
-  ExpoImage: 790e6eb3e154dd6075107536caaebb03f0f24184
+  ExpoHead: 4c455257904ca03439313df0d91292b7af1fd6ee
+  ExpoImage: 6eb842cd07817402640545c41884dd7f5fbfbca5
   ExpoKeepAwake: 3f5e3ac53627849174f3603271df8e08f174ed4a
   ExpoLinearGradient: f9e7182e5253d53b2de4134b69d70bbfc2d50588
   ExpoLinking: f5c171877e118e792cb9a77e5ade0b080d899b14
-  ExpoModulesCore: b6669751e77cb22e718f1200e35ba94ed621ca6d
+  ExpoModulesCore: ddb658a9253ddb24a2fa7fe773d8ebb0cfeda2b5
   ExpoNetwork: 97073786edfe405aba5d0987a544617ed0671ad1
   ExpoSharing: 6f52a070c3083c11717cf2236ae8fd6ac45bf028
-  ExpoSystemUI: 5e7fbe4b716edb9e3a7bc0441e4a3b6b1f9eb1ea
+  ExpoSystemUI: 9441d46a8efbf9224d1b2e6b18042452ffd0ed79
   FastSquircle: a863bec8d1f562d6f295fab0d654e2c2b523c8ca
   FBLazyVector: 9e0cd874afd81d9a4d36679daca991b58b260d42
   hermes-engine: 35c763d57c9832d0eef764316ca1c4d043581394
