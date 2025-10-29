@@ -1,72 +1,156 @@
-import { View } from "react-native"
-import ItchyText from "./ItchyText"
-import Chip from "./Chip"
-import { decode } from "html-entities"
-import { useTheme } from "../utils/theme"
+import { View } from "react-native";
+import ItchyText from "./ItchyText";
+import Chip from "./Chip";
+import { decode } from "html-entities";
+import { useTheme } from "../utils/theme";
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Card from "./Card";
 import ScratchAPIWrapper from "../utils/api-wrapper";
-import timeago from "time-ago";
+import { formatCommentTime } from "../utils/timeAgoFormatter";
 import LinkifiedText from "../utils/regex/LinkifiedText";
 
-export default function Comment({ comment, isReply = false, showReplies = true, isLastReply = false, parentMetadata = {}, selected = 0, partOfSelection = false, onPress = () => { }, onLongPress = () => { }, fullWidth = false }) {
-    const { colors } = useTheme();
-    const router = useRouter();
-    const [replies, setReplies] = useState([]);
+export default function Comment({
+  comment,
+  isReply = false,
+  showReplies = true,
+  isLastReply = false,
+  parentMetadata = {},
+  selected = 0,
+  partOfSelection = false,
+  onPress = () => {},
+  onLongPress = () => {},
+  fullWidth = false,
+}) {
+  const { colors } = useTheme();
+  const router = useRouter();
+  const [replies, setReplies] = useState([]);
 
-    const openAuthor = useCallback(() => {
-        router.push(`/users/${comment.author.username}`);
-    }, [comment])
+  const openAuthor = useCallback(() => {
+    router.push(`/users/${comment.author.username}`);
+  }, [comment]);
 
-    const timestamp = useMemo(() => timeago.ago(new Date(comment.datetime_created)), [comment]);
-    const content = useMemo(() => decode(comment.content), [comment]);
-    const isSelected = useMemo(() => selected == comment.id, [selected, comment]);
-    const partOfSelected = useMemo(() => {
-        if (selected === 0) return false;
-        if (!replies || replies?.length < 1) return false;
-        if (replies.findIndex((r) => r.id == selected) !== -1) {
-            return true;
-        }
-    }, [replies, selected]);
+  const timestamp = useMemo(
+    () => formatCommentTime(comment.datetime_created),
+    [comment]
+  );
+  const content = useMemo(() => decode(comment.content), [comment]);
+  const isSelected = useMemo(() => selected == comment.id, [selected, comment]);
+  const partOfSelected = useMemo(() => {
+    if (selected === 0) return false;
+    if (!replies || replies?.length < 1) return false;
+    if (replies.findIndex((r) => r.id == selected) !== -1) {
+      return true;
+    }
+  }, [replies, selected]);
 
-    const replyList = useMemo(() => {
-        if (!showReplies) return [];
-        return replies.map((reply, i) => <Comment comment={reply} isReply={true} key={reply.id} selected={selected} partOfSelection={partOfSelected} isLastReply={replies.length - 1 == i} onPress={() => onPress(reply)} onLongPress={() => onLongPress(reply)} />)
-    }, [replies, partOfSelected, selected]);
+  const replyList = useMemo(() => {
+    if (!showReplies) return [];
+    return replies.map((reply, i) => (
+      <Comment
+        comment={reply}
+        isReply={true}
+        key={reply.id}
+        selected={selected}
+        partOfSelection={partOfSelected}
+        isLastReply={replies.length - 1 == i}
+        onPress={() => onPress(reply)}
+        onLongPress={() => onLongPress(reply)}
+      />
+    ));
+  }, [replies, partOfSelected, selected]);
 
-    useEffect(() => {
-        if (!!comment.includesReplies) {
-            if (comment.replies === null || comment.replies === undefined) return;
-            setReplies(comment.replies);
-        } else if (!isReply) {
-            ScratchAPIWrapper.project.getCommentReplies(parentMetadata.project, parentMetadata.author, comment.id).then((d) => {
-                setReplies(d);
-            }).catch(console.error);
-        }
-    }, [comment]);
+  useEffect(() => {
+    if (!!comment.includesReplies) {
+      if (comment.replies === null || comment.replies === undefined) return;
+      setReplies(comment.replies);
+    } else if (!isReply) {
+      ScratchAPIWrapper.project
+        .getCommentReplies(
+          parentMetadata.project,
+          parentMetadata.author,
+          comment.id
+        )
+        .then((d) => {
+          setReplies(d);
+        })
+        .catch(console.error);
+    }
+  }, [comment]);
 
-    const onPressHandler = useCallback(() => {
-        onPress(comment);
-    }, [comment]);
+  const onPressHandler = useCallback(() => {
+    onPress(comment);
+  }, [comment]);
 
-    const onLongPressHandler = useCallback(() => {
-        onLongPress(comment);
-    }, [comment]);
+  const onLongPressHandler = useCallback(() => {
+    onLongPress(comment);
+  }, [comment]);
 
-    return (
-        <>
-            <View style={{ borderLeftColor: (isSelected || partOfSelection) ? colors.accent : colors.backgroundTertiary, borderLeftWidth: isReply ? 2 : 0, marginBottom: isLastReply ? 0 : 10, marginLeft: isReply ? 8 : 0, width: fullWidth ? "100%" : undefined }
-            }>
-                <Card style={{ backgroundColor: colors.background, borderRadius: 15, marginLeft: isReply ? 10 : 0, marginBottom: replies.length > 0 ? 10 : 0, borderColor: colors.accent, borderWidth: isSelected ? 2 : 1, elevation: 0, borderColor: isSelected ? colors.accent : colors.outline }} onPress={onPressHandler} onLongPress={onLongPressHandler} pressableStyle={{ padding: 15 }}>
-                    <View style={{ flexDirection: "row", alignItems: "top", justifyContent: "space-between" }}>
-                        <Chip.Image text={comment.author.username} imageURL={comment.author.image} mode="outlined" style={{ marginRight: "auto", marginBottom: 8, borderColor: "transparent" }} textStyle={{ fontWeight: "bold" }} onPress={openAuthor} />
-                        <ItchyText style={{ color: colors.textSecondary, fontSize: 12, marginTop: 2 }}>{timestamp}</ItchyText>
-                    </View>
-                    <LinkifiedText style={{ color: colors.text, fontSize: 14 }} text={content} />
-                </Card>
-                {!!replies.length > 0 && showReplies && replyList}
-            </View>
-        </>
-    );
+  return (
+    <>
+      <View
+        style={{
+          borderLeftColor:
+            isSelected || partOfSelection
+              ? colors.accent
+              : colors.backgroundTertiary,
+          borderLeftWidth: isReply ? 2 : 0,
+          marginBottom: isLastReply ? 0 : 10,
+          marginLeft: isReply ? 8 : 0,
+          width: fullWidth ? "100%" : undefined,
+        }}
+      >
+        <Card
+          style={{
+            backgroundColor: colors.background,
+            borderRadius: 15,
+            marginLeft: isReply ? 10 : 0,
+            marginBottom: replies.length > 0 ? 10 : 0,
+            borderColor: colors.accent,
+            borderWidth: isSelected ? 2 : 1,
+            elevation: 0,
+            borderColor: isSelected ? colors.accent : colors.outline,
+          }}
+          onPress={onPressHandler}
+          onLongPress={onLongPressHandler}
+          pressableStyle={{ padding: 15 }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "top",
+              justifyContent: "space-between",
+            }}
+          >
+            <Chip.Image
+              text={comment.author.username}
+              imageURL={comment.author.image}
+              mode="outlined"
+              style={{
+                marginRight: "auto",
+                marginBottom: 8,
+                borderColor: "transparent",
+              }}
+              textStyle={{ fontWeight: "bold" }}
+              onPress={openAuthor}
+            />
+            <ItchyText
+              style={{
+                color: colors.textSecondary,
+                fontSize: 12,
+                marginTop: 2,
+              }}
+            >
+              {timestamp}
+            </ItchyText>
+          </View>
+          <LinkifiedText
+            style={{ color: colors.text, fontSize: 14 }}
+            text={content}
+          />
+        </Card>
+        {!!replies.length > 0 && showReplies && replyList}
+      </View>
+    </>
+  );
 }
