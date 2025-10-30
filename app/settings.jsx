@@ -47,33 +47,54 @@ export default function SettingsScreen() {
           marginTop: 10,
         },
         settingContainer: {
-          borderLeftWidth: 1.5,
-          borderRightWidth: 1.5,
           backgroundColor: colors.backgroundSecondary,
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          borderColor: colors.backgroundTertiary,
           minHeight: 50,
+          paddingVertical: 12,
           marginHorizontal: 15,
-          paddingHorizontal: 20,
-          paddingRight: 8,
-          borderBottomWidth: 0.5,
+          paddingLeft: 20,
+          paddingRight: 12,
         },
         topSettingContainer: {
           borderTopLeftRadius: dimensions.mediumRadius,
           borderTopRightRadius: dimensions.mediumRadius,
           borderTopWidth: 1.5,
+          borderTopColor: colors.backgroundTertiary,
+          borderLeftWidth: 1.5,
+          borderLeftColor: colors.backgroundTertiary,
+          borderRightWidth: 1.5,
+          borderRightColor: colors.backgroundTertiary,
+          borderBottomWidth: 0.5,
+          borderBottomColor: colors.backgroundTertiary,
+        },
+        middleSettingContainer: {
+          borderLeftWidth: 1.5,
+          borderLeftColor: colors.backgroundTertiary,
+          borderRightWidth: 1.5,
+          borderRightColor: colors.backgroundTertiary,
+          borderBottomWidth: 0,
+          borderBottomColor: colors.backgroundTertiary,
+          borderTopWidth: 1,
+          borderTopColor: colors.backgroundTertiary,
         },
         bottomSettingContainer: {
           borderBottomLeftRadius: dimensions.mediumRadius,
           borderBottomRightRadius: dimensions.mediumRadius,
-          borderBottomWidth: 1.5,
+          borderBottomWidth: 3,
+          borderBottomColor: colors.backgroundTertiary,
+          borderLeftWidth: 1.5,
+          borderLeftColor: colors.backgroundTertiary,
+          borderRightWidth: 1.5,
+          borderRightColor: colors.backgroundTertiary,
+          borderTopWidth: 1.2,
+          borderTopColor: colors.backgroundTertiary,
         },
         settingTitle: {
           color: colors.text,
           fontSize: 16,
-          marginTop: -1,
+          flex: 1,
         },
       }),
     [isDark]
@@ -118,11 +139,12 @@ export default function SettingsScreen() {
       <ItchyText style={s.sectionHeader}>Account</ItchyText>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{
-          ...s.settingContainer,
-          ...s.topSettingContainer,
-          ...(!username && s.bottomSettingContainer),
-        }}
+        style={[
+          s.settingContainer,
+          s.topSettingContainer,
+          !username && s.bottomSettingContainer,
+          username && s.middleSettingContainer,
+        ]}
       >
         <ItchyText style={s.settingTitle}>
           {username ? `Signed in as ` : "Signed out"}
@@ -158,7 +180,7 @@ export default function SettingsScreen() {
       {username && (
         <FastSquircleView
           cornerSmoothing={0.6}
-          style={{ ...s.settingContainer, ...s.bottomSettingContainer }}
+          style={[s.settingContainer, s.bottomSettingContainer]}
         >
           <TouchableOpacity onPress={() => router.push(`/users/${username}`)}>
             <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
@@ -170,15 +192,14 @@ export default function SettingsScreen() {
       <ItchyText style={s.sectionHeader}>Player</ItchyText>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{
-          ...s.settingContainer,
-          ...s.topSettingContainer,
-          paddingEnd: 10,
-        }}
+        style={[
+          s.settingContainer,
+          s.topSettingContainer,
+          s.middleSettingContainer,
+        ]}
       >
         <ItchyText style={s.settingTitle}>Frame interpolation</ItchyText>
         <Switch
-          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => setTWConfig({ ...twConfig, interpolate: v })}
@@ -187,11 +208,10 @@ export default function SettingsScreen() {
       </FastSquircleView>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{ ...s.settingContainer, paddingEnd: 10 }}
+        style={[s.settingContainer, s.middleSettingContainer]}
       >
         <ItchyText style={s.settingTitle}>Autoplay</ItchyText>
         <Switch
-          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })}
@@ -200,11 +220,10 @@ export default function SettingsScreen() {
       </FastSquircleView>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{ ...s.settingContainer, paddingEnd: 10 }}
+        style={[s.settingContainer, s.middleSettingContainer]}
       >
         <ItchyText style={s.settingTitle}>Force 60 FPS</ItchyText>
         <Switch
-          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => setTWConfig({ ...twConfig, fps60: v })}
@@ -213,11 +232,10 @@ export default function SettingsScreen() {
       </FastSquircleView>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{ ...s.settingContainer, paddingEnd: 10 }}
+        style={[s.settingContainer, s.middleSettingContainer]}
       >
         <ItchyText style={s.settingTitle}>High-quality pen</ItchyText>
         <Switch
-          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => setTWConfig({ ...twConfig, hqPen: v })}
@@ -226,11 +244,10 @@ export default function SettingsScreen() {
       </FastSquircleView>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{ ...s.settingContainer, paddingEnd: 10 }}
+        style={[s.settingContainer, s.middleSettingContainer]}
       >
         <ItchyText style={s.settingTitle}>Turbo mode</ItchyText>
         <Switch
-          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })}
@@ -239,11 +256,11 @@ export default function SettingsScreen() {
       </FastSquircleView>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{
-          ...s.settingContainer,
-          ...s.bottomSettingContainer,
-          justifyContent: "flex-start",
-        }}
+        style={[
+          s.settingContainer,
+          s.bottomSettingContainer,
+          { justifyContent: "flex-start", flexDirection: "row" },
+        ]}
       >
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
           Options provided by{" "}
@@ -259,11 +276,14 @@ export default function SettingsScreen() {
       <ItchyText style={s.sectionHeader}>App</ItchyText>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{ ...s.settingContainer, ...s.topSettingContainer }}
+        style={[
+          s.settingContainer,
+          s.topSettingContainer,
+          s.middleSettingContainer,
+        ]}
       >
         <ItchyText style={s.settingTitle}>Enable experimental feed</ItchyText>
         <Switch
-          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => setExperimentalFeed(v)}
@@ -272,22 +292,28 @@ export default function SettingsScreen() {
       </FastSquircleView>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{
-          ...s.settingContainer,
-          justifyContent: "flex-start",
-          marginTop: -5,
-          paddingBottom: 5,
-        }}
+        style={[
+          s.settingContainer,
+          s.middleSettingContainer,
+          {
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+            paddingVertical: 12,
+            borderBottomWidth: 0.5,
+          },
+        ]}
       >
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
           Displays an "Explore more" button at the bottom of the screen that
           opens an experimental infinite-scrolling feed of projects and studios.
         </ItchyText>
       </FastSquircleView>
-      <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer }}>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={[s.settingContainer, s.middleSettingContainer]}
+      >
         <ItchyText style={s.settingTitle}>Force dark theme</ItchyText>
         <Switch
-          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => handleForceDarkToggle(v)}
@@ -296,13 +322,15 @@ export default function SettingsScreen() {
       </FastSquircleView>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{
-          ...s.settingContainer,
-          ...s.bottomSettingContainer,
-          justifyContent: "flex-start",
-          marginTop: -5,
-          paddingBottom: 5,
-        }}
+        style={[
+          s.settingContainer,
+          s.bottomSettingContainer,
+          {
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+            paddingVertical: 12,
+          },
+        ]}
       >
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
           When enabled, the app will always use the dark theme even if your
@@ -312,20 +340,30 @@ export default function SettingsScreen() {
       <ItchyText style={s.sectionHeader}>About</ItchyText>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{ ...s.settingContainer, ...s.topSettingContainer }}
+        style={[
+          s.settingContainer,
+          s.topSettingContainer,
+          s.middleSettingContainer,
+        ]}
       >
         <ItchyText style={{ color: colors.text, fontSize: 16 }}>
           Itchy v{version}
         </ItchyText>
       </FastSquircleView>
-      <FastSquircleView cornerSmoothing={0.6} style={s.settingContainer}>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={[s.settingContainer, s.middleSettingContainer]}
+      >
         <TouchableOpacity onPress={() => router.push("/onboarding")}>
           <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
             Redo onboarding flow
           </ItchyText>
         </TouchableOpacity>
       </FastSquircleView>
-      <FastSquircleView cornerSmoothing={0.6} style={s.settingContainer}>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={[s.settingContainer, s.middleSettingContainer]}
+      >
         <TouchableOpacity
           onPress={() =>
             linkWithFallback("https://itchy.micahlindley.com/privacy.html")
@@ -338,16 +376,24 @@ export default function SettingsScreen() {
       </FastSquircleView>
       <FastSquircleView
         cornerSmoothing={0.6}
-        style={{
-          ...s.settingContainer,
-          ...s.bottomSettingContainer,
-          justifyContent: "flex-start",
-          alignItems: "flex-start",
-          flexDirection: "column",
-          paddingVertical: 15,
-        }}
+        style={[
+          s.settingContainer,
+          s.bottomSettingContainer,
+          {
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+            flexDirection: "column",
+            paddingVertical: 15,
+          },
+        ]}
       >
-        <View style={{ flex: 1, flexDirection: "row" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
           <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
             Made{" "}
           </ItchyText>
@@ -360,19 +406,12 @@ export default function SettingsScreen() {
               open source
             </ItchyText>
           </TouchableOpacity>
-          <ItchyText
-            style={{
-              color: colors.text,
-              fontSize: 12,
-              opacity: 0.6,
-              marginRight: "auto",
-            }}
-          >
+          <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
             {" "}
             with ❤️
           </ItchyText>
         </View>
-        <View style={{ flex: 1, flexDirection: "row", paddingTop: 8 }}>
+        <View style={{ flexDirection: "row", paddingTop: 8 }}>
           <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
             Created by Micah Lindley. Contributions to code, UI, and graphics
             made by David Noé and Sean Wallace. Made possible by open-source
