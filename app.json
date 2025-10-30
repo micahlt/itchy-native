@@ -71,9 +71,7 @@
     },
     "ios": {
       "bundleIdentifier": "org.scratchclient4.itchy",
-      "ios": {
-        "icon": "./assets/iosicon.icon"
-      }
+      "icon": "./assets/iosicon.icon"
     }
   }
 }

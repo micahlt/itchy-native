@@ -17,6 +17,7 @@
 		5FEEC576EEF039C1C185B891 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60347132196498F6BFCF9DF0 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
+		94B0072DFA3E425796E09B93 /* iosicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 93415040D7E64D67A5F39EE7 /* iosicon.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Itchy/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Itchy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Itchy-Bridging-Header.h"; path = "Itchy/Itchy-Bridging-Header.h"; sourceTree = "<group>"; };
 		F6625F114BA24FC0A78C65E6 /* Inter_900Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Inter_900Black.ttf; path = "../node_modules/@expo-google-fonts/inter/900Black/Inter_900Black.ttf"; sourceTree = "<group>"; };
+		93415040D7E64D67A5F39EE7 /* iosicon.icon */ = {isa = PBXFileReference; name = "iosicon.icon"; path = "Itchy/iosicon.icon"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +71,7 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
 				5BD6A42E829414816A671B18 /* PrivacyInfo.xcprivacy */,
+				93415040D7E64D67A5F39EE7 /* iosicon.icon */,
 			);
 			name = Itchy;
 			sourceTree = "<group>";
@@ -216,6 +219,7 @@
 				0BC443BBABD44A149068720C /* Inter_700Bold.ttf in Resources */,
 				3A58CA4730C1407A9EA8911B /* Inter_900Black.ttf in Resources */,
 				53CD6A6839DE0A2FB3A385A7 /* PrivacyInfo.xcprivacy in Resources */,
+				94B0072DFA3E425796E09B93 /* iosicon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,7 +364,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7BD0457CED6C620933924F22 /* Pods-Itchy.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = iosicon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Itchy/Itchy.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
@@ -385,11 +389,11 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = org.scratchclient4.itchy;
-				PRODUCT_NAME = Itchy;
+				PRODUCT_NAME = "Itchy";
 				SWIFT_OBJC_BRIDGING_HEADER = "Itchy/Itchy-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -398,7 +402,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A34A7E019E8511465CE9C8FD /* Pods-Itchy.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = iosicon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Itchy/Itchy.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
@@ -418,10 +422,10 @@
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = org.scratchclient4.itchy;
-				PRODUCT_NAME = Itchy;
+				PRODUCT_NAME = "Itchy";
 				SWIFT_OBJC_BRIDGING_HEADER = "Itchy/Itchy-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -499,6 +503,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
 				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
 				USE_HERMES = true;
+				ASSETCATALOG_COMPILER_APPICON_NAME = iosicon;
 			};
 			name = Debug;
 		};
@@ -567,6 +572,7 @@
 				SWIFT_ENABLE_EXPLICIT_MODULES = NO;
 				USE_HERMES = true;
 				VALIDATE_PRODUCT = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = iosicon;
 			};
 			name = Release;
 		};
