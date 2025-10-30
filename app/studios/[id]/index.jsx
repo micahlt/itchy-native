@@ -124,14 +124,14 @@ export default function Studio() {
         }}
       />
       <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={loading}
-            onRefresh={load}
-            progressBackgroundColor={colors.accent}
-            colors={isDark ? ["black"] : ["white"]}
-          />
-        }
+        // refreshControl={
+        //   <RefreshControl
+        //     refreshing={loading}
+        //     onRefresh={load}
+        //     progressBackgroundColor={colors.accent}
+        //     colors={isDark ? ["black"] : ["white"]}
+        //   />
+        // }
         contentContainerStyle={{
           paddingTop: getLiquidPlusPadding(),
           paddingBottom: insets.bottom + 40,

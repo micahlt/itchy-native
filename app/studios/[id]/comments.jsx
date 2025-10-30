@@ -277,8 +277,8 @@ export default function StudioComments() {
             keyExtractor={(item) => item.id}
             onEndReached={endReached}
             onEndReachedThreshold={1.2}
-            onRefresh={refresh}
-            refreshing={loading}
+            // onRefresh={refresh}
+            // refreshing={loading}
             onScrollToIndexFailed={({ index }) => {
               scrollRef.current?.scrollToOffset({
                 offset: index * 1000,
@@ -289,14 +289,14 @@ export default function StudioComments() {
                 scrollRef.current?.scrollToIndex({ index, animated: true });
               });
             }}
-            refreshControl={
-              <RefreshControl
-                refreshing={loading}
-                tintColor={"white"}
-                progressBackgroundColor={colors.accent}
-                colors={isDark ? ["black"] : ["white"]}
-              />
-            }
+            // refreshControl={
+            //   <RefreshControl
+            //     refreshing={loading}
+            //     tintColor={"white"}
+            //     progressBackgroundColor={colors.accent}
+            //     colors={isDark ? ["black"] : ["white"]}
+            //   />
+            // }
           />
         )}
         <CommentEditor
