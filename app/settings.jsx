@@ -21,14 +21,13 @@ import { Platform } from "react-native";
 import FastSquircleView from "react-native-fast-squircle";
 import Chip from "../components/Chip";
 import { useTheme } from "../utils/theme";
+import { getLiquidPlusPadding } from "../utils/platformUtils";
 
 export default function SettingsScreen() {
   const { colors, dimensions, isDark } = useTheme();
   const router = useRouter();
   const [username] = useMMKVString("username");
   const [twConfig, setTWConfig] = useMMKVObject("twConfig");
-  const isLiquidPlus =
-    Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
   // Local state for switches to enable smooth animations
   const [localSwitchState, setLocalSwitchState] = useState({
     interpolate: false,
@@ -59,7 +58,7 @@ export default function SettingsScreen() {
           marginHorizontal: 15,
           paddingHorizontal: 20,
           paddingRight: 8,
-          borderBottomWidth: 0.5
+          borderBottomWidth: 0.5,
         },
         topSettingContainer: {
           borderTopLeftRadius: dimensions.mediumRadius,
@@ -74,7 +73,7 @@ export default function SettingsScreen() {
         settingTitle: {
           color: colors.text,
           fontSize: 16,
-          marginTop: -1
+          marginTop: -1,
         },
       }),
     [isDark]
@@ -101,7 +100,8 @@ export default function SettingsScreen() {
 
   // Force dark theme setting persisted in MMKV
   const [forceDark, setForceDark] = useMMKVBoolean("forceDark");
-  const [experimentalFeed, setExperimentalFeed] = useMMKVBoolean("experimentalFeed");
+  const [experimentalFeed, setExperimentalFeed] =
+    useMMKVBoolean("experimentalFeed");
 
   const handleForceDarkToggle = (v) => {
     // MMKV boolean hook stores true/false; clear not needed.
@@ -113,7 +113,7 @@ export default function SettingsScreen() {
     <ScrollView
       overScrollMode="always"
       bounces={true}
-      contentContainerStyle={{ paddingTop: isLiquidPlus ? 60 : 0 }}
+      contentContainerStyle={{ paddingTop: getLiquidPlusPadding() }}
     >
       <ItchyText style={s.sectionHeader}>Account</ItchyText>
       <FastSquircleView
@@ -178,7 +178,7 @@ export default function SettingsScreen() {
       >
         <ItchyText style={s.settingTitle}>Frame interpolation</ItchyText>
         <Switch
-          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => setTWConfig({ ...twConfig, interpolate: v })}
@@ -191,7 +191,7 @@ export default function SettingsScreen() {
       >
         <ItchyText style={s.settingTitle}>Autoplay</ItchyText>
         <Switch
-          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })}
@@ -204,7 +204,7 @@ export default function SettingsScreen() {
       >
         <ItchyText style={s.settingTitle}>Force 60 FPS</ItchyText>
         <Switch
-          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => setTWConfig({ ...twConfig, fps60: v })}
@@ -217,7 +217,7 @@ export default function SettingsScreen() {
       >
         <ItchyText style={s.settingTitle}>High-quality pen</ItchyText>
         <Switch
-          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => setTWConfig({ ...twConfig, hqPen: v })}
@@ -230,7 +230,7 @@ export default function SettingsScreen() {
       >
         <ItchyText style={s.settingTitle}>Turbo mode</ItchyText>
         <Switch
-          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })}
@@ -263,7 +263,7 @@ export default function SettingsScreen() {
       >
         <ItchyText style={s.settingTitle}>Enable experimental feed</ItchyText>
         <Switch
-          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => setExperimentalFeed(v)}
@@ -276,20 +276,18 @@ export default function SettingsScreen() {
           ...s.settingContainer,
           justifyContent: "flex-start",
           marginTop: -5,
-          paddingBottom: 5
+          paddingBottom: 5,
         }}
       >
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
-          Displays an "Explore more" button at the bottom of the screen that opens an experimental infinite-scrolling feed of projects and studios.
+          Displays an "Explore more" button at the bottom of the screen that
+          opens an experimental infinite-scrolling feed of projects and studios.
         </ItchyText>
       </FastSquircleView>
-      <FastSquircleView
-        cornerSmoothing={0.6}
-        style={{ ...s.settingContainer }}
-      >
+      <FastSquircleView cornerSmoothing={0.6} style={{ ...s.settingContainer }}>
         <ItchyText style={s.settingTitle}>Force dark theme</ItchyText>
         <Switch
-          style={{ marginTop: isLiquidPlus ? 10 : 0 }}
+          style={{ marginTop: getLiquidPlusPadding(0, 10) }}
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
           onValueChange={(v) => handleForceDarkToggle(v)}
@@ -303,7 +301,7 @@ export default function SettingsScreen() {
           ...s.bottomSettingContainer,
           justifyContent: "flex-start",
           marginTop: -5,
-          paddingBottom: 5
+          paddingBottom: 5,
         }}
       >
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
@@ -346,7 +344,7 @@ export default function SettingsScreen() {
           justifyContent: "flex-start",
           alignItems: "flex-start",
           flexDirection: "column",
-          paddingVertical: 15
+          paddingVertical: 15,
         }}
       >
         <View style={{ flex: 1, flexDirection: "row" }}>
@@ -354,20 +352,32 @@ export default function SettingsScreen() {
             Made{" "}
           </ItchyText>
           <TouchableOpacity
-            onPress={() => linkWithFallback("https://github.com/micahlt/itchy-native")}
+            onPress={() =>
+              linkWithFallback("https://github.com/micahlt/itchy-native")
+            }
           >
             <ItchyText style={{ color: colors.accent, fontSize: 12 }}>
               open source
             </ItchyText>
           </TouchableOpacity>
-          <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6, marginRight: "auto" }}>
+          <ItchyText
+            style={{
+              color: colors.text,
+              fontSize: 12,
+              opacity: 0.6,
+              marginRight: "auto",
+            }}
+          >
             {" "}
             with ❤️
           </ItchyText>
         </View>
         <View style={{ flex: 1, flexDirection: "row", paddingTop: 8 }}>
           <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
-            Created by Micah Lindley.  Contributions to code, UI, and graphics made by David Noé and Sean Wallace.  Made possible by open-source projects like TurboWarp, Scratch, React Native, Expo, and many others.
+            Created by Micah Lindley. Contributions to code, UI, and graphics
+            made by David Noé and Sean Wallace. Made possible by open-source
+            projects like TurboWarp, Scratch, React Native, Expo, and many
+            others.
           </ItchyText>
         </View>
       </FastSquircleView>
