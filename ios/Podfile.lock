@@ -1,7 +1,7 @@
 PODS:
   - EXConstants (18.0.10):
     - ExpoModulesCore
-  - Expo (54.0.19):
+  - Expo (54.0.21):
     - ExpoModulesCore
     - hermes-engine
     - RCTRequired
@@ -36,7 +36,7 @@ PODS:
     - ExpoModulesCore
   - ExpoHaptics (15.0.7):
     - ExpoModulesCore
-  - ExpoHead (6.0.13):
+  - ExpoHead (6.0.14):
     - ExpoModulesCore
     - RNScreens
   - ExpoImage (3.0.10):
@@ -52,7 +52,7 @@ PODS:
     - ExpoModulesCore
   - ExpoLinking (8.0.8):
     - ExpoModulesCore
-  - ExpoModulesCore (3.0.22):
+  - ExpoModulesCore (3.0.23):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1475,7 +1475,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - react-native-safe-area-context (5.6.1):
+  - react-native-safe-area-context (5.6.2):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1487,8 +1487,8 @@ PODS:
     - React-graphics
     - React-ImageManager
     - React-jsi
-    - react-native-safe-area-context/common (= 5.6.1)
-    - react-native-safe-area-context/fabric (= 5.6.1)
+    - react-native-safe-area-context/common (= 5.6.2)
+    - react-native-safe-area-context/fabric (= 5.6.2)
     - React-NativeModulesApple
     - React-RCTFabric
     - React-renderercss
@@ -1499,7 +1499,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - react-native-safe-area-context/common (5.6.1):
+  - react-native-safe-area-context/common (5.6.2):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -1521,7 +1521,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - ReactNativeDependencies
     - Yoga
-  - react-native-safe-area-context/fabric (5.6.1):
+  - react-native-safe-area-context/fabric (5.6.2):
     - hermes-engine
     - RCTRequired
     - RCTTypeSafety
@@ -2480,18 +2480,18 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   EXConstants: e6e50cdfcb4524f40121d1fdcff24e97b7dcd2fd
-  Expo: ccaaa751e096897c0e898cb5bbca0889a0671d4f
+  Expo: 0a6c057f1f16870e6f95df785d12949b2afa90dc
   ExpoAsset: 3c3b7dd9b1318846a02ef05ce420e63d542aeb9f
   ExpoCrypto: 4c50a152f5939e16a2ca10be77b002a3a391c4d3
   ExpoFileSystem: 56f081328f5b48a6dcc8302eee51d4f2d9d0049b
   ExpoFont: b881d43057dceb7b31ff767b24f612609e80f60f
   ExpoHaptics: b48d913e7e5f23816c6f130e525c9a6501b160b5
-  ExpoHead: 4c455257904ca03439313df0d91292b7af1fd6ee
+  ExpoHead: aa5f5a8afaa9bd4969bfdd6d5b76681e2490fe5b
   ExpoImage: 6eb842cd07817402640545c41884dd7f5fbfbca5
   ExpoKeepAwake: 3f5e3ac53627849174f3603271df8e08f174ed4a
   ExpoLinearGradient: f9e7182e5253d53b2de4134b69d70bbfc2d50588
   ExpoLinking: f5c171877e118e792cb9a77e5ade0b080d899b14
-  ExpoModulesCore: ddb658a9253ddb24a2fa7fe773d8ebb0cfeda2b5
+  ExpoModulesCore: 119ed3e058c0bfc3201577370bfba7b271c84eae
   ExpoNetwork: 97073786edfe405aba5d0987a544617ed0671ad1
   ExpoSharing: 6f52a070c3083c11717cf2236ae8fd6ac45bf028
   ExpoSystemUI: 9441d46a8efbf9224d1b2e6b18042452ffd0ed79
@@ -2538,7 +2538,7 @@ SPEC CHECKSUMS:
   react-native-bottom-tabs: f7959b0d178a759de22aa2b28ff95e4328522fd1
   react-native-cookies: f54fcded06bb0cda05c11d86788020b43528a26c
   react-native-mmkv: a29561f79e31aaf8f099d70edb0c0896abc0f8c1
-  react-native-safe-area-context: 361fbed321a8d5db4c3b4dbeab954882b077b312
+  react-native-safe-area-context: 3f031fa5a6c36a3731f6fa2202bfa8f411850c6b
   react-native-webrtc: b5062b745a26c99835efdf0d6c027c9b2ee7ddbc
   react-native-webview: 3ee6a5ae7a88511f8b4e9d62dcf91a2fc586afc3
   React-NativeModulesApple: e653919faff1f76eadf02373bda26c085bf348e3
