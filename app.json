@@ -71,7 +71,10 @@
     },
     "ios": {
       "bundleIdentifier": "org.scratchclient4.itchy",
-      "icon": "./assets/iosicon.icon"
+      "icon": "./assets/iosicon.icon",
+      "infoPlist": {
+              "NSCameraUsageDescription": "Itchy needs access to the camera to support projects that include camera features."
+            }
     }
   }
 }
