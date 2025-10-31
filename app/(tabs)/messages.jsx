@@ -214,7 +214,6 @@ export default function Messages() {
           backgroundColor: colors.background,
           marginTop: 0,
           marginHorizontal: 1.5,
-          paddingBottom: Platform.OS == "ios" ? 60 : 0,
           borderTopLeftRadius: 32,
           borderTopRightRadius: 32,
           outlineColor: colors.outlineCard,

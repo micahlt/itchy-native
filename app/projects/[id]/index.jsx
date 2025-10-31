@@ -1,4 +1,10 @@
-import { View, useWindowDimensions, ScrollView, Share, Platform } from "react-native";
+import {
+  View,
+  useWindowDimensions,
+  ScrollView,
+  Share,
+  Platform,
+} from "react-native";
 import ItchyText from "../../../components/ItchyText";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
@@ -20,14 +26,25 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Controls from "../../../components/Controls";
 import MultiPlayConfigSheet from "../../../components/MultiPlayConfigSheet";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { Gesture, GestureDetector, PanGestureHandler } from "react-native-gesture-handler";
+import {
+  Gesture,
+  GestureDetector,
+  PanGestureHandler,
+} from "react-native-gesture-handler";
+import {
+  isLiquidPlus,
+  getLiquidPlusPadding,
+} from "../../../utils/platformUtils";
 
 export default function Project() {
   const { id } = useLocalSearchParams();
   const { colors, dimensions, isDark } = useTheme();
   const { width } = useWindowDimensions();
   const [metadata, setMetadata] = useState(null);
-  const [interactions, setInteractions] = useState({ loved: false, favorited: false });
+  const [interactions, setInteractions] = useState({
+    loved: false,
+    favorited: false,
+  });
   const [username] = useMMKVString("username");
   const [token] = useMMKVString("token");
   const router = useRouter();
@@ -48,49 +65,89 @@ export default function Project() {
             (function(){
                 window.postMessage(${JSON.stringify(message)},'*');
             })();
-            true;`)
+            true;`);
   };
 
   const dateInfo = useMemo(() => {
     return {
       created: timeago.ago(metadata?.history?.created),
-      modified: timeago.ago(metadata?.history?.modified)
-    }
+      modified: timeago.ago(metadata?.history?.modified),
+    };
   }, [metadata?.history]);
 
   useEffect(() => {
     if (!id) return;
-    ScratchAPIWrapper.project.getProject(id).then((d) => {
-      if (d.code == "NotFound") {
-        router.replace("/error?errorText=Couldn't find that project.");
-        return;
-      } else if (!!d?.code) {
-        return;
-      }
-      setMetadata(d);
-    }).catch(console.error);
+    ScratchAPIWrapper.project
+      .getProject(id)
+      .then((d) => {
+        if (d.code == "NotFound") {
+          router.replace("/error?errorText=Couldn't find that project.");
+          return;
+        } else if (!!d?.code) {
+          return;
+        }
+        setMetadata(d);
+      })
+      .catch(console.error);
     if (!!username) {
-      ScratchAPIWrapper.project.getInteractions(id, username, token).then((d) => {
-        setInteractions(d);
-      }).catch(console.error);
+      ScratchAPIWrapper.project
+        .getInteractions(id, username, token)
+        .then((d) => {
+          setInteractions(d);
+        })
+        .catch(console.error);
     }
   }, [id]);
 
   const toggleInteraction = (interaction) => {
     if (interaction == "love") {
-      ScratchAPIWrapper.project.setInteraction("loves", !interactions.loved, id, username, token, storage.getString("csrfToken"), storage.getString("cookieSet")).then((d) => {
-        if (!d.statusChanged) return;
-        setInteractions({ ...interactions, loved: !interactions.loved });
-        setMetadata({ ...metadata, stats: { ...metadata.stats, loves: metadata.stats.loves + (interactions.loved ? -1 : 1) } });
-      }).catch(console.error);
+      ScratchAPIWrapper.project
+        .setInteraction(
+          "loves",
+          !interactions.loved,
+          id,
+          username,
+          token,
+          storage.getString("csrfToken"),
+          storage.getString("cookieSet")
+        )
+        .then((d) => {
+          if (!d.statusChanged) return;
+          setInteractions({ ...interactions, loved: !interactions.loved });
+          setMetadata({
+            ...metadata,
+            stats: {
+              ...metadata.stats,
+              loves: metadata.stats.loves + (interactions.loved ? -1 : 1),
+            },
+          });
+        })
+        .catch(console.error);
     } else if (interaction == "favorite") {
-      ScratchAPIWrapper.project.setInteraction("favorites", !interactions.favorited, id, username, token, storage.getString("csrfToken"), storage.getString("cookieSet")).then((d) => {
-        if (!d.statusChanged) return;
-        setInteractions({ ...interactions, loved: !interactions.favorited });
-        setMetadata({ ...metadata, stats: { ...metadata.stats, favorites: metadata.stats.favorites + (interactions.favorited ? -1 : 1) } });
-      });
+      ScratchAPIWrapper.project
+        .setInteraction(
+          "favorites",
+          !interactions.favorited,
+          id,
+          username,
+          token,
+          storage.getString("csrfToken"),
+          storage.getString("cookieSet")
+        )
+        .then((d) => {
+          if (!d.statusChanged) return;
+          setInteractions({ ...interactions, loved: !interactions.favorited });
+          setMetadata({
+            ...metadata,
+            stats: {
+              ...metadata.stats,
+              favorites:
+                metadata.stats.favorites + (interactions.favorited ? -1 : 1),
+            },
+          });
+        });
     }
-  }
+  };
 
   const twJSInject = `
     window.ReactNativeWebView.postMessage("Itchy Custom Code initialized");
@@ -98,7 +155,9 @@ export default function Project() {
 // Wait for DOM to be fully loaded before applying styles
 function applyStyles() {
   try {
-    document.documentElement.style.setProperty('--ui-white', '${colors.backgroundSecondary}');
+    document.documentElement.style.setProperty('--ui-white', '${
+      colors.backgroundSecondary
+    }');
     const advancedBtn = document.querySelector("img[title='Open advanced settings']");
     const fullscreenBtn = document.querySelector("span[role='button']:has(img[title='Full Screen Control'])");
     if (advancedBtn) advancedBtn.style.filter = "invert(0.7)";
@@ -136,7 +195,11 @@ if (document.readyState === 'loading') {
     const pcConfig = {
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' }
-        ${process.env.EXPO_PUBLIC_TURN_USERNAME && process.env.EXPO_PUBLIC_TURN_CREDENTIAL && process.env.EXPO_PUBLIC_TURN_SERVER_URL ? `,
+        ${
+          process.env.EXPO_PUBLIC_TURN_USERNAME &&
+          process.env.EXPO_PUBLIC_TURN_CREDENTIAL &&
+          process.env.EXPO_PUBLIC_TURN_SERVER_URL
+            ? `,
         {
           urls: "turn:${process.env.EXPO_PUBLIC_TURN_SERVER_URL}:80",
           username: "${process.env.EXPO_PUBLIC_TURN_USERNAME}",
@@ -156,7 +219,9 @@ if (document.readyState === 'loading') {
           urls: "turns:${process.env.EXPO_PUBLIC_TURN_SERVER_URL}:443?transport=tcp",
           username: "${process.env.EXPO_PUBLIC_TURN_USERNAME}",
           credential: "${process.env.EXPO_PUBLIC_TURN_CREDENTIAL}",
-        }` : ''}
+        }`
+            : ""
+        }
       ]
     };
 
@@ -506,7 +571,7 @@ if (document.readyState === 'loading') {
     }, 100);
 
 })();
-`
+`;
   const pan = Gesture.Pan();
 
   const openOnlineConfigSheet = () => {
@@ -517,14 +582,17 @@ if (document.readyState === 'loading') {
     onlineConfigSheetRef.current?.close();
   };
 
-  const moveMouse = useCallback((data) => {
-    console.log("TODO: mouse")
-  }, [webViewRef, connected, roomCode]);
+  const moveMouse = useCallback(
+    (data) => {
+      console.log("TODO: mouse");
+    },
+    [webViewRef, connected, roomCode]
+  );
 
   const webViewMessageHandler = (e) => {
     console.log("WebView | ", e.nativeEvent.data);
     try {
-      const d = JSON.parse(e.nativeEvent.data)
+      const d = JSON.parse(e.nativeEvent.data);
       switch (d.type) {
         case "mouse":
           return moveMouse(d);
@@ -576,9 +644,12 @@ if (document.readyState === 'loading') {
               description: metadata.description,
               stats: metadata.stats,
               history: metadata.history,
-              remix: metadata.remix
+              remix: metadata.remix,
             };
-            const message = { type: "project-metadata", metadata: metadataToSend };
+            const message = {
+              type: "project-metadata",
+              metadata: metadataToSend,
+            };
             webViewRef.current?.injectJavaScript(`
               (function(){
                   window.postMessage(${JSON.stringify(message)},'*');
@@ -593,16 +664,16 @@ if (document.readyState === 'loading') {
     } catch {
       return;
     }
-  }
+  };
 
   const createRoom = useCallback(() => {
-    const message = { type: "startMultiPlaySession" }
+    const message = { type: "startMultiPlaySession" };
     webViewRef.current?.injectJavaScript(`
             (function(){
                 window.postMessage(${JSON.stringify(message)},'*');
             })();
-            true;`)
-  }, [webViewRef])
+            true;`);
+  }, [webViewRef]);
 
   const disconnect = useCallback(() => {
     // Reset all connection states
@@ -611,13 +682,13 @@ if (document.readyState === 'loading') {
     setRoomCode("");
     setConnectionStatus("idle");
 
-    const message = { type: "endMultiPlaySession" }
+    const message = { type: "endMultiPlaySession" };
     webViewRef.current?.injectJavaScript(`
             (function(){
                 window.postMessage(${JSON.stringify(message)},'*');
             })();
-            true;`)
-  }, [webViewRef])
+            true;`);
+  }, [webViewRef]);
 
   return (
     <>
@@ -626,10 +697,26 @@ if (document.readyState === 'loading') {
           options={{
             title: metadata?.title || "Loading...",
             headerShown: !isMaxed,
-            headerRight: () => <><Ionicons.Button onPressIn={() => router.push(`/projects/${id}/comments`)} name='chatbubble-ellipses' size={24} color={colors.textSecondary} backgroundColor="transparent" style={{ paddingRight: 0 }} /></>
+            headerRight: () => (
+              <>
+                <Ionicons.Button
+                  onPressIn={() => router.push(`/projects/${id}/comments`)}
+                  name="chatbubble-ellipses"
+                  size={24}
+                  color={colors.textSecondary}
+                  backgroundColor="transparent"
+                  style={{ paddingRight: 0 }}
+                />
+              </>
+            ),
           }}
         />
-        <ScrollView contentContainerStyle={{ paddingBottom: insets.bottom + 10, paddingTop: isMaxed ? insets.top : 0 }}>
+        <ScrollView
+          contentContainerStyle={{
+            paddingBottom: insets.bottom + 10,
+            paddingTop: isMaxed ? insets.top : getLiquidPlusPadding(0, 120),
+          }}
+        >
           <GestureDetector gesture={pan}>
             <WebView
               source={{ uri: twLink }}
@@ -656,46 +743,180 @@ if (document.readyState === 'loading') {
               }}
             />
           </GestureDetector>
-          {metadata && <ScrollView horizontal contentContainerStyle={{ paddingVertical: 10, paddingHorizontal: 20, columnGap: 5 }} showsHorizontalScrollIndicator={false}>
-            {isMaxed && <Chip.Icon icon="close-fullscreen" text="Exit Play Mode" onPress={() => setIsMaxed(false)} />}
-            <Chip.Image imageURL={metadata.author?.profile?.images["32x32"]} text={metadata.author?.username} onPress={() => router.push(`/users/${metadata?.author?.username}`)} textStyle={{ fontWeight: 'bold' }} mode={undefined} color={colors.text} />
-            <Chip.Icon icon='heart' text={approximateNumber(metadata.stats.loves)} color="#ff4750" mode={interactions.loved ? "filled" : "outlined"} onPress={() => toggleInteraction("love")} />
-            <Chip.Icon icon='star' text={approximateNumber(metadata.stats.favorites)} color="#ddbf37" mode={interactions.favorited ? "filled" : "outlined"} onPress={() => toggleInteraction("favorite")} />
-            <Chip.Icon icon='sync' text={approximateNumber(metadata.stats.remixes)} color={isDark ? "#32ee87" : "#0ca852"} mode="filled" />
-            <Chip.Icon icon='eye' text={approximateNumber(metadata.stats.views)} color="#47b5ff" mode="filled" />
-            <Chip.Icon icon='radio' text="MultiPlay" color="#4769ff" mode="filled" onPress={openOnlineConfigSheet} />
-            <Chip.Icon icon='share' text="Share" color="#7847ff" mode="filled" onPress={() => Share.share(Platform.OS === "android" ? {
-              message: `https://scratch.mit.edu/projects/${id}`,
-              dialogTitle: "Share this project"
-            } : {
-              url: `https://scratch.mit.edu/projects/${id}`,
-              message: "Check out this project on Scratch!",
-            }, {
-              dialogTitle: "Share this project",
-              tintColor: colors.accent
-            })} />
-          </ScrollView>}
-          {!isMaxed && <>
-            {metadata?.remix?.parent && <RemixNotice originalProjectID={metadata?.remix?.parent} />}
-            <Controls
-              onControlPress={sendKeyEvent}
-              projectId={id}
-              showConfiguration={true}
-              style={{ margin: 20, marginTop: 0, marginBottom: 0 }}
-            />
-            {metadata?.instructions && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16, borderRadius: dimensions.mediumRadius }}>
-              <ItchyText style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Instructions</ItchyText>
-              <LinkifiedText style={{ color: colors.text }} text={metadata?.instructions} />
-            </Card>}
-            {metadata?.description && <Card style={{ margin: 20, marginTop: 0, marginBottom: 10, padding: 16, borderRadius: dimensions.mediumRadius }}>
-              <ItchyText style={{ fontWeight: "bold", color: colors.text, fontSize: 16, marginBottom: 10 }}>Credits</ItchyText>
-              <LinkifiedText style={{ color: colors.text }} text={metadata?.description} />
-            </Card>}
-            {dateInfo && <Card style={{ margin: 20, marginTop: 0, marginBottom: 30, padding: 16, borderRadius: dimensions.mediumRadius }}>
-              <ItchyText style={{ color: colors.textSecondary, fontSize: 12 }}>Created {dateInfo.created}</ItchyText>
-              {dateInfo.modified != dateInfo.created && <ItchyText style={{ color: colors.textSecondary, fontSize: 12 }}>Modified {dateInfo.modified}</ItchyText>}
-            </Card>}
-          </>}
+          {metadata && (
+            <ScrollView
+              horizontal
+              contentContainerStyle={{
+                paddingVertical: 10,
+                paddingHorizontal: 20,
+                columnGap: 5,
+              }}
+              showsHorizontalScrollIndicator={false}
+            >
+              {isMaxed && (
+                <Chip.Icon
+                  icon="close-fullscreen"
+                  text="Exit Play Mode"
+                  onPress={() => setIsMaxed(false)}
+                />
+              )}
+              <Chip.Image
+                imageURL={metadata.author?.profile?.images["32x32"]}
+                text={metadata.author?.username}
+                onPress={() =>
+                  router.push(`/users/${metadata?.author?.username}`)
+                }
+                textStyle={{ fontWeight: "bold" }}
+                mode={undefined}
+                color={colors.text}
+              />
+              <Chip.Icon
+                icon="heart"
+                text={approximateNumber(metadata.stats.loves)}
+                color="#ff4750"
+                mode={interactions.loved ? "filled" : "outlined"}
+                onPress={() => toggleInteraction("love")}
+              />
+              <Chip.Icon
+                icon="star"
+                text={approximateNumber(metadata.stats.favorites)}
+                color="#ddbf37"
+                mode={interactions.favorited ? "filled" : "outlined"}
+                onPress={() => toggleInteraction("favorite")}
+              />
+              <Chip.Icon
+                icon="sync"
+                text={approximateNumber(metadata.stats.remixes)}
+                color={isDark ? "#32ee87" : "#0ca852"}
+                mode="filled"
+              />
+              <Chip.Icon
+                icon="eye"
+                text={approximateNumber(metadata.stats.views)}
+                color="#47b5ff"
+                mode="filled"
+              />
+              <Chip.Icon
+                icon="radio"
+                text="MultiPlay"
+                color="#4769ff"
+                mode="filled"
+                onPress={openOnlineConfigSheet}
+              />
+              <Chip.Icon
+                icon="share"
+                text="Share"
+                color="#7847ff"
+                mode="filled"
+                onPress={() =>
+                  Share.share(
+                    Platform.OS === "android"
+                      ? {
+                          message: `https://scratch.mit.edu/projects/${id}`,
+                          dialogTitle: "Share this project",
+                        }
+                      : {
+                          url: `https://scratch.mit.edu/projects/${id}`,
+                          message: "Check out this project on Scratch!",
+                        },
+                    {
+                      dialogTitle: "Share this project",
+                      tintColor: colors.accent,
+                    }
+                  )
+                }
+              />
+            </ScrollView>
+          )}
+          {!isMaxed && (
+            <>
+              {metadata?.remix?.parent && (
+                <RemixNotice originalProjectID={metadata?.remix?.parent} />
+              )}
+              <Controls
+                onControlPress={sendKeyEvent}
+                projectId={id}
+                showConfiguration={true}
+                style={{ margin: 20, marginTop: 0, marginBottom: 0 }}
+              />
+              {metadata?.instructions && (
+                <Card
+                  style={{
+                    margin: 20,
+                    marginTop: 0,
+                    marginBottom: 10,
+                    padding: 16,
+                    borderRadius: dimensions.mediumRadius,
+                  }}
+                >
+                  <ItchyText
+                    style={{
+                      fontWeight: "bold",
+                      color: colors.text,
+                      fontSize: 16,
+                      marginBottom: 10,
+                    }}
+                  >
+                    Instructions
+                  </ItchyText>
+                  <LinkifiedText
+                    style={{ color: colors.text }}
+                    text={metadata?.instructions}
+                  />
+                </Card>
+              )}
+              {metadata?.description && (
+                <Card
+                  style={{
+                    margin: 20,
+                    marginTop: 0,
+                    marginBottom: 10,
+                    padding: 16,
+                    borderRadius: dimensions.mediumRadius,
+                  }}
+                >
+                  <ItchyText
+                    style={{
+                      fontWeight: "bold",
+                      color: colors.text,
+                      fontSize: 16,
+                      marginBottom: 10,
+                    }}
+                  >
+                    Credits
+                  </ItchyText>
+                  <LinkifiedText
+                    style={{ color: colors.text }}
+                    text={metadata?.description}
+                  />
+                </Card>
+              )}
+              {dateInfo && (
+                <Card
+                  style={{
+                    margin: 20,
+                    marginTop: 0,
+                    marginBottom: 30,
+                    padding: 16,
+                    borderRadius: dimensions.mediumRadius,
+                  }}
+                >
+                  <ItchyText
+                    style={{ color: colors.textSecondary, fontSize: 12 }}
+                  >
+                    Created {dateInfo.created}
+                  </ItchyText>
+                  {dateInfo.modified != dateInfo.created && (
+                    <ItchyText
+                      style={{ color: colors.textSecondary, fontSize: 12 }}
+                    >
+                      Modified {dateInfo.modified}
+                    </ItchyText>
+                  )}
+                </Card>
+              )}
+            </>
+          )}
         </ScrollView>
       </View>
       <BottomSheet
@@ -704,7 +925,7 @@ if (document.readyState === 'loading') {
         snapPoints={[]}
         enablePanDownToClose={true}
         backgroundStyle={{
-          backgroundColor: colors.background
+          backgroundColor: colors.background,
         }}
         handleIndicatorStyle={{ backgroundColor: colors.backgroundTertiary }}
       >

@@ -46,17 +46,17 @@ export default function Search() {
       return () => {
         setQuery("");
         setResults([]);
-      }
+      };
     }, [])
   );
 
   const search = (searchQuery = null) => {
     // Only use searchQuery if it's a string, otherwise use current query state
-    const queryToSearch = (typeof searchQuery === 'string') ? searchQuery : query;
+    const queryToSearch = typeof searchQuery === "string" ? searchQuery : query;
     if (!queryToSearch || !queryToSearch.trim()) return; // Don't search empty queries
 
     // Update the query state if a search query was provided (from history)
-    if (typeof searchQuery === 'string') {
+    if (typeof searchQuery === "string") {
       setQuery(searchQuery);
     }
 
@@ -65,7 +65,10 @@ export default function Search() {
 
     // Update search history - add new query and keep only last 5
     const currentHistory = searchHistory || [];
-    const newHistory = [queryToSearch.trim(), ...currentHistory.filter(item => item !== queryToSearch.trim())].slice(0, 5);
+    const newHistory = [
+      queryToSearch.trim(),
+      ...currentHistory.filter((item) => item !== queryToSearch.trim()),
+    ].slice(0, 5);
     setSearchHistory(newHistory);
 
     switch (type) {
@@ -162,7 +165,6 @@ export default function Search() {
           marginTop: 8,
           paddingTop: 4,
           marginHorizontal: 1.5,
-          paddingBottom: Platform.OS == "ios" ? 60 : 0,
           borderTopLeftRadius: 32,
           borderTopRightRadius: 32,
           outlineColor: colors.outlineCard,
@@ -209,7 +211,14 @@ export default function Search() {
               />
             }
             onRefresh={search}
-            ListEmptyComponent={<EmptySearchComponent searchHistory={searchHistory} onClearHistory={() => setSearchHistory([])} onHistoryPress={search} colors={colors} />}
+            ListEmptyComponent={
+              <EmptySearchComponent
+                searchHistory={searchHistory}
+                onClearHistory={() => setSearchHistory([])}
+                onHistoryPress={search}
+                colors={colors}
+              />
+            }
           />
         </FastSquircleView>
       </FastSquircleView>
@@ -217,7 +226,12 @@ export default function Search() {
   );
 }
 
-function EmptySearchComponent({ searchHistory, onClearHistory, onHistoryPress, colors }) {
+function EmptySearchComponent({
+  searchHistory,
+  onClearHistory,
+  onHistoryPress,
+  colors,
+}) {
   const hasHistory = searchHistory && searchHistory.length > 0;
 
   return (
@@ -247,19 +261,17 @@ function EmptySearchComponent({ searchHistory, onClearHistory, onHistoryPress, c
       </ItchyText>
 
       {hasHistory && (
-        <View
-          style={{ width: "100%" }}
-        >
+        <View style={{ width: "100%" }}>
           {searchHistory.map((historyItem, index) => (
             <Card
               key={index}
               onPress={() => onHistoryPress(historyItem)}
               style={{
-                marginBottom: 8
+                marginBottom: 8,
               }}
               pressableStyle={{
                 paddingHorizontal: 16,
-                paddingVertical: 12
+                paddingVertical: 12,
               }}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -287,7 +299,14 @@ function EmptySearchComponent({ searchHistory, onClearHistory, onHistoryPress, c
               </View>
             </Card>
           ))}
-          <Chip.Icon text="Clear history" icon="trash" mode="outlined" onPress={() => setTimeout(onClearHistory, 150)} style={{ marginHorizontal: "auto", marginTop: 10 }} provider="gesture-handler" />
+          <Chip.Icon
+            text="Clear history"
+            icon="trash"
+            mode="outlined"
+            onPress={() => setTimeout(onClearHistory, 150)}
+            style={{ marginHorizontal: "auto", marginTop: 10 }}
+            provider="gesture-handler"
+          />
         </View>
       )}
     </View>
