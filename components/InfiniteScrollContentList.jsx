@@ -9,8 +9,8 @@ export default function InfiniteScrollContentList({
   data = [],
   itemType = "projects",
   isLoading = false,
-  onRefresh = () => {},
-  onEndReached = () => {},
+  onRefresh = () => { },
+  onEndReached = () => { },
   disablePTR = false,
 }) {
   const { colors, isDark } = useTheme();
@@ -48,9 +48,9 @@ export default function InfiniteScrollContentList({
             tintColor={"white"}
             progressBackgroundColor={colors.accent}
             colors={isDark ? ["black"] : ["white"]}
+            onRefresh={onRefresh}
           />
-        ),
-        onRefresh: onRefresh,
+        )
       })}
       onEndReached={onEndReached}
     />

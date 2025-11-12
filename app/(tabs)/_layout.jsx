@@ -5,6 +5,9 @@ import { useMMKVString } from 'react-native-mmkv';
 import { withLayoutContext } from "expo-router";
 import { createNativeBottomTabNavigator } from "@bottom-tabs/react-navigation";
 import { SystemBars } from "react-native-edge-to-edge"
+import { getCrashlytics, log, recordError } from '@react-native-firebase/crashlytics';
+
+const c = getCrashlytics();
 
 export const Tabs = withLayoutContext(
     createNativeBottomTabNavigator().Navigator
@@ -16,10 +19,18 @@ export default function TabLayout() {
     const [username] = useMMKVString("username");
 
     useEffect(() => {
-        if (!username) return;
+        log(c, "Tab layout rendered")
+        if (!username) {
+            log(c, "User is not logged in")
+            return;
+        }
+        log(c, "Fetching message count for authenticated user")
         ScratchAPIWrapper.messages.getMessageCount(username).then((d) => {
             setMessageCount(d);
-        });
+        }).catch((error) => {
+            log(c, "Failed to get message count for authenticated user")
+            recordError(c, error);
+        })
     }, [username]);
 
     return (

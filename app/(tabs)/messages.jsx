@@ -1,4 +1,5 @@
 import { RefreshControl, ScrollView, Platform } from "react-native";
+import { getCrashlytics, log, recordError } from '@react-native-firebase/crashlytics';
 import ItchyText from "../../components/ItchyText";
 import { useTheme } from "../../utils/theme";
 import { useMMKVString } from "react-native-mmkv";
@@ -11,6 +12,8 @@ import Chip from "../../components/Chip";
 import FastSquircleView from "react-native-fast-squircle";
 import Animated from "react-native-reanimated";
 import { FlashList } from "@shopify/flash-list";
+
+const c = getCrashlytics();
 
 export default function Messages() {
   const { colors, dimensions, isDark } = useTheme();
@@ -30,26 +33,46 @@ export default function Messages() {
     Animated.createAnimatedComponent(FastSquircleView);
 
   useEffect(() => {
-    if (!username || !token) return;
+    log(c, "Messages page rendered")
+    if (!username || !token) {
+      log(c, "No username or token available for messages");
+      return;
+    }
+    log(c, "Username/token changed, reloading messages from beginning");
     setOffset(0);
     loadMessages();
   }, [username, token]);
 
   const loadMessages = () => {
-    setLoading(true);
-    ScratchAPIWrapper.messages
-      .getMessages(username, token, offset, "", 30)
-      .then((d) => {
-        if (offset === 0) {
-          setMessages(d);
-        } else {
-          // Dedupe messages based on ID before concatenating
-          const existingIds = new Set(messages.map((m) => m.id));
-          const newMessages = d.filter((m) => !existingIds.has(m.id));
-          setMessages((prev) => prev.concat(newMessages));
-        }
-        setLoading(false);
-      });
+    try {
+      log(c, `Loading messages - offset: ${offset}, isInitialLoad: ${offset === 0}`);
+      setLoading(true);
+      ScratchAPIWrapper.messages
+        .getMessages(username, token, offset, "", 30)
+        .then((d) => {
+          log(c, `Successfully fetched ${d.length} messages`);
+          if (offset === 0) {
+            log(c, "Setting initial messages");
+            setMessages(d);
+          } else {
+            // Dedupe messages based on ID before concatenating
+            const existingIds = new Set(messages.map((m) => m.id));
+            const newMessages = d.filter((m) => !existingIds.has(m.id));
+            log(c, `Adding ${newMessages.length} new messages (${d.length - newMessages.length} duplicates filtered)`);
+            setMessages((prev) => prev.concat(newMessages));
+          }
+          setLoading(false);
+        })
+        .catch((error) => {
+          log(c, "Failed to load messages");
+          recordError(c, error);
+          setLoading(false);
+        });
+    } catch (error) {
+      log(c, "Error in loadMessages function");
+      recordError(c, error);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -57,56 +80,86 @@ export default function Messages() {
   }, [offset]);
 
   const filteredMessages = useMemo(() => {
-    // If no filters are active, show all messages
-    const hasActiveFilters =
-      filters.studio || filters.comment || filters.interaction || filters.forum;
-    if (!hasActiveFilters) {
-      return messages;
+    try {
+      // If no filters are active, show all messages
+      const hasActiveFilters =
+        filters.studio || filters.comment || filters.interaction || filters.forum;
+
+      if (!hasActiveFilters) {
+        log(c, `Showing all ${messages.length} messages (no filters active)`);
+        return messages;
+      }
+
+      const activeFilters = Object.entries(filters)
+        .filter(([_, active]) => active)
+        .map(([key, _]) => key);
+
+      const filtered = messages.filter((message) => {
+        // Categorize messages based on type
+        const isStudioMessage =
+          message.type === "becomeownerstudio" ||
+          message.type === "becomecurator" ||
+          message.type === "addproject" ||
+          message.type === "studioactivity";
+
+        const isCommentMessage =
+          message.type === "remixproject" ||
+          message.type === "shareproject" ||
+          message.type.includes("comment");
+
+        const isInteractionMessage =
+          message.type === "loveproject" ||
+          message.type === "favoriteproject" ||
+          message.type === "followuser";
+
+        const isForumMessage = message.type === "forumpost";
+
+        return (
+          (filters.studio && isStudioMessage) ||
+          (filters.comment && isCommentMessage) ||
+          (filters.interaction && isInteractionMessage) ||
+          (filters.forum && isForumMessage)
+        );
+      });
+
+      log(c, `Filtered ${messages.length} messages to ${filtered.length} using filters: ${activeFilters.join(', ')}`);
+      return filtered;
+    } catch (error) {
+      log(c, "Error filtering messages");
+      recordError(c, error);
+      return messages; // Fallback to showing all messages
     }
-
-    return messages.filter((message) => {
-      // Categorize messages based on type
-      const isStudioMessage =
-        message.type === "becomeownerstudio" ||
-        message.type === "becomecurator" ||
-        message.type === "addproject" ||
-        message.type === "studioactivity";
-
-      const isCommentMessage =
-        message.type === "remixproject" ||
-        message.type === "shareproject" ||
-        message.type.includes("comment");
-
-      const isInteractionMessage =
-        message.type === "loveproject" ||
-        message.type === "favoriteproject" ||
-        message.type === "followuser";
-
-      const isForumMessage = message.type === "forumpost";
-
-      return (
-        (filters.studio && isStudioMessage) ||
-        (filters.comment && isCommentMessage) ||
-        (filters.interaction && isInteractionMessage) ||
-        (filters.forum && isForumMessage)
-      );
-    });
   }, [messages, filters]);
 
   const toggleFilter = useCallback((filterType) => {
-    setFilters((prev) => ({
-      ...prev,
-      [filterType]: !prev[filterType],
-    }));
+    try {
+      setFilters((prev) => {
+        const newValue = !prev[filterType];
+        log(c, `Filter ${filterType} ${newValue ? 'enabled' : 'disabled'}`);
+        return {
+          ...prev,
+          [filterType]: newValue,
+        };
+      });
+    } catch (error) {
+      log(c, `Error toggling filter ${filterType}`);
+      recordError(c, error);
+    }
   }, []);
 
   const clearAllFilters = useCallback(() => {
-    setFilters({
-      studio: false,
-      comment: false,
-      interaction: false,
-      forum: false,
-    });
+    try {
+      log(c, "Clearing all message filters");
+      setFilters({
+        studio: false,
+        comment: false,
+        interaction: false,
+        forum: false,
+      });
+    } catch (error) {
+      log(c, "Error clearing all filters");
+      recordError(c, error);
+    }
   }, []);
 
   const renderFilterChips = () => {
@@ -170,6 +223,7 @@ export default function Messages() {
   };
 
   if (!username || !token) {
+    log(c, "Messages page loaded without authentication - showing sign in prompt");
     return (
       <SafeAreaView
         edges={["top"]}
@@ -243,23 +297,36 @@ export default function Messages() {
             style={{ backgroundColor: colors.background, flex: 1 }}
             renderItem={(item) => renderMessage({ item: item.item })}
             keyExtractor={(item) => item.id}
-            onRefresh={() => {
-              setOffset(0);
-              loadMessages();
-            }}
             refreshControl={
               <RefreshControl
                 refreshing={loading}
                 tintColor={"white"}
                 progressBackgroundColor={colors.accent}
                 colors={isDark ? ["black"] : ["white"]}
+                onRefresh={() => {
+                  try {
+                    log(c, "User initiated pull-to-refresh on messages");
+                    setOffset(0);
+                    loadMessages();
+                  } catch (error) {
+                    console.error(error);
+                    log(c, "Error during messages refresh");
+                    recordError(c, error);
+                  }
+                }}
               />
             }
             onEndReachedThreshold={1.2}
             onEndReached={() => {
-              if (loading) return;
-              setLoading(true);
-              setOffset(messages.length);
+              try {
+                if (loading) return;
+                log(c, `User reached end of messages list, loading more from offset ${messages.length}`);
+                setLoading(true);
+                setOffset(messages.length);
+              } catch (error) {
+                log(c, "Error during pagination");
+                recordError(c, error);
+              }
             }}
           />
         </FastSquircleView>

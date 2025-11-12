@@ -23,6 +23,7 @@ expo-env.d.ts
 *.key
 *.mobileprovision
 android/keystore.properties
+credentials.json
 
 # Metro
 .metro-health-check*
@@ -46,3 +47,7 @@ virtualDrive.bat
 
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
+
+# Firebase
+google-services.json
+GoogleService-Info.plist

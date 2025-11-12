@@ -201,16 +201,15 @@ export default function Search() {
               borderRadius: 32,
               overflow: "hidden",
             }}
-            refreshing={isLoading}
             refreshControl={
               <RefreshControl
                 refreshing={isLoading}
                 tintColor={"white"}
                 progressBackgroundColor={colors.accent}
                 colors={isDark ? ["black"] : ["white"]}
+                onRefresh={search}
               />
             }
-            onRefresh={search}
             ListEmptyComponent={
               <EmptySearchComponent
                 searchHistory={searchHistory}

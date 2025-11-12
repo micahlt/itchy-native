@@ -2,10 +2,12 @@
   "expo": {
     "name": "Itchy",
     "slug": "itchy-native",
-    "version": "2.6.3",
+    "version": "2.6.4",
     "scheme": "itchy",
     "newArchEnabled": true,
     "plugins": [
+      "@react-native-firebase/app",
+      "@react-native-firebase/crashlytics",
       [
         "expo-build-properties",
         {
@@ -17,7 +19,7 @@
             "compileSdkVersion": 35,
             "targetSdkVersion": 35,
             "buildToolsVersion": "35.0.0",
-            "kotlinVersion": "1.9.25",
+            "kotlinVersion": "2.2.20",
             "reactNativeReleaseLevel": "experimental"
           }
         }
@@ -59,7 +61,7 @@
     },
     "userInterfaceStyle": "automatic",
     "android": {
-      "versionCode": 59,
+      "versionCode": 60,
       "package": "org.scratchclient4.itchy",
       "adaptiveIcon": {
         "backgroundColor": "#0082FF",
@@ -67,14 +69,16 @@
         "monochromeImage": "./assets/icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "googleServicesFile": "./google-services.json"
     },
     "ios": {
       "bundleIdentifier": "org.scratchclient4.itchy",
       "icon": "./assets/iosicon.icon",
       "infoPlist": {
-              "NSCameraUsageDescription": "Itchy needs access to the camera to support projects that include camera features."
-            }
+        "NSCameraUsageDescription": "Itchy needs access to the camera to support projects that include camera features."
+      },
+      "googleServicesFile": "./GoogleService-Info.plist"
     }
   }
 }
