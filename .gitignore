@@ -46,3 +46,7 @@ virtualDrive.bat
 
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
+
+# Firebase
+google-services.json
+GoogleService-Info.plist

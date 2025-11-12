@@ -52,7 +52,7 @@ export default function SettingsScreen() {
           justifyContent: "space-between",
           alignItems: "center",
           minHeight: 50,
-          paddingVertical: 12,
+          paddingVertical: Platform.OS == "ios" ? 12 : 3,
           marginHorizontal: 15,
           paddingLeft: 20,
           paddingRight: 12,

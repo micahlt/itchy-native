@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo } from "react";
+import { getCrashlytics, log, recordError } from '@react-native-firebase/crashlytics';
+import React, { useEffect } from "react";
 import Stack from "expo-router/stack";
 import { ThemeProvider, useTheme } from "../utils/theme";
 import { Platform, View } from "react-native";
@@ -13,6 +14,8 @@ import { router } from "expo-router";
 import { SWRConfig } from "swr";
 import * as Network from "expo-network";
 import { isLiquidPlus } from "../utils/platformUtils";
+
+const c = getCrashlytics();
 
 export default function App() {
   const [twConfig] = useMMKVObject("twConfig");
@@ -35,6 +38,8 @@ export default function App() {
         }
       } catch (error) {
         console.warn("Failed to check network state:", error);
+        log(c, "Failed initial network connection test");
+        recordError(c, error);
       }
     };
 
@@ -42,6 +47,8 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    log(c, "Clearing image cache");
+    Image.clearDiskCache();
     if (!!user) {
       APIAuth.getSession(cookieSet)
         .then((d) => {
@@ -51,6 +58,7 @@ export default function App() {
             !!d?.sessionJSON &&
             !!d?.sessionJSON?.user
           ) {
+            log(c, "Authenticating with existing cookies")
             storage.set("sessionID", d.sessionToken);
             storage.set("csrfToken", d.csrfToken);
             storage.set("cookieSet", d.cookieSet);
@@ -58,6 +66,7 @@ export default function App() {
             setUser(d.sessionJSON.user);
           }
           if (!d.isLoggedIn) {
+            log(c, "Removing existing user auth data")
             storage.delete("sessionID");
             storage.delete("csrfToken");
             storage.delete("cookieSet");
@@ -65,64 +74,85 @@ export default function App() {
             storage.delete("user");
             setUser(null);
             APIAuth.logout().finally(async () => {
-              if (!savedLogins) return;
+              if (!savedLogins) {
+                log(c, "Won't log in as there are no saved logins")
+                return;
+              }
+              log(c, "Searching saved logins")
               const currentLogin = savedLogins.find(
                 (o) => o.username === storage.getString("username")
               );
-              if (!currentLogin) return;
+              if (!currentLogin) {
+                log(c, "Current login uname and password do not exist.  Staying logged out");
+                return;
+              }
+              log(c, "Attempting to log in with details from saved passwords")
               APIAuth.login(currentLogin.username, currentLogin.password)
                 .then((d) => {
+                  log(c, "Logged in successfully, setting up user data");
                   storage.set("sessionID", d.sessionToken);
                   storage.set("csrfToken", d.csrfToken);
                   storage.set("username", d.username);
                   storage.set("cookieSet", d.cookieSet);
                   storage.set("token", d.sessionJSON.user.token);
                   setUser(d.sessionJSON.user);
+                  log(c, "Navigating to index route");
                   router.dismissTo("/");
                 })
                 .catch((e) => {
+                  log(c, "Login with saved info failed.  Staying logged out");
                   storage.delete("username");
                 });
             });
           }
         })
         .catch(() => {
-          storage.delete("sessionID");
-          storage.delete("csrfToken");
-          storage.delete("cookieSet");
-          storage.delete("token");
-          storage.delete("user");
+          log(c, "No existing cookies were found.  Logging out completely");
           APIAuth.logout().finally(async () => {
+            storage.delete("sessionID");
+            storage.delete("csrfToken");
+            storage.delete("cookieSet");
+            storage.delete("token");
+            storage.delete("user");
             if (!savedLogins) {
+              log(c, "No saved logins exist");
               return storage.delete("username");
             }
+            log(c, "Searching saved logins");
             const currentLogin = savedLogins.find(
               (o) => o.username === storage.getString("username")
             );
             if (!currentLogin) {
+              log(c, "Current login uname and password do not exist.  Staying logged out");
               return storage.delete("username");
             }
+            log(c, "Attempting to log in with details from saved passwords")
             APIAuth.login(currentLogin.username, currentLogin.password)
               .then((d) => {
+                log(c, "Logged in successfully, setting up user data")
                 storage.set("sessionID", d.sessionToken);
                 storage.set("csrfToken", d.csrfToken);
                 storage.set("username", d.username);
                 storage.set("cookieSet", d.cookieSet);
                 storage.set("token", d.sessionJSON.user.token);
                 setUser(d.sessionJSON.user);
+                log(c, "Navigating to index route")
                 router.dismissTo("/");
               })
               .catch((e) => {
+                log(c, "Login with saved info failed.  Staying logged out");
                 storage.delete("username");
               });
           });
         });
+    } else {
+      log(c, "User is not logged in.")
     }
     if (!localControllerMappings) {
+      log(c, "Setting up local controller mappings");
       setLocalControllerMappings({});
     }
   }, []);
-  Image.clearDiskCache();
   return (
     <SWRConfig
       value={{

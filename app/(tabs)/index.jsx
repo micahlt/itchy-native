@@ -1,6 +1,7 @@
 const REFRESH_TRIGGER_HEIGHT = 50;
 const MAX_PULL_HEIGHT = 75;
 
+import { crash, getCrashlytics, log } from '@react-native-firebase/crashlytics';
 import { Platform, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import ScratchAPIWrapper from "../../utils/api-wrapper";
@@ -40,6 +41,8 @@ import ItchyText from "../../components/ItchyText";
 import { Ionicons } from "@expo/vector-icons";
 import useSWR from "swr";
 import TexturedButton from "../../components/TexturedButton";
+
+const c = getCrashlytics();
 
 // Memoized header component to prevent unnecessary re-renders
 const Header = memo(({ insets, colors, headerStyle, logoStyle, username }) => (
@@ -142,7 +145,18 @@ export default function HomeScreen() {
     data: exploreData,
     isLoading: exploreLoading,
     mutate: refreshExplore,
-  } = useSWR("explore", () => ScratchAPIWrapper.explore.getExplore(), {
+  } = useSWR("explore", async () => {
+    try {
+      log(c, "Fetching explore data");
+      const result = await ScratchAPIWrapper.explore.getExplore();
+      log(c, "Successfully fetched explore data");
+      return result;
+    } catch (error) {
+      log(c, "Failed to fetch explore data");
+      recordError(c, error);
+      throw error;
+    }
+  }, {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
@@ -150,7 +164,18 @@ export default function HomeScreen() {
   // SWR for friends data
   const { data: friendsLoves = [], mutate: refreshFriendsLoves } = useSWR(
     username && token ? ["friendsLoves", username, token] : null,
-    () => ScratchAPIWrapper.explore.getFriendsLoves(username, token),
+    async () => {
+      try {
+        log(c, "Fetching friends loved projects");
+        const result = await ScratchAPIWrapper.explore.getFriendsLoves(username, token);
+        log(c, `Successfully fetched ${result.length} friends loved projects`);
+        return result;
+      } catch (error) {
+        log(c, "Failed to fetch friends loved projects");
+        recordError(c, error);
+        throw error;
+      }
+    },
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -159,7 +184,18 @@ export default function HomeScreen() {
 
   const { data: friendsProjects = [], mutate: refreshFriendsProjects } = useSWR(
     username && token ? ["friendsProjects", username, token] : null,
-    () => ScratchAPIWrapper.explore.getFriendsProjects(username, token),
+    async () => {
+      try {
+        log(c, "Fetching friends created projects");
+        const result = await ScratchAPIWrapper.explore.getFriendsProjects(username, token);
+        log(c, `Successfully fetched ${result.length} friends created projects`);
+        return result;
+      } catch (error) {
+        log(c, "Failed to fetch friends created projects");
+        recordError(c, error);
+        throw error;
+      }
+    },
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
@@ -168,43 +204,66 @@ export default function HomeScreen() {
 
   // Simple refresh function using SWR mutate
   const refresh = useCallback(() => {
-    rotationPaused.value = false;
+    try {
+      log(c, "User initiated pull to refresh");
+      rotationPaused.value = false;
 
-    // Refresh all data sources
-    refreshExplore();
-    refreshFriendsLoves();
-    refreshFriendsProjects();
-    feedRef.current?.refresh();
+      // Refresh all data sources
+      refreshExplore();
+      refreshFriendsLoves();
+      refreshFriendsProjects();
+      feedRef.current?.refresh();
 
-    // Stop rotation after a delay
-    setTimeout(() => {
-      rotationPaused.value = true;
-    }, 2000);
+      log(c, "Successfully triggered data refresh");
+
+      // Stop rotation after a delay
+      setTimeout(() => {
+        rotationPaused.value = true;
+      }, 2000);
+    } catch (error) {
+      log(c, "Error during refresh operation");
+      recordError(c, error);
+    }
   }, [refreshExplore, refreshFriendsLoves, refreshFriendsProjects]); // Memoize vib function to prevent recreations
   const vib = useCallback((length) => {
-    if (length === "tick") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
-    } else if (length === "long") {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
+    try {
+      log(c, `Triggering haptic feedback: ${length}`);
+      if (length === "tick") {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+      } else if (length === "long") {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
+      }
+    } catch (error) {
+      log(c, "Error triggering haptic feedback");
+      recordError(c, error);
     }
   }, []);
 
   useEffect(() => {
-    rotate.value = withPause(
-      withRepeat(
-        withTiming(360, { duration: 1000, easing: Easing.linear }),
-        -1,
-        false
-      ),
-      rotationPaused
-    );
-    // Start initial rotation, data loads automatically via SWR
-    refresh();
-    return () => {
-      rotationPaused.value = true;
-      rotate.value = 0;
-      panPosition.value = 0;
-    };
+    crash(c);
+    try {
+      log(c, "Initializing home screen animations and data loading");
+      rotate.value = withPause(
+        withRepeat(
+          withTiming(360, { duration: 1000, easing: Easing.linear }),
+          -1,
+          false
+        ),
+        rotationPaused
+      );
+      // Start initial rotation, data loads automatically via SWR
+      refresh();
+      log(c, "Home screen initialization completed");
+      return () => {
+        log(c, "Cleaning up home screen animations");
+        rotationPaused.value = true;
+        rotate.value = 0;
+        panPosition.value = 0;
+      };
+    } catch (error) {
+      log(c, "Error during home screen initialization");
+      recordError(c, error);
+    }
   }, []);
 
   const headerStyle = useAnimatedStyle(() => {

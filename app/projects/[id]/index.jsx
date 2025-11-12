@@ -35,7 +35,8 @@ import {
   isLiquidPlus,
   getLiquidPlusPadding,
 } from "../../../utils/platformUtils";
-
+import { getCrashlytics, log, recordError } from "@react-native-firebase/crashlytics";
+const c = getCrashlytics();
 export default function Project() {
   const { id } = useLocalSearchParams();
   const { colors, dimensions, isDark } = useTheme();
@@ -61,6 +62,7 @@ export default function Project() {
 
   const sendKeyEvent = (key, type, source = "local") => {
     const message = JSON.stringify({ key, type });
+    log(c, `Sending key event to WebView: ${message}`)
     webViewRef.current?.injectJavaScript(`
             (function(){
                 window.postMessage(${JSON.stringify(message)},'*');
@@ -76,30 +78,45 @@ export default function Project() {
   }, [metadata?.history]);
 
   useEffect(() => {
+    log(c, "Project page rendered");
     if (!id) return;
+    log(c, `Project ID is ${id}`);
     ScratchAPIWrapper.project
       .getProject(id)
       .then((d) => {
         if (d.code == "NotFound") {
           router.replace("/error?errorText=Couldn't find that project.");
+          log(c, "Project was not found")
           return;
         } else if (!!d?.code) {
+          log(c, `Other project metadata fetching error: ${d?.code}`)
           return;
         }
         setMetadata(d);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        log(c, "Project metadata fetch failed")
+        recordError(c, error);
+      });
     if (!!username) {
+      log(c, "User is authenticated, fetching interaction data");
       ScratchAPIWrapper.project
         .getInteractions(id, username, token)
         .then((d) => {
+          log(c, "Got interaction data");
           setInteractions(d);
         })
-        .catch(console.error);
+        .catch((error) => {
+          console.error(error);
+          log(c, "Error getting project interactions")
+          recordError(c, error);
+        });
     }
   }, [id]);
 
   const toggleInteraction = (interaction) => {
+    log(c, `Toggling interaction ${interaction} on project ${id}`);
     if (interaction == "love") {
       ScratchAPIWrapper.project
         .setInteraction(
@@ -122,7 +139,11 @@ export default function Project() {
             },
           });
         })
-        .catch(console.error);
+        .catch((error) => {
+          console.error(error);
+          log(c, "Error toggling project love")
+          recordError(c, error);
+        });
     } else if (interaction == "favorite") {
       ScratchAPIWrapper.project
         .setInteraction(
@@ -145,7 +166,11 @@ export default function Project() {
                 metadata.stats.favorites + (interactions.favorited ? -1 : 1),
             },
           });
-        });
+        }).catch((error) => {
+          console.error(error);
+          log(c, "Error toggling project favorite")
+          recordError(c, error);
+        })
     }
   };
 
@@ -155,8 +180,7 @@ export default function Project() {
 // Wait for DOM to be fully loaded before applying styles
 function applyStyles() {
   try {
-    document.documentElement.style.setProperty('--ui-white', '${
-      colors.backgroundSecondary
+    document.documentElement.style.setProperty('--ui-white', '${colors.backgroundSecondary
     }');
     const advancedBtn = document.querySelector("img[title='Open advanced settings']");
     const fullscreenBtn = document.querySelector("span[role='button']:has(img[title='Full Screen Control'])");
@@ -195,11 +219,10 @@ if (document.readyState === 'loading') {
     const pcConfig = {
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' }
-        ${
-          process.env.EXPO_PUBLIC_TURN_USERNAME &&
-          process.env.EXPO_PUBLIC_TURN_CREDENTIAL &&
-          process.env.EXPO_PUBLIC_TURN_SERVER_URL
-            ? `,
+        ${process.env.EXPO_PUBLIC_TURN_USERNAME &&
+      process.env.EXPO_PUBLIC_TURN_CREDENTIAL &&
+      process.env.EXPO_PUBLIC_TURN_SERVER_URL
+      ? `,
         {
           urls: "turn:${process.env.EXPO_PUBLIC_TURN_SERVER_URL}:80",
           username: "${process.env.EXPO_PUBLIC_TURN_USERNAME}",
@@ -220,8 +243,8 @@ if (document.readyState === 'loading') {
           username: "${process.env.EXPO_PUBLIC_TURN_USERNAME}",
           credential: "${process.env.EXPO_PUBLIC_TURN_CREDENTIAL}",
         }`
-            : ""
-        }
+      : ""
+    }
       ]
     };
 
@@ -812,13 +835,13 @@ if (document.readyState === 'loading') {
                   Share.share(
                     Platform.OS === "android"
                       ? {
-                          message: `https://scratch.mit.edu/projects/${id}`,
-                          dialogTitle: "Share this project",
-                        }
+                        message: `https://scratch.mit.edu/projects/${id}`,
+                        dialogTitle: "Share this project",
+                      }
                       : {
-                          url: `https://scratch.mit.edu/projects/${id}`,
-                          message: "Check out this project on Scratch!",
-                        },
+                        url: `https://scratch.mit.edu/projects/${id}`,
+                        message: "Check out this project on Scratch!",
+                      },
                     {
                       dialogTitle: "Share this project",
                       tintColor: colors.accent,
