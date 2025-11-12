@@ -22,6 +22,9 @@ import FastSquircleView from "react-native-fast-squircle";
 import Chip from "../components/Chip";
 import { useTheme } from "../utils/theme";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
+import { getCrashlytics, setCrashlyticsCollectionEnabled } from "@react-native-firebase/crashlytics";
+
+const c = getCrashlytics();
 
 export default function SettingsScreen() {
   const { colors, dimensions, isDark } = useTheme();
@@ -121,6 +124,7 @@ export default function SettingsScreen() {
 
   // Force dark theme setting persisted in MMKV
   const [forceDark, setForceDark] = useMMKVBoolean("forceDark");
+  const [crashlyticsEnabled, setCrashlyticsEnabled] = useState(c.isCrashlyticsCollectionEnabled);
   const [experimentalFeed, setExperimentalFeed] =
     useMMKVBoolean("experimentalFeed");
 
@@ -129,6 +133,11 @@ export default function SettingsScreen() {
     setForceDark(v);
     // ThemeProvider reads this MMKV key and will update automatically.
   };
+
+  async function handleCrashlyticsToggle() {
+    await setCrashlyticsCollectionEnabled(c, !crashlyticsEnabled)
+      .then(() => setCrashlyticsEnabled(c.isCrashlyticsCollectionEnabled));
+  }
 
   return (
     <ScrollView
@@ -282,7 +291,7 @@ export default function SettingsScreen() {
           s.middleSettingContainer,
         ]}
       >
-        <ItchyText style={s.settingTitle}>Enable experimental feed</ItchyText>
+        <ItchyText style={s.settingTitle}>Experimental feed</ItchyText>
         <Switch
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
@@ -324,7 +333,7 @@ export default function SettingsScreen() {
         cornerSmoothing={0.6}
         style={[
           s.settingContainer,
-          s.bottomSettingContainer,
+          s.middleSettingContainer,
           {
             justifyContent: "flex-start",
             alignItems: "flex-start",
@@ -335,6 +344,34 @@ export default function SettingsScreen() {
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
           When enabled, the app will always use the dark theme even if your
           device is set to light mode.
+        </ItchyText>
+      </FastSquircleView>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={[s.settingContainer, s.middleSettingContainer]}
+      >
+        <ItchyText style={s.settingTitle}>Crash reports</ItchyText>
+        <Switch
+          thumbColor="white"
+          trackColor={{ false: "#686868", true: colors.accent }}
+          onValueChange={() => handleCrashlyticsToggle()}
+          value={crashlyticsEnabled === true}
+        />
+      </FastSquircleView>
+      <FastSquircleView
+        cornerSmoothing={0.6}
+        style={[
+          s.settingContainer,
+          s.bottomSettingContainer,
+          {
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+            paddingVertical: 12,
+          },
+        ]}
+      >
+        <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
+          Opt in or out of crash reporting.  Reports do not include any information about your Scratch account, and are only sent when Itchy crashes.  This helps us improve the app
         </ItchyText>
       </FastSquircleView>
       <ItchyText style={s.sectionHeader}>About</ItchyText>
