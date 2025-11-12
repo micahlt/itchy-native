@@ -200,6 +200,7 @@ function ThemeConsumerInner({ twConfig }) {
           headerStyle: {
             backgroundColor: liquidPlus ? "transparent" : colors.background, // no fallback bg
           },
+          animationDuration: 120
         }}
       >
         <Stack.Screen
