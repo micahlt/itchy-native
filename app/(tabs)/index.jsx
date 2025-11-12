@@ -240,7 +240,6 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
-    crash(c);
     try {
       log(c, "Initializing home screen animations and data loading");
       rotate.value = withPause(

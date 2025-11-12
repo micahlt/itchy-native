@@ -245,8 +245,6 @@ export default function Messages() {
     );
   }
 
-  log(c, `Rendering authenticated messages view with ${messages.length} total messages, ${filteredMessages.length} filtered messages`);
-
   return (
     <SafeAreaView
       edges={["top"]}
@@ -299,22 +297,23 @@ export default function Messages() {
             style={{ backgroundColor: colors.background, flex: 1 }}
             renderItem={(item) => renderMessage({ item: item.item })}
             keyExtractor={(item) => item.id}
-            onRefresh={() => {
-              try {
-                log(c, "User initiated pull-to-refresh on messages");
-                setOffset(0);
-                loadMessages();
-              } catch (error) {
-                log(c, "Error during messages refresh");
-                recordError(c, error);
-              }
-            }}
             refreshControl={
               <RefreshControl
                 refreshing={loading}
                 tintColor={"white"}
                 progressBackgroundColor={colors.accent}
                 colors={isDark ? ["black"] : ["white"]}
+                onRefresh={() => {
+                  try {
+                    log(c, "User initiated pull-to-refresh on messages");
+                    setOffset(0);
+                    loadMessages();
+                  } catch (error) {
+                    console.error(error);
+                    log(c, "Error during messages refresh");
+                    recordError(c, error);
+                  }
+                }}
               />
             }
             onEndReachedThreshold={1.2}

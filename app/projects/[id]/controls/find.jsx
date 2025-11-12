@@ -226,16 +226,15 @@ export default function FindControls() {
             paddingTop: getLiquidPlusPadding(),
             paddingBottom: 100,
           }}
-          refreshing={isLoading}
           refreshControl={
             <RefreshControl
               refreshing={isLoading}
               tintColor={"white"}
               progressBackgroundColor={colors.accent}
               colors={isDark ? ["black"] : ["white"]}
+              onRefresh={getMappings}
             />
           }
-          onRefresh={getMappings}
           ListHeaderComponent={
             <>
               <View
