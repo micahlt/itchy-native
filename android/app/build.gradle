@@ -98,8 +98,8 @@ android {
         applicationId 'org.scratchclient4.itchy'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 60
-        versionName "2.6.4"
+        versionCode 61
+        versionName "2.6.5"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }

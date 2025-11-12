@@ -91,6 +91,7 @@ const IconChip = ({
   mode = "outlined",
   textStyle = {},
   style = {},
+  provider = "native"
 }) => {
   const { colors, isDark } = useTheme();
   const bg = useMemo(() => {
@@ -132,6 +133,7 @@ const IconChip = ({
           borderless: false,
         }}
         onPress={onPressFn}
+        provider={provider}
       >
         <Ionicons
           name={icon}
@@ -139,7 +141,7 @@ const IconChip = ({
           color={color}
           style={{ paddingLeft: 8 }}
         />
-        <ItchyText style={{ color: color, fontWeight: "bold" }}>
+        <ItchyText style={{ color: color, fontWeight: "bold", ...textStyle }}>
           {text}
         </ItchyText>
       </Pressable>

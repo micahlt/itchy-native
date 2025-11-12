@@ -1,6 +1,7 @@
 import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
 import FastSquircleView from "react-native-fast-squircle";
+import ItchyText from "./ItchyText";
 
 export default function Card({ onPress, children, style = {}, pressableStyle = {}, onLongPress = () => { } }) {
     const { colors, dimensions } = useTheme();
@@ -10,7 +11,7 @@ export default function Card({ onPress, children, style = {}, pressableStyle = {
                 backgroundColor: colors.backgroundSecondary,
                 overflow: 'hidden', borderRadius: dimensions.largeRadius, elevation: 2, ...style
             }}>
-                <Pressable android_ripple={{ color: colors.ripple, foreground: true, borderless: true }} onLongPress={onLongPress} onPress={onPress} style={{ ...pressableStyle }}>
+                <Pressable android_ripple={{ color: colors.ripple, foreground: true, borderless: true }} onLongPress={onLongPress} onPress={onPress} style={{ ...pressableStyle }} provider="gesture-handler">
                     {children}
                 </Pressable>
             </FastSquircleView>

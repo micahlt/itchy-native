@@ -799,6 +799,7 @@ if (document.readyState === 'loading') {
                 color="#ff4750"
                 mode={interactions.loved ? "filled" : "outlined"}
                 onPress={() => toggleInteraction("love")}
+                provider="gesture-handler"
               />
               <Chip.Icon
                 icon="star"
@@ -806,6 +807,7 @@ if (document.readyState === 'loading') {
                 color="#ddbf37"
                 mode={interactions.favorited ? "filled" : "outlined"}
                 onPress={() => toggleInteraction("favorite")}
+                provider="gesture-handler"
               />
               <Chip.Icon
                 icon="sync"
@@ -825,6 +827,7 @@ if (document.readyState === 'loading') {
                 color="#4769ff"
                 mode="filled"
                 onPress={openOnlineConfigSheet}
+                provider="gesture-handler"
               />
               <Chip.Icon
                 icon="share"
@@ -848,6 +851,7 @@ if (document.readyState === 'loading') {
                     }
                   )
                 }
+                provider="gesture-handler"
               />
             </ScrollView>
           )}
