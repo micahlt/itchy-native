@@ -10,10 +10,6 @@ const config = getDefaultConfig(__dirname);
 
 config.resolver = {
     ...config.resolver,
-    // Allow metro to resolve symlinked packages
-    nodeModulesPaths: [
-        path.resolve(__dirname, "node_modules"),
-    ],
     alias: {
         'react': require.resolve('react'),
         'react-native': require.resolve('react-native'),
