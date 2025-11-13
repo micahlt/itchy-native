@@ -32,5 +32,3 @@ export default function ItchyText({ style = {}, children, numberOfLines = undefi
     }, [style, children, numberOfLines]);
     return memoizedComponent;
 }
-
-ItchyText.whyDidYouRender = true;

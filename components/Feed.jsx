@@ -107,6 +107,4 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
     </>
 });
 
-Feed.whyDidYouRender = true;
-
 export default Feed;
