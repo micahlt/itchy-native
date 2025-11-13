@@ -11,6 +11,13 @@ on:
           - prod-aab
           - publish-stores
           - all
+      platform:
+        type: choice
+        description: "What platform to build for"
+        options:
+          - ios
+          - android
+          - all
 
 env:
   EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
