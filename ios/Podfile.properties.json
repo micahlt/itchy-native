@@ -3,6 +3,6 @@
   "EX_DEV_CLIENT_NETWORK_INSPECTOR": "true",
   "newArchEnabled": "true",
   "ios.useFrameworks": "static",
-  "ios.forceStaticLinking": "[]",
+  "ios.forceStaticLinking": "[\"FastSquircle\"]",
   "apple.privacyManifestAggregationEnabled": "true"
 }

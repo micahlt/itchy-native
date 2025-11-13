@@ -1,8 +1,8 @@
 import {
   View,
   useWindowDimensions,
-  ScrollView,
   Share,
+  ScrollView,
   Platform,
 } from "react-native";
 import ItchyText from "../../../components/ItchyText";
@@ -28,11 +28,9 @@ import MultiPlayConfigSheet from "../../../components/MultiPlayConfigSheet";
 import BottomSheet from "@gorhom/bottom-sheet";
 import {
   Gesture,
-  GestureDetector,
-  PanGestureHandler,
+  GestureDetector
 } from "react-native-gesture-handler";
 import {
-  isLiquidPlus,
   getLiquidPlusPadding,
 } from "../../../utils/platformUtils";
 import { getCrashlytics, log, recordError } from "@react-native-firebase/crashlytics";
@@ -157,7 +155,7 @@ export default function Project() {
         )
         .then((d) => {
           if (!d.statusChanged) return;
-          setInteractions({ ...interactions, loved: !interactions.favorited });
+          setInteractions({ ...interactions, favorited: !interactions.favorited });
           setMetadata({
             ...metadata,
             stats: {
@@ -799,7 +797,6 @@ if (document.readyState === 'loading') {
                 color="#ff4750"
                 mode={interactions.loved ? "filled" : "outlined"}
                 onPress={() => toggleInteraction("love")}
-                provider="gesture-handler"
               />
               <Chip.Icon
                 icon="star"
@@ -807,7 +804,6 @@ if (document.readyState === 'loading') {
                 color="#ddbf37"
                 mode={interactions.favorited ? "filled" : "outlined"}
                 onPress={() => toggleInteraction("favorite")}
-                provider="gesture-handler"
               />
               <Chip.Icon
                 icon="sync"
@@ -827,7 +823,6 @@ if (document.readyState === 'loading') {
                 color="#4769ff"
                 mode="filled"
                 onPress={openOnlineConfigSheet}
-                provider="gesture-handler"
               />
               <Chip.Icon
                 icon="share"
@@ -851,7 +846,6 @@ if (document.readyState === 'loading') {
                     }
                   )
                 }
-                provider="gesture-handler"
               />
             </ScrollView>
           )}

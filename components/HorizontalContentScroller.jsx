@@ -47,6 +47,7 @@ export default function HorizontalContentScroller({ data, itemType = "projects",
             }}
             ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
             showsHorizontalScrollIndicator={false}
+            removeClippedSubviews={false}
         />
     </>
 };

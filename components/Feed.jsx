@@ -1,6 +1,5 @@
 import { View } from "react-native";
 import ItchyText from "./ItchyText";
-import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
 import { forwardRef, useImperativeHandle } from "react";
 import APIExplore from "../utils/api-wrapper/explore";
@@ -59,7 +58,7 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
                         <View key={`skeleton-${index}`} style={{
                             height: 60,
                             backgroundColor: colors.backgroundSecondary,
-                            borderRadius: 8,
+                            borderRadius: dimensions.mediumRadius,
                             marginBottom: index < 3 ? 8 : 0,
                             opacity: 0.6
                         }} />

@@ -11,6 +11,7 @@ node_modules/
 
 # Expo
 .expo/
+.eas/
 dist/
 web-build/
 expo-env.d.ts
@@ -22,7 +23,7 @@ expo-env.d.ts
 *.p12
 *.key
 *.mobileprovision
-android/keystore.properties
+keystore.properties
 credentials.json
 
 # Metro
@@ -32,6 +33,7 @@ credentials.json
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+.vscode
 
 # macOS
 .DS_Store

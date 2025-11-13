@@ -11,11 +11,11 @@
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
-		E243E534DF6648D1BF6BDB07 /* iosicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = F41E3B1B46944BF6B45117F0 /* iosicon.icon */; };
-		FD05DEDB7BF14AB7AE37B262 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 90947D6DB9814B219C9EC3DC /* GoogleService-Info.plist */; };
-		221541000E44492892DC38D9 /* Inter_400Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DBF407B64CAC40F3B391657D /* Inter_400Regular.ttf */; };
-		E67DF0085EDB44CDB650DAF1 /* Inter_700Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40B0AE22B8F848D680AE0946 /* Inter_700Bold.ttf */; };
-		7223FF92BE6B49A195F4F063 /* Inter_900Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2EB65FFAEAF44379AEDB515D /* Inter_900Black.ttf */; };
+		6129A9925FCC48E3912509D7 /* iosicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6A46834EF69D49E5855502B1 /* iosicon.icon */; };
+		E034530C96AC4DD9AB84F6F3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4B406887334E47FCB4168989 /* GoogleService-Info.plist */; };
+		166895E8A4244E34A65836FD /* Inter_400Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C7312DCE79EA46658441E821 /* Inter_400Regular.ttf */; };
+		C09C1E5D7FA5472F9F0D07DC /* Inter_700Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A849E5020B97497DB70405B6 /* Inter_700Bold.ttf */; };
+		568C5F53B1D3455E998C1C98 /* Inter_900Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 049D3B2828E04DDE92C19C78 /* Inter_900Black.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,11 +27,11 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Itchy/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Itchy-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Itchy-Bridging-Header.h"; path = "Itchy/Itchy-Bridging-Header.h"; sourceTree = "<group>"; };
-		F41E3B1B46944BF6B45117F0 /* iosicon.icon */ = {isa = PBXFileReference; name = "iosicon.icon"; path = "Itchy/iosicon.icon"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		90947D6DB9814B219C9EC3DC /* GoogleService-Info.plist */ = {isa = PBXFileReference; name = "GoogleService-Info.plist"; path = "Itchy/GoogleService-Info.plist"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = text.plist.xml; explicitFileType = undefined; includeInIndex = 0; };
-		DBF407B64CAC40F3B391657D /* Inter_400Regular.ttf */ = {isa = PBXFileReference; name = "Inter_400Regular.ttf"; path = "../node_modules/@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		40B0AE22B8F848D680AE0946 /* Inter_700Bold.ttf */ = {isa = PBXFileReference; name = "Inter_700Bold.ttf"; path = "../node_modules/@expo-google-fonts/inter/700Bold/Inter_700Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		2EB65FFAEAF44379AEDB515D /* Inter_900Black.ttf */ = {isa = PBXFileReference; name = "Inter_900Black.ttf"; path = "../node_modules/@expo-google-fonts/inter/900Black/Inter_900Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6A46834EF69D49E5855502B1 /* iosicon.icon */ = {isa = PBXFileReference; name = "iosicon.icon"; path = "Itchy/iosicon.icon"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		4B406887334E47FCB4168989 /* GoogleService-Info.plist */ = {isa = PBXFileReference; name = "GoogleService-Info.plist"; path = "Itchy/GoogleService-Info.plist"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = text.plist.xml; explicitFileType = undefined; includeInIndex = 0; };
+		C7312DCE79EA46658441E821 /* Inter_400Regular.ttf */ = {isa = PBXFileReference; name = "Inter_400Regular.ttf"; path = "../node_modules/@expo-google-fonts/inter/400Regular/Inter_400Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A849E5020B97497DB70405B6 /* Inter_700Bold.ttf */ = {isa = PBXFileReference; name = "Inter_700Bold.ttf"; path = "../node_modules/@expo-google-fonts/inter/700Bold/Inter_700Bold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		049D3B2828E04DDE92C19C78 /* Inter_900Black.ttf */ = {isa = PBXFileReference; name = "Inter_900Black.ttf"; path = "../node_modules/@expo-google-fonts/inter/900Black/Inter_900Black.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,8 +54,8 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				F41E3B1B46944BF6B45117F0 /* iosicon.icon */,
-				90947D6DB9814B219C9EC3DC /* GoogleService-Info.plist */,
+				6A46834EF69D49E5855502B1 /* iosicon.icon */,
+				4B406887334E47FCB4168989 /* GoogleService-Info.plist */,
 			);
 			name = Itchy;
 			sourceTree = "<group>";
@@ -82,7 +82,7 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				889453F398A34E3BA771A8E1 /* Resources */,
+				69834417B17145BCAA00BCEC /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -106,12 +106,12 @@
 			path = Itchy/Supporting;
 			sourceTree = "<group>";
 		};
-		889453F398A34E3BA771A8E1 /* Resources */ = {
+		69834417B17145BCAA00BCEC /* Resources */ = {
 			isa = "PBXGroup";
 			children = (
-				DBF407B64CAC40F3B391657D /* Inter_400Regular.ttf */,
-				40B0AE22B8F848D680AE0946 /* Inter_700Bold.ttf */,
-				2EB65FFAEAF44379AEDB515D /* Inter_900Black.ttf */,
+				C7312DCE79EA46658441E821 /* Inter_400Regular.ttf */,
+				A849E5020B97497DB70405B6 /* Inter_700Bold.ttf */,
+				049D3B2828E04DDE92C19C78 /* Inter_900Black.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -179,11 +179,11 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				E243E534DF6648D1BF6BDB07 /* iosicon.icon in Resources */,
-				FD05DEDB7BF14AB7AE37B262 /* GoogleService-Info.plist in Resources */,
-				221541000E44492892DC38D9 /* Inter_400Regular.ttf in Resources */,
-				E67DF0085EDB44CDB650DAF1 /* Inter_700Bold.ttf in Resources */,
-				7223FF92BE6B49A195F4F063 /* Inter_900Black.ttf in Resources */,
+				6129A9925FCC48E3912509D7 /* iosicon.icon in Resources */,
+				E034530C96AC4DD9AB84F6F3 /* GoogleService-Info.plist in Resources */,
+				166895E8A4244E34A65836FD /* Inter_400Regular.ttf in Resources */,
+				C09C1E5D7FA5472F9F0D07DC /* Inter_700Bold.ttf in Resources */,
+				568C5F53B1D3455E998C1C98 /* Inter_900Black.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -288,13 +288,11 @@
 					"-ObjC",
 					"-lc++",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = org.scratchclient4.itchy;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.scratchclient4.itchy";
 				PRODUCT_NAME = "Itchy";
 				SWIFT_OBJC_BRIDGING_HEADER = "Itchy/Itchy-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1";
 				VERSIONING_SYSTEM = "apple-generic";
 				TARGETED_DEVICE_FAMILY = "1";
 				CODE_SIGN_ENTITLEMENTS = Itchy/Itchy.entitlements;
@@ -319,12 +317,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = org.scratchclient4.itchy;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.scratchclient4.itchy";
 				PRODUCT_NAME = "Itchy";
 				SWIFT_OBJC_BRIDGING_HEADER = "Itchy/Itchy-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1";
 				VERSIONING_SYSTEM = "apple-generic";
 				TARGETED_DEVICE_FAMILY = "1";
 				CODE_SIGN_ENTITLEMENTS = Itchy/Itchy.entitlements;

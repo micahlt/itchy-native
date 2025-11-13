@@ -1,4 +1,4 @@
-import { TouchableOpacity, View, TouchableWithoutFeedback } from "react-native";
+import { View } from "react-native";
 import ItchyText from "./ItchyText";
 import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
@@ -6,12 +6,14 @@ import { Image } from "react-native";
 import { useRouter } from "expo-router";
 import { useCallback } from "react";
 import FastSquircleView from "react-native-fast-squircle";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function ProjectCard({ project, width = 250, style = {} }) {
     const { colors, dimensions } = useTheme();
     const router = useRouter();
 
     const openProject = useCallback(() => {
+        console.log("openproject")
         router.push(`/projects/${project.id}`);
     }, [project]);
 
@@ -27,7 +29,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
         <FastSquircleView cornerSmoothing={0.6} style={{ width, borderRadius: 16, overflow: "hidden", ...style }}>
             {/* Outer Pressable for ripple effect only */}
             <Pressable
-                provider="gesture-handler"
+                provider="native"
                 android_ripple={{ borderless: true, foreground: true, color: colors.ripple }}
                 onPress={() => { }}
             >
@@ -41,7 +43,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
                     ...style
                 }}>
                     {/* Project thumbnail - clickable to open project */}
-                    <TouchableWithoutFeedback onPress={openProject}>
+                    <Pressable onPress={openProject} provider="gesture-handler">
                         <Image
                             placeholder={require("../assets/project.png")}
                             placeholderContentFit="cover"
@@ -49,11 +51,11 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
                             style={{ width: width, aspectRatio: "4 / 3" }}
                             contentFit="fill"
                         />
-                    </TouchableWithoutFeedback>
+                    </Pressable>
 
                     {/* Project title - clickable to open project */}
                     {project?.title && project.title.trim() && (
-                        <TouchableWithoutFeedback onPress={openProject}>
+                        <Pressable onPress={openProject} provider="gesture-handler">
                             <View>
                                 <ItchyText
                                     style={{
@@ -68,7 +70,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
                                     {project.title}
                                 </ItchyText>
                             </View>
-                        </TouchableWithoutFeedback>
+                        </Pressable>
                     )}
 
                     {/* Username - clickable to open profile */}
@@ -95,7 +97,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
 
                     {/* Project label - clickable to open project */}
                     {project.label && (
-                        <TouchableWithoutFeedback onPress={openProject}>
+                        <Pressable onPress={openProject} provider="gesture-handler">
                             <View>
                                 <ItchyText
                                     style={{
@@ -110,7 +112,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
                                     {project.label}
                                 </ItchyText>
                             </View>
-                        </TouchableWithoutFeedback>
+                        </Pressable>
                     )}
                 </FastSquircleView>
             </Pressable>

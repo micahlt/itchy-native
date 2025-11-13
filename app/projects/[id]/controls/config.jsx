@@ -6,7 +6,7 @@ import { useTheme } from "../../../../utils/theme";
 import APIProject from "../../../../utils/api-wrapper/project";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import { useEffect, useMemo, useState } from "react";
-import { Selector } from "rn-selector";
+import RNPickerSelect from 'react-native-picker-select';
 import getControlOptions from "../../../../utils/controlOptions";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -120,6 +120,7 @@ export default function ControlsScreen() {
         borderRadius: 10,
         backgroundColor: colors.backgroundSecondary,
         overflow: "hidden",
+        margin: 0,
       },
       searchInput: {
         color: colors.textSecondary,
@@ -135,20 +136,27 @@ export default function ControlsScreen() {
     options,
     selectedValue,
     onValueChange,
-    searchable = true,
   }) => (
-    <Selector
-      options={options}
-      selectedValue={selectedValue}
+    <RNPickerSelect
+      style={{
+        inputAndroid: {
+          color: colors.textSecondary,
+          backgroundColor: "transparent",
+          paddingRight: 28
+        },
+        iconContainer: {
+          top: 8,
+          right: 0,
+        },
+      }}
+      items={options}
+      value={selectedValue}
       onValueChange={onValueChange}
-      style={selectorStyles.container}
-      textStyle={selectorStyles.text}
-      optionStyle={selectorStyles.option}
-      selectedOptionStyle={selectorStyles.selectedOption}
-      searchInputStyle={selectorStyles.searchInput}
-      dropdownStyle={selectorStyles.dropdown}
-      searchable={searchable}
-      searchPlaceholder="Search a key..."
+      useNativeAndroidPickerStyle={false}
+      placeholder={{
+        value: undefined, label: "Pick a key..."
+      }}
+      Icon={() => <MaterialIcons name="keyboard-arrow-down" size={24} color={colors.backgroundTertiary} />}
     />
   );
 

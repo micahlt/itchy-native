@@ -1,4 +1,3 @@
-import { View } from "react-native";
 import ItchyText from "./ItchyText";
 import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
