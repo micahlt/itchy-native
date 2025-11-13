@@ -2,11 +2,17 @@
 
 # Itchy Native
 
-Itchy Native is a mobile app that acts as a client for the [Scratch](https://scratch.mit.edu) website.  It is the next-gen React Native rewrite of the original [Itchy](https://github.com/scratch-client-4/itchy-ionic) app.  Launching officially on iOS and Android in September 2025.
+[![React Native CI/CD](https://github.com/micahlt/itchy-native/actions/workflows/react-native-ci-cd.yaml/badge.svg)](https://github.com/micahlt/itchy-native/actions/workflows/react-native-ci-cd.yaml)
+
+Itchy Native is a mobile app that acts as a client for the [Scratch](https://scratch.mit.edu) website.  It is the next-gen React Native rewrite of the original [Itchy Ionic](https://github.com/scratch-client-4/itchy-ionic) app created in 2021.
+
 
 ## Installation
 
-We're not currently publishing public APK or IPA files, but you're welcome to build your own from this codebase or [join the beta on the Google Play Store](https://play.google.com/apps/testing/org.scratchclient4.itchy).
+You can install one of the CI-generated APK files from the [releases page](https://github.com/micahlt/itchy-native/releases) or you can install the app from the platforms' respective app stores below.
+
+[<img height="50" width="180" src="https://itchy.micahlindley.com/assets/google_play.svg" />](https://play.google.com/store/apps/details?id=org.scratchclient4.itchy)
+[<img height="50" width="180" src="https://itchy.micahlindley.com/assets/app_store.svg" />](https://apps.apple.com/us/app/itchy-for-scratch/id6743445859)
 
 ## Development
 
@@ -43,4 +49,4 @@ storeFile=[path to your keystore]
 
 ### iOS
 
-There aren't any iOS build instructions yet since the app hasn't been signed and is not on the App Store.
+Instructions to-do
