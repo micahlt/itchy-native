@@ -50,6 +50,7 @@ export default function Search() {
       return () => {
         setQuery("");
         setResults([]);
+        searchBarRef.current?.blur();
       };
     }, [])
   );
