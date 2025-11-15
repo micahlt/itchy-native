@@ -16,7 +16,7 @@ import {
   RTCIceCandidate,
 } from "react-native-webrtc";
 import { useTheme } from "../utils/theme";
-import FastSquircleView from "react-native-fast-squircle";
+import SquircleView from "../components/SquircleView";
 import Card from "../components/Card";
 import { Stack } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -465,7 +465,7 @@ export default function MultiPlay() {
           )
         )}
         {/* Stylized container similar to Search page */}
-        <FastSquircleView
+        <SquircleView
           cornerSmoothing={0.6}
           style={{
             backgroundColor: colors.background,
@@ -623,7 +623,7 @@ export default function MultiPlay() {
               color={colors.accent}
             />
           </ScrollView>
-        </FastSquircleView>
+        </SquircleView>
       </ScrollView>
     </>
   );

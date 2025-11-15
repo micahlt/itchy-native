@@ -13,8 +13,7 @@ module.exports = {
         {
           ios: {
             useFrameworks: "static",
-            reactNativeReleaseLevel: "experimental",
-            forceStaticLinking: ["FastSquircle"],
+            reactNativeReleaseLevel: "experimental"
           },
           android: {
             compileSdkVersion: 35,

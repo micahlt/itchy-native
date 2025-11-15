@@ -10,7 +10,7 @@ import ExtraButton from "./Controls/ExtraButton";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useMMKVObject } from "react-native-mmkv";
-import FastSquircleView from "react-native-fast-squircle";
+import SquircleView from "./SquircleView";
 import { dimensions } from "../utils/theme/dimensions";
 import { LinearGradient } from "expo-linear-gradient";
 import Pressable from "./Pressable";
@@ -23,8 +23,8 @@ import Animated, {
     Extrapolate,
 } from "react-native-reanimated";
 
-// Create animated FastSquircleView component
-const AnimatedFastSquircleView = Animated.createAnimatedComponent(FastSquircleView);
+// Create animated SquircleView component
+const AnimatedSquircleView = Animated.createAnimatedComponent(SquircleView);
 
 const MAPPING_CONFIG = {
     controlOptions: {
@@ -322,7 +322,7 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
                 }}
                 disabled={!isCollapsed}
             >
-                <AnimatedFastSquircleView
+                <AnimatedSquircleView
                     cornerSmoothing={0.6}
                     style={animatedSquircleStyle}
                 >
@@ -404,7 +404,7 @@ export default function Controls({ onControlPress = () => { }, projectId = 0, sh
                             </LinearGradient>
                         </Animated.View>
                     </Animated.View>
-                </AnimatedFastSquircleView>
+                </AnimatedSquircleView>
             </Pressable>
 
             {/* Close and Configure buttons */}

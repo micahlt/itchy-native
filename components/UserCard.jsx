@@ -5,7 +5,7 @@ import { useTheme } from "../utils/theme";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { useCallback } from "react";
-import FastSquircleView from "react-native-fast-squircle";
+import SquircleView from "./SquircleView";
 
 export default function UserCard({ user, width = 250, style = {} }) {
     const { colors, dimensions } = useTheme();
@@ -16,7 +16,7 @@ export default function UserCard({ user, width = 250, style = {} }) {
 
     if (!!user) {
         return (
-            <FastSquircleView cornerSmoothing={0.6} style={{ width, ...style, borderRadius: 16, overflow: "hidden" }}>
+            <SquircleView cornerSmoothing={0.6} style={{ width, ...style, borderRadius: 16, overflow: "hidden" }}>
                 <Pressable
                     provider="gesture-handler"
                     style={{
@@ -26,7 +26,7 @@ export default function UserCard({ user, width = 250, style = {} }) {
                     android_ripple={{ color: colors.ripple, foreground: true, borderless: false }}
                     onPress={openProject}
                 >
-                    <FastSquircleView cornerSmoothing={0.6} style={{
+                    <SquircleView cornerSmoothing={0.6} style={{
                         backgroundColor: colors.backgroundSecondary, borderRadius: 16, overflow: "hidden", width: width, borderColor: colors.outline, borderWidth: dimensions.outlineWidth
                     }} >
                         <Image placeholder={require("../assets/project.png")} placeholderContentFit="cover" source={{ uri: user.featuredProject ? `https:${user.featuredProject.thumbnail_url}` : `https://uploads.scratch.mit.edu/get_image/user/${user.id}_128x128.png` }} style={{ width: width, aspectRatio: "4 / 1" }} contentFit="fill" blurRadius={5} />
@@ -54,9 +54,9 @@ export default function UserCard({ user, width = 250, style = {} }) {
                                 </ItchyText>
                             </View>
                         </View>
-                    </FastSquircleView>
+                    </SquircleView>
                 </Pressable>
-            </FastSquircleView>
+            </SquircleView>
         );
     }
 }

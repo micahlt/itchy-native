@@ -7,7 +7,7 @@ import { useMMKVString } from "react-native-mmkv";
 import FeedItem from "./FeedItem";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import SquircleView from "react-native-fast-squircle";
+import SquircleView from "./SquircleView";
 import TexturedButton from "./TexturedButton";
 import useSWR from "swr";
 

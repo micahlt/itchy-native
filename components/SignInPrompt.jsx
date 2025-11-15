@@ -4,7 +4,7 @@ import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
 import { useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
-import SquircleView from "react-native-fast-squircle";
+import SquircleView from "./SquircleView";
 import TexturedButton from "./TexturedButton";
 
 export default function SignInPrompt() {

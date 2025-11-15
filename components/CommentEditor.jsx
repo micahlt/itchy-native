@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react"
 import { useTheme } from "../utils/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
-import FastSquircleView from "react-native-fast-squircle";
+import SquircleView from "../components/SquircleView";
 
 export default function CommentEditor({ onSubmit, reply, onClearReply }) {
     const [content, setContent] = useState();
@@ -45,7 +45,7 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
     }, [reply]);
 
     return <Animated.View style={{ position: 'absolute', bottom: bottomAnim }}>
-        <FastSquircleView cornerSmoothing={0.6} style={{ borderTopLeftRadius: dimensions.largeRadius, borderTopRightRadius: dimensions.largeRadius, borderWidth: 0.1, borderTopWidth: 3, borderColor: colors.backgroundTertiary, backgroundColor: colors.backgroundSecondary, paddingTop: 5, width: "100%", outlineColor: colors.ripple, outlineWidth: dimensions.outlineWidth }}>
+        <SquircleView cornerSmoothing={0.6} style={{ borderTopLeftRadius: dimensions.largeRadius, borderTopRightRadius: dimensions.largeRadius, borderWidth: 0.1, borderTopWidth: 3, borderColor: colors.backgroundTertiary, backgroundColor: colors.backgroundSecondary, paddingTop: 5, width: "100%", outlineColor: colors.ripple, outlineWidth: dimensions.outlineWidth }}>
             {!!reply && <View style={{ paddingHorizontal: 15, paddingTop: 15, marginBottom: -3, zIndex: 1, flexDirection: "row", justifyContent: "flex-start", gap: 8, alignItems: "center" }}>
                 <ItchyText style={{ color: colors.text, fontSize: 12, lineHeight: 12 }}>Replying to <ItchyText style={{ fontWeight: "bold" }}>{reply.author.username}</ItchyText></ItchyText>
                 <TouchableOpacity onPress={onClearReply} style={{ marginTop: -2 }}>
@@ -84,6 +84,6 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
                     <MaterialIcons name="send" size={24} color={colors.accent} />
                 </TouchableOpacity>
             </View>
-        </FastSquircleView>
+        </SquircleView>
     </Animated.View>
 };

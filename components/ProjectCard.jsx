@@ -5,7 +5,7 @@ import { useTheme } from "../utils/theme";
 import { Image } from "react-native";
 import { useRouter } from "expo-router";
 import { useCallback } from "react";
-import FastSquircleView from "react-native-fast-squircle";
+import SquircleView from "./SquircleView";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function ProjectCard({ project, width = 250, style = {} }) {
@@ -26,14 +26,14 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
     const username = project.creator || project.author?.username;
 
     return (
-        <FastSquircleView cornerSmoothing={0.6} style={{ width, borderRadius: 16, overflow: "hidden", ...style }}>
+        <SquircleView cornerSmoothing={0.6} style={{ width, borderRadius: 16, overflow: "hidden", ...style }}>
             {/* Outer Pressable for ripple effect only */}
             <Pressable
                 provider="native"
                 android_ripple={{ borderless: true, foreground: true, color: colors.ripple }}
                 onPress={() => { }}
             >
-                <FastSquircleView cornerSmoothing={0.6} style={{
+                <SquircleView cornerSmoothing={0.6} style={{
                     backgroundColor: colors.background,
                     borderRadius: 16,
                     overflow: "hidden",
@@ -114,8 +114,8 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
                             </View>
                         </Pressable>
                     )}
-                </FastSquircleView>
+                </SquircleView>
             </Pressable>
-        </FastSquircleView>
+        </SquircleView>
     );
 }

@@ -34,9 +34,9 @@ import Animated, {
 } from "react-native-reanimated";
 import { runOnJS } from "react-native-worklets";
 import { withPause } from "react-native-redash";
-import { Redirect, router } from "expo-router";
+import { Redirect, router, useFocusEffect } from "expo-router";
 import HorizontalContentScroller from "../../components/HorizontalContentScroller";
-import FastSquircleView from "react-native-fast-squircle";
+import SquircleView from "../../components/SquircleView";
 import ItchyText from "../../components/ItchyText";
 import { Ionicons } from "@expo/vector-icons";
 import useSWR from "swr";
@@ -137,8 +137,8 @@ export default function HomeScreen() {
   const didVibrate = useSharedValue(false);
   const rotationPaused = useSharedValue(false);
   const feedRef = useRef(null);
-  const AniamtedSquircleView =
-    Animated.createAnimatedComponent(FastSquircleView);
+  const AnimatedSquircleView =
+    Animated.createAnimatedComponent(SquircleView);
 
   // SWR data fetching for explore data
   const {
@@ -265,6 +265,12 @@ export default function HomeScreen() {
     }
   }, []);
 
+  useFocusEffect(useCallback(() => {
+    if (!!scrollRef?.current) {
+      scrollRef?.current.scrollTo({ x: 0, y: 0, animated: false });
+    }
+  }, [scrollRef]));
+
   const headerStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -388,7 +394,7 @@ export default function HomeScreen() {
             logoStyle={logoStyle}
             username={username}
           />
-          <AniamtedSquircleView
+          <AnimatedSquircleView
             cornerSmoothing={0.6}
             style={[contentStyle, containerStyle]}
           >
@@ -481,7 +487,7 @@ export default function HomeScreen() {
                 </View>
               </View>
             </TexturedButton>}
-          </AniamtedSquircleView>
+          </AnimatedSquircleView>
         </ScrollView>
       </GestureDetector>
     </View>

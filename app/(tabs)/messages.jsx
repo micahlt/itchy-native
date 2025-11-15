@@ -3,15 +3,16 @@ import { getCrashlytics, log, recordError } from '@react-native-firebase/crashly
 import ItchyText from "../../components/ItchyText";
 import { useTheme } from "../../utils/theme";
 import { useMMKVString } from "react-native-mmkv";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ScratchAPIWrapper from "../../utils/api-wrapper";
 import Message from "../../components/Message";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SignInPrompt from "../../components/SignInPrompt";
 import Chip from "../../components/Chip";
-import FastSquircleView from "react-native-fast-squircle";
+import SquircleView from "../../components/SquircleView";
 import Animated from "react-native-reanimated";
 import { FlashList } from "@shopify/flash-list";
+import { useFocusEffect } from "expo-router";
 
 const c = getCrashlytics();
 
@@ -29,8 +30,7 @@ export default function Messages() {
     interaction: false,
     forum: false,
   });
-  const AnimatedSquircleView =
-    Animated.createAnimatedComponent(FastSquircleView);
+  const scrollRef = useRef();
 
   useEffect(() => {
     log(c, "Messages page rendered")
@@ -78,6 +78,12 @@ export default function Messages() {
   useEffect(() => {
     loadMessages();
   }, [offset]);
+
+  useFocusEffect(useCallback(() => {
+    if (!!scrollRef?.current) {
+      scrollRef?.current.scrollTo({ x: 0, y: 0, animated: false });
+    }
+  }, [scrollRef]));
 
   const filteredMessages = useMemo(() => {
     try {
@@ -262,7 +268,7 @@ export default function Messages() {
         Messages
       </ItchyText>
       {renderFilterChips()}
-      <FastSquircleView
+      <SquircleView
         cornerSmoothing={0.6}
         style={{
           backgroundColor: colors.background,
@@ -283,13 +289,13 @@ export default function Messages() {
             "0px -2px 16px rgba(0,94,185,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
         }}
       >
-        <FastSquircleView
+        <SquircleView
           style={{
             flex: 1,
             overflow: "hidden",
             borderTopLeftRadius: dimensions.largeRadius,
             borderTopRightRadius: dimensions.largeRadius,
-            marginTop: -4,
+            marginTop: 0,
           }}
         >
           <FlashList
@@ -297,6 +303,7 @@ export default function Messages() {
             style={{ backgroundColor: colors.background, flex: 1 }}
             renderItem={(item) => renderMessage({ item: item.item })}
             keyExtractor={(item) => item.id}
+            ref={scrollRef}
             refreshControl={
               <RefreshControl
                 refreshing={loading}
@@ -329,8 +336,8 @@ export default function Messages() {
               }
             }}
           />
-        </FastSquircleView>
-      </FastSquircleView>
+        </SquircleView>
+      </SquircleView>
     </SafeAreaView>
   );
 }

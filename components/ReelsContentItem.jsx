@@ -8,7 +8,7 @@ import { useTheme } from '../utils/theme';
 import { CONTENT_TYPES } from '../utils/reelsContentAggregator';
 import ItchyText from './ItchyText';
 import Chip from './Chip';
-import FastSquircleView from 'react-native-fast-squircle';
+import SquircleView from './SquircleView';
 import APIProject from '../utils/api-wrapper/project';
 import APIStudio from '../utils/api-wrapper/studio';
 import APIUser from '../utils/api-wrapper/user';
@@ -642,7 +642,7 @@ export default function ReelsContentItem({ item, index, isActive, height, width,
                     alignItems: 'center',
                     paddingHorizontal: 40,
                 }}>
-                    <FastSquircleView
+                    <SquircleView
                         cornerSmoothing={0.6}
                         style={{
                             backgroundColor: colors.background,
@@ -701,7 +701,7 @@ export default function ReelsContentItem({ item, index, isActive, height, width,
                                 </ItchyText>
                             </Pressable>
                         </View>
-                    </FastSquircleView>
+                    </SquircleView>
                 </View>
             </Modal>
         </Animated.View>

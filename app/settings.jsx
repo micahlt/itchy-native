@@ -18,7 +18,7 @@ import {
 import storage from "../utils/storage";
 import linkWithFallback from "../utils/linkWithFallback";
 import { Platform } from "react-native";
-import FastSquircleView from "react-native-fast-squircle";
+import SquircleView from "../components/SquircleView";
 import Chip from "../components/Chip";
 import { useTheme } from "../utils/theme";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
@@ -85,7 +85,7 @@ export default function SettingsScreen() {
         bottomSettingContainer: {
           borderBottomLeftRadius: dimensions.mediumRadius,
           borderBottomRightRadius: dimensions.mediumRadius,
-          borderBottomWidth: 3,
+          borderBottomWidth: 1,
           borderBottomColor: colors.backgroundTertiary,
           borderLeftWidth: 1.5,
           borderLeftColor: colors.backgroundTertiary,
@@ -146,7 +146,7 @@ export default function SettingsScreen() {
       contentContainerStyle={{ paddingTop: getLiquidPlusPadding() }}
     >
       <ItchyText style={s.sectionHeader}>Account</ItchyText>
-      <FastSquircleView
+      <SquircleView
         cornerSmoothing={0.6}
         style={[
           s.settingContainer,
@@ -185,9 +185,9 @@ export default function SettingsScreen() {
             }
           }}
         />
-      </FastSquircleView>
+      </SquircleView>
       {username && (
-        <FastSquircleView
+        <SquircleView
           cornerSmoothing={0.6}
           style={[s.settingContainer, s.bottomSettingContainer]}
         >
@@ -196,10 +196,10 @@ export default function SettingsScreen() {
               Open your profile
             </ItchyText>
           </TouchableOpacity>
-        </FastSquircleView>
+        </SquircleView>
       )}
       <ItchyText style={s.sectionHeader}>Player</ItchyText>
-      <FastSquircleView
+      <SquircleView
         cornerSmoothing={0.6}
         style={[
           s.settingContainer,
@@ -214,8 +214,8 @@ export default function SettingsScreen() {
           onValueChange={(v) => setTWConfig({ ...twConfig, interpolate: v })}
           value={twConfig?.interpolate}
         />
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[s.settingContainer, s.middleSettingContainer]}
       >
@@ -226,8 +226,8 @@ export default function SettingsScreen() {
           onValueChange={(v) => setTWConfig({ ...twConfig, autoplay: v })}
           value={twConfig?.autoplay}
         />
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[s.settingContainer, s.middleSettingContainer]}
       >
@@ -238,8 +238,8 @@ export default function SettingsScreen() {
           onValueChange={(v) => setTWConfig({ ...twConfig, fps60: v })}
           value={twConfig?.fps60}
         />
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[s.settingContainer, s.middleSettingContainer]}
       >
@@ -250,8 +250,8 @@ export default function SettingsScreen() {
           onValueChange={(v) => setTWConfig({ ...twConfig, hqPen: v })}
           value={twConfig?.hqPen}
         />
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[s.settingContainer, s.middleSettingContainer]}
       >
@@ -262,8 +262,8 @@ export default function SettingsScreen() {
           onValueChange={(v) => setTWConfig({ ...twConfig, turbo: v })}
           value={twConfig?.turbo}
         />
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[
           s.settingContainer,
@@ -281,9 +281,9 @@ export default function SettingsScreen() {
             TurboWarp
           </ItchyText>
         </TouchableOpacity>
-      </FastSquircleView>
+      </SquircleView>
       <ItchyText style={s.sectionHeader}>App</ItchyText>
-      <FastSquircleView
+      <SquircleView
         cornerSmoothing={0.6}
         style={[
           s.settingContainer,
@@ -298,8 +298,8 @@ export default function SettingsScreen() {
           onValueChange={(v) => setExperimentalFeed(v)}
           value={experimentalFeed === true}
         />
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[
           s.settingContainer,
@@ -316,8 +316,8 @@ export default function SettingsScreen() {
           Displays an "Explore more" button at the bottom of the screen that
           opens an experimental infinite-scrolling feed of projects and studios.
         </ItchyText>
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[s.settingContainer, s.middleSettingContainer]}
       >
@@ -328,8 +328,8 @@ export default function SettingsScreen() {
           onValueChange={(v) => handleForceDarkToggle(v)}
           value={forceDark === true}
         />
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[
           s.settingContainer,
@@ -345,8 +345,8 @@ export default function SettingsScreen() {
           When enabled, the app will always use the dark theme even if your
           device is set to light mode.
         </ItchyText>
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[s.settingContainer, s.middleSettingContainer]}
       >
@@ -357,8 +357,8 @@ export default function SettingsScreen() {
           onValueChange={() => handleCrashlyticsToggle()}
           value={crashlyticsEnabled === true}
         />
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[
           s.settingContainer,
@@ -373,9 +373,9 @@ export default function SettingsScreen() {
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
           Opt in or out of crash reporting.  Reports do not include any information about your Scratch account, and are only sent when Itchy crashes.  This helps us improve the app
         </ItchyText>
-      </FastSquircleView>
+      </SquircleView>
       <ItchyText style={s.sectionHeader}>About</ItchyText>
-      <FastSquircleView
+      <SquircleView
         cornerSmoothing={0.6}
         style={[
           s.settingContainer,
@@ -386,8 +386,8 @@ export default function SettingsScreen() {
         <ItchyText style={{ color: colors.text, fontSize: 16 }}>
           Itchy v{version}
         </ItchyText>
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[s.settingContainer, s.middleSettingContainer]}
       >
@@ -396,8 +396,8 @@ export default function SettingsScreen() {
             Redo onboarding flow
           </ItchyText>
         </TouchableOpacity>
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[s.settingContainer, s.middleSettingContainer]}
       >
@@ -410,8 +410,8 @@ export default function SettingsScreen() {
             Privacy Policy
           </ItchyText>
         </TouchableOpacity>
-      </FastSquircleView>
-      <FastSquircleView
+      </SquircleView>
+      <SquircleView
         cornerSmoothing={0.6}
         style={[
           s.settingContainer,
@@ -456,7 +456,7 @@ export default function SettingsScreen() {
             others.
           </ItchyText>
         </View>
-      </FastSquircleView>
+      </SquircleView>
       <View style={{ height: 120 }}></View>
     </ScrollView>
   );

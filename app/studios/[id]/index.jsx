@@ -20,7 +20,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMMKVString } from "react-native-mmkv";
 import HorizontalContentScroller from "../../../components/HorizontalContentScroller";
 import TexturedButton from "../../../components/TexturedButton";
-import FastSquircleView from "react-native-fast-squircle";
+import SquircleView from "../../../components/SquircleView";
 import { getLiquidPlusPadding } from "../../../utils/platformUtils";
 
 export default function Studio() {
@@ -153,7 +153,7 @@ export default function Studio() {
             >
               {studio.title}
             </ItchyText>
-            <FastSquircleView
+            <SquircleView
               co
               style={{
                 width: width - 30,
@@ -170,7 +170,7 @@ export default function Studio() {
                 }}
                 style={{ width: "100%", height: "100%" }}
               />
-            </FastSquircleView>
+            </SquircleView>
             <View
               style={{
                 flexDirection: "row",

@@ -20,7 +20,7 @@ import { useFocusEffect } from "expo-router";
 import searchForUser from "../../utils/searchForUser";
 import UserCard from "../../components/UserCard";
 import { FlashList } from "@shopify/flash-list";
-import FastSquircleView from "react-native-fast-squircle";
+import SquircleView from "../../components/SquircleView";
 import ItchyText from "../../components/ItchyText";
 import { Ionicons } from "@expo/vector-icons";
 import { useMMKVObject } from "react-native-mmkv";
@@ -33,13 +33,17 @@ export default function Search() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const searchBarRef = useRef(null);
+  const scrollRef = useRef(null);
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const [searchHistory, setSearchHistory] = useMMKVObject("searchHistory");
 
   useFocusEffect(
     useCallback(() => {
-      if (searchBarRef.current) {
+      if (!!scrollRef?.current) {
+        scrollRef.current?.scrollTo({ x: 0, y: 0, animated: false });
+      }
+      if (!!searchBarRef.current) {
         searchBarRef.current.focus();
       }
 
@@ -158,7 +162,7 @@ export default function Search() {
           onPress={() => setType("users")}
         />
       </View>
-      <FastSquircleView
+      <SquircleView
         cornerSmoothing={0.6}
         style={{
           backgroundColor: colors.background,
@@ -177,7 +181,7 @@ export default function Search() {
             "0px -2px 16px rgba(0,94,185,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
         }}
       >
-        <FastSquircleView
+        <SquircleView
           style={{
             flex: 1,
             overflow: "hidden",
@@ -191,6 +195,7 @@ export default function Search() {
             renderItem={({ item }) => renderItem(item, width, type)}
             keyExtractor={(item) => item.id}
             numColumns={2}
+            ref={scrollRef}
             columnWrapperStyle={{ gap: 10 }}
             contentContainerStyle={{
               marginHorizontal: 15,
@@ -219,8 +224,8 @@ export default function Search() {
               />
             }
           />
-        </FastSquircleView>
-      </FastSquircleView>
+        </SquircleView>
+      </SquircleView>
     </SafeAreaView>
   );
 }
