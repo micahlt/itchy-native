@@ -309,7 +309,7 @@ function EmptySearchComponent({
             mode="outlined"
             onPress={() => setTimeout(onClearHistory, 150)}
             style={{ marginHorizontal: "auto", marginTop: 10 }}
-            provider="gesture-handler"
+            provider="native"
           />
         </View>
       )}
