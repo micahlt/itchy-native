@@ -1,13 +1,12 @@
 {
   "name": "itchy-native",
-  "version": "2.6.6",
+  "version": "2.6.7",
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start --dev-client",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "postinstall": "patch-package --exclude nothing",
     "build:android": "cd android && ./gradlew bundleRelease",
     "eas-build-pre-install": "chmod +x ./utils/downloadGoogleServices.sh && bash ./utils/downloadGoogleServices.sh"
   },
