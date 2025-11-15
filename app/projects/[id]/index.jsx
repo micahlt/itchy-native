@@ -593,7 +593,11 @@ if (document.readyState === 'loading') {
 
 })();
 `;
-  const pan = Gesture.Pan();
+  const pan = Gesture.Pan()
+    .enabled(true)
+    .activateAfterLongPress(0) // Activate immediately
+    .manualActivation(false)
+    .shouldCancelWhenOutside(false);
 
   const openOnlineConfigSheet = () => {
     onlineConfigSheetRef.current?.expand();
@@ -756,6 +760,7 @@ if (document.readyState === 'loading') {
               overScrollMode="never"
               allowsFullscreenVideo={true}
               style={{ backgroundColor: "transparent" }}
+              nestedScrollEnabled={true}
               injectedJavaScript={twJSInject}
               ref={webViewRef}
               onMessage={webViewMessageHandler}
