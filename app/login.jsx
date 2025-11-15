@@ -92,7 +92,6 @@ export default function LoginScreen() {
           autoComplete="username"
           autoCapitalize="none"
           autoCorrect={false}
-          autoFocus={true}
           returnKeyType="next"
           onSubmitEditing={() => passwordInput?.current?.focus()}
           submitBehavior="submit"
