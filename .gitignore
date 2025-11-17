@@ -43,6 +43,7 @@ yarn-error.*
 .env*.local
 .env
 virtualDrive.bat
+.vscode/
 
 # typescript
 *.tsbuildinfo
