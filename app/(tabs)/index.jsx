@@ -1,7 +1,7 @@
 const REFRESH_TRIGGER_HEIGHT = 50;
 const MAX_PULL_HEIGHT = 75;
 
-import { crash, getCrashlytics, log } from '@react-native-firebase/crashlytics';
+import { getCrashlytics, log } from '@react-native-firebase/crashlytics';
 import { Platform, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import ScratchAPIWrapper from "../../utils/api-wrapper";
@@ -137,9 +137,6 @@ export default function HomeScreen() {
   const didVibrate = useSharedValue(false);
   const rotationPaused = useSharedValue(false);
   const feedRef = useRef(null);
-  const AnimatedSquircleView =
-    Animated.createAnimatedComponent(SquircleView);
-
   // SWR data fetching for explore data
   const {
     data: exploreData,
@@ -372,6 +369,7 @@ export default function HomeScreen() {
       outlineWidth: 1.5,
       borderTopColor: colors.highlight,
       boxShadow: `0px -2px 16px rgba(0,94,185,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px ${colors.topLight} inset`,
+      borderCurve: "continuous"
     }),
     [colors, insets.bottom]
   );
@@ -394,8 +392,7 @@ export default function HomeScreen() {
             logoStyle={logoStyle}
             username={username}
           />
-          <AnimatedSquircleView
-            cornerSmoothing={0.6}
+          <Animated.View
             style={[contentStyle, containerStyle]}
           >
             {!!username ? memoizedFeed : <SignInPrompt />}
@@ -487,7 +484,7 @@ export default function HomeScreen() {
                 </View>
               </View>
             </TexturedButton>}
-          </AnimatedSquircleView>
+          </Animated.View>
         </ScrollView>
       </GestureDetector>
     </View>

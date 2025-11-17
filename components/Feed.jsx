@@ -41,7 +41,7 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
                 <ItchyText style={{ color: colors.text, fontSize: 20, fontWeight: "bold", flexGrow: 1 }}>What's Happening</ItchyText>
                 <TexturedButton onPress={() => router.push("feed")} icon="arrow-forward">More</TexturedButton>
             </View>
-            <SquircleView cornerSmoothing={0.6} style={{ backgroundColor: colors.accent, padding: 10, borderRadius: dimensions.mediumRadius, marginTop: 0, ...style, marginBottom: 10 }}>
+            <SquircleView style={{ backgroundColor: colors.accent, padding: 10, borderRadius: dimensions.mediumRadius, marginTop: 0, ...style, marginBottom: 10 }}>
                 {!username ? (
                     <View style={{
                         padding: 20,
