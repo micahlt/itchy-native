@@ -8,12 +8,14 @@ module.exports = {
     plugins: [
       "@react-native-firebase/app",
       "@react-native-firebase/crashlytics",
+      "./plugins/withFirebaseStaticFrameworkFix.js",
       [
         "expo-build-properties",
         {
           ios: {
             useFrameworks: "static",
-            reactNativeReleaseLevel: "experimental"
+            reactNativeReleaseLevel: "experimental",
+            deploymentTarget: "15.1",
           },
           android: {
             compileSdkVersion: 35,
@@ -70,7 +72,8 @@ module.exports = {
       },
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
-      googleServicesFile: process.env.GOOGLE_SERVICES_JSON || "./google-services.json",
+      googleServicesFile:
+        process.env.GOOGLE_SERVICES_JSON || "./google-services.json",
     },
     ios: {
       bundleIdentifier: "org.scratchclient4.itchy",
@@ -79,7 +82,8 @@ module.exports = {
         NSCameraUsageDescription:
           "Itchy needs access to the camera to support projects that include camera features.",
       },
-      googleServicesFile: process.env.GOOGLE_SERVICES_PLIST || "./GoogleService-Info.plist",
+      googleServicesFile:
+        process.env.GOOGLE_SERVICES_PLIST || "./GoogleService-Info.plist",
     },
     extra: {
       router: {},
