@@ -104,6 +104,9 @@ const APIProject = {
 
         const res = await fetch(`https://api.scratch.mit.edu/proxy/comments/project/${projectID}`, opts);
         const data = await res.json();
+        if (!data?.id || !res.ok) {
+            throw new Error(JSON.stringify(data));
+        }
         return data.id;
     },
     deleteComment: async (projectID, commentID, csrf, token) => {

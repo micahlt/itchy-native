@@ -16,6 +16,7 @@ import CommentEditor from "../../../components/CommentEditor";
 import uniqueArray from "../../../utils/uniqueArray";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import CommentOptionSheet from "../../../components/CommentOptionSheet";
+import MutedDialog from "../../../components/MutedDialog";
 import { getLiquidPlusPadding } from "../../../utils/platformUtils";
 
 export default function StudioComments() {
@@ -35,6 +36,8 @@ export default function StudioComments() {
   const [commentContent, setCommentContent] = useState("");
   const [rerenderComments, setRerenderComments] = useState(true);
   const [commentOptionsObj, setCommentOptionsObj] = useState(undefined);
+  const [showMutedDialog, setShowMutedDialog] = useState(false);
+  const [muteExpiresAt, setMuteExpiresAt] = useState(null);
 
   useEffect(() => {
     if (!id) return;
@@ -197,7 +200,20 @@ export default function StudioComments() {
       })
       .catch((error) => {
         console.error("Studio comment posting error:", error);
-        alert("Comment failed to post. Please try again later.");
+        // Check if the error is a mute error
+        try {
+          const errorMessage = error.message || error.toString();
+          const errorData = JSON.parse(errorMessage);
+          if (errorData.rejected === "isMuted" && errorData.status?.mute_status?.muteExpiresAt) {
+            setMuteExpiresAt(errorData.status.mute_status.muteExpiresAt);
+            setShowMutedDialog(true);
+          } else {
+            const rejectionReason = errorData.rejected ? ` (${errorData.rejected})` : '';
+            alert(`Comment failed to post. Please try again later.${rejectionReason}`);
+          }
+        } catch (parseError) {
+          alert("Comment failed to post. Please try again later.");
+        }
       });
   };
 
@@ -314,6 +330,11 @@ export default function StudioComments() {
         ) : (
           <></>
         )}
+        <MutedDialog
+          visible={showMutedDialog}
+          muteExpiresAt={muteExpiresAt}
+          onClose={() => setShowMutedDialog(false)}
+        />
       </KeyboardAvoidingView>
     </View>
   );

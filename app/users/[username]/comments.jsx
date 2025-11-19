@@ -17,6 +17,7 @@ import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import CommentEditor from "../../../components/CommentEditor";
 import uniqueArray from "../../../utils/uniqueArray";
 import CommentOptionSheet from "../../../components/CommentOptionSheet";
+import MutedDialog from "../../../components/MutedDialog";
 import { getLiquidPlusPadding } from "../../../utils/platformUtils";
 
 export default function UserComments() {
@@ -34,6 +35,8 @@ export default function UserComments() {
   const [reply, setReply] = useState(undefined);
   const [rerenderComments, setRerenderComments] = useState(true);
   const [commentOptionsObj, setCommentOptionsObj] = useState(undefined);
+  const [showMutedDialog, setShowMutedDialog] = useState(false);
+  const [muteExpiresAt, setMuteExpiresAt] = useState(null);
 
   useEffect(() => {
     if (!username) return;
@@ -195,7 +198,23 @@ export default function UserComments() {
           alert("Comment failed to post. Please try again later.");
         }
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        // Check if the error is a mute error
+        try {
+          const errorMessage = error.message || error.toString();
+          const errorData = JSON.parse(errorMessage);
+          if (errorData.rejected === "isMuted" && errorData.status?.mute_status?.muteExpiresAt) {
+            setMuteExpiresAt(errorData.status.mute_status.muteExpiresAt);
+            setShowMutedDialog(true);
+          } else {
+            const rejectionReason = errorData.rejected ? ` (${errorData.rejected})` : '';
+            alert(`Comment failed to post. Please try again later.${rejectionReason}`);
+          }
+        } catch (parseError) {
+          alert("Comment failed to post. Please try again later.");
+        }
+      });
   };
 
   const afterDeleteComment = useCallback(
@@ -274,6 +293,11 @@ export default function UserComments() {
         setComment={setCommentOptionsObj}
         context={{ type: "user", owner: username }}
         onDeleteCommentID={afterDeleteComment}
+      />
+      <MutedDialog
+        visible={showMutedDialog}
+        muteExpiresAt={muteExpiresAt}
+        onClose={() => setShowMutedDialog(false)}
       />
     </View>
   );
