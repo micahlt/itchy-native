@@ -44,7 +44,7 @@ jobs:
     strategy:
       matrix:
         platform: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.platform == 'all' && fromJSON('["android", "ios"]') || github.event.inputs.platform == 'android' && fromJSON('["android"]') || github.event.inputs.platform == 'ios' && fromJSON('["ios"]')) || fromJSON('["android", "ios"]') }}
-    runs-on: ${{ matrix.platform == 'ios' && 'macos-latest' || 'ubuntu-latest' }}
+    runs-on: ${{ matrix.platform == 'ios' && 'macos-26' || 'ubuntu-latest' }}
     steps:
       - name: 🏗 Checkout repository
         uses: actions/checkout@v4
@@ -142,12 +142,3 @@ jobs:
           body_path: changelog.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: 📦 Upload build artifacts to GitHub
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-builds
-          path: |
-            ./app-prod.apk
-            ./app-prod.aab
-            ./app-ios-prod.ipa
-          retention-days: 7
