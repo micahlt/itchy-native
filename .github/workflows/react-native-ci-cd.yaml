@@ -145,6 +145,7 @@ jobs:
           files: |
             ./app-prod.apk
             ./app-prod.aab
+            ./app-ios-prod.ipa
           body_path: changelog.md
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
