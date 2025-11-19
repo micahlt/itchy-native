@@ -87,7 +87,7 @@ module.exports = {
         ITSAppUsesNonExemptEncryption: false
       },
       googleServicesFile:
-        process.env.GOOGLE_SERVICES_PLIST || "./GoogleService-Info.plist",
+        process.env.GOOGLE_SERVICES_PLIST || "../GoogleService-Info.plist",
     },
     extra: {
       router: {},
