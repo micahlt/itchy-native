@@ -43,10 +43,7 @@ jobs:
     if: (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')) || github.event_name == 'workflow_dispatch'
     strategy:
       matrix:
-        platform: [android]
-        include:
-          - platform: ios
-            runs-on: macos-latest
+        platform: ${{ github.event_name == 'workflow_dispatch' && (github.event.inputs.platform == 'all' && fromJSON('["android", "ios"]') || github.event.inputs.platform == 'android' && fromJSON('["android"]') || github.event.inputs.platform == 'ios' && fromJSON('["ios"]')) || fromJSON('["android", "ios"]') }}
     runs-on: ${{ matrix.platform == 'ios' && 'macos-latest' || 'ubuntu-latest' }}
     steps:
       - name: 🏗 Checkout repository
