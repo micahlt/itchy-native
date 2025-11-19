@@ -73,6 +73,11 @@ jobs:
           echo "EAS CLI version:"
           eas --version
 
+      - name: ⏬️ Download Google Services configs
+        run: |
+          chmod +x ./utils/downloadGoogleServices.sh
+          bash ./utils/downloadGoogleServices.sh
+
       - name: 📱 Build Production APK
         if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-apk' || github.event_name == 'push' && (matrix.platform == 'android' || github.event.inputs.platform == 'all' || github.event.inputs.platform == 'android')
         run: |
