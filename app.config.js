@@ -2,7 +2,7 @@ module.exports = {
   expo: {
     name: "Itchy",
     slug: "itchy-native",
-    version: "2.6.8",
+    version: "2.6.9",
     scheme: "itchy",
     newArchEnabled: true,
     plugins: [
@@ -63,7 +63,7 @@ module.exports = {
     },
     userInterfaceStyle: "automatic",
     android: {
-      versionCode: 64,
+      versionCode: 65,
       package: "org.scratchclient4.itchy",
       adaptiveIcon: {
         backgroundColor: "#0082FF",

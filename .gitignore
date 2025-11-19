@@ -44,6 +44,7 @@ yarn-error.*
 .env
 virtualDrive.bat
 .vscode/
+trace.txt
 
 # typescript
 *.tsbuildinfo
