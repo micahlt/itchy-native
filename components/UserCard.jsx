@@ -35,7 +35,7 @@ export default function UserCard({ user, width = 250, style = {} }) {
                         }}>
                             <Image placeholder={require("../assets/avatar2.png")} placeholderContentFit="cover" source={{ uri: `https://uploads.scratch.mit.edu/get_image/user/${user.id}_128x128.png` }} style={{ width: 64, height: 64, borderRadius: 64 }} />
                         </View>
-                        {user?.username && <ItchyText style={{ color: colors.text, padding: 10, paddingBottom: 10, fontWeight: "bold", fontSize: 14, textAlign: "center" }} numberOfLines={1}>{user.username}</ItchyText>}
+                        {user?.username ? <ItchyText style={{ color: colors.text, padding: 10, paddingBottom: 10, fontWeight: "bold", fontSize: 14, textAlign: "center" }} numberOfLines={1}>{user.username}</ItchyText> : <></>}
                         <View style={{ flexDirection: "row", justifyContent: "space-around", paddingVertical: 10, paddingHorizontal: 5, gap: 10 }}>
                             <View>
                                 <ItchyText style={{ color: colors.textSecondary, fontWeight: "bold", fontSize: 20, textAlign: "center" }} numberOfLines={1}>

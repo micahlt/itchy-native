@@ -54,7 +54,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
                     </Pressable>
 
                     {/* Project title - clickable to open project */}
-                    {project?.title && project.title.trim() && (
+                    {project?.title && project.title.trim() ? (
                         <Pressable onPress={openProject} provider="gesture-handler">
                             <View>
                                 <ItchyText
@@ -71,10 +71,10 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
                                 </ItchyText>
                             </View>
                         </Pressable>
-                    )}
+                    ) : <></>}
 
                     {/* Username - clickable to open profile */}
-                    {username && (
+                    {username ? (
                         <TouchableOpacity
                             onPress={openProfile}
                             style={{
@@ -93,10 +93,10 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
                                 {username}
                             </ItchyText>
                         </TouchableOpacity>
-                    )}
+                    ) : <></>}
 
                     {/* Project label - clickable to open project */}
-                    {project.label && (
+                    {project.label ? (
                         <Pressable onPress={openProject} provider="gesture-handler">
                             <View>
                                 <ItchyText
@@ -113,7 +113,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
                                 </ItchyText>
                             </View>
                         </Pressable>
-                    )}
+                    ) : <></>}
                 </SquircleView>
             </Pressable>
         </SquircleView>

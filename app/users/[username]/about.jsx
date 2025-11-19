@@ -34,7 +34,7 @@ export default function About() {
           title: `About ${username}`,
         }}
       />
-      {!!profile && (
+      {!!profile ? (
         <ScrollView
           style={{ padding: 10 }}
           contentContainerStyle={{ paddingTop: getLiquidPlusPadding() }}
@@ -84,7 +84,7 @@ export default function About() {
             </ItchyText>
           </Card>
         </ScrollView>
-      )}
+      ) : <></>}
     </SafeAreaView>
   );
 }

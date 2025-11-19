@@ -289,21 +289,21 @@ export default function StudioComments() {
                 scrollRef.current?.scrollToIndex({ index, animated: true });
               });
             }}
-            // refreshControl={
-            //   <RefreshControl
-            //     refreshing={loading}
-            //     tintColor={"white"}
-            //     progressBackgroundColor={colors.accent}
-            //     colors={isDark ? ["black"] : ["white"]}
-            //   />
-            // }
+          // refreshControl={
+          //   <RefreshControl
+          //     refreshing={loading}
+          //     tintColor={"white"}
+          //     progressBackgroundColor={colors.accent}
+          //     colors={isDark ? ["black"] : ["white"]}
+          //   />
+          // }
           />
         )}
-        <CommentEditor
+        {!!user ? <CommentEditor
           onSubmit={postComment}
           reply={reply}
           onClearReply={() => setReply(undefined)}
-        />
+        /> : <></>}
         {studio ? (
           <CommentOptionSheet
             comment={commentOptionsObj}

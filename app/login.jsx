@@ -119,7 +119,7 @@ export default function LoginScreen() {
           autoCorrect={false}
           onSubmitEditing={() => logIn()}
         />
-        {error && (
+        {error ? (
           <ItchyText
             style={{
               color: "#f85a5a",
@@ -130,7 +130,7 @@ export default function LoginScreen() {
           >
             {error}
           </ItchyText>
-        )}
+        ) : <></>}
         <ItchyText
           style={{
             color: colors.text,

@@ -1,7 +1,6 @@
 import { View } from "react-native";
 import ItchyText from "./ItchyText";
 import { useTheme } from "../utils/theme";
-import { forwardRef, useImperativeHandle } from "react";
 import APIExplore from "../utils/api-wrapper/explore";
 import { useMMKVString } from "react-native-mmkv";
 import FeedItem from "./FeedItem";
@@ -10,31 +9,33 @@ import { useRouter } from "expo-router";
 import SquircleView from "./SquircleView";
 import TexturedButton from "./TexturedButton";
 import useSWR from "swr";
+import { getCrashlytics, log } from "@react-native-firebase/crashlytics";
 
-const Feed = forwardRef(function Feed({ username, style }, ref) {
+const c = getCrashlytics();
+
+export default function Feed({ username, style }) {
     const { colors, dimensions } = useTheme();
     const [token] = useMMKVString("token");
     const router = useRouter();
 
-    // SWR data fetching
-    const { data: feed = [], isLoading, mutate } = useSWR(
+    // SWR data fetching with shared key for external refresh
+    const { data: rawFeed, isLoading } = useSWR(
         username && token ? ['feed', username, token] : null,
-        () => APIExplore.getFeed(username, token),
+        () => {
+            log(c, "Refreshing feed")
+            return APIExplore.getFeed(username, token)
+        },
         {
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
+            revalidateOnFocus: true,
+            revalidateOnReconnect: true,
         }
     );
 
-    // Expose refresh method to parent
-    useImperativeHandle(ref, () => ({
-        refresh: () => {
-            mutate();
-        }
-    }), [mutate]);
+    // Ensure feed is always an array
+    const feed = Array.isArray(rawFeed) ? rawFeed : [];
 
     // Don't render anything if we're loading and have no content, or if no username
-    if ((isLoading && feed.length === 0) || !username) {
+    if ((isLoading && feed.length === 0) || !username || !feed) {
         return <>
             <View style={{ flexDirection: "row", alignItems: "center", paddingLeft: 4, gap: 10, marginBottom: 10, marginTop: 5, ...style }}>
                 <Ionicons name="file-tray" size={24} color={colors.text} />
@@ -74,7 +75,7 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
             <ItchyText style={{ color: colors.text, fontSize: 20, fontWeight: "bold", flexGrow: 1 }}>What's Happening</ItchyText>
             <TexturedButton onPress={() => router.push("feed")} icon="arrow-forward">More</TexturedButton>
         </View>
-        <SquircleView cornerSmoothing={0.6} style={{
+        <SquircleView style={{
             backgroundColor: colors.accent,
             padding: 10,
             paddingTop: 10,
@@ -90,7 +91,7 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
             minHeight: feed.length === 0 ? 100 : 'auto',
             boxShadow: "0px 8px 6px 0px #ffffff22 inset, 0px 2px 0px 0px #FFFFFF33 inset"
         }}>
-            {feed.length === 0 ? (
+            {feed.length === 0 || !feed ? (
                 <View style={{
                     padding: 20,
                     alignItems: 'center',
@@ -101,10 +102,8 @@ const Feed = forwardRef(function Feed({ username, style }, ref) {
                     </ItchyText>
                 </View>
             ) : (
-                feed.map((item) => <FeedItem key={item.id} item={item} backgroundColor={colors.accent} />)
+                feed.map((item, index) => <FeedItem key={item.id || `feed-item-${index}`} item={item} backgroundColor={colors.accent} />)
             )}
         </SquircleView>
     </>
-});
-
-export default Feed;
+}

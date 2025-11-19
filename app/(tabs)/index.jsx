@@ -36,10 +36,9 @@ import { runOnJS } from "react-native-worklets";
 import { withPause } from "react-native-redash";
 import { Redirect, router, useFocusEffect } from "expo-router";
 import HorizontalContentScroller from "../../components/HorizontalContentScroller";
-import SquircleView from "../../components/SquircleView";
 import ItchyText from "../../components/ItchyText";
 import { Ionicons } from "@expo/vector-icons";
-import useSWR from "swr";
+import useSWR, { mutate as swrMutate } from "swr";
 import TexturedButton from "../../components/TexturedButton";
 
 const c = getCrashlytics();
@@ -136,7 +135,6 @@ export default function HomeScreen() {
   const isAtTop = useSharedValue(true);
   const didVibrate = useSharedValue(false);
   const rotationPaused = useSharedValue(false);
-  const feedRef = useRef(null);
   // SWR data fetching for explore data
   const {
     data: exploreData,
@@ -209,7 +207,10 @@ export default function HomeScreen() {
       refreshExplore();
       refreshFriendsLoves();
       refreshFriendsProjects();
-      feedRef.current?.refresh();
+      // Refresh feed using SWR's global mutate
+      if (username && token) {
+        swrMutate(['feed', username, token]);
+      }
 
       log(c, "Successfully triggered data refresh");
 
@@ -340,7 +341,7 @@ export default function HomeScreen() {
 
   // Memoize feed with stable dependency
   const memoizedFeed = useMemo(() => {
-    return <Feed ref={feedRef} style={{ margin: 20 }} username={username} />;
+    return <Feed style={{ margin: 20 }} username={username} />;
   }, [username]);
 
   // Memoize scroll handlers
@@ -376,7 +377,7 @@ export default function HomeScreen() {
 
   return (
     <View style={{ backgroundColor: colors.accentTransparent }}>
-      {!hasOpenedBefore && <Redirect href="/onboarding" />}
+      {!hasOpenedBefore ? <Redirect href="/onboarding" /> : <></>}
       <GestureDetector gesture={panGesture}>
         <ScrollView
           ref={scrollRef}
@@ -396,63 +397,63 @@ export default function HomeScreen() {
             style={[contentStyle, containerStyle]}
           >
             {!!username ? memoizedFeed : <SignInPrompt />}
-            {exploreData?.featured?.length > 0 && (
+            {exploreData?.featured?.length > 0 ? (
               <HorizontalContentScroller
                 title="Featured Projects"
                 data={exploreData.featured}
                 iconName="sparkles"
                 headerStyle={{ marginTop: 10 }}
               />
-            )}
+            ) : <></>}
 
-            {friendsLoves.length > 0 && (
+            {friendsLoves.length > 0 ? (
               <HorizontalContentScroller
                 title="Friends Loved"
                 data={friendsLoves}
                 iconName="people"
               />
-            )}
+            ) : <></>}
 
-            {friendsProjects.length > 0 && (
+            {friendsProjects.length > 0 ? (
               <HorizontalContentScroller
                 title="Created by Friends"
                 data={friendsProjects}
                 iconName="people"
               />
-            )}
+            ) : <></>}
 
-            {exploreData?.topLoved?.length > 0 && (
+            {exploreData?.topLoved?.length > 0 ? (
               <HorizontalContentScroller
                 title="Top Loved"
                 data={exploreData.topLoved}
                 iconName="heart"
               />
-            )}
+            ) : <></>}
 
-            {exploreData?.featuredStudios?.length > 0 && (
+            {exploreData?.featuredStudios?.length > 0 ? (
               <FeaturedStudios
                 studios={exploreData.featuredStudios}
                 colors={colors}
               />
-            )}
+            ) : <></>}
 
-            {exploreData?.topRemixed?.length > 0 && (
+            {exploreData?.topRemixed?.length > 0 ? (
               <HorizontalContentScroller
                 title="Top Remixed"
                 data={exploreData.topRemixed}
                 iconName="sync"
               />
-            )}
+            ) : <></>}
 
-            {exploreData?.newest?.length > 0 && (
+            {exploreData?.newest?.length > 0 ? (
               <HorizontalContentScroller
                 title="Newest Projects"
                 data={exploreData.newest}
                 iconName="time"
               />
-            )}
+            ) : <></>}
             <View style={{ marginTop: 10 }}></View>
-            {experimentalFeed && <TexturedButton
+            {experimentalFeed ? <TexturedButton
               onPress={() => router.push("scroll")}
               icon="globe"
               iconSide="left"
@@ -483,7 +484,7 @@ export default function HomeScreen() {
                   </ItchyText>
                 </View>
               </View>
-            </TexturedButton>}
+            </TexturedButton> : <></>}
           </Animated.View>
         </ScrollView>
       </GestureDetector>

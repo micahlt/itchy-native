@@ -380,7 +380,7 @@ export default function MultiPlay() {
             color={status == "Connected" ? "#1fa81f" : (status == "Idle" ? colors.accent : undefined)}
           />
         </View>
-        {isUserUnder13() && !remoteStream && (
+        {isUserUnder13() && !remoteStream ? (
           <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
             <View
               style={{
@@ -412,7 +412,7 @@ export default function MultiPlay() {
               {!user ? " We couldn't verify that you are over 13 since you aren't logged in to a Scratch account." : <></>}
             </ItchyText>
           </View>
-        )}
+        ) : <></>}
         {!!remoteStream ? (
           <View
             style={{
@@ -437,7 +437,7 @@ export default function MultiPlay() {
             />
           </View>
         ) : (
-          loading && (
+          loading ? (
             <View
               style={{
                 width: width - 30,
@@ -462,7 +462,7 @@ export default function MultiPlay() {
                 <ActivityIndicator size={50} color={colors.accent} />
               </View>
             </View>
-          )
+          ) : <></>
         )}
         {/* Stylized container similar to Search page */}
         <SquircleView
@@ -563,7 +563,7 @@ export default function MultiPlay() {
               </View>
             </Card>
           )}
-          {!remoteStream && (
+          {!remoteStream ? (
             <Card style={{ paddingHorizontal: 20, paddingVertical: 15, marginTop: 5 }}>
               <ItchyText
                 style={{
@@ -600,7 +600,7 @@ export default function MultiPlay() {
                 other stuff like that.
               </ItchyText>
             </Card>
-          )}
+          ) : <></>}
           <ScrollView
             horizontal={true}
             style={{ flex: 1, marginTop: 10 }}

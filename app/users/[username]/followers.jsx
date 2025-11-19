@@ -34,7 +34,7 @@ export default function Followers() {
                     title: `${username}'s Followers`
                 }}
             />
-            {followers.length > 0 && <UserList users={followers} onEndReached={getFollowers} />}
+            {followers.length > 0 ? <UserList users={followers} onEndReached={getFollowers} /> : <></>}
         </View>
     );
 }

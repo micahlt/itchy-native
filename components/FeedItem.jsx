@@ -1,8 +1,7 @@
-import { TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 import ItchyText from "./ItchyText";
 import Pressable from "./Pressable";
-import { useMemo, useState } from "react";
-import { Image } from "expo-image";
+import { useMemo } from "react";
 import { useRouter } from "expo-router";
 import timeago from "time-ago";
 import { useTheme } from "../utils/theme";
