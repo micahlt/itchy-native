@@ -78,9 +78,13 @@ module.exports = {
     ios: {
       bundleIdentifier: "org.scratchclient4.itchy",
       icon: "./assets/iosicon.icon",
+      config: {
+        usesNonExemptEncryption: false
+      },
       infoPlist: {
         NSCameraUsageDescription:
           "Itchy needs access to the camera to support projects that include camera features.",
+        ITSAppUsesNonExemptEncryption: false
       },
       googleServicesFile:
         process.env.GOOGLE_SERVICES_PLIST || "./GoogleService-Info.plist",
