@@ -47,9 +47,16 @@ storeFile=[path to your keystore]
 1. Go into the `android` directory with `cd android`.
 2. Run `./gradlew assembleRelease` for an APK output or `./gradlew bundleRelease` for an Android App Bundle output.
 
-### iOS
+### iOS through Xcode
 
 1. Run `xed ios` in the root directory.
-2. Open the `Ìtchy` target and select your personal development team in **Signing & Capabilities**
+2. Open the `Ìtchy` target and select your personal development team in **Signing & Capabilities**.
 3. Go to `Product/Scheme/Edit Scheme` in the Menu Bar and set the **Build Configuration** to `Release`. Disable **Debug Executable** for better performance on first launch.
 4. Build the project.
+
+### iOS through CLI 
+
+1. Run `npx expo run:ios --device --configuration Release`in the root directory.
+2. Choose your preferred Device/Simulator from the interactive menu.
+3. If prompted, choose what development team to use for signing. 
+
