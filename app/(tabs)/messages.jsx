@@ -255,6 +255,7 @@ export default function Messages() {
     <SafeAreaView
       edges={["top"]}
       style={{ flex: 1, backgroundColor: colors.accentTransparent }}
+      collapsable={false}
     >
       <ItchyText
         style={{

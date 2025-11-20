@@ -7,7 +7,7 @@ import FeedItem from "../components/FeedItem";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 
-export default function Feed({}) {
+export default function Feed({ }) {
   const { colors } = useTheme();
   const [feed, setFeed] = useState([]);
   const [token] = useMMKVString("token");
@@ -23,6 +23,7 @@ export default function Feed({}) {
 
   return (
     <ScrollView
+      collapsable={false}
       style={{ flex: 1 }}
       contentContainerStyle={{
         paddingHorizontal: 15,

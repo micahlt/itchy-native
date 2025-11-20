@@ -9,11 +9,12 @@ import { useRouter } from "expo-router";
 import SquircleView from "./SquircleView";
 import TexturedButton from "./TexturedButton";
 import useSWR from "swr";
+import { memo } from "react";
 import { getCrashlytics, log } from "@react-native-firebase/crashlytics";
 
 const c = getCrashlytics();
 
-export default function Feed({ username, style }) {
+export default memo(function Feed({ username, style }) {
     const { colors, dimensions } = useTheme();
     const [token] = useMMKVString("token");
     const router = useRouter();
@@ -106,4 +107,4 @@ export default function Feed({ username, style }) {
             )}
         </SquircleView>
     </>
-}
+});

@@ -5,6 +5,7 @@ module.exports = {
     version: "2.6.9",
     scheme: "itchy",
     newArchEnabled: true,
+    orientation: "portrait",
     plugins: [
       "@react-native-firebase/app",
       "@react-native-firebase/crashlytics",

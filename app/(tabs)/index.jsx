@@ -32,7 +32,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from "react-native-reanimated";
-import { runOnJS } from "react-native-worklets";
+import { scheduleOnRN } from "react-native-worklets";
 import { withPause } from "react-native-redash";
 import { Redirect, router, useFocusEffect } from "expo-router";
 import HorizontalContentScroller from "../../components/HorizontalContentScroller";
@@ -319,10 +319,10 @@ export default function HomeScreen() {
               0.5 *
               (1 -
                 Math.min(e.translationY, MAX_PULL_HEIGHT) / MAX_PULL_HEIGHT);
-            if (Math.floor(panPosition.value) % 18 == 0) runOnJS(vib)("tick");
+            if (Math.floor(panPosition.value) % 18 == 0) scheduleOnRN(vib, "tick");
             if (panPosition.value > REFRESH_TRIGGER_HEIGHT) {
               if (!didVibrate.value) {
-                runOnJS(vib)("long");
+                scheduleOnRN(vib, "long");
                 didVibrate.value = true;
               }
             }
@@ -331,18 +331,13 @@ export default function HomeScreen() {
         .onEnd((e) => {
           didVibrate.value = false;
           if (isAtTop.value && panPosition.value > REFRESH_TRIGGER_HEIGHT) {
-            runOnJS(vib)("long");
-            runOnJS(refresh)();
+            scheduleOnRN(vib, "long");
+            scheduleOnRN(refresh);
           }
           panPosition.value = withSpring(0, { damping: 35, stiffness: 400 });
         }),
     [vib, refresh]
   );
-
-  // Memoize feed with stable dependency
-  const memoizedFeed = useMemo(() => {
-    return <Feed style={{ margin: 20 }} username={username} />;
-  }, [username]);
 
   // Memoize scroll handlers
   const onScrollBeginDrag = useCallback((e) => {
@@ -365,21 +360,19 @@ export default function HomeScreen() {
       borderTopRightRadius: 32,
       borderRadius: 0,
       paddingTop: 14,
-      outlineColor: colors.outlineCard,
-      outlineStyle: "solid",
-      outlineWidth: 1.5,
-      borderTopColor: colors.highlight,
-      boxShadow: `0px -2px 16px rgba(0,94,185,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px ${colors.topLight} inset`,
+      boxShadow:
+        "0px -2px 16px rgba(0,94,185,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
       borderCurve: "continuous"
     }),
     [colors, insets.bottom]
   );
 
   return (
-    <View style={{ backgroundColor: colors.accentTransparent }}>
+    <View style={{ backgroundColor: colors.accentTransparent }} collapsable={false} collapsableChildren={false}>
       {!hasOpenedBefore ? <Redirect href="/onboarding" /> : <></>}
       <GestureDetector gesture={panGesture}>
         <ScrollView
+          collapsable={false}
           ref={scrollRef}
           scrollEventThrottle={2}
           onScrollBeginDrag={onScrollBeginDrag}
@@ -395,8 +388,9 @@ export default function HomeScreen() {
           />
           <Animated.View
             style={[contentStyle, containerStyle]}
+            collapsable={false}
           >
-            {!!username ? memoizedFeed : <SignInPrompt />}
+            {!!username ? <Feed style={{ margin: 20 }} username={username} /> : <SignInPrompt />}
             {exploreData?.featured?.length > 0 ? (
               <HorizontalContentScroller
                 title="Featured Projects"

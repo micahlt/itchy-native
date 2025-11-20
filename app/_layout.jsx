@@ -163,7 +163,7 @@ export default function App() {
       }}
     >
       <ThemeProvider>
-        <GestureHandlerRootView>
+        <GestureHandlerRootView collapsable={false}>
           {/* Inner component consumes theme after ThemeProvider mounts */}
           <ThemeConsumerInner twConfig={twConfig} />
         </GestureHandlerRootView>
@@ -180,7 +180,7 @@ function ThemeConsumerInner({ twConfig }) {
   if (!colors) return null;
 
   return (
-    <View style={{ backgroundColor: colors.background, flex: 1 }}>
+    <View style={{ backgroundColor: colors.background, flex: 1 }} collapsable={false}>
       <Stack
         screenOptions={{
           contentStyle: {

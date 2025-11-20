@@ -3,7 +3,7 @@ import ItchyText from "../components/ItchyText";
 import Pressable from "../components/Pressable";
 import ScratchAPIWrapper from "../utils/api-wrapper";
 import { useTheme } from "../utils/theme";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Card from "../components/Card";
 import storage from "../utils/storage";
 import { useMMKVObject } from "react-native-mmkv";
@@ -27,6 +27,7 @@ export default function LoginScreen() {
     encryptedStorage
   );
   const passwordInput = useRef(null);
+  const liquidPlusPadding = useMemo(() => getLiquidPlusPadding(), []);
 
   const logIn = () => {
     ScratchAPIWrapper.auth
@@ -54,7 +55,7 @@ export default function LoginScreen() {
     <View
       style={{
         backgroundColor: colors.background,
-        paddingTop: getLiquidPlusPadding(),
+        paddingTop: liquidPlusPadding
       }}
     >
       <Stack.Screen options={{ headerTitleAlign: "center" }} />

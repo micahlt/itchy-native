@@ -1,11 +1,12 @@
 import { View, TextInput, TouchableOpacity, useWindowDimensions, Keyboard, Platform } from "react-native"
 import ItchyText from "./ItchyText";
 import { MaterialIcons } from "@expo/vector-icons"
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useTheme } from "../utils/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
 import SquircleView from "../components/SquircleView";
+import { useFocusEffect } from "expo-router";
 
 export default function CommentEditor({ onSubmit, reply, onClearReply }) {
     const [content, setContent] = useState();
@@ -13,23 +14,36 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
     const { colors, dimensions } = useTheme();
     const inputRef = useRef(null);
     const [keyboardHeight, setKeyboardHeight] = useState(0);
-    const bottomAnim = useSharedValue(-3);
     const insets = useSafeAreaInsets();
+    const bottomAnim = useSharedValue(Platform.OS === 'android' ? 0 : -3);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (Platform.OS === 'android') {
+                bottomAnim.value = -3;
+            }
+        }, [])
+    );
 
     useEffect(() => {
         const showSub = Keyboard.addListener('keyboardDidShow', (e) => {
             const height = e.endCoordinates.height;
             setKeyboardHeight(height);
             if (Platform.OS == "ios") {
-                bottomAnim.value = withTiming(height - insets.bottom - 1)
+                bottomAnim.value = withTiming(height + 5)
             } else {
-                bottomAnim.value = withTiming(height - (insets.bottom - 25))
+                bottomAnim.value = withTiming(height + 10)
             }
         });
 
         const hideSub = Keyboard.addListener('keyboardDidHide', () => {
             setKeyboardHeight(0);
-            bottomAnim.value = withTiming(-3);
+            if (Platform.OS === 'android') {
+                bottomAnim.value = withTiming(0);
+            } else {
+                bottomAnim.value = withTiming(0);
+            }
         });
 
         return () => {
@@ -44,23 +58,27 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
         }
     }, [reply]);
 
-    return <Animated.View style={{ position: 'absolute', bottom: bottomAnim }}>
-        <SquircleView cornerSmoothing={0.6} style={{ borderTopLeftRadius: dimensions.largeRadius, borderTopRightRadius: dimensions.largeRadius, borderWidth: 0.1, borderTopWidth: 3, borderColor: colors.backgroundTertiary, backgroundColor: colors.backgroundSecondary, paddingTop: 5, width: "100%", outlineColor: colors.ripple, outlineWidth: dimensions.outlineWidth }}>
-            {!!reply && <View style={{ paddingHorizontal: 15, paddingTop: 15, marginBottom: -3, zIndex: 1, flexDirection: "row", justifyContent: "flex-start", gap: 8, alignItems: "center" }}>
-                <ItchyText style={{ color: colors.text, fontSize: 12, lineHeight: 12 }}>Replying to <ItchyText style={{ fontWeight: "bold" }}>{reply.author.username}</ItchyText></ItchyText>
+    return <Animated.View style={{ position: 'absolute', bottom: bottomAnim, paddingBottom: insets.bottom }}>
+        <SquircleView cornerSmoothing={0.6} style={{
+            borderRadius: dimensions.largeRadius, backgroundColor: colors.backgroundSecondary, paddingTop: 5, width: width - 15, marginLeft: 7.5,
+            boxShadow:
+                "0px -2px 16px rgba(0,94,185,0.15),0px 40px 25px rgba(0,0,0,0.5), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
+        }}>
+            {!!reply && <View style={{ paddingHorizontal: 15, paddingTop: 15, marginBottom: 0, zIndex: 1, flexDirection: "row", justifyContent: "flex-start", gap: 8, alignItems: "center" }}>
+                <ItchyText style={{ color: colors.text, fontSize: 12, lineHeight: 14 }}>Replying to <ItchyText style={{ fontWeight: "bold" }}>{reply.author.username}</ItchyText></ItchyText>
                 <TouchableOpacity onPress={onClearReply} style={{ marginTop: -2 }}>
                     <MaterialIcons name="cancel" size={16} color={colors.textSecondary} />
                 </TouchableOpacity>
             </View>}
             <View style={{
-                paddingHorizontal: 15, flexDirection: "row", paddingBottom: insets.bottom, alignItems: "center"
+                paddingHorizontal: 15, flexDirection: "row", alignItems: "center"
             }}>
                 <TextInput
                     placeholder="Add a comment..."
                     style={{
-                        width: width - 66,
+                        width: width - 80,
                         color: colors.text,
-                        marginVertical: 16,
+                        marginBottom: 5,
                         minHeight: 20,
                         maxHeight: 100,
                         textAlignVertical: 'top',
@@ -69,7 +87,8 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
                             ios: 'Inter-Regular',
                         }),
                         letterSpacing: -0.4,
-                        paddingBottom: 20
+                        borderColor: 'transparent',
+                        borderWidth: 1
                     }}
                     multiline={true}
                     value={content}
@@ -80,7 +99,7 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
                     onSubmit(content);
                     setContent("");
                     inputRef.current?.blur();
-                }} style={{ width: 24, flexGrow: 1, marginLeft: 10 }}>
+                }} style={{ width: 24, flexGrow: 1, marginLeft: 10, marginRight: 20, marginBottom: 8 }}>
                     <MaterialIcons name="send" size={24} color={colors.accent} />
                 </TouchableOpacity>
             </View>

@@ -50,7 +50,7 @@ export default function Search() {
       return () => {
         setQuery("");
         setResults([]);
-        searchBarRef.current?.blur();
+        searchBarRef?.current?.blur();
       };
     }, [])
   );
@@ -106,6 +106,7 @@ export default function Search() {
     <SafeAreaView
       edges={["top"]}
       style={{ flex: 1, backgroundColor: colors.accentTransparent }}
+      collapsable={false}
     >
       <TextInput
         ref={searchBarRef}
