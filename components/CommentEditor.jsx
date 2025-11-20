@@ -1,4 +1,4 @@
-import { View, TextInput, TouchableOpacity, useWindowDimensions, Keyboard, Platform } from "react-native"
+import { View, TextInput, TouchableOpacity, useWindowDimensions, Keyboard, Platform, ActivityIndicator } from "react-native"
 import ItchyText from "./ItchyText";
 import { MaterialIcons } from "@expo/vector-icons"
 import { useCallback, useEffect, useRef, useState } from "react"
@@ -8,7 +8,7 @@ import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
 import SquircleView from "../components/SquircleView";
 import { useFocusEffect } from "expo-router";
 
-export default function CommentEditor({ onSubmit, reply, onClearReply }) {
+export default function CommentEditor({ onSubmit, reply, onClearReply, loading }) {
     const [content, setContent] = useState();
     const { width } = useWindowDimensions();
     const { colors, dimensions } = useTheme();
@@ -58,6 +58,15 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
         }
     }, [reply]);
 
+    const onPressSubmit = () => {
+        if (loading) return;
+        if (!content?.trim()) return;
+
+        onSubmit(content.trim());
+        setContent("");
+        inputRef.current?.blur();
+    };
+
     return <Animated.View style={{ position: 'absolute', bottom: bottomAnim, paddingBottom: insets.bottom }}>
         <SquircleView cornerSmoothing={0.6} style={{
             borderRadius: dimensions.largeRadius, backgroundColor: colors.backgroundSecondary, paddingTop: 5, width: width - 15, marginLeft: 7.5,
@@ -95,12 +104,11 @@ export default function CommentEditor({ onSubmit, reply, onClearReply }) {
                     onChangeText={setContent}
                     ref={inputRef}
                 />
-                <TouchableOpacity onPress={() => {
-                    onSubmit(content);
-                    setContent("");
-                    inputRef.current?.blur();
-                }} style={{ width: 24, flexGrow: 1, marginLeft: 10, marginRight: 20, marginBottom: 8 }}>
-                    <MaterialIcons name="send" size={24} color={colors.accent} />
+                <TouchableOpacity onPress={onPressSubmit} disabled={loading} style={{ width: 24, flexGrow: 1, marginLeft: 10, marginRight: 20, marginBottom: 8, opacity: loading ? 0.5 : 1 }}>
+                    {loading ?
+                        <ActivityIndicator color={colors.accent} />
+                        : <MaterialIcons name="send" size={24} color={colors.accent} />
+                    }
                 </TouchableOpacity>
             </View>
         </SquircleView>

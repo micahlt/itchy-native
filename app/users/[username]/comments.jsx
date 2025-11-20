@@ -37,6 +37,7 @@ export default function UserComments() {
   const [commentOptionsObj, setCommentOptionsObj] = useState(undefined);
   const [showMutedDialog, setShowMutedDialog] = useState(false);
   const [muteExpiresAt, setMuteExpiresAt] = useState(null);
+  const [isPostingComment, setIsPostingComment] = useState(false);
 
   useEffect(() => {
     if (!username) return;
@@ -101,6 +102,8 @@ export default function UserComments() {
   }, []);
 
   const postComment = (content) => {
+    if (isPostingComment) return;
+    setIsPostingComment(true);
     let parentID = null;
     if (!!reply?.id) {
       // For user comments, replies have a parentID field
@@ -214,6 +217,9 @@ export default function UserComments() {
         } catch (parseError) {
           alert("Comment failed to post. Please try again later.");
         }
+      })
+      .finally(() => {
+        setIsPostingComment(false);
       });
   };
 
@@ -287,6 +293,7 @@ export default function UserComments() {
         onSubmit={postComment}
         reply={reply}
         onClearReply={() => setReply(undefined)}
+        loading={isPostingComment}
       /> : <></>}
       <CommentOptionSheet
         comment={commentOptionsObj}

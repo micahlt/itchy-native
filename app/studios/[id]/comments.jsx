@@ -33,11 +33,11 @@ export default function StudioComments() {
   const [csrf] = useMMKVString("csrfToken");
   const [user] = useMMKVObject("user");
   const [reply, setReply] = useState(undefined);
-  const [commentContent, setCommentContent] = useState("");
   const [rerenderComments, setRerenderComments] = useState(true);
   const [commentOptionsObj, setCommentOptionsObj] = useState(undefined);
   const [showMutedDialog, setShowMutedDialog] = useState(false);
   const [muteExpiresAt, setMuteExpiresAt] = useState(null);
+  const [isPostingComment, setIsPostingComment] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -78,6 +78,8 @@ export default function StudioComments() {
   }, [comments, comment_id]);
 
   const postComment = (content) => {
+    if (isPostingComment) return;
+    setIsPostingComment(true);
     let authorID = null,
       parentID = null;
     console.log("Studio comment - Replying to:", reply);
@@ -169,7 +171,6 @@ export default function StudioComments() {
               })
             );
             router.setParams({ comment_id: postedID });
-            setCommentContent("");
             setReply(undefined);
           } else {
             setComments((prev) => {
@@ -191,7 +192,6 @@ export default function StudioComments() {
               return uniqueArray(c);
             });
             router.setParams({ comment_id: postedID });
-            setCommentContent("");
           }
         } else {
           console.log("Studio comment posting failed, postedID:", postedID);
@@ -214,6 +214,9 @@ export default function StudioComments() {
         } catch (parseError) {
           alert("Comment failed to post. Please try again later.");
         }
+      })
+      .finally(() => {
+        setIsPostingComment(false);
       });
   };
 
@@ -319,6 +322,7 @@ export default function StudioComments() {
           onSubmit={postComment}
           reply={reply}
           onClearReply={() => setReply(undefined)}
+          loading={isPostingComment}
         /> : <></>}
         {studio ? (
           <CommentOptionSheet

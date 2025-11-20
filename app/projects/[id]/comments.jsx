@@ -38,6 +38,7 @@ export default function ProjectComments() {
   const [commentOptionsObj, setCommentOptionsObj] = useState(undefined);
   const [showMutedDialog, setShowMutedDialog] = useState(false);
   const [muteExpiresAt, setMuteExpiresAt] = useState(null);
+  const [isPostingComment, setIsPostingComment] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -79,6 +80,8 @@ export default function ProjectComments() {
   }, [comments, comment_id]);
 
   const postComment = (content) => {
+    if (isPostingComment) return;
+    setIsPostingComment(true);
     let authorID = null,
       parentID = null;
     if (!!reply?.id) {
@@ -185,6 +188,9 @@ export default function ProjectComments() {
         } catch (parseError) {
           alert("Comment failed to post. Please try again later.");
         }
+      })
+      .finally(() => {
+        setIsPostingComment(false);
       });
   };
 
@@ -290,6 +296,7 @@ export default function ProjectComments() {
             onSubmit={postComment}
             reply={reply}
             onClearReply={() => setReply(undefined)}
+            loading={isPostingComment}
           /> : <></>
         }
         <CommentOptionSheet
