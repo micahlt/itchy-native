@@ -49,4 +49,7 @@ storeFile=[path to your keystore]
 
 ### iOS
 
-Instructions to-do
+1. Run `xed ios` in the root directory.
+2. Open the `Ìtchy` target and select your personal development team in **Signing & Capabilities**
+3. Go to `Product/Scheme/Edit Scheme` in the Menu Bar and set the **Build Configuration** to `Release`. Disable **Debug Executable** for better performance on first launch.
+4. Build the project.
