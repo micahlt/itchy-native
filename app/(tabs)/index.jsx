@@ -2,7 +2,7 @@ const REFRESH_TRIGGER_HEIGHT = 50;
 const MAX_PULL_HEIGHT = 75;
 
 import { getCrashlytics, log } from '@react-native-firebase/crashlytics';
-import { Platform, View } from "react-native";
+import { Platform, View, Animated, Easing } from "react-native";
 import * as Haptics from "expo-haptics";
 import ScratchAPIWrapper from "../../utils/api-wrapper";
 import {
@@ -22,18 +22,6 @@ import Feed from "../../components/Feed";
 import SignInPrompt from "../../components/SignInPrompt";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import StudioCard from "../../components/StudioCard";
-import Animated, {
-  Easing,
-  useAnimatedRef,
-  useAnimatedStyle,
-  useScrollOffset,
-  useSharedValue,
-  withRepeat,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
-import { scheduleOnRN } from "react-native-worklets";
-import { withPause } from "react-native-redash";
 import { Redirect, router, useFocusEffect } from "expo-router";
 import HorizontalContentScroller from "../../components/HorizontalContentScroller";
 import ItchyText from "../../components/ItchyText";
@@ -41,11 +29,13 @@ import { Ionicons } from "@expo/vector-icons";
 import useSWR, { mutate as swrMutate } from "swr";
 import TexturedButton from "../../components/TexturedButton";
 
+const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
+
 const c = getCrashlytics();
 
-// Memoized header component to prevent unnecessary re-renders
 const Header = memo(({ insets, colors, headerStyle, logoStyle, username }) => (
   <Animated.View
+    collapsable={false}
     style={[
       headerStyle,
       {
@@ -128,13 +118,26 @@ export default function HomeScreen() {
   const [token] = useMMKVString("token");
   const [experimentalFeed] = useMMKVBoolean("experimentalFeed");
   const insets = useSafeAreaInsets();
-  const scrollRef = useAnimatedRef();
-  const scrollOffset = useScrollOffset(scrollRef);
-  const panPosition = useSharedValue(0);
-  const rotate = useSharedValue(0);
-  const isAtTop = useSharedValue(true);
-  const didVibrate = useSharedValue(false);
-  const rotationPaused = useSharedValue(false);
+
+  const scrollRef = useRef(null);
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const panPosition = useRef(new Animated.Value(0)).current;
+  const rotate = useRef(new Animated.Value(0)).current;
+
+  // Refs for mutable values that don't need to trigger re-renders
+  const isAtTop = useRef(true);
+  const didVibrate = useRef(false);
+  const rotationPaused = useRef(false);
+  const panPositionValue = useRef(0);
+
+  // Listener to keep track of panPosition value for logic
+  useEffect(() => {
+    const id = panPosition.addListener(({ value }) => {
+      panPositionValue.current = value;
+    });
+    return () => panPosition.removeListener(id);
+  }, []);
+
   // SWR data fetching for explore data
   const {
     data: exploreData,
@@ -201,7 +204,18 @@ export default function HomeScreen() {
   const refresh = useCallback(() => {
     try {
       log(c, "User initiated pull to refresh");
-      rotationPaused.value = false;
+      rotationPaused.current = false;
+
+      // Start rotation
+      rotate.setValue(0);
+      Animated.loop(
+        Animated.timing(rotate, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        })
+      ).start();
 
       // Refresh all data sources
       refreshExplore();
@@ -216,13 +230,17 @@ export default function HomeScreen() {
 
       // Stop rotation after a delay
       setTimeout(() => {
-        rotationPaused.value = true;
+        rotationPaused.current = true;
+        rotate.stopAnimation();
+        rotate.setValue(0);
       }, 2000);
     } catch (error) {
       log(c, "Error during refresh operation");
       recordError(c, error);
     }
-  }, [refreshExplore, refreshFriendsLoves, refreshFriendsProjects]); // Memoize vib function to prevent recreations
+  }, [refreshExplore, refreshFriendsLoves, refreshFriendsProjects]);
+
+  // Memoize vib function to prevent recreations
   const vib = useCallback((length) => {
     try {
       log(c, `Triggering haptic feedback: ${length}`);
@@ -240,22 +258,16 @@ export default function HomeScreen() {
   useEffect(() => {
     try {
       log(c, "Initializing home screen animations and data loading");
-      rotate.value = withPause(
-        withRepeat(
-          withTiming(360, { duration: 1000, easing: Easing.linear }),
-          -1,
-          false
-        ),
-        rotationPaused
-      );
+
       // Start initial rotation, data loads automatically via SWR
       refresh();
       log(c, "Home screen initialization completed");
       return () => {
         log(c, "Cleaning up home screen animations");
-        rotationPaused.value = true;
-        rotate.value = 0;
-        panPosition.value = 0;
+        rotationPaused.current = true;
+        rotate.stopAnimation();
+        rotate.setValue(0);
+        panPosition.setValue(0);
       };
     } catch (error) {
       log(c, "Error during home screen initialization");
@@ -269,72 +281,77 @@ export default function HomeScreen() {
     }
   }, [scrollRef]));
 
-  const headerStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        {
-          translateY: scrollOffset.value,
-        },
-      ],
-    };
-  });
+  const headerStyle = {
+    transform: [
+      {
+        translateY: scrollY,
+      },
+    ],
+  };
 
-  const logoStyle = useAnimatedStyle(() => {
-    if (Platform.OS === "ios") {
-      return {
-        transform: [
-          { translateY: panPosition.value * 2 },
-          { scale: 1 + Math.min(panPosition.value, MAX_PULL_HEIGHT) / 100 },
-          { rotate: `${rotate.value}deg` },
-        ],
-      };
-    } else {
-      return {
-        transform: [
-          { translateY: panPosition.value / 2 },
-          { scale: 1 + Math.min(panPosition.value, MAX_PULL_HEIGHT) / 100 },
-          { rotate: `${rotate.value}deg` },
-        ],
-      };
-    }
-  });
+  const logoStyle = {
+    transform: [
+      {
+        translateY: Platform.OS === "ios"
+          ? panPosition.interpolate({ inputRange: [0, 1000], outputRange: [0, 2000] }) // * 2
+          : panPosition.interpolate({ inputRange: [0, 1000], outputRange: [0, 500] }) // / 2
+      },
+      {
+        scale: panPosition.interpolate({
+          inputRange: [0, MAX_PULL_HEIGHT],
+          outputRange: [1, 1 + MAX_PULL_HEIGHT / 100],
+          extrapolate: 'clamp'
+        })
+      },
+      {
+        rotate: rotate.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['0deg', '360deg']
+        })
+      },
+    ],
+  };
 
-  const contentStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateY: panPosition.value }],
-    };
-  });
-
-  // ...existing animated styles...
+  const contentStyle = {
+    transform: [{ translateY: panPosition }],
+  };
 
   // Memoize pan gesture to prevent recreations
   const panGesture = useMemo(
     () =>
       Gesture.Pan()
         .simultaneousWithExternalGesture(scrollRef)
+        .runOnJS(true)
         .onUpdate((e) => {
-          if (isAtTop.value && scrollOffset.value <= 0 && e.translationY > 0) {
-            panPosition.value =
-              e.translationY * 0.18 +
+          if (isAtTop.current && e.translationY > 0) {
+            const newPan = e.translationY * 0.18 +
               0.5 *
               (1 -
                 Math.min(e.translationY, MAX_PULL_HEIGHT) / MAX_PULL_HEIGHT);
-            if (Math.floor(panPosition.value) % 18 == 0) scheduleOnRN(vib, "tick");
-            if (panPosition.value > REFRESH_TRIGGER_HEIGHT) {
-              if (!didVibrate.value) {
-                scheduleOnRN(vib, "long");
-                didVibrate.value = true;
+
+            panPosition.setValue(newPan);
+
+            if (Math.floor(newPan) % 18 == 0) vib("tick");
+            if (newPan > REFRESH_TRIGGER_HEIGHT) {
+              if (!didVibrate.current) {
+                vib("long");
+                didVibrate.current = true;
               }
             }
           }
         })
         .onEnd((e) => {
-          didVibrate.value = false;
-          if (isAtTop.value && panPosition.value > REFRESH_TRIGGER_HEIGHT) {
-            scheduleOnRN(vib, "long");
-            scheduleOnRN(refresh);
+          didVibrate.current = false;
+          if (isAtTop.current && panPositionValue.current > REFRESH_TRIGGER_HEIGHT) {
+            vib("long");
+            refresh();
           }
-          panPosition.value = withSpring(0, { damping: 35, stiffness: 400 });
+          Animated.spring(panPosition, {
+            toValue: 0,
+            friction: 6,
+            tension: 30,
+            useNativeDriver: true
+          }).start();
         }),
     [vib, refresh]
   );
@@ -342,13 +359,19 @@ export default function HomeScreen() {
   // Memoize scroll handlers
   const onScrollBeginDrag = useCallback((e) => {
     const offsetY = e.nativeEvent.contentOffset.y;
-    isAtTop.value = offsetY <= 0;
+    isAtTop.current = offsetY <= 0;
   }, []);
 
-  const onScroll = useCallback((e) => {
-    const offsetY = e.nativeEvent.contentOffset.y;
-    isAtTop.value = offsetY <= 0;
-  }, []);
+  const onScroll = useMemo(() => Animated.event(
+    [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+    {
+      useNativeDriver: true,
+      listener: (e) => {
+        const offsetY = e.nativeEvent.contentOffset.y;
+        isAtTop.current = offsetY <= 0;
+      }
+    }
+  ), [scrollY]);
 
   // Memoize content style object
   const containerStyle = useMemo(
@@ -368,13 +391,13 @@ export default function HomeScreen() {
   );
 
   return (
-    <View style={{ backgroundColor: colors.accentTransparent }} collapsable={false} collapsableChildren={false}>
+    <View style={{ backgroundColor: colors.accentTransparent }} collapsable={false}>
       {!hasOpenedBefore ? <Redirect href="/onboarding" /> : <></>}
       <GestureDetector gesture={panGesture}>
-        <ScrollView
+        <AnimatedScrollView
           collapsable={false}
           ref={scrollRef}
-          scrollEventThrottle={2}
+          scrollEventThrottle={16}
           onScrollBeginDrag={onScrollBeginDrag}
           onScroll={onScroll}
           showsVerticalScrollIndicator={false}
@@ -480,7 +503,7 @@ export default function HomeScreen() {
               </View>
             </TexturedButton> : <></>}
           </Animated.View>
-        </ScrollView>
+        </AnimatedScrollView>
       </GestureDetector>
     </View>
   );
