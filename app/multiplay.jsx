@@ -26,6 +26,7 @@ import Chip from "../components/Chip";
 import { useNavigation } from "expo-router";
 import linkWithFallback from "../utils/linkWithFallback";
 import { useMMKVObject } from "react-native-mmkv";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 const SIGNALING_SERVER_URL = "wss://itchyws.micahlindley.com";
 
@@ -44,6 +45,8 @@ export default function MultiPlay() {
   const [user] = useMMKVObject("user");
   const nav = useNavigation();
   const insets = useSafeAreaInsets();
+  const rtcViewRef = useRef(null);
+  const lastMouseUpdate = useRef(0);
 
   // Check if user is under 13 years old
   const isUserUnder13 = () => {
@@ -309,18 +312,47 @@ export default function MultiPlay() {
     setRoomCode("");
   };
 
-  const sendKeyEvent = (key, type, source = "local") => {
-    const message = JSON.stringify({ key, type });
+  const sendKeyEvent = (key, type, coords = { x: 0, y: 0 }) => {
+    const message = JSON.stringify({ key, type, coords });
     if (
       dataChannelRef.current &&
       dataChannelRef.current.readyState === "open"
     ) {
-      console.log(`Sending key event: ${key} - ${type} (source: ${source})`);
+      console.log(`Sending key event: ${key} - ${type}`);
+      if (coords) {
+        console.log(coords);
+      }
       dataChannelRef.current.send(message);
     } else {
       console.warn("Data channel is not open. Cannot send key event:", message);
     }
   };
+
+  const viewWidth = width - 30;
+  const viewHeight = viewWidth * (360 / 480);
+
+  const getScratchCoords = (x, y) => {
+    const scratchX = (x / viewWidth) * 480 - 240;
+    const scratchY = 180 - (y / viewHeight) * 360;
+    return { x: Math.round(scratchX), y: Math.round(scratchY) };
+  };
+
+  const tapGesture = Gesture.Tap()
+    .runOnJS(true)
+    .onBegin((e) => {
+      sendKeyEvent("down", "mouse", getScratchCoords(e.x, e.y));
+    })
+    .onEnd((e) => {
+      sendKeyEvent("up", "mouse", getScratchCoords(e.x, e.y));
+    });
+
+  const panGesture = Gesture.Pan()
+    .runOnJS(true)
+    .onUpdate((e) => {
+      sendKeyEvent("move", "mouse", getScratchCoords(e.x, e.y))
+    });
+
+  const composedGesture = Gesture.Simultaneous(tapGesture, panGesture);
 
   return (
     <>
@@ -414,28 +446,30 @@ export default function MultiPlay() {
           </View>
         ) : <></>}
         {!!remoteStream ? (
-          <View
-            style={{
-              width: width - 30,
-              aspectRatio: 480 / 360,
-              borderWidth: 2,
-              borderRadius: 10,
-              overflow: "hidden",
-              marginHorizontal: 15,
-              marginTop: 10,
-              borderColor: colors.outline,
-              borderWidth: dimensions.outlineWidth,
-            }}
-          >
-            <RTCView
-              streamURL={remoteStream.toURL()}
-              style={{ height: "100%", width: "100%" }}
-              objectFit="cover"
-              onLayout={(event) => {
-                const { y, height } = event.nativeEvent.layout;
+          <GestureDetector gesture={composedGesture}>
+            <View
+              style={{
+                width: width - 30,
+                aspectRatio: 480 / 360,
+                borderWidth: 2,
+                borderRadius: 10,
+                overflow: "hidden",
+                marginHorizontal: 15,
+                marginTop: 10,
+                borderColor: colors.outline,
+                borderWidth: dimensions.outlineWidth,
               }}
-            />
-          </View>
+            >
+              <RTCView
+                streamURL={remoteStream.toURL()}
+                style={{ height: "100%", width: "100%" }}
+                objectFit="cover"
+                onLayout={(event) => {
+                  const { y, height } = event.nativeEvent.layout;
+                }}
+              />
+            </View>
+          </GestureDetector>
         ) : (
           loading ? (
             <View

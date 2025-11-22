@@ -231,6 +231,7 @@ export default function Project() {
   const moveMouse = useCallback(
     (data) => {
       console.log("TODO: mouse");
+      console.log(data);
     },
     [webViewRef, connected, roomCode]
   );
@@ -315,7 +316,6 @@ export default function Project() {
   const createRoom = useCallback(() => {
     console.log("CREATING")
     const message = { type: "startMultiPlaySession" };
-    console.log(webViewRef?.current)
     webViewRef.current?.injectJavaScript(`
             (function(){
                 window.postMessage(${JSON.stringify(message)},'*');

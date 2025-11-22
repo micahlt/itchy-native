@@ -132,6 +132,19 @@ export default `function injectedWebviewCode(args) {
                                 updateVMKeysPressed();
                                 window.ReactNativeWebView?.postMessage("Remote key: " + key + " - " + type + " | Active: [" + Array.from(activeKeys).join(", ") + "]");
                             }
+                        } else if (key && type && (type === "mouse")) {
+                            const mouse = window.vm?.runtime?.ioDevices?.mouse;
+                            if (mouse) {
+                                mouse._scratchX = message.coords.x;
+                                mouse._scratchY = message.coords.y;
+                                if (key == "down") {
+                                    mouseButtons.add(0);
+                                } else if (key == "up") {
+                                    mouseButtons.clear();
+                                }
+                                updateVMMouseButtons();
+                                window.ReactNativeWebView?.postMessage("Remote mouse: " + key + " - " + type + " | Active: [" + Array.from(mouseButtons).join(", ") + "]");
+                            }
                         }
                     }
                 } catch (err) {
@@ -209,6 +222,18 @@ export default `function injectedWebviewCode(args) {
             if (keyboard) {
                 // Replace the internal list directly with a copy of our current set
                 keyboard._keysPressed = Array.from(activeKeys);
+            }
+        }
+
+        function updateVMMouseButtons() {
+            const mouse = window.vm?.runtime?.ioDevices?.mouse;
+            if (mouse) {
+                mouse._buttons = mouseButtons;
+                if (mouseButtons.size > 0) {
+                    mouse._isDown = true;
+                } else {
+                    mouse._isDown = false;
+                }
             }
         }
 
@@ -331,9 +356,8 @@ export default `function injectedWebviewCode(args) {
             }
         });
 
-
-
         const activeKeys = new Set();
+        const mouseButtons = new Set();
 
         // Enhanced VM waiting with better iOS compatibility
         let vmCheckAttempts = 0;
@@ -345,8 +369,9 @@ export default `function injectedWebviewCode(args) {
 
             const vm = window.vm;
             const keyboard = vm?.runtime?.ioDevices?.keyboard;
+            const mouse = vm?.runtime?.ioDevices?.mouse;
 
-            if (keyboard && keyboard._keysPressed && typeof keyboard._keyStringToScratchKey === 'function') {
+            if (keyboard && keyboard._keysPressed && typeof keyboard._keyStringToScratchKey === 'function' && mouse && mouse._buttons) {
                 clearInterval(waitForVM);
                 window.ReactNativeWebView.postMessage("VM ready! Setting up input handlers...");
 
@@ -383,6 +408,7 @@ export default `function injectedWebviewCode(args) {
                         }
 
                         updateVMKeysPressed();
+                        updateVMMouseButtons();
                         window.ReactNativeWebView.postMessage("Key event: " + key + " (" + type + ") -> " + scratchKey + " | Active: [" + Array.from(activeKeys).join(", ") + "]");
                     } catch (err) {
                         window.ReactNativeWebView.postMessage("Error parsing itchy key message: " + err.message);
