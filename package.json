@@ -11,7 +11,7 @@
     "build:ios:prod": "eas build --platform ios --profile production --local --non-interactive --output=./.prod_outputs/app-ios-prod.ipa",
     "build:android:local": "cd android && ./gradlew assembleRelease",
     "postinstall": "patch-package",
-    "postversion": "node ./utils/postVersion.js"
+    "version": "node ./utils/postVersion.js"
   },
   "dependencies": {
     "@bottom-tabs/react-navigation": "^0.12.2",
