@@ -367,14 +367,15 @@ const APIUser = {
             },
             body: JSON.stringify({
                 content: content,
-                parent_id: parentID,
-                commentee_id: commentee,
+                parent_id: parentID || "",
+                commentee_id: commentee || "",
             })
         });
         if (req.ok) {
             const t = await req.text();
             return /data-comment-id="(\d+)"/g.exec(t)[1];
         } else {
+            console.log(await req.text())
             return false;
         }
     },

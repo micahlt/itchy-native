@@ -60,7 +60,7 @@ const Header = memo(({ insets, colors, headerStyle, logoStyle, username }) => (
       />
     </TouchableOpacity>
     <Animated.Image
-      source={require("../../assets/logo-nobg.png")}
+      source={require("../../assets/logo-transparent.png")}
       style={[logoStyle, { height: 65, width: 65 }]}
     />
     <TouchableOpacity onPress={() => router.push("/settings")} onLongPress={() => router.push(`/users/${username}`)}>
