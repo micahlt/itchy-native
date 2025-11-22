@@ -10,7 +10,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import SignInPrompt from "../../components/SignInPrompt";
 import Chip from "../../components/Chip";
 import SquircleView from "../../components/SquircleView";
-import Animated from "react-native-reanimated";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { FlashList } from "@shopify/flash-list";
 import { useFocusEffect } from "expo-router";
 
@@ -224,8 +224,12 @@ export default function Messages() {
     );
   };
 
-  const renderMessage = (m) => {
-    return <Message message={m.item} />;
+  const renderMessage = ({ item, index }) => {
+    return (
+      <Animated.View entering={FadeInDown.delay(index * 50).springify()}>
+        <Message message={item} />
+      </Animated.View>
+    );
   };
 
   if (!username || !token) {
@@ -302,7 +306,7 @@ export default function Messages() {
           <FlashList
             data={filteredMessages}
             style={{ backgroundColor: colors.background, flex: 1 }}
-            renderItem={(item) => renderMessage({ item: item.item })}
+            renderItem={({ item, index }) => renderMessage({ item, index })}
             keyExtractor={(item) => item.id}
             ref={scrollRef}
             refreshControl={

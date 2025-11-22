@@ -1,5 +1,6 @@
-import { View } from "react-native";
+import { View, FlatList } from "react-native";
 import ItchyText from "./ItchyText";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { useTheme } from "../utils/theme";
 import APIExplore from "../utils/api-wrapper/explore";
 import { useMMKVString } from "react-native-mmkv";
@@ -92,19 +93,27 @@ export default memo(function Feed({ username, style }) {
             minHeight: feed.length === 0 ? 100 : 'auto',
             boxShadow: "0px 8px 6px 0px #ffffff22 inset, 0px 2px 0px 0px #FFFFFF33 inset"
         }}>
-            {feed.length === 0 || !feed ? (
-                <View style={{
-                    padding: 20,
-                    alignItems: 'center',
-                    opacity: 0.6
-                }}>
-                    <ItchyText style={{ color: colors.text, textAlign: 'center' }}>
-                        No recent activity
-                    </ItchyText>
-                </View>
-            ) : (
-                feed.map((item, index) => <FeedItem key={item.id || `feed-item-${index}`} item={item} backgroundColor={colors.accent} />)
-            )}
+            <FlatList
+                data={feed}
+                scrollEnabled={false}
+                keyExtractor={(item, index) => item.id || `feed-item-${index}`}
+                renderItem={({ item, index }) => (
+                    <Animated.View entering={FadeInDown.delay(index * 50).springify()}>
+                        <FeedItem item={item} backgroundColor={colors.accent} />
+                    </Animated.View>
+                )}
+                ListEmptyComponent={
+                    <View style={{
+                        padding: 20,
+                        alignItems: 'center',
+                        opacity: 0.6
+                    }}>
+                        <ItchyText style={{ color: colors.text, textAlign: 'center' }}>
+                            No recent activity
+                        </ItchyText>
+                    </View>
+                }
+            />
         </SquircleView>
     </>
 });

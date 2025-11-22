@@ -6,6 +6,7 @@ import ProjectCard from "./ProjectCard";
 import StudioCard from "./StudioCard";
 import { Ionicons } from "@expo/vector-icons";
 import TexturedButton from "./TexturedButton";
+import Animated, { FadeInRight } from "react-native-reanimated";
 
 export default function HorizontalContentScroller({ data, itemType = "projects", iconName, headerStyle = {}, title = "Projects", onShowMore = null, itemCount = null }) {
     const { colors } = useTheme();
@@ -31,13 +32,20 @@ export default function HorizontalContentScroller({ data, itemType = "projects",
             data={data}
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item, index }) => {
+                let content = null;
                 if (itemType == "projects") {
-                    return <ProjectCard project={item} />;
+                    content = <ProjectCard project={item} />;
+                } else if (itemType == "studios") {
+                    content = <StudioCard studio={item} />;
                 }
-                if (itemType == "studios") {
-                    return <StudioCard studio={item} />;
-                }
-                return null;
+
+                if (!content) return null;
+
+                return (
+                    <Animated.View entering={FadeInRight.delay(index * 50).springify()}>
+                        {content}
+                    </Animated.View>
+                );
             }}
             nestedScrollEnabled={true}
             keyboardShouldPersistTaps="handled"

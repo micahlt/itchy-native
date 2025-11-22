@@ -7,8 +7,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import APIUser from "../../../utils/api-wrapper/user";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { getLiquidPlusPadding } from "../../../utils/platformUtils";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
-export default function UserActivity({}) {
+export default function UserActivity({ }) {
   const { username } = useLocalSearchParams();
   const { colors } = useTheme();
   const [feed, setFeed] = useState([]);
@@ -42,14 +43,18 @@ export default function UserActivity({}) {
           paddingBottom: insets.bottom + 35,
         }}
       >
-        {feed.map((item) => (
-          <FeedItem
+        {feed.map((item, index) => (
+          <Animated.View
             key={item.id}
-            item={item}
-            textColor={colors.text}
-            backgroundColor={colors.background}
-            type="useractivity"
-          />
+            entering={FadeInDown.delay(index * 50).springify()}
+          >
+            <FeedItem
+              item={item}
+              textColor={colors.text}
+              backgroundColor={colors.background}
+              type="useractivity"
+            />
+          </Animated.View>
         ))}
       </ScrollView>
     </>

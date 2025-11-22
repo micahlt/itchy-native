@@ -25,6 +25,7 @@ import ItchyText from "../../components/ItchyText";
 import { Ionicons } from "@expo/vector-icons";
 import { useMMKVObject } from "react-native-mmkv";
 import Card from "../../components/Card";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 export default function Search() {
   const { colors, dimensions, isDark } = useTheme();
@@ -194,7 +195,7 @@ export default function Search() {
         >
           <FlashList
             data={results}
-            renderItem={({ item }) => renderItem(item, width, type)}
+            renderItem={({ item, index }) => renderItem(item, width, type, index)}
             keyExtractor={(item) => item.id}
             numColumns={2}
             ref={scrollRef}
@@ -319,32 +320,40 @@ function EmptySearchComponent({
   );
 }
 
-function renderItem(item, width, type) {
-  if (type === "projects") {
-    return (
-      <ProjectCard
-        project={item}
-        style={{ marginBottom: 5 }}
-        width={(width - 40) / 2}
-      />
-    );
-  }
-  if (type === "studios") {
-    return (
-      <StudioCard
-        studio={item}
-        style={{ marginBottom: 5 }}
-        width={(width - 40) / 2}
-      />
-    );
-  }
-  if (type === "users") {
-    return (
-      <UserCard
-        user={item}
-        style={{ marginBottom: 5 }}
-        width={(width - 40) / 2}
-      />
-    );
-  }
+function renderItem(item, width, type, index) {
+  const content = (() => {
+    if (type === "projects") {
+      return (
+        <ProjectCard
+          project={item}
+          style={{ marginBottom: 5 }}
+          width={(width - 40) / 2}
+        />
+      );
+    }
+    if (type === "studios") {
+      return (
+        <StudioCard
+          studio={item}
+          style={{ marginBottom: 5 }}
+          width={(width - 40) / 2}
+        />
+      );
+    }
+    if (type === "users") {
+      return (
+        <UserCard
+          user={item}
+          style={{ marginBottom: 5 }}
+          width={(width - 40) / 2}
+        />
+      );
+    }
+  })();
+
+  return (
+    <Animated.View entering={FadeInDown.delay(index * 50).springify()}>
+      {content}
+    </Animated.View>
+  );
 }

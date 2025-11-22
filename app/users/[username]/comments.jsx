@@ -1,24 +1,13 @@
-import {
-  FlatList,
-  RefreshControl,
-  KeyboardAvoidingView,
-  Platform,
-  View,
-  Vibration,
-} from "react-native";
+import { View } from "react-native";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { router } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
-import Comment from "../../../components/Comment";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
-import CommentEditor from "../../../components/CommentEditor";
 import uniqueArray from "../../../utils/uniqueArray";
-import CommentOptionSheet from "../../../components/CommentOptionSheet";
-import MutedDialog from "../../../components/MutedDialog";
-import { getLiquidPlusPadding } from "../../../utils/platformUtils";
+import CommentList from "../../../components/CommentList";
 
 export default function UserComments() {
   const { username, comment_id } = useLocalSearchParams();
@@ -72,20 +61,6 @@ export default function UserComments() {
     }
   }, [comments, comment_id]);
 
-  const renderComment = useCallback(
-    ({ item }) => {
-      return (
-        <Comment
-          comment={item}
-          selected={comment_id || undefined}
-          onPress={setReply}
-          onLongPress={openCommentOptions}
-        />
-      );
-    },
-    [rerenderComments, comments]
-  );
-
   const endReached = useCallback(() => {
     if (loading || !hasScrolledToSelected) return;
     setPage(page + 1);
@@ -94,11 +69,6 @@ export default function UserComments() {
   const refresh = useCallback(() => {
     setComments([]);
     setPage(1);
-  }, []);
-
-  const openCommentOptions = useCallback((comment) => {
-    setCommentOptionsObj(comment);
-    Vibration.vibrate(5);
   }, []);
 
   const postComment = (content) => {
@@ -253,58 +223,24 @@ export default function UserComments() {
           title: `Comments for ${username}`,
         }}
       />
-      {comments.length > 0 && (
-        <FlatList
-          ref={scrollRef}
-          contentContainerStyle={{
-            padding: 10,
-            paddingTop: getLiquidPlusPadding(10, 70),
-            paddingBottom: 100,
-          }}
-          style={{ flex: 1 }}
-          data={comments}
-          renderItem={renderComment}
-          keyExtractor={(item) => item.id}
-          onEndReached={endReached}
-          onEndReachedThreshold={1.2}
-          // onRefresh={refresh}
-          // refreshing={loading}
-          onScrollToIndexFailed={({ index }) => {
-            scrollRef.current?.scrollToOffset({
-              offset: index * 1000,
-              animated: true,
-            });
-            const wait = new Promise((resolve) => setTimeout(resolve, 500));
-            wait.then(() => {
-              scrollRef.current?.scrollToIndex({ index, animated: true });
-            });
-          }}
-        // refreshControl={
-        //   <RefreshControl
-        //     refreshing={loading}
-        //     tintColor={"white"}
-        //     progressBackgroundColor={colors.accent}
-        //     colors={isDark ? ["black"] : ["white"]}
-        //   />
-        // }
-        />
-      )}
-      {!!user ? <CommentEditor
-        onSubmit={postComment}
+      <CommentList
+        comments={comments}
+        loading={loading}
+        onEndReached={endReached}
+        user={user}
         reply={reply}
-        onClearReply={() => setReply(undefined)}
-        loading={isPostingComment}
-      /> : <></>}
-      <CommentOptionSheet
-        comment={commentOptionsObj}
-        setComment={setCommentOptionsObj}
-        context={{ type: "user", owner: username }}
-        onDeleteCommentID={afterDeleteComment}
-      />
-      <MutedDialog
-        visible={showMutedDialog}
+        setReply={setReply}
+        isPostingComment={isPostingComment}
+        onPostComment={postComment}
+        commentOptionsObj={commentOptionsObj}
+        setCommentOptionsObj={setCommentOptionsObj}
+        commentOptionContext={{ type: "user", owner: username }}
+        onDeleteComment={afterDeleteComment}
+        showMutedDialog={showMutedDialog}
+        setShowMutedDialog={setShowMutedDialog}
         muteExpiresAt={muteExpiresAt}
-        onClose={() => setShowMutedDialog(false)}
+        selectedCommentId={comment_id || undefined}
+        scrollRef={scrollRef}
       />
     </View>
   );

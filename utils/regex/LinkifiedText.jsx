@@ -1,7 +1,7 @@
 import { router } from "expo-router";
 import ItchyText from "../../components/ItchyText";
 import { useTheme } from "../theme";
-import { useEffect, useState } from "react";
+import { useMemo, memo } from "react";
 const username = /(@[\d_\-a-zA-Z]+)/;
 const project = /https*:\/\/scratch.mit.edu\/projects\/(\d*) *\/*/
 const studio = /https*:\/\/scratch.mit.edu\/studios\/(\d*) *\/*/
@@ -42,19 +42,17 @@ const emojis = {
     "blm": "✊🏿",
 }
 
-export default function LinkifiedText({ text, ...props }) {
+export default memo(function LinkifiedText({ text, ...props }) {
     const { colors } = useTheme();
-    const [textParts, setTextParts] = useState([]);
 
-    useEffect(() => {
+    const textParts = useMemo(() => {
+        if (!text) return [];
         const comment = text.replaceAll(existingLink, "$1").replace(/ +(?= )/g, '').replaceAll(emoji, (match, p1) => {
             const emojiName = p1.split("/images/emoji/").pop().split(".")[0];
             return emojis[emojiName] || match;
-        });;
+        });
         const splitLinked = comment.split(globalRegex);
-        setTextParts(splitLinked.filter((part) => {
-            if (!!part) return true; else return false;
-        }));
+        return splitLinked.filter((part) => !!part);
     }, [text]);
 
     return (
@@ -73,4 +71,4 @@ export default function LinkifiedText({ text, ...props }) {
             })}
         </ItchyText>
     );
-}
+});
