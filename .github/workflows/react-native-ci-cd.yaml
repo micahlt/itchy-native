@@ -100,7 +100,7 @@ jobs:
       - name: 🚀 Submit to Play Store
         if: (matrix.platform == 'android') && (github.event.inputs.buildType == 'all' || github.event_name == 'push')
         run: |
-          eas submit -p android --path ./app-prod.aab --non-interactive
+          eas submit -p android --path ./android_output/app-prod.aab --non-interactive
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
           GOOGLE_PLAY_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
