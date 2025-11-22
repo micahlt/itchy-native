@@ -248,13 +248,6 @@ export default function Studio() {
                 paddingHorizontal: 15,
               }}
             >
-              <TexturedButton
-                style={{ flex: 1 }}
-                onPress={() => router.push(`/studios/${id}/activity`)}
-              >
-                Activity
-              </TexturedButton>
-
               {followingStatus !== undefined && (
                 <TexturedButton
                   style={{ flex: 1 }}
@@ -263,6 +256,12 @@ export default function Studio() {
                   {followingStatus === true ? "Unfollow" : "Follow"}
                 </TexturedButton>
               )}
+              <TexturedButton
+                style={{ flex: 1 }}
+                onPress={() => router.push(`/studios/${id}/activity`)}
+              >
+                Activity
+              </TexturedButton>
             </View>
             <Card style={{ padding: 20, marginHorizontal: 15 }}>
               <LinkifiedText

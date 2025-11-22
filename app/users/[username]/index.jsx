@@ -270,6 +270,15 @@ export default function User() {
                   Edit Profile
                 </TexturedButton>
               ) : null}
+              {followingStatus !== undefined ? (
+                <TexturedButton
+                  size={11}
+                  style={{ flex: 1 }}
+                  onPress={changeFollowingStatus}
+                >
+                  {followingStatus === true ? "Unfollow" : "Follow"}
+                </TexturedButton>
+              ) : null}
               <TexturedButton
                 size={11}
                 style={{ flex: 1 }}
@@ -284,15 +293,6 @@ export default function User() {
               >
                 Activity
               </TexturedButton>
-              {followingStatus !== undefined ? (
-                <TexturedButton
-                  size={11}
-                  style={{ flex: 1 }}
-                  onPress={changeFollowingStatus}
-                >
-                  {followingStatus === true ? "Unfollow" : "Follow"}
-                </TexturedButton>
-              ) : null}
             </View>
             {profile.featuredProject ? (
               <ProjectCard
