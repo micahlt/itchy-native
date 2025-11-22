@@ -595,6 +595,7 @@ if (document.readyState === 'loading') {
 `;
   const pan = Gesture.Pan()
     .enabled(true)
+    .minDistance(5)
     .activateAfterLongPress(0) // Activate immediately
     .manualActivation(false)
     .shouldCancelWhenOutside(false);
