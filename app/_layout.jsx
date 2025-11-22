@@ -14,6 +14,7 @@ import { router } from "expo-router";
 import { SWRConfig } from "swr";
 import * as Network from "expo-network";
 import { isLiquidPlus } from "../utils/platformUtils";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 const c = getCrashlytics();
 
@@ -164,8 +165,10 @@ export default function App() {
     >
       <ThemeProvider>
         <GestureHandlerRootView collapsable={false}>
-          {/* Inner component consumes theme after ThemeProvider mounts */}
-          <ThemeConsumerInner twConfig={twConfig} />
+          <BottomSheetModalProvider>
+            {/* Inner component consumes theme after ThemeProvider mounts */}
+            <ThemeConsumerInner twConfig={twConfig} />
+          </BottomSheetModalProvider>
         </GestureHandlerRootView>
       </ThemeProvider>
     </SWRConfig>

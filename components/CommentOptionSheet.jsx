@@ -22,12 +22,13 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
+import TexturedButton from "./TexturedButton";
 
 export default function CommentOptionSheet({
   comment,
   context,
-  setComment = () => {},
-  onDeleteCommentID = () => {},
+  setComment = () => { },
+  onDeleteCommentID = () => { },
 }) {
   const { colors } = useTheme();
   const [user] = useMMKVObject("user");
@@ -178,6 +179,7 @@ export default function CommentOptionSheet({
         style={{
           paddingTop: getLiquidPlusPadding(0, 0),
           paddingBottom: 10,
+          paddingHorizontal: 20,
           backgroundColor: colors.backgroundSecondary,
         }}
       >
@@ -186,13 +188,12 @@ export default function CommentOptionSheet({
             color: colors.text,
             fontSize: 22,
             fontWeight: "bold",
-            marginBottom: 10,
-            paddingHorizontal: 15,
+            marginBottom: 15,
           }}
         >
           Comment
         </ItchyText>
-        <View style={{ paddingHorizontal: 5 }}>
+        <View style={{ paddingHorizontal: 0, marginBottom: 5 }}>
           <Comment
             comment={comment}
             showReplies={false}
@@ -201,76 +202,31 @@ export default function CommentOptionSheet({
           />
         </View>
         {canDelete && (
-          <Pressable
-            android_ripple={{
-              color: "#ffffff22",
-              borderless: false,
-              foreground: true,
-            }}
+          <TexturedButton
             onPress={deleteComment}
-            style={{
-              paddingHorizontal: 20,
-              paddingVertical: 10,
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 10,
-              borderColor: colors.backgroundTertiary,
-              borderBottomWidth: 0.5,
-              borderTopWidth: 0.5,
-            }}
+            style={{ marginBottom: 10 }}
+            icon="trash"
+            iconSide="left"
           >
-            <MaterialIcons name="delete" color={colors.accent} size={22} />
-            <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
-              Delete
-            </ItchyText>
-          </Pressable>
+            Delete
+          </TexturedButton>
         )}
-        <Pressable
-          android_ripple={{
-            color: "#ffffff22",
-            borderless: false,
-            foreground: true,
-          }}
+        <TexturedButton
           onPress={openOnScratch}
-          style={{
-            paddingHorizontal: 20,
-            paddingVertical: 10,
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 10,
-            borderColor: colors.backgroundTertiary,
-            borderBottomWidth: 0.5,
-            borderTopWidth: 0.5,
-          }}
+          style={{ marginBottom: 10 }}
+          icon="open"
+          iconSide="left"
         >
-          <MaterialIcons name="exit-to-app" color={colors.accent} size={22} />
-          <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
-            Open on Scratch
-          </ItchyText>
-        </Pressable>
-        <Pressable
-          android_ripple={{
-            color: "#ffffff22",
-            borderless: false,
-            foreground: true,
-          }}
+          Open on Scratch
+        </TexturedButton>
+        <TexturedButton
           onPress={openOnScratch}
-          style={{
-            paddingHorizontal: 20,
-            paddingVertical: 10,
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 10,
-            borderColor: colors.backgroundTertiary,
-            borderBottomWidth: 0.5,
-            borderTopWidth: 0.5,
-          }}
+          style={{ marginBottom: 10 }}
+          icon="flag"
+          iconSide="left"
         >
-          <MaterialIcons name="flag" color={colors.accent} size={22} />
-          <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
-            Report comment
-          </ItchyText>
-        </Pressable>
+          Report comment
+        </TexturedButton>
       </BottomSheetView>
     </BottomSheet>
   );

@@ -2,8 +2,7 @@ import {
     FlatList,
     KeyboardAvoidingView,
     Platform,
-    View,
-    Vibration,
+    View
 } from "react-native";
 import { useTheme } from "../utils/theme";
 import Comment from "./Comment";
@@ -12,6 +11,7 @@ import CommentOptionSheet from "./CommentOptionSheet";
 import MutedDialog from "./MutedDialog";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
 
 export default function CommentList({
     comments,
@@ -45,8 +45,8 @@ export default function CommentList({
                     selected={selectedCommentId}
                     onPress={setReply}
                     onLongPress={(c) => {
+                        impactAsync(ImpactFeedbackStyle.Medium);
                         setCommentOptionsObj(c);
-                        Vibration.vibrate(5);
                     }}
                 />
             </Animated.View>
