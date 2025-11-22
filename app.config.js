@@ -78,7 +78,7 @@ module.exports = {
     },
     ios: {
       bundleIdentifier: "org.scratchclient4.itchy",
-      buildNumber: 70,
+      buildNumber: "70",
       icon: "./assets/iosicon.icon",
       config: {
         usesNonExemptEncryption: false

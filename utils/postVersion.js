@@ -40,12 +40,12 @@ try {
     // 3. Increment ios.buildNumber
     // Regex to find the current buildNumber:
     configContent = configContent.replace(
-        /(buildNumber: )(\d+)/,
+        /(buildNumber: )"(\d+)"/,
         (match, p1, p2) => {
             const currentBuild = parseInt(p2, 10);
             const newBuild = currentBuild + 1;
             console.log(`✅ iOS buildNumber updated from ${currentBuild} to ${newBuild}`);
-            return `${p1}${newBuild}`;
+            return `${p1}"${newBuild}"`;
         }
     );
 
