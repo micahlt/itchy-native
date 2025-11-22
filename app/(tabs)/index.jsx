@@ -112,7 +112,7 @@ const FeaturedStudios = memo(({ studios, colors }) => (
 export default function HomeScreen() {
   const { colors } = useTheme();
   const [hasOpenedBefore, setHasOpenedBefore] =
-    useMMKVBoolean("hasOpenedBeforeDev");
+    useMMKVBoolean("hasOpenedBefore");
   const [user] = useMMKVObject("user");
   const [username] = useMMKVString("username");
   const [token] = useMMKVString("token");

@@ -451,9 +451,9 @@ export default function SettingsScreen() {
         <View style={{ flexDirection: "row", paddingTop: 8 }}>
           <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
             Created by Micah Lindley. Contributions to code, UI, and graphics
-            made by David Noé Bänziger and Sean Wallace. Made possible by open-source
-            projects like TurboWarp, Scratch, React Native, Expo, and many
-            others.
+            made by David Noé Bänziger, Sean Wallace, and other community members.
+            Made possible by open-source projects like TurboWarp, Scratch, React
+            Native, Expo, and many others.
           </ItchyText>
         </View>
       </SquircleView>

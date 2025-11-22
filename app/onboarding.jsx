@@ -79,7 +79,7 @@ export default function Onboarding({ }) {
   const carouselRef = useRef(null);
   const progress = useSharedValue(0);
   const [hasOpenedBefore, setHasOpenedBefore] =
-    useMMKVBoolean("hasOpenedBeforeDev");
+    useMMKVBoolean("hasOpenedBefore");
   const [isAtEnd, setIsAtEnd] = useState(false);
 
   // Update isAtEnd whenever progress changes
