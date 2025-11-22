@@ -50,7 +50,6 @@ const APIAuth = {
             token +
             ";";
 
-        console.log("LOGIN COOKIES:", cookieSet)
         setCookies(cookieSet);
 
         const sessionFetch = await fetch("https://scratch.mit.edu/session", {
