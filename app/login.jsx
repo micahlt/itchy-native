@@ -9,12 +9,11 @@ import storage from "../utils/storage";
 import { useMMKVObject } from "react-native-mmkv";
 import { router, Stack } from "expo-router";
 import { Image } from "expo-image";
-import { MaterialIcons } from "@expo/vector-icons";
 import encryptedStorage from "../utils/encryptedStorage";
 import TexturedButton from "../components/TexturedButton";
 import linkWithFallback from "../utils/linkWithFallback";
-import { opacity } from "react-native-redash";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
+import { saveAccount } from "../utils/account-manager";
 
 export default function LoginScreen() {
   const { colors } = useTheme();
@@ -33,16 +32,20 @@ export default function LoginScreen() {
     ScratchAPIWrapper.auth
       .login(username, password)
       .then((d) => {
-        storage.set("sessionID", d.sessionToken);
-        storage.set("csrfToken", d.csrfToken);
-        storage.set("username", d.username);
-        storage.set("cookieSet", d.cookieSet);
-        storage.set("token", d.sessionJSON.user.token);
+        const accountData = {
+          sessionID: d.sessionToken,
+          csrfToken: d.csrfToken,
+          username: d.username,
+          cookieSet: d.cookieSet,
+          token: d.sessionJSON.user.token,
+          user: d.sessionJSON.user
+        };
+        saveAccount(accountData);
+
         setSavedLogins((prev) => {
           const newLogins = [...(prev || []), { username, password }];
           return newLogins;
         });
-        setUser(d.sessionJSON.user);
         router.dismissTo("/");
       })
       .catch((e) => {

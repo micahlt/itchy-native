@@ -48,11 +48,14 @@ export const setCookies = (setCookieHeader) => {
         });
     });
 
-    console.log("🍪 COOKIES | set")
-    console.log(cookies);
+    // console.log("🍪 COOKIES | set")
+    // console.log(cookies);
     storage.set(COOKIE_KEY, JSON.stringify(cookies));
+
+    storage.set("cookieSet", getCookieString());
 };
 
 export const clearCookies = () => {
     storage.delete(COOKIE_KEY);
+    storage.delete("cookieSet");
 };

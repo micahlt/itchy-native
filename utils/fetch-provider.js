@@ -30,9 +30,9 @@ const customFetch = async (url, options = {}) => {
         headers: headersPlain,
     };
 
-    console.log("🫳  FETCH |", url)
-    console.log(newOptions)
-    console.log("\n")
+    // console.log("🫳  FETCH |", url)
+    // console.log(newOptions)
+    // console.log("\n")
 
     const response = await expoFetch(url, newOptions);
 
@@ -41,7 +41,7 @@ const customFetch = async (url, options = {}) => {
         setCookies(setCookie);
     }
 
-    console.log("🫴  RESPONSE |", response.status)
+    // console.log("🫴  RESPONSE |", response.status)
 
     return response;
 };

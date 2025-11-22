@@ -23,6 +23,9 @@ import Chip from "../components/Chip";
 import { useTheme } from "../utils/theme";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 import { getCrashlytics, setCrashlyticsCollectionEnabled } from "@react-native-firebase/crashlytics";
+import { removeAccount, getAccounts, switchAccount } from "../utils/account-manager";
+import { Image } from "expo-image";
+import AccountSwitchModal from "../components/AccountSwitchModal";
 
 const c = getCrashlytics();
 
@@ -31,6 +34,21 @@ export default function SettingsScreen() {
   const router = useRouter();
   const [username] = useMMKVString("username");
   const [twConfig, setTWConfig] = useMMKVObject("twConfig");
+  const [accounts, setAccounts] = useState({});
+  const [switchingAccount, setSwitchingAccount] = useState(false);
+
+  const handleSwitchAccount = (username) => {
+    setSwitchingAccount(true);
+    switchAccount(username);
+    setTimeout(() => {
+      setSwitchingAccount(false);
+    }, 1500);
+  };
+
+  useEffect(() => {
+    setAccounts(getAccounts());
+  }, [username]);
+
   // Local state for switches to enable smooth animations
   const [localSwitchState, setLocalSwitchState] = useState({
     interpolate: false,
@@ -160,7 +178,9 @@ export default function SettingsScreen() {
         <ItchyText style={s.settingTitle}>
           {username ? `Signed in as ` : "Signed out"}
           {username && (
-            <ItchyText style={{ fontWeight: "bold" }}>{username}</ItchyText>
+            <ItchyText style={{ color: colors.accent, fontWeight: "bold" }} onPress={() => router.push(`/users/${username}`)}>
+              {username}
+            </ItchyText>
           )}
         </ItchyText>
         <Chip.Icon
@@ -174,13 +194,12 @@ export default function SettingsScreen() {
               ScratchAPIWrapper.auth
                 .logout(storage.getString("cookieSet"))
                 .then(() => {
-                  storage.clearAll();
-                  storage.set("hasOpenedBefore", true);
+                  removeAccount(username);
                 })
                 .catch((e) => {
                   console.error(e);
                   console.error("Proceeding with login anyway.");
-                  storage.clearAll();
+                  removeAccount(username);
                 });
             } else {
               router.push("/login");
@@ -189,17 +208,57 @@ export default function SettingsScreen() {
         />
       </SquircleView>
       {username && (
-        <SquircleView
-          cornerSmoothing={0.6}
-          style={[s.settingContainer, s.bottomSettingContainer]}
-        >
-          <TouchableOpacity onPress={() => router.push(`/users/${username}`)}>
-            <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
-              Open your profile
-            </ItchyText>
-          </TouchableOpacity>
-        </SquircleView>
-      )}
+        <>
+          <SquircleView
+            cornerSmoothing={0.6}
+            style={[s.settingContainer, s.middleSettingContainer]}
+          >
+            <TouchableOpacity onPress={() => router.push("/login")}>
+              <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
+                Add another account
+              </ItchyText>
+            </TouchableOpacity>
+          </SquircleView>
+          {Object.keys(accounts).length > 0 && (
+            <SquircleView
+              cornerSmoothing={0.6}
+              style={[[
+                s.settingContainer,
+                s.middleSettingContainer,
+                s.bottomSettingContainer
+              ],
+              { justifyContent: "flex-start", gap: 10, paddingVertical: 10 }]
+              }
+            >
+              {Object.values(accounts).map((account, index) => (
+                <TouchableOpacity
+                  key={account.username}
+                  onPress={() => {
+                    handleSwitchAccount(account.username);
+                  }}
+                >
+                  <Image
+                    source={{
+                      uri: `https://uploads.scratch.mit.edu/get_image/user/${account.user.id}_64x64.png`,
+                    }}
+                    style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 12,
+                      zIndex: 5 - index,
+                      marginLeft: -4,
+                      borderWidth: account.username === username ? 2 : 0,
+                      borderColor: colors.accent,
+                      opacity: account.username === username ? 1 : 0.5,
+                    }}
+                  />
+                </TouchableOpacity>
+              ))}
+            </SquircleView>
+          )}
+        </>
+      )
+      }
       <ItchyText style={s.sectionHeader}>Player</ItchyText>
       <SquircleView
         cornerSmoothing={0.6}
@@ -401,7 +460,7 @@ export default function SettingsScreen() {
         ]}
       >
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
-          Opt in or out of crash reporting.  Reports do not include any information about your Scratch account, and are only sent when Itchy crashes.  This helps us improve the app
+          Opt in or out of crash reporting.  Reports do not include any information about your Scratch account, and are only sent when Itchy crashes.  This helps us improve the app.
         </ItchyText>
       </SquircleView>
       <ItchyText style={s.sectionHeader}>About</ItchyText>
@@ -488,6 +547,7 @@ export default function SettingsScreen() {
         </View>
       </SquircleView>
       <View style={{ height: 120 }}></View>
-    </ScrollView>
+      <AccountSwitchModal visible={switchingAccount} />
+    </ScrollView >
   );
 }
