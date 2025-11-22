@@ -28,7 +28,8 @@ import MultiPlayConfigSheet from "../../../components/MultiPlayConfigSheet";
 import BottomSheet from "@gorhom/bottom-sheet";
 import {
   Gesture,
-  GestureDetector
+  GestureDetector,
+  ScrollView as GHScrollView
 } from "react-native-gesture-handler";
 import {
   getLiquidPlusPadding,
@@ -771,7 +772,7 @@ if (document.readyState === 'loading') {
             />
           </GestureDetector>
           {metadata && (
-            <ScrollView
+            <GHScrollView
               horizontal
               contentContainerStyle={{
                 paddingVertical: 10,
@@ -803,6 +804,7 @@ if (document.readyState === 'loading') {
                 color="#ff4750"
                 mode={interactions.loved ? "filled" : "outlined"}
                 onPress={() => toggleInteraction("love")}
+                provider="gesture-handler"
               />
               <Chip.Icon
                 icon="star"
@@ -810,18 +812,21 @@ if (document.readyState === 'loading') {
                 color="#ddbf37"
                 mode={interactions.favorited ? "filled" : "outlined"}
                 onPress={() => toggleInteraction("favorite")}
+                provider="gesture-handler"
               />
               <Chip.Icon
                 icon="sync"
                 text={approximateNumber(metadata.stats.remixes)}
                 color={isDark ? "#32ee87" : "#0ca852"}
                 mode="filled"
+                provider="gesture-handler"
               />
               <Chip.Icon
                 icon="eye"
                 text={approximateNumber(metadata.stats.views)}
                 color="#47b5ff"
                 mode="filled"
+                provider="gesture-handler"
               />
               <Chip.Icon
                 icon="radio"
@@ -829,6 +834,7 @@ if (document.readyState === 'loading') {
                 color="#4769ff"
                 mode="filled"
                 onPress={openOnlineConfigSheet}
+                provider="gesture-handler"
               />
               <Chip.Icon
                 icon="share"
@@ -852,8 +858,9 @@ if (document.readyState === 'loading') {
                     }
                   )
                 }
+                provider="gesture-handler"
               />
-            </ScrollView>
+            </GHScrollView>
           )}
           {!isMaxed && (
             <>

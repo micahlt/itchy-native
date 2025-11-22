@@ -8,12 +8,11 @@ export default function Pressable({ children, onPress, onLongPress = () => { }, 
             <GHPressable
                 onPress={onPress}
                 onLongPress={onLongPress}
-                style={style}
                 android_ripple={android_ripple}
                 foreground={android_ripple?.foreground ?? true}
                 {...props}
             >
-                <View pointerEvents="box-none">
+                <View pointerEvents="box-none" style={style}>
                     {children}
                 </View>
             </GHPressable>
