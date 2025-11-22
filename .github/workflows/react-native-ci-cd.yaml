@@ -82,7 +82,7 @@ jobs:
         if: (matrix.platform == 'android') && (github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-apk' || github.event_name == 'push')
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-           mkdir android_output
+           mkdir -p android_output
           eas build --platform android --profile production-apk --local --non-interactive --output=./android_output/app-prod.apk
         env:
           NODE_ENV: production
@@ -91,7 +91,7 @@ jobs:
         if: (matrix.platform == 'android') && (github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-aab' || github.event_name == 'push')
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          mkdir android_output
+          mkdir -p android_output
           eas build --platform android --profile production --local --non-interactive --output=./android_output/app-prod.aab
         env:
           NODE_ENV: production
