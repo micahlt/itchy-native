@@ -13,9 +13,11 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import WebView from "react-native-webview";
 import Chip from "../../../components/Chip";
+import TexturedButton from "../../../components/TexturedButton";
 import Card from "../../../components/Card";
 import approximateNumber from "approximate-number";
-import { useMMKVString } from "react-native-mmkv";
+import { Image } from "expo-image";
+import { useMMKVString, useMMKVBoolean } from "react-native-mmkv";
 import storage from "../../../utils/storage";
 import useTurbowarpLink from "../../../utils/hooks/useTurbowarpLink";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
@@ -31,6 +33,7 @@ import {
   GestureDetector,
   ScrollView as GHScrollView
 } from "react-native-gesture-handler";
+import Animated, { FadeInRight } from "react-native-reanimated";
 import {
   getLiquidPlusPadding,
 } from "../../../utils/platformUtils";
@@ -47,6 +50,8 @@ export default function Project() {
   });
   const [username] = useMMKVString("username");
   const [token] = useMMKVString("token");
+  const [deferProjectLoading] = useMMKVBoolean("deferProjectLoading");
+  const [manuallyLoaded, setManuallyLoaded] = useState(false);
   const router = useRouter();
   const twLink = useTurbowarpLink(id);
   const insets = useSafeAreaInsets();
@@ -745,31 +750,75 @@ if (document.readyState === 'loading') {
           }}
         >
           <GestureDetector gesture={pan}>
-            <WebView
-              source={{ uri: twLink }}
-              containerStyle={{
-                flex: 0,
-                marginTop: 5,
-                width: isMaxed ? width : width - 40,
-                aspectRatio: 480 / 425,
-                margin: "auto",
-                borderRadius: 10,
-              }}
-              androidLayerType="hardware"
-              renderToHardwareTextureAndroid={true}
-              bounces={false}
-              scrollEnabled={false}
-              overScrollMode="never"
-              allowsFullscreenVideo={true}
-              style={{ backgroundColor: "transparent" }}
-              nestedScrollEnabled={true}
-              injectedJavaScript={twJSInject}
-              ref={webViewRef}
-              onMessage={webViewMessageHandler}
-              onLayout={(event) => {
-                const { y, height } = event.nativeEvent.layout;
-              }}
-            />
+            {!deferProjectLoading || manuallyLoaded ? (
+              <WebView
+                source={{ uri: twLink }}
+                containerStyle={{
+                  flex: 0,
+                  marginTop: 5,
+                  width: isMaxed ? width : width - 40,
+                  aspectRatio: 480 / 425,
+                  margin: "auto",
+                  borderRadius: 10,
+                }}
+                androidLayerType="hardware"
+                renderToHardwareTextureAndroid={true}
+                bounces={false}
+                scrollEnabled={false}
+                overScrollMode="never"
+                allowsFullscreenVideo={true}
+                style={{ backgroundColor: "transparent" }}
+                nestedScrollEnabled={true}
+                injectedJavaScript={twJSInject}
+                ref={webViewRef}
+                onMessage={webViewMessageHandler}
+                onLayout={(event) => {
+                  const { y, height } = event.nativeEvent.layout;
+                }}
+              />
+            ) : (
+              <View
+                style={{
+                  marginTop: 5,
+                  width: isMaxed ? width : width - 40,
+                  aspectRatio: 480 / 425,
+                  margin: "auto",
+                  borderRadius: 10,
+                  backgroundColor: colors.backgroundSecondary,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  overflow: "hidden",
+                }}
+              >
+                {metadata && (
+                  <Image
+                    source={{
+                      uri: metadata.thumbnail_url
+                        ? `https:${metadata.thumbnail_url}`
+                        : metadata.image,
+                    }}
+                    style={{
+                      position: "absolute",
+                      width: "100%",
+                      height: "100%",
+                      opacity: 0.5,
+                    }}
+                    contentFit="cover"
+                    transition={200}
+                    blurRadius={5}
+                  />
+                )}
+                <TexturedButton
+                  onPress={() => setManuallyLoaded(true)}
+                  icon="play"
+                  iconSide="left"
+                  style={{ backgroundColor: colors.accent }}
+                  textStyle={{ color: "white" }}
+                >
+                  Load project
+                </TexturedButton>
+              </View>
+            )}
           </GestureDetector>
           {metadata && (
             <GHScrollView
@@ -782,84 +831,100 @@ if (document.readyState === 'loading') {
               showsHorizontalScrollIndicator={false}
             >
               {isMaxed && (
-                <Chip.Icon
-                  icon="close-fullscreen"
-                  text="Exit Play Mode"
-                  onPress={() => setIsMaxed(false)}
-                />
+                <Animated.View entering={FadeInRight.delay(50)}>
+                  <Chip.Icon
+                    icon="close-fullscreen"
+                    text="Exit Play Mode"
+                    onPress={() => setIsMaxed(false)}
+                  />
+                </Animated.View>
               )}
-              <Chip.Image
-                imageURL={metadata.author?.profile?.images["32x32"]}
-                text={metadata.author?.username}
-                onPress={() =>
-                  router.push(`/users/${metadata?.author?.username}`)
-                }
-                textStyle={{ fontWeight: "bold" }}
-                mode={undefined}
-                color={colors.text}
-              />
-              <Chip.Icon
-                icon="heart"
-                text={approximateNumber(metadata.stats.loves)}
-                color="#ff4750"
-                mode={interactions.loved ? "filled" : "outlined"}
-                onPress={() => toggleInteraction("love")}
-                provider="gesture-handler"
-              />
-              <Chip.Icon
-                icon="star"
-                text={approximateNumber(metadata.stats.favorites)}
-                color="#ddbf37"
-                mode={interactions.favorited ? "filled" : "outlined"}
-                onPress={() => toggleInteraction("favorite")}
-                provider="gesture-handler"
-              />
-              <Chip.Icon
-                icon="sync"
-                text={approximateNumber(metadata.stats.remixes)}
-                color={isDark ? "#32ee87" : "#0ca852"}
-                mode="filled"
-                provider="gesture-handler"
-              />
-              <Chip.Icon
-                icon="eye"
-                text={approximateNumber(metadata.stats.views)}
-                color="#47b5ff"
-                mode="filled"
-                provider="gesture-handler"
-              />
-              <Chip.Icon
-                icon="radio"
-                text="MultiPlay"
-                color="#4769ff"
-                mode="filled"
-                onPress={openOnlineConfigSheet}
-                provider="gesture-handler"
-              />
-              <Chip.Icon
-                icon="share"
-                text="Share"
-                color="#7847ff"
-                mode="filled"
-                onPress={() =>
-                  Share.share(
-                    Platform.OS === "android"
-                      ? {
-                        message: `https://scratch.mit.edu/projects/${id}`,
+              <Animated.View entering={FadeInRight.delay(100)}>
+                <Chip.Image
+                  imageURL={metadata.author?.profile?.images["32x32"]}
+                  text={metadata.author?.username}
+                  onPress={() =>
+                    router.push(`/users/${metadata?.author?.username}`)
+                  }
+                  textStyle={{ fontWeight: "bold" }}
+                  mode={undefined}
+                  color={colors.text}
+                />
+              </Animated.View>
+              <Animated.View entering={FadeInRight.delay(150)}>
+                <Chip.Icon
+                  icon="heart"
+                  text={approximateNumber(metadata.stats.loves)}
+                  color="#ff4750"
+                  mode={interactions.loved ? "filled" : "outlined"}
+                  onPress={() => toggleInteraction("love")}
+                  provider="gesture-handler"
+                />
+              </Animated.View>
+              <Animated.View entering={FadeInRight.delay(200)}>
+                <Chip.Icon
+                  icon="star"
+                  text={approximateNumber(metadata.stats.favorites)}
+                  color="#ddbf37"
+                  mode={interactions.favorited ? "filled" : "outlined"}
+                  onPress={() => toggleInteraction("favorite")}
+                  provider="gesture-handler"
+                />
+              </Animated.View>
+              <Animated.View entering={FadeInRight.delay(250)}>
+                <Chip.Icon
+                  icon="sync"
+                  text={approximateNumber(metadata.stats.remixes)}
+                  color={isDark ? "#32ee87" : "#0ca852"}
+                  mode="filled"
+                  provider="gesture-handler"
+                />
+              </Animated.View>
+              <Animated.View entering={FadeInRight.delay(300)}>
+                <Chip.Icon
+                  icon="eye"
+                  text={approximateNumber(metadata.stats.views)}
+                  color="#47b5ff"
+                  mode="filled"
+                  provider="gesture-handler"
+                />
+              </Animated.View>
+              <Animated.View entering={FadeInRight.delay(350)}>
+                <Chip.Icon
+                  icon="radio"
+                  text="MultiPlay"
+                  color="#4769ff"
+                  mode="filled"
+                  onPress={openOnlineConfigSheet}
+                  provider="gesture-handler"
+                />
+              </Animated.View>
+              <Animated.View entering={FadeInRight.delay(400)}>
+                <Chip.Icon
+                  icon="share"
+                  text="Share"
+                  color="#7847ff"
+                  mode="filled"
+                  onPress={() =>
+                    Share.share(
+                      Platform.OS === "android"
+                        ? {
+                          message: `https://scratch.mit.edu/projects/${id}`,
+                          dialogTitle: "Share this project",
+                        }
+                        : {
+                          url: `https://scratch.mit.edu/projects/${id}`,
+                          message: "Check out this project on Scratch!",
+                        },
+                      {
                         dialogTitle: "Share this project",
+                        tintColor: colors.accent,
                       }
-                      : {
-                        url: `https://scratch.mit.edu/projects/${id}`,
-                        message: "Check out this project on Scratch!",
-                      },
-                    {
-                      dialogTitle: "Share this project",
-                      tintColor: colors.accent,
-                    }
-                  )
-                }
-                provider="gesture-handler"
-              />
+                    )
+                  }
+                  provider="gesture-handler"
+                />
+              </Animated.View>
             </GHScrollView>
           )}
           {!isMaxed && (

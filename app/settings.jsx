@@ -124,6 +124,8 @@ export default function SettingsScreen() {
 
   // Force dark theme setting persisted in MMKV
   const [forceDark, setForceDark] = useMMKVBoolean("forceDark");
+  const [deferProjectLoading, setDeferProjectLoading] =
+    useMMKVBoolean("deferProjectLoading");
   const [crashlyticsEnabled, setCrashlyticsEnabled] = useState(c.isCrashlyticsCollectionEnabled);
   const [experimentalFeed, setExperimentalFeed] =
     useMMKVBoolean("experimentalFeed");
@@ -315,6 +317,34 @@ export default function SettingsScreen() {
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
           Displays an "Explore more" button at the bottom of the screen that
           opens an experimental infinite-scrolling feed of projects and studios.
+        </ItchyText>
+      </SquircleView>
+      <SquircleView
+        cornerSmoothing={0.6}
+        style={[s.settingContainer, s.middleSettingContainer]}
+      >
+        <ItchyText style={s.settingTitle}>Defer project loading</ItchyText>
+        <Switch
+          thumbColor="white"
+          trackColor={{ false: "#686868", true: colors.accent }}
+          onValueChange={(v) => setDeferProjectLoading(v)}
+          value={deferProjectLoading === true}
+        />
+      </SquircleView>
+      <SquircleView
+        cornerSmoothing={0.6}
+        style={[
+          s.settingContainer,
+          s.middleSettingContainer,
+          {
+            justifyContent: "flex-start",
+            alignItems: "flex-start",
+            paddingVertical: 12,
+          },
+        ]}
+      >
+        <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
+          When enabled, projects will only load when you click a button.  This saves data and lets project pages load faster.
         </ItchyText>
       </SquircleView>
       <SquircleView
