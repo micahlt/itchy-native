@@ -28,8 +28,10 @@ import ItchyText from "../../components/ItchyText";
 import { Ionicons } from "@expo/vector-icons";
 import useSWR, { mutate as swrMutate } from "swr";
 import TexturedButton from "../../components/TexturedButton";
+import SquircleView from '../../components/SquircleView';
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
+const AnimatedView = Animated.createAnimatedComponent(SquircleView);
 
 const c = getCrashlytics();
 
@@ -110,7 +112,7 @@ const FeaturedStudios = memo(({ studios, colors }) => (
 ));
 
 export default function HomeScreen() {
-  const { colors } = useTheme();
+  const { colors, dimensions } = useTheme();
   const [hasOpenedBefore, setHasOpenedBefore] =
     useMMKVBoolean("hasOpenedBefore");
   const [user] = useMMKVObject("user");
@@ -376,18 +378,25 @@ export default function HomeScreen() {
   // Memoize content style object
   const containerStyle = useMemo(
     () => ({
-      backgroundColor: colors.background,
-      marginHorizontal: 1.5,
       paddingBottom: Platform.OS == "ios" ? 60 : insets.bottom + 20,
+      paddingTop: 10,
+      marginLeft: 0, marginRight: 0,
+      backgroundColor: colors.background,
+      marginTop: 0,
+      marginHorizontal: 1.5,
       borderTopLeftRadius: 32,
       borderTopRightRadius: 32,
-      borderRadius: 0,
-      paddingTop: 14,
-      boxShadow:
-        "0px -2px 16px rgba(0,94,185,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
-      borderCurve: "continuous"
+      outlineColor: colors.outlineCard,
+      outlineStyle: "solid",
+      outlineWidth: dimensions.outlineWidth,
+      borderWidth: 0.1,
+      borderColor: colors.background,
+      borderTopWidth: 2,
+      borderTopColor: colors.background,
+      flex: 1,
+      overflow: "visible",
     }),
-    [colors, insets.bottom]
+    [colors, insets.bottom, dimensions]
   );
 
   return (
@@ -409,8 +418,11 @@ export default function HomeScreen() {
             logoStyle={logoStyle}
             username={username}
           />
-          <Animated.View
-            style={[contentStyle, containerStyle]}
+          <AnimatedView
+            style={[{
+              boxShadow:
+                "0px -2px 16px rgba(0,94,185,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
+            }, contentStyle, containerStyle]}
             collapsable={false}
           >
             {!!username ? <Feed style={{ margin: 20 }} username={username} /> : <SignInPrompt />}
@@ -502,7 +514,7 @@ export default function HomeScreen() {
                 </View>
               </View>
             </TexturedButton> : <></>}
-          </Animated.View>
+          </AnimatedView>
         </AnimatedScrollView>
       </GestureDetector>
     </View>
