@@ -8,29 +8,32 @@ const APIAuth = {
     login: async (user, pass) => {
         await CookieManager.clearAll();
         const csrfFetch = await expoFetch("https://scratch.mit.edu/csrf_token/");
-        let initialCSRF = /scratchcsrftoken=(.*?);/gm.exec(csrfFetch.headers.get("set-cookie"))[1];
+        const setCookieHeader = csrfFetch.headers.get("set-cookie");
+        console.log("CSRF Set-Cookie:", setCookieHeader);
+        let initialCSRF = /scratchcsrftoken=(.*?);/gm.exec(setCookieHeader)[1];
+        console.log("Extracted CSRF:", initialCSRF);
         // a lot of this code is taken from
         // https://github.com/webdev03/meowclient/blob/main/src/ScratchSession.ts
         const headers = {
-            'cookie': csrfFetch.headers.get("set-cookie"),
+            cookie: `scratchcsrftoken=${initialCSRF}`,
             "X-csrftoken": initialCSRF,
             "X-Requested-With": "XMLHttpRequest",
             "Content-Type": "application/json",
             "User-Agent": consts.UserAgent,
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': "0",
-            "Origin": "https://scratch.mit.edu",
-            "Referer": "https://scratch.mit.edu/",
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+            Origin: "https://scratch.mit.edu",
+            Referer: "https://scratch.mit.edu/",
         };
         const loginReq = await expoFetch("https://scratch.mit.edu/login/", {
             method: "POST",
-            credentials: "include",
+            credentials: "omit",
             body: JSON.stringify({
                 username: user,
-                password: pass
+                password: pass,
             }),
-            headers: headers
+            headers: headers,
         });
 
         if (!loginReq.ok) {
@@ -41,8 +44,21 @@ const APIAuth = {
 
         const setCookie = loginReq.headers.get("set-cookie");
         if (!setCookie) throw Error("Something went wrong");
-        const csrfToken = /scratchcsrftoken=(.*?);/gm.exec(setCookie)[1];
-        const token = /"(.*)"/gm.exec(setCookie)[1];
+
+        const csrfTokenMatch = /scratchcsrftoken=(.*?)(;|$)/.exec(setCookie);
+        const csrfToken = csrfTokenMatch ? csrfTokenMatch[1] : "";
+
+        const sessionMatch = /scratchsessionsid=(.*?)(;|$)/.exec(setCookie);
+        let token = sessionMatch ? sessionMatch[1] : "";
+
+        // If the token is quoted, keep the quotes or strip them?
+        // Usually we want to send exactly what we received.
+        // But the previous code was stripping quotes: /"(.*)"/
+        // Let's try to strip quotes if they exist, to match previous logic but safer.
+        if (token.startsWith('"') && token.endsWith('"')) {
+            token = token.slice(1, -1);
+        }
+
         const cookieSet =
             "scratchcsrftoken=" +
             csrfToken +
@@ -62,7 +78,7 @@ const APIAuth = {
                 Pragma: "no-cache",
                 Accept: "application/json",
                 "Content-Type": "application/json",
-            }
+            },
         });
         const sessionJSON = await sessionFetch.json();
         return {
@@ -70,12 +86,12 @@ const APIAuth = {
             csrfToken,
             sessionToken: token,
             cookieSet,
-            sessionJSON
+            sessionJSON,
         };
     },
     logout: async (cookie) => {
         const csrfFetch = await fetch("https://scratch.mit.edu/csrf_token/", {
-            headers: {}
+            headers: {},
         });
         const setCookie = csrfFetch.headers.get("set-cookie");
         const csrfToken = /scratchcsrftoken=(.*?);/gm.exec(setCookie)[1];
@@ -91,7 +107,7 @@ const APIAuth = {
                     Origin: "https://scratch.mit.edu",
                     "Content-Type": "application/x-www-form-urlencoded",
                     Accept: "*/*",
-                }
+                },
             }
         );
         CookieManager.clearAll();
@@ -113,7 +129,7 @@ const APIAuth = {
                 Pragma: "no-cache",
                 Accept: "*/*",
                 Host: "scratch.mit.edu",
-            }
+            },
         });
         const sessionJSON = await sessionFetch.json();
         const setCookie = sessionFetch.headers.get("set-cookie");
@@ -124,7 +140,6 @@ const APIAuth = {
         } else {
             csrfToken = existingCookies.match(/scratchcsrftoken=(.*?);/gm)[1];
             token = sessionJSON?.user?.token;
-            cookieSet = existingCookies;
         }
         cookieSet =
             "scratchcsrftoken=" +
@@ -137,9 +152,9 @@ const APIAuth = {
             sessionToken: token,
             cookieSet,
             sessionJSON,
-            isLoggedIn: !!sessionJSON?.user
+            isLoggedIn: !!sessionJSON?.user,
         };
-    }
-}
+    },
+};
 
 export default APIAuth;
