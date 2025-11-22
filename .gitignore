@@ -57,3 +57,6 @@ trace.txt
 # Firebase
 google-services.json
 GoogleService-Info.plist
+
+# Build artifacts
+.prod_outputs/
