@@ -1,4 +1,4 @@
-![](https://raw.githubusercontent.com/micahlt/itchy-native/refs/heads/master/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp)
+![](https://raw.githubusercontent.com/micahlt/itchy-native/refs/heads/master/assets/logo.png)
 
 # Itchy Native
 
