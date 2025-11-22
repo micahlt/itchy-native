@@ -1,16 +1,19 @@
 import consts from "./consts";
 import fetch from "../fetch-provider";
+import { fetch as expoFetch } from "expo/fetch";
 import CookieManager from "@react-native-cookies/cookies";
+import { setCookies, clearCookies } from "../cookie-manager";
 
 const APIAuth = {
     login: async (user, pass) => {
         await CookieManager.clearAll();
-        const csrfFetch = await fetch("https://scratch.mit.edu/csrf_token/");
+        const csrfFetch = await expoFetch("https://scratch.mit.edu/csrf_token/");
         let initialCSRF = /scratchcsrftoken=(.*?);/gm.exec(csrfFetch.headers.get("set-cookie"))[1];
         // a lot of this code is taken from
         // https://github.com/webdev03/meowclient/blob/main/src/ScratchSession.ts
         const headers = {
-            "X-Csrftoken": initialCSRF,
+            'cookie': csrfFetch.headers.get("set-cookie"),
+            "X-csrftoken": initialCSRF,
             "X-Requested-With": "XMLHttpRequest",
             "Content-Type": "application/json",
             "User-Agent": consts.UserAgent,
@@ -18,9 +21,9 @@ const APIAuth = {
             'Pragma': 'no-cache',
             'Expires': "0",
             "Origin": "https://scratch.mit.edu",
-            "Referer": "https://scratch.mit.edu/"
+            "Referer": "https://scratch.mit.edu/",
         };
-        const loginReq = await fetch("https://scratch.mit.edu/login/", {
+        const loginReq = await expoFetch("https://scratch.mit.edu/login/", {
             method: "POST",
             credentials: "include",
             body: JSON.stringify({
@@ -29,6 +32,7 @@ const APIAuth = {
             }),
             headers: headers
         });
+
         if (!loginReq.ok) {
             const t = await loginReq.text();
             console.error(t);
@@ -45,10 +49,13 @@ const APIAuth = {
             ";scratchlanguage=en;scratchsessionsid=" +
             token +
             ";";
+
+        console.log("LOGIN COOKIES:", cookieSet)
+        setCookies(cookieSet);
+
         const sessionFetch = await fetch("https://scratch.mit.edu/session", {
             method: "GET",
             headers: {
-                Cookie: cookieSet,
                 "User-Agent": consts.UserAgent,
                 Referer: "https://scratch.mit.edu/",
                 "Cache-Control": "max-age=0, no-cache",
@@ -69,9 +76,7 @@ const APIAuth = {
     },
     logout: async (cookie) => {
         const csrfFetch = await fetch("https://scratch.mit.edu/csrf_token/", {
-            headers: {
-                Cookie: cookie
-            }
+            headers: {}
         });
         const setCookie = csrfFetch.headers.get("set-cookie");
         const csrfToken = /scratchcsrftoken=(.*?);/gm.exec(setCookie)[1];
@@ -81,7 +86,6 @@ const APIAuth = {
                 method: "POST",
                 body: `csrfmiddlewaretoken=${csrfToken}`,
                 headers: {
-                    Cookie: cookie,
                     "User-Agent": consts.UserAgent,
                     accept: "application/json",
                     Referer: "https://scratch.mit.edu/",
@@ -92,6 +96,7 @@ const APIAuth = {
             }
         );
         CookieManager.clearAll();
+        clearCookies();
         if (!logoutFetch.ok) {
             throw new Error(`Error in logging out. ${logoutFetch.status}`);
         }
@@ -99,9 +104,7 @@ const APIAuth = {
     getSession: async (existingCookies = "") => {
         const sessionFetch = await fetch("https://scratch.mit.edu/session?", {
             method: "GET",
-            credentials: "include",
             headers: {
-                Cookie: existingCookies,
                 "Accept-Language": "en-US,en;q=0.5",
                 Connection: "keep-alive",
                 "User-Agent": consts.UserAgent,
