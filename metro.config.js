@@ -4,7 +4,6 @@ const {
 } = require('react-native-reanimated/metro-config');
 
 const config = getDefaultConfig(__dirname);
-config.resolver.assetExts.push('txt');
 
 // config.resolver = {
 //     ...config.resolver,
