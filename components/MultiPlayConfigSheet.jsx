@@ -1,7 +1,6 @@
 import React from "react";
 import { View, TouchableOpacity } from "react-native";
 import ItchyText from "./ItchyText";
-import { Pressable } from "react-native";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../utils/theme";
@@ -9,6 +8,7 @@ import linkWithFallback from "../utils/linkWithFallback";
 import { useMMKVObject } from "react-native-mmkv";
 import Card from "./Card";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
+import TexturedButton from "./TexturedButton";
 
 export default function MultiPlayConfigSheet({
   roomCode = "",
@@ -17,7 +17,7 @@ export default function MultiPlayConfigSheet({
   peerConnected = false,
   createRoom,
   disconnect,
-  onClose = () => {},
+  onClose = () => { },
 }) {
   const { colors } = useTheme();
   const [user] = useMMKVObject("user");
@@ -285,19 +285,9 @@ export default function MultiPlayConfigSheet({
             </TouchableOpacity>
           </View>
         ) : (
-          <Pressable
-            android_ripple={{
-              color: colors.ripple,
-              borderless: false,
-              foreground: true,
-            }}
+          <TexturedButton
             onPress={isUserUnder13() ? null : createRoom}
-            disabled={connectionStatus !== "idle" || isUserUnder13()}
             style={{
-              padding: 10,
-              paddingHorizontal: 20,
-              borderRadius: 5,
-              alignItems: "center",
               marginHorizontal: 5,
               backgroundColor:
                 connectionStatus !== "idle" || isUserUnder13()
@@ -305,24 +295,22 @@ export default function MultiPlayConfigSheet({
                   : colors.backgroundSecondary,
               opacity: connectionStatus !== "idle" || isUserUnder13() ? 0.6 : 1,
             }}
+            provider="gesture-handler"
+            textStyle={{
+              color:
+                connectionStatus !== "idle" || isUserUnder13()
+                  ? colors.textSecondary
+                  : colors.text,
+              fontSize: 16,
+            }}
+            size={16}
           >
-            <ItchyText
-              style={{
-                color:
-                  connectionStatus !== "idle" || isUserUnder13()
-                    ? colors.textSecondary
-                    : colors.text,
-                fontSize: 16,
-                fontWeight: "bold",
-              }}
-            >
-              {isUserUnder13()
-                ? "Age Restricted"
-                : connectionStatus !== "idle" && connectionStatus !== "failed"
+            {isUserUnder13()
+              ? "Age Restricted"
+              : connectionStatus !== "idle" && connectionStatus !== "failed"
                 ? "Connecting..."
                 : "Start MultiPlay"}
-            </ItchyText>
-          </Pressable>
+          </TexturedButton>
         )}
       </View>
     </BottomSheetView>

@@ -35,6 +35,7 @@ module.exports = {
           assets: [
             "assets/icons/search_24_black.png",
             "assets/icons/search_24_white.png",
+            "assets/webview-inject.txt"
           ],
         },
       ],
