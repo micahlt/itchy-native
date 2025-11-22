@@ -211,7 +211,7 @@ export default function SettingsScreen() {
         <>
           <SquircleView
             cornerSmoothing={0.6}
-            style={[s.settingContainer, s.middleSettingContainer]}
+            style={[s.settingContainer, s.middleSettingContainer, Object.keys(accounts).length < 2 ? s.bottomSettingContainer : {}]}
           >
             <TouchableOpacity onPress={() => router.push("/login")}>
               <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
@@ -219,7 +219,7 @@ export default function SettingsScreen() {
               </ItchyText>
             </TouchableOpacity>
           </SquircleView>
-          {Object.keys(accounts).length > 0 && (
+          {Object.keys(accounts).length > 1 && (
             <SquircleView
               cornerSmoothing={0.6}
               style={[[
