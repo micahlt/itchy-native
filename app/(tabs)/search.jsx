@@ -16,7 +16,7 @@ import ProjectCard from "../../components/ProjectCard";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Chip from "../../components/Chip";
 import StudioCard from "../../components/StudioCard";
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useNavigation } from "expo-router";
 import searchForUser from "../../utils/searchForUser";
 import UserCard from "../../components/UserCard";
 import { FlashList } from "@shopify/flash-list";
@@ -38,19 +38,24 @@ export default function Search() {
   const { width } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const [searchHistory, setSearchHistory] = useMMKVObject("searchHistory");
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("tabPress", (e) => {
+      setQuery("");
+      setResults([]);
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   useFocusEffect(
     useCallback(() => {
       if (!!scrollRef?.current) {
         scrollRef.current?.scrollTo({ x: 0, y: 0, animated: false });
       }
-      if (!!searchBarRef.current) {
-        searchBarRef.current.focus();
-      }
 
       return () => {
-        setQuery("");
-        setResults([]);
         searchBarRef?.current?.blur();
       };
     }, [])
