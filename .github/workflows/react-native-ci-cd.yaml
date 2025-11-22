@@ -79,23 +79,25 @@ jobs:
           bash ./utils/downloadGoogleServices.sh
 
       - name: 📱 Build Production APK
-        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-apk' || github.event_name == 'push' && (matrix.platform == 'android' || github.event.inputs.platform == 'all' || github.event.inputs.platform == 'android')
+        if: (matrix.platform == 'android') && (github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-apk' || github.event_name == 'push')
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          eas build --platform android --profile production-apk --local --non-interactive --output=./app-prod.apk
+           mkdir android_output
+          eas build --platform android --profile production-apk --local --non-interactive --output=./android_output/app-prod.apk
         env:
           NODE_ENV: production
 
       - name: 📱 Build Production AAB
-        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-aab' || github.event_name == 'push' && (matrix.platform == 'android' || github.event.inputs.platform == 'all' || github.event.inputs.platform == 'android')
+        if: (matrix.platform == 'android') && (github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-aab' || github.event_name == 'push')
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          eas build --platform android --profile production --local --non-interactive --output=./app-prod.aab
+          mkdir android_output
+          eas build --platform android --profile production --local --non-interactive --output=./android_output/app-prod.aab
         env:
           NODE_ENV: production
 
       - name: 📱 Build iOS Production
-        if: (github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'ios-prod') && (matrix.platform == 'ios' || github.event.inputs.platform == 'all' || github.event.inputs.platform == 'ios')
+        if: (matrix.platform == 'ios') && (github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'ios-prod' || github.event_name == 'push')
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
           export EAS_PWD=$PWD
@@ -104,7 +106,7 @@ jobs:
           NODE_ENV: production
 
       - name: 🚀 Submit to Play Store
-        if: (github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'publish-stores') && (matrix.platform == 'android' || github.event.inputs.platform == 'all' || github.event.inputs.platform == 'android')
+        if: (matrix.platform == 'android') && (github.event.inputs.buildType == 'all' || github.event_name == 'push')
         run: |
           eas submit -p android --path ./app-prod.aab --non-interactive
         env:
@@ -112,7 +114,7 @@ jobs:
           GOOGLE_PLAY_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT }}
 
       - name: 🚀 Submit to App Store
-        if: (github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'publish-stores') && (matrix.platform == 'ios' || github.event.inputs.platform == 'all' || github.event.inputs.platform == 'ios')
+        if: (matrix.platform == 'ios') && (github.event.inputs.buildType == 'all' || github.event_name == 'push')
         run: |
           eas submit -p ios --path ./app-ios-prod.ipa --non-interactive
         env:
@@ -121,20 +123,39 @@ jobs:
           EXPO_APPLE_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
           EXPO_TEAM_ID: ${{ secrets.EXPO_TEAM_ID }}
 
-      - name: 🏷️ Generate build information
-        id: build-info
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          BUILD_NUMBER=$(date +%Y%m%d%H%M)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
-          # Generate changelog from commit messages since last tag
-          if git describe --tags --abbrev=0 > /dev/null 2>&1; then
-            LAST_TAG=$(git describe --tags --abbrev=0)
-            git log $LAST_TAG..HEAD --pretty=format:"- %s" > changelog.md
-          else
-            git log --pretty=format:"- %s" -n 10 > changelog.md
-          fi
+      - name: ⬆️ Upload Android Artifacts
+        uses: actions/upload-artifact@v4
+        if: matrix.platform == 'android'
+        with:
+          name: android-artifacts
+          path: |
+            ./android_output/*
+
+      - name: ⬆️ Upload iOS Artifact
+        uses: actions/upload-artifact@v4
+        if: matrix.platform == 'ios'
+        with:
+          name: ios-artifact
+          path: ./app-ios-prod.ipa
+
+  create-release:
+    needs: build-and-release
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: ⬇️ Download Android Artifacts (if available)
+        uses: actions/download-artifact@v4
+        if: github.event.inputs.platform == 'all' || github.event.inputs.platform == 'android'
+        with:
+          name: android-artifacts
+          path: artifacts/android-artifacts
+
+      - name: ⬇️ Download iOS Artifacts (if available)
+        uses: actions/download-artifact@v4
+        if: github.event.inputs.platform == 'all' || github.event.inputs.platform == 'ios'
+        with:
+          name: ios-artifact
+          path: artifacts/ios-artifact
 
       - name: 📝 Create GitHub Release
         uses: softprops/action-gh-release@v1
@@ -143,9 +164,7 @@ jobs:
           name: "Release v${{ steps.build-info.outputs.version }}-${{ steps.build-info.outputs.build_number }}"
           tag_name: "v${{ steps.build-info.outputs.version }}-${{ steps.build-info.outputs.build_number }}"
           files: |
-            ./app-prod.apk
-            ./app-prod.aab
-            ./app-ios-prod.ipa
-          body_path: changelog.md
+            artifacts/android-artifacts/*
+            artifacts/ios-artifact/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
