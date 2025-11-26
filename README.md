@@ -50,7 +50,7 @@ storeFile=[path to your keystore]
 
 ### iOS through Xcode
 
-1. Run `./rebuild-ios.sh` in the root directory.
+1. Run `./utils/rebuild-ios.sh` in the root directory.
 2. Open the `Itchy` target and select your personal development team in **Signing & Capabilities**.
 3. Go to `Product/Scheme/Edit Scheme` in the Menu Bar and set the **Build Configuration** to `Release`. Disable **Debug Executable** for better performance on first launch.
 4. Build the project.
