@@ -40,6 +40,23 @@ import {
 import injectedWebviewCode from "../../../utils/webview-inject";
 import { getCrashlytics, log, recordError } from "@react-native-firebase/crashlytics";
 const c = getCrashlytics();
+
+function GestureDetectorOptional({ children }) {
+  const pan = Gesture.Pan()
+    .enabled(true)
+    .minDistance(5)
+    .activateAfterLongPress(0) // Activate immediately
+    .manualActivation(false)
+    .shouldCancelWhenOutside(false);
+  if (Platform.OS == "ios") {
+    return <>{children}</>
+  } else {
+    return <GestureDetector gesture={pan}>
+      {children}
+    </GestureDetector>
+  }
+}
+
 export default function Project() {
   const { id } = useLocalSearchParams();
   const { colors, dimensions, isDark } = useTheme();
@@ -213,12 +230,6 @@ export default function Project() {
     color: colors.backgroundSecondary,
     iceServers
   })});`;
-  const pan = Gesture.Pan()
-    .enabled(true)
-    .minDistance(5)
-    .activateAfterLongPress(0) // Activate immediately
-    .manualActivation(false)
-    .shouldCancelWhenOutside(false);
 
   const openOnlineConfigSheet = () => {
     onlineConfigSheetRef.current?.expand();
@@ -365,7 +376,7 @@ export default function Project() {
             paddingTop: isMaxed ? insets.top : getLiquidPlusPadding(0, 120),
           }}
         >
-          <GestureDetector gesture={pan}>
+          <GestureDetectorOptional>
             {!deferProjectLoading || manuallyLoaded ? (
               <WebView
                 source={{ uri: twLink }}
@@ -435,7 +446,7 @@ export default function Project() {
                 </TexturedButton>
               </View>
             )}
-          </GestureDetector>
+          </GestureDetectorOptional>
           {metadata && (
             <GHScrollView
               horizontal
