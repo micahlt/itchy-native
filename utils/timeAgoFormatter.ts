@@ -1,3 +1,4 @@
+// @ts-ignore
 import timeago from "time-ago";
 
 /**
@@ -6,10 +7,10 @@ import timeago from "time-ago";
  * @param {Date|string} date - The date to format
  * @returns {string} Formatted time string
  */
-export function formatCommentTime(date) {
+export function formatCommentTime(date: Date | string): string {
   const dateObj = date instanceof Date ? date : new Date(date);
-  const now = new Date();
-  const diffMs = now - dateObj;
+  const now: Date = new Date();
+  const diffMs: number = now.getTime() - dateObj.getTime();
 
   // If less than 1 second, show "1 second ago"
   if (diffMs < 1000) {
