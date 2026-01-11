@@ -152,7 +152,7 @@ jobs:
       - name: 📝 Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          draft: true
+          prerelease: true
           name: "Release v${{ steps.build-info.outputs.version }}-${{ steps.build-info.outputs.build_number }}"
           tag_name: "v${{ steps.build-info.outputs.version }}-${{ steps.build-info.outputs.build_number }}"
           files: |
