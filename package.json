@@ -53,6 +53,7 @@
     "react-native-bottom-tabs": "^0.12.2",
     "react-native-device-info": "^14.0.4",
     "react-native-edge-to-edge": "1.6.0",
+    "react-native-fast-squircle": "^1.1.1",
     "react-native-gesture-handler": "~2.29.1",
     "react-native-mmkv": "^3.3.1",
     "react-native-picker-select": "^9.3.1",

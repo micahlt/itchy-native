@@ -1,5 +1,6 @@
 import React from "react";
-import { StyleProp, View, ViewProps, ViewStyle } from "react-native";
+import { Platform, StyleProp, View, ViewProps, ViewStyle } from "react-native";
+import RNSquircleView from "react-native-fast-squircle";
 
 type SquircleViewProps = ViewProps & {
   style: StyleProp<ViewStyle>;
@@ -8,11 +9,23 @@ type SquircleViewProps = ViewProps & {
 
 const SquircleView = React.forwardRef<View, SquircleViewProps>(
   ({ style, children, ...props }, ref) => {
-    return (
-      <View ref={ref} style={[{ borderCurve: "continuous" }, style]} {...props}>
-        {children}
-      </View>
-    );
+    if (Platform.OS == "ios") {
+      return (
+        <View
+          ref={ref}
+          style={[{ borderCurve: "continuous" }, style]}
+          {...props}
+        >
+          {children}
+        </View>
+      );
+    } else {
+      return (
+        <RNSquircleView ref={ref} style={style} {...props}>
+          {children}
+        </RNSquircleView>
+      );
+    }
   }
 );
 
