@@ -4,7 +4,7 @@
 
 [![React Native CI/CD](https://github.com/micahlt/itchy-native/actions/workflows/react-native-ci-cd.yaml/badge.svg)](https://github.com/micahlt/itchy-native/actions/workflows/react-native-ci-cd.yaml)
 
-Itchy Native is a mobile app that acts as a client for the [Scratch](https://scratch.mit.edu) website.  It is the next-gen React Native rewrite of the original [Itchy Ionic](https://github.com/scratch-client-4/itchy-ionic) app created in 2021.
+Itchy Native is a mobile app that acts as a client for the [Scratch](https://scratch.mit.edu) website.  It is the next-gen React Native rewrite of the original [Itchy Ionic](https://github.com/scratch-client-4/itchy-ionic) app created in 2021.  _This project is tested with BrowserStack. Thanks!_
 
 ## Installation
 
