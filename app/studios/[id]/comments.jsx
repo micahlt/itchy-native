@@ -28,6 +28,7 @@ export default function StudioComments() {
   const [showMutedDialog, setShowMutedDialog] = useState(false);
   const [muteExpiresAt, setMuteExpiresAt] = useState(null);
   const [isPostingComment, setIsPostingComment] = useState(false);
+  const [areCommentsEnabled, setAreCommentsEnabled] = useState(true);
 
   useEffect(() => {
     if (!id) return;
@@ -48,6 +49,9 @@ export default function StudioComments() {
         setLoading(false);
       })
       .catch(console.error);
+    ScratchAPIWrapper.studio.getStudio(id).then((s) => {
+      setAreCommentsEnabled(s.comments_allowed);
+    })
   }, [id, offset]);
 
   useEffect(() => {
@@ -266,6 +270,7 @@ export default function StudioComments() {
         setShowMutedDialog={setShowMutedDialog}
         muteExpiresAt={muteExpiresAt}
         selectedCommentId={comment_id || undefined}
+        commentsOpen={areCommentsEnabled}
         scrollRef={scrollRef}
       />
     </View>

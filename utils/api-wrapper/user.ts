@@ -22,6 +22,24 @@ const APIUser = {
     const res = await fetch(`https://api.scratch.mit.edu/users/${username}`);
     return res.ok;
   },
+  areCommentsOpen: async (username: string): Promise<boolean> => {
+    const res = await fetch(`https://api.scratch.mit.edu/users/${username}`);
+    if (res.ok) {
+      const userHTML = await res.text();
+      if (userHTML) {
+        const dom = parse(userHTML);
+        if (dom.querySelector(".comments-off") != null) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  },
   getCompleteProfile: async (username: string): Promise<CompleteUser> => {
     const res = await fetch(`https://api.scratch.mit.edu/users/${username}`);
     const featured = await fetch(
@@ -470,6 +488,7 @@ const APIUser = {
       const match = /data-comment-id="(\d+)"/g.exec(t);
       return match ? match[1] : false;
     } else {
+      console.error(req.json());
       return false;
     }
   },

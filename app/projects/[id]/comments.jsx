@@ -244,6 +244,7 @@ export default function ProjectComments() {
         setShowMutedDialog={setShowMutedDialog}
         muteExpiresAt={muteExpiresAt}
         selectedCommentId={comment_id ? comment_id.split("comments-")[1] : undefined}
+        commentsOpen={project ? project.comments_allowed : true}
         scrollRef={scrollRef}
       />
     </View>

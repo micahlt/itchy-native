@@ -30,6 +30,7 @@ export default function CommentList({
     setShowMutedDialog,
     muteExpiresAt,
     selectedCommentId,
+    commentsOpen,
     scrollRef,
 }) {
     const { colors } = useTheme();
@@ -87,6 +88,7 @@ export default function CommentList({
                         reply={reply}
                         onClearReply={() => setReply(undefined)}
                         loading={isPostingComment}
+                        commentsOpen={commentsOpen}
                     />
                 )}
                 <CommentOptionSheet

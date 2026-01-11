@@ -1,3 +1,5 @@
+import { Project } from "./project";
+
 export type Studio = {
   id: number;
   title: string;
@@ -47,17 +49,17 @@ export type StudioActivity = {
 };
 
 export type APIStudio = {
-  getStudio: (id: string | number) => Promise<any>;
+  getStudio: (id: string | number) => Promise<Studio>;
   getProjects: (
     id: string | number,
     offset?: number,
     limit?: number
-  ) => Promise<any>;
+  ) => Promise<Project[]>;
   getActivity: (
     id: string | number,
     offset?: number,
     limit?: number
-  ) => Promise<any>;
+  ) => Promise<StudioActivity[]>;
   getComments: (
     id: string | number,
     offset?: number,

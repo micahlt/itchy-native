@@ -1,9 +1,14 @@
 import consts from "./consts";
 import fetch from "../fetch-provider";
-import { APIStudio as APIStudioType, StudioActivity } from "./types/studio";
+import {
+  APIStudio as APIStudioType,
+  Studio,
+  StudioActivity,
+} from "./types/studio";
+import { Project } from "./types/project";
 
 const APIStudio: APIStudioType = {
-  getStudio: async (id: string | number): Promise<any> => {
+  getStudio: async (id: string | number): Promise<Studio> => {
     const res = await fetch(`https://api.scratch.mit.edu/studios/${id}`);
     const data = await res.json();
     return data;
@@ -12,7 +17,7 @@ const APIStudio: APIStudioType = {
     id: string | number,
     offset: number = 0,
     limit: number = 20
-  ): Promise<any> => {
+  ): Promise<Project[]> => {
     const res = await fetch(
       `https://api.scratch.mit.edu/studios/${id}/projects?offset=${offset}&limit=${limit}`
     );

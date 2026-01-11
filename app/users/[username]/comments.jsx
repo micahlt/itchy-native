@@ -27,6 +27,7 @@ export default function UserComments() {
   const [showMutedDialog, setShowMutedDialog] = useState(false);
   const [muteExpiresAt, setMuteExpiresAt] = useState(null);
   const [isPostingComment, setIsPostingComment] = useState(false);
+  const [areCommentsEnabled, setAreCommentsEnabled] = useState(true);
 
   useEffect(() => {
     if (!username) return;
@@ -42,6 +43,9 @@ export default function UserComments() {
         setLoading(false);
       })
       .catch(console.error);
+    ScratchAPIWrapper.user.areCommentsOpen(username).then((open) => {
+      setAreCommentsEnabled(open);
+    })
   }, [username, page]);
 
   useEffect(() => {
@@ -241,6 +245,7 @@ export default function UserComments() {
         muteExpiresAt={muteExpiresAt}
         selectedCommentId={comment_id || undefined}
         scrollRef={scrollRef}
+        commentsOpen={areCommentsEnabled}
       />
     </View>
   );

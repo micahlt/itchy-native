@@ -8,7 +8,7 @@ import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
 import SquircleView from "../components/SquircleView";
 import { useFocusEffect } from "expo-router";
 
-export default function CommentEditor({ onSubmit, reply, onClearReply, loading }) {
+export default function CommentEditor({ onSubmit, reply, onClearReply, loading, commentsOpen = true }) {
     const [content, setContent] = useState();
     const { width } = useWindowDimensions();
     const { colors, dimensions } = useTheme();
@@ -83,7 +83,7 @@ export default function CommentEditor({ onSubmit, reply, onClearReply, loading }
                 paddingHorizontal: 15, flexDirection: "row", alignItems: "center"
             }}>
                 <TextInput
-                    placeholder="Add a comment..."
+                    placeholder={commentsOpen ? "Add a comment..." : "Comments are disabled."}
                     style={{
                         width: width - 80,
                         color: colors.text,
@@ -103,11 +103,12 @@ export default function CommentEditor({ onSubmit, reply, onClearReply, loading }
                     value={content}
                     onChangeText={setContent}
                     ref={inputRef}
+                    readOnly={!commentsOpen}
                 />
-                <TouchableOpacity onPress={onPressSubmit} disabled={loading} style={{ width: 24, flexGrow: 1, marginLeft: 10, marginRight: 20, marginBottom: 8, opacity: loading ? 0.5 : 1 }}>
+                <TouchableOpacity onPress={onPressSubmit} disabled={loading || !commentsOpen} style={{ width: 24, flexGrow: 1, marginLeft: 10, marginRight: 20, marginBottom: 8, opacity: loading ? 0.5 : 1 }}>
                     {loading ?
                         <ActivityIndicator color={colors.accent} />
-                        : <MaterialIcons name="send" size={24} color={colors.accent} />
+                        : <MaterialIcons name="send" size={24} color={commentsOpen ? colors.accent : colors.outline} />
                     }
                 </TouchableOpacity>
             </View>

@@ -1,9 +1,9 @@
 import consts from "./consts";
 import fetch from "../fetch-provider";
-import { ProjectInteractions, Comment } from "./types/project";
+import { ProjectInteractions, Comment, Project } from "./types/project";
 
 const APIProject = {
-  getProject: async (id: string | number): Promise<any> => {
+  getProject: async (id: string | number): Promise<Project> => {
     const res = await fetch(`https://api.scratch.mit.edu/projects/${id}`);
     const data = await res.json();
     return data;
