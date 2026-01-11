@@ -18,6 +18,8 @@ You can install one of the CI-generated APK files from the [releases page](https
 > [!WARNING]  
 > We are undergoing an incremental migration from vanilla JavaScript over to [TypeScript](https://typescriptlang.org).
 
+You can read more about Itchy's codebase in the [CONTRIBUTING.md](/docs/CONTRIBUTING.md).
+
 ### Android
 
 1. Clone the repository and run `npm install`.
