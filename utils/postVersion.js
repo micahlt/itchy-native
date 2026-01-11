@@ -1,3 +1,6 @@
+/**
+ * THIS IS A NODE.JS SCRIPT.  DO NOT MIGRATE TO TYPESCRIPT!
+ */
 const fs = require('fs');
 const path = require('path');
 

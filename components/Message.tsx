@@ -140,21 +140,26 @@ export default function Message({ message }: MessageProps) {
     >
       <View
         style={{
-          paddingHorizontal: 20,
-          paddingVertical: 15,
-          borderBottomWidth: 1,
+          paddingHorizontal: 16,
+          paddingVertical: 12,
+          borderBottomWidth: 0.5,
           borderBottomColor: colors.backgroundTertiary,
           backgroundColor: colors.background,
           flexDirection: "row",
+          gap: 12,
         }}
       >
         <View
           style={{
-            marginRight: 20,
-            borderRadius: 25,
+            borderRadius: 20,
             overflow: "hidden",
-            height: 36,
-            width: 36,
+            height: 40,
+            width: 40,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.1,
+            shadowRadius: 2,
+            elevation: 2,
           }}
         >
           <Pressable
@@ -165,25 +170,33 @@ export default function Message({ message }: MessageProps) {
               source={{ uri: pfpLink }}
               placeholder={require("../assets/avatar.png")}
               placeholderContentFit="cover"
-              style={{ width: 36, height: 36, backgroundColor: "white" }}
+              style={{ width: 40, height: 40, backgroundColor: "white" }}
             />
           </Pressable>
         </View>
-        <View style={{ maxWidth: "85%" }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <ItchyText style={{ color: colors.text, fontWeight: "bold" }}>
+        <View style={{ flex: 1 }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              flexWrap: "wrap",
+              marginBottom: 4,
+            }}
+          >
+            <ItchyText
+              style={{ color: colors.text, fontWeight: "600", fontSize: 15 }}
+            >
               {headerText}
             </ItchyText>
             {message.type == "addcomment" && message?.comment_type === 0 && (
               <>
                 <ItchyText
                   style={{
-                    color: colors.text,
-                    fontStyle: "italic",
-                    opacity: 0.6,
+                    color: colors.textSecondary,
+                    fontSize: 14,
+                    marginLeft: 4,
                   }}
                 >
-                  {" "}
                   on
                 </ItchyText>
                 <TouchableOpacity
@@ -194,12 +207,11 @@ export default function Message({ message }: MessageProps) {
                   <ItchyText
                     style={{
                       color: colors.accent,
-                      fontStyle: "italic",
-                      opacity: 1,
-                      fontWeight: "bold",
+                      fontSize: 14,
+                      fontWeight: "600",
+                      marginLeft: 4,
                     }}
                   >
-                    {" "}
                     {message.comment_obj_title}
                   </ItchyText>
                 </TouchableOpacity>
@@ -209,12 +221,11 @@ export default function Message({ message }: MessageProps) {
               <>
                 <ItchyText
                   style={{
-                    color: colors.text,
-                    fontStyle: "italic",
-                    opacity: 0.6,
+                    color: colors.textSecondary,
+                    fontSize: 14,
+                    marginLeft: 4,
                   }}
                 >
-                  {" "}
                   on
                 </ItchyText>
                 <TouchableOpacity
@@ -225,12 +236,11 @@ export default function Message({ message }: MessageProps) {
                   <ItchyText
                     style={{
                       color: colors.accent,
-                      fontStyle: "italic",
-                      opacity: 1,
-                      fontWeight: "bold",
+                      fontSize: 14,
+                      fontWeight: "600",
+                      marginLeft: 4,
                     }}
                   >
-                    {" "}
                     {message.comment_obj_title == username
                       ? "your profile"
                       : `${message.comment_obj_title}'s profile`}
@@ -242,12 +252,11 @@ export default function Message({ message }: MessageProps) {
               <>
                 <ItchyText
                   style={{
-                    color: colors.text,
-                    fontStyle: "italic",
-                    opacity: 0.6,
+                    color: colors.textSecondary,
+                    fontSize: 14,
+                    marginLeft: 4,
                   }}
                 >
-                  {" "}
                   in
                 </ItchyText>
                 <TouchableOpacity
@@ -258,12 +267,11 @@ export default function Message({ message }: MessageProps) {
                   <ItchyText
                     style={{
                       color: colors.accent,
-                      fontStyle: "italic",
-                      opacity: 1,
-                      fontWeight: "bold",
+                      fontSize: 14,
+                      fontWeight: "600",
+                      marginLeft: 4,
                     }}
                   >
-                    {" "}
                     {message.comment_obj_title}
                   </ItchyText>
                 </TouchableOpacity>
@@ -272,31 +280,34 @@ export default function Message({ message }: MessageProps) {
             <ItchyText
               style={{
                 color: colors.textSecondary,
-                fontStyle: "italic",
-                opacity: 0.6,
+                fontSize: 13,
+                marginLeft: 6,
+                opacity: 0.7,
               }}
             >
-              {" "}
-              {timeAgoDate}
+              · {timeAgoDate}
             </ItchyText>
           </View>
           {message.type == "addcomment" ? (
             <View
               style={{
-                paddingVertical: 10,
+                paddingVertical: 8,
                 paddingHorizontal: 15,
-                borderRadius: 10,
-                marginTop: 5,
-                marginRight: "auto",
+                borderRadius: 12,
+                marginTop: 2,
                 backgroundColor: colors.backgroundSecondary,
               }}
             >
-              <ItchyText style={{ color: colors.text, marginRight: "auto" }}>
+              <ItchyText
+                style={{ color: colors.text, fontSize: 14, lineHeight: 20 }}
+              >
                 {bodyText}
               </ItchyText>
             </View>
           ) : (
-            <ItchyText style={{ color: colors.text, marginRight: 64 }}>
+            <ItchyText
+              style={{ color: colors.text, fontSize: 14, lineHeight: 20 }}
+            >
               {bodyText}
             </ItchyText>
           )}

@@ -16,7 +16,7 @@ You can install one of the CI-generated APK files from the [releases page](https
 ## Development
 
 > [!WARNING]  
-> We are undergoing a migration from vanilla JavaScript over to [TypeScript](https://typescriptlang.org).  This is a gradual migration, so some files may not be consistent.
+> We are undergoing an incremental migration from vanilla JavaScript over to [TypeScript](https://typescriptlang.org).
 
 ### Android
 

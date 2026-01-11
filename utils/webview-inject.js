@@ -1,4 +1,4 @@
-/** This is a template string for Metro bundling reasons.  To edit this, I highly recommend the Template Literal Editor extension for VSCode.  Messing with this complex code without syntax highlighting is a real mess. */
+/** This is a template string for Metro bundling reasons.  To edit this, I highly recommend the Template Literal Editor extension for VSCode.  Messing with this complex code without syntax highlighting is a real mess.  Also, do not convert this to TypeScript. */
 
 export default `function injectedWebviewCode(args) {
     const { color, iceServers } = args;
