@@ -395,6 +395,7 @@ export default function Project() {
                 overScrollMode="never"
                 allowsFullscreenVideo={true}
                 style={{ backgroundColor: "transparent" }}
+                setBuiltInZoomControls={false}
                 nestedScrollEnabled={true}
                 injectedJavaScript={twJSInject}
                 ref={webViewRef}
