@@ -1,4 +1,4 @@
-export const lightColors = {
+export const lightColors: ItchyThemeColors = {
   background: "#FAF8F6",
   highlight: "#ffffff",
   topLight: "#FFFFFFAA",
@@ -28,7 +28,7 @@ export const lightColors = {
 };
 
 // Dark theme colors
-export const darkColors = {
+export const darkColors: ItchyThemeColors = {
   background: "#000000",
   highlight: "#1d1d1d",
   topLight: "#FFFFFF11",
@@ -55,4 +55,33 @@ export const darkColors = {
     shadowRadius: 5,
     shadowOpacity: 1,
   },
+};
+
+export type ItchyThemeColors = {
+  background: string;
+  highlight: string;
+  topLight: string;
+  outline: string;
+  outlineCard: string;
+  outlineFill: string;
+  backgroundSecondary: string;
+  backgroundTertiary: string;
+  chipColor: string;
+  text: string;
+  textSecondary: string;
+  accent: string;
+  accentOverlay: string;
+  accentTransparent: string;
+  button: string;
+  buttonText: string;
+  ripple: string;
+  shadow: {
+    shadowColor: string;
+    shadowOffset: {
+      width: number;
+      height: number;
+    };
+    shadowRadius: number;
+    shadowOpacity: number;
+  };
 };

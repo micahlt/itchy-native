@@ -24,6 +24,28 @@ export type StudioStats = {
   projects?: number;
 };
 
+export type StudioActivityType =
+  | "addprojecttostudio"
+  | "removeprojectstudio"
+  | "becomecurator"
+  | "becomeownerstudio"
+  | "updatestudio";
+
+export type StudioActivity = {
+  id: number;
+  datetime_created: string;
+  type: StudioActivityType;
+  actor_username?: string;
+  actor_id?: number;
+  recipient_username?: string;
+  project_id?: number;
+  username?: string;
+  parent_title?: string;
+  title?: string;
+  project_title?: string;
+  gallery_title?: string;
+};
+
 export type APIStudio = {
   getStudio: (id: string | number) => Promise<any>;
   getProjects: (

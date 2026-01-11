@@ -1,5 +1,5 @@
 import fetch from "../fetch-provider";
-import { MessagesFilter } from "./types/messages";
+import { MessagesFilter, ScratchMessage } from "./types/messages";
 
 const APIMessages = {
   /**
@@ -15,7 +15,7 @@ const APIMessages = {
     offset: number = 0,
     filter: MessagesFilter = "",
     limit: number = 30
-  ): Promise<any> {
+  ): Promise<ScratchMessage[]> {
     const res = await fetch(
       `https://api.scratch.mit.edu/users/${username}/messages?offset=${offset}&filter=${filter}&limit=${limit}`,
       {

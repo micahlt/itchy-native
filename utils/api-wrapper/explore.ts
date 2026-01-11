@@ -2,6 +2,7 @@ import fetch from "../fetch-provider";
 import { ExploreData } from "./types/explore";
 import { Project } from "./types/project";
 import { Studio } from "./types/studio";
+import { UserActivity } from "./types/user";
 
 const APIExplore = {
   getExplore: async (): Promise<ExploreData> => {
@@ -80,7 +81,7 @@ const APIExplore = {
     token: string,
     offset: number = 0,
     limit: number = 4
-  ): Promise<any> => {
+  ): Promise<UserActivity[]> => {
     const res = await fetch(
       `https://api.scratch.mit.edu/users/${username}/following/users/activity?limit=${limit}&offset=${offset}&cacheBust=${Date.now()}`,
       {

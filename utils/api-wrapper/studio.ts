@@ -1,6 +1,6 @@
 import consts from "./consts";
 import fetch from "../fetch-provider";
-import { APIStudio as APIStudioType } from "./types/studio";
+import { APIStudio as APIStudioType, StudioActivity } from "./types/studio";
 
 const APIStudio: APIStudioType = {
   getStudio: async (id: string | number): Promise<any> => {
@@ -23,7 +23,7 @@ const APIStudio: APIStudioType = {
     id: string | number,
     offset: number = 0,
     limit: number = 20
-  ): Promise<any> => {
+  ): Promise<StudioActivity[]> => {
     const res = await fetch(
       `https://api.scratch.mit.edu/studios/${id}/activity?offset=${offset}&limit=${limit}`
     );
@@ -54,7 +54,7 @@ const APIStudio: APIStudioType = {
     );
     let data = await res.json();
     if (includeReplies) {
-      let commentPromises = data.map(async (comment) => {
+      let commentPromises = data.map(async (comment: any) => {
         const replies = await APIStudio.getCommentReplies(id, comment.id);
         comment.replies = replies || [];
         comment.includesReplies = true;

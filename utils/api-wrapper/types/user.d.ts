@@ -37,12 +37,23 @@ export type CompleteUser = UserProfile & {
   following: number;
 };
 
+export type FeedActivityType =
+  | "favoriteproject"
+  | "loveproject"
+  | "shareproject"
+  | "followuser"
+  | "becomecurator"
+  | "followstudio"
+  | "addproject"
+  | "remixproject"
+  | "becomeownerstudio";
+
 export type UserActivity = {
   id: number;
   actor_username?: string;
   actor_id?: number;
   datetime_created: string;
-  type?: string;
+  type?: FeedActivityType;
   title?: string;
   project_id?: number;
   gallery_title?: string;
@@ -51,4 +62,5 @@ export type UserActivity = {
   followed_username?: string;
   recipient_id?: number;
   recipient_username?: string;
+  parent_title?: string;
 };
