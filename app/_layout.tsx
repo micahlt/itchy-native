@@ -1,4 +1,8 @@
-import { getCrashlytics, log, recordError } from '@react-native-firebase/crashlytics';
+import {
+  getCrashlytics,
+  log,
+  recordError,
+} from "@react-native-firebase/crashlytics";
 import React, { useEffect } from "react";
 import Stack from "expo-router/stack";
 import { ThemeProvider, useTheme } from "../utils/theme";
@@ -18,14 +22,37 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 const c = getCrashlytics();
 
+interface TurboWarpConfig {
+  interpolate?: boolean;
+  autoplay?: boolean;
+  fps60?: boolean;
+  hqPen?: boolean;
+  turbo?: boolean;
+}
+
+interface SavedLogin {
+  username: string;
+  password: string;
+}
+
+interface UserData {
+  id: number;
+  username: string;
+  token: string;
+  [key: string]: any;
+}
+
 export default function App() {
-  const [twConfig] = useMMKVObject("twConfig");
-  const [user, setUser] = useMMKVObject("user");
+  const [twConfig] = useMMKVObject<TurboWarpConfig>("twConfig");
+  const [user, setUser] = useMMKVObject<UserData | null>("user");
   const [cookieSet] = useMMKVString("cookieSet");
-  const [localControllerMappings, setLocalControllerMappings] = useMMKVObject(
-    "localControllerMappings"
+  const [localControllerMappings, setLocalControllerMappings] = useMMKVObject<
+    Record<string, any>
+  >("localControllerMappings");
+  const [savedLogins] = useMMKVObject<SavedLogin[]>(
+    "savedLogins",
+    encryptedStorage
   );
-  const [savedLogins] = useMMKVObject("savedLogins", encryptedStorage);
 
   // Check network connectivity when app opens
   useEffect(() => {
@@ -40,7 +67,7 @@ export default function App() {
       } catch (error) {
         console.warn("Failed to check network state:", error);
         log(c, "Failed initial network connection test");
-        recordError(c, error);
+        recordError(c, error as Error);
       }
     };
 
@@ -59,7 +86,7 @@ export default function App() {
             !!d?.sessionJSON &&
             !!d?.sessionJSON?.user
           ) {
-            log(c, "Authenticating with existing cookies")
+            log(c, "Authenticating with existing cookies");
             storage.set("sessionID", d.sessionToken);
             storage.set("csrfToken", d.csrfToken);
             storage.set("cookieSet", d.cookieSet);
@@ -67,7 +94,7 @@ export default function App() {
             setUser(d.sessionJSON.user);
           }
           if (!d.isLoggedIn) {
-            log(c, "Removing existing user auth data")
+            log(c, "Removing existing user auth data");
             storage.delete("sessionID");
             storage.delete("csrfToken");
             storage.delete("cookieSet");
@@ -76,24 +103,27 @@ export default function App() {
             setUser(null);
             APIAuth.logout().finally(async () => {
               if (!savedLogins) {
-                log(c, "Won't log in as there are no saved logins")
+                log(c, "Won't log in as there are no saved logins");
                 return;
               }
-              log(c, "Searching saved logins")
+              log(c, "Searching saved logins");
               const currentLogin = savedLogins.find(
                 (o) => o.username === storage.getString("username")
               );
               if (!currentLogin) {
-                log(c, "Current login uname and password do not exist.  Staying logged out");
+                log(
+                  c,
+                  "Current login uname and password do not exist.  Staying logged out"
+                );
                 return;
               }
-              log(c, "Attempting to log in with details from saved passwords")
+              log(c, "Attempting to log in with details from saved passwords");
               APIAuth.login(currentLogin.username, currentLogin.password)
                 .then((d) => {
                   log(c, "Logged in successfully, setting up user data");
                   storage.set("sessionID", d.sessionToken);
                   storage.set("csrfToken", d.csrfToken);
-                  storage.set("username", d.username);
+                  storage.set("username", d.username || "");
                   storage.set("cookieSet", d.cookieSet);
                   storage.set("token", d.sessionJSON.user.token);
                   setUser(d.sessionJSON.user);
@@ -124,20 +154,23 @@ export default function App() {
               (o) => o.username === storage.getString("username")
             );
             if (!currentLogin) {
-              log(c, "Current login uname and password do not exist.  Staying logged out");
+              log(
+                c,
+                "Current login uname and password do not exist.  Staying logged out"
+              );
               return storage.delete("username");
             }
-            log(c, "Attempting to log in with details from saved passwords")
+            log(c, "Attempting to log in with details from saved passwords");
             APIAuth.login(currentLogin.username, currentLogin.password)
               .then((d) => {
-                log(c, "Logged in successfully, setting up user data")
+                log(c, "Logged in successfully, setting up user data");
                 storage.set("sessionID", d.sessionToken);
                 storage.set("csrfToken", d.csrfToken);
-                storage.set("username", d.username);
+                storage.set("username", d.username || "");
                 storage.set("cookieSet", d.cookieSet);
                 storage.set("token", d.sessionJSON.user.token);
                 setUser(d.sessionJSON.user);
-                log(c, "Navigating to index route")
+                log(c, "Navigating to index route");
                 router.dismissTo("/");
               })
               .catch((e) => {
@@ -147,7 +180,7 @@ export default function App() {
           });
         });
     } else {
-      log(c, "User is not logged in.")
+      log(c, "User is not logged in.");
     }
     if (!localControllerMappings) {
       log(c, "Setting up local controller mappings");
@@ -175,7 +208,11 @@ export default function App() {
   );
 }
 
-function ThemeConsumerInner({ twConfig }) {
+interface ThemeConsumerInnerProps {
+  twConfig: TurboWarpConfig | undefined;
+}
+
+function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   const { colors } = useTheme();
   const liquidPlus = isLiquidPlus();
 
@@ -183,12 +220,14 @@ function ThemeConsumerInner({ twConfig }) {
   if (!colors) return null;
 
   return (
-    <View style={{ backgroundColor: colors.background, flex: 1 }} collapsable={false}>
+    <View
+      style={{ backgroundColor: colors.background, flex: 1 }}
+      collapsable={false}
+    >
       <Stack
         screenOptions={{
           contentStyle: {
             backgroundColor: colors.background,
-            color: colors.text,
           },
           headerShown: true,
           headerBackButtonDisplayMode: "default",
@@ -203,7 +242,7 @@ function ThemeConsumerInner({ twConfig }) {
           headerStyle: {
             backgroundColor: liquidPlus ? "transparent" : colors.background, // no fallback bg
           },
-          animationDuration: 120
+          animationDuration: 120,
         }}
       >
         <Stack.Screen

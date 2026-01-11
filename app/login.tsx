@@ -1,5 +1,6 @@
 import { TextInput, View } from "react-native";
 import ItchyText from "../components/ItchyText";
+// @ts-expect-error
 import Pressable from "../components/Pressable";
 import ScratchAPIWrapper from "../utils/api-wrapper";
 import { useTheme } from "../utils/theme";
@@ -15,17 +16,22 @@ import linkWithFallback from "../utils/linkWithFallback";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 import { saveAccount } from "../utils/account-manager";
 
+interface SavedLogin {
+  username: string;
+  password: string;
+}
+
 export default function LoginScreen() {
   const { colors } = useTheme();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [user, setUser] = useMMKVObject("user");
-  const [savedLogins, setSavedLogins] = useMMKVObject(
+  const [user, setUser] = useMMKVObject<any>("user");
+  const [savedLogins, setSavedLogins] = useMMKVObject<SavedLogin[]>(
     "savedLogins",
     encryptedStorage
   );
-  const passwordInput = useRef(null);
+  const passwordInput = useRef<TextInput>(null);
   const liquidPlusPadding = useMemo(() => getLiquidPlusPadding(), []);
 
   const logIn = () => {
@@ -38,7 +44,7 @@ export default function LoginScreen() {
           username: d.username,
           cookieSet: d.cookieSet,
           token: d.sessionJSON.user.token,
-          user: d.sessionJSON.user
+          user: d.sessionJSON.user,
         };
         saveAccount(accountData);
 
@@ -58,7 +64,7 @@ export default function LoginScreen() {
     <View
       style={{
         backgroundColor: colors.background,
-        paddingTop: liquidPlusPadding
+        paddingTop: liquidPlusPadding,
       }}
     >
       <Stack.Screen options={{ headerTitleAlign: "center" }} />
@@ -97,7 +103,7 @@ export default function LoginScreen() {
           autoCapitalize="none"
           autoCorrect={false}
           returnKeyType="next"
-          onSubmitEditing={() => passwordInput?.current?.focus()}
+          onSubmitEditing={() => passwordInput.current?.focus()}
           submitBehavior="submit"
         />
         <TextInput
@@ -134,7 +140,7 @@ export default function LoginScreen() {
           >
             {error}
           </ItchyText>
-        ) : <></>}
+        ) : null}
         <ItchyText
           style={{
             color: colors.text,

@@ -22,22 +22,50 @@ import SquircleView from "../components/SquircleView";
 import Chip from "../components/Chip";
 import { useTheme } from "../utils/theme";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
-import { getCrashlytics, setCrashlyticsCollectionEnabled } from "@react-native-firebase/crashlytics";
-import { removeAccount, getAccounts, switchAccount } from "../utils/account-manager";
+import {
+  getCrashlytics,
+  setCrashlyticsCollectionEnabled,
+} from "@react-native-firebase/crashlytics";
+import {
+  removeAccount,
+  getAccounts,
+  switchAccount,
+} from "../utils/account-manager";
 import { Image } from "expo-image";
 import AccountSwitchModal from "../components/AccountSwitchModal";
 
 const c = getCrashlytics();
 
+interface TurboWarpConfig {
+  interpolate?: boolean;
+  autoplay?: boolean;
+  fps60?: boolean;
+  hqPen?: boolean;
+  turbo?: boolean;
+}
+
+interface AccountData {
+  username: string;
+  user: {
+    id: number;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+interface AccountsObject {
+  [username: string]: AccountData;
+}
+
 export default function SettingsScreen() {
   const { colors, dimensions, isDark } = useTheme();
   const router = useRouter();
   const [username] = useMMKVString("username");
-  const [twConfig, setTWConfig] = useMMKVObject("twConfig");
-  const [accounts, setAccounts] = useState({});
-  const [switchingAccount, setSwitchingAccount] = useState(false);
+  const [twConfig, setTWConfig] = useMMKVObject<TurboWarpConfig>("twConfig");
+  const [accounts, setAccounts] = useState<AccountsObject>({});
+  const [switchingAccount, setSwitchingAccount] = useState<boolean>(false);
 
-  const handleSwitchAccount = (username) => {
+  const handleSwitchAccount = (username: string) => {
     setSwitchingAccount(true);
     switchAccount(username);
     setTimeout(() => {
@@ -135,28 +163,32 @@ export default function SettingsScreen() {
     }
   }, [twConfig]);
 
-  const handleSwitchToggle = (key, value) => {
+  const handleSwitchToggle = (key: keyof TurboWarpConfig, value: boolean) => {
     setLocalSwitchState((prev) => ({ ...prev, [key]: value }));
     setTWConfig({ ...twConfig, [key]: value });
   };
 
   // Force dark theme setting persisted in MMKV
   const [forceDark, setForceDark] = useMMKVBoolean("forceDark");
-  const [deferProjectLoading, setDeferProjectLoading] =
-    useMMKVBoolean("deferProjectLoading");
-  const [crashlyticsEnabled, setCrashlyticsEnabled] = useState(c.isCrashlyticsCollectionEnabled);
+  const [deferProjectLoading, setDeferProjectLoading] = useMMKVBoolean(
+    "deferProjectLoading"
+  );
+  const [crashlyticsEnabled, setCrashlyticsEnabled] = useState(
+    c.isCrashlyticsCollectionEnabled
+  );
   const [experimentalFeed, setExperimentalFeed] =
     useMMKVBoolean("experimentalFeed");
 
-  const handleForceDarkToggle = (v) => {
+  const handleForceDarkToggle = (v: boolean) => {
     // MMKV boolean hook stores true/false; clear not needed.
     setForceDark(v);
     // ThemeProvider reads this MMKV key and will update automatically.
   };
 
   async function handleCrashlyticsToggle() {
-    await setCrashlyticsCollectionEnabled(c, !crashlyticsEnabled)
-      .then(() => setCrashlyticsEnabled(c.isCrashlyticsCollectionEnabled));
+    await setCrashlyticsCollectionEnabled(c, !crashlyticsEnabled).then(() =>
+      setCrashlyticsEnabled(c.isCrashlyticsCollectionEnabled)
+    );
   }
 
   return (
@@ -167,7 +199,6 @@ export default function SettingsScreen() {
     >
       <ItchyText style={s.sectionHeader}>Account</ItchyText>
       <SquircleView
-        cornerSmoothing={0.6}
         style={[
           s.settingContainer,
           s.topSettingContainer,
@@ -178,7 +209,10 @@ export default function SettingsScreen() {
         <ItchyText style={s.settingTitle}>
           {username ? `Signed in as ` : "Signed out"}
           {username && (
-            <ItchyText style={{ color: colors.accent, fontWeight: "bold" }} onPress={() => router.push(`/users/${username}`)}>
+            <ItchyText
+              style={{ color: colors.accent, fontWeight: "bold" }}
+              onPress={() => router.push(`/users/${username}`)}
+            >
               {username}
             </ItchyText>
           )}
@@ -210,8 +244,11 @@ export default function SettingsScreen() {
       {username && (
         <>
           <SquircleView
-            cornerSmoothing={0.6}
-            style={[s.settingContainer, s.middleSettingContainer, Object.keys(accounts).length < 2 ? s.bottomSettingContainer : {}]}
+            style={[
+              s.settingContainer,
+              s.middleSettingContainer,
+              Object.keys(accounts).length < 2 ? s.bottomSettingContainer : {},
+            ]}
           >
             <TouchableOpacity onPress={() => router.push("/login")}>
               <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
@@ -221,47 +258,47 @@ export default function SettingsScreen() {
           </SquircleView>
           {Object.keys(accounts).length > 1 && (
             <SquircleView
-              cornerSmoothing={0.6}
-              style={[[
-                s.settingContainer,
-                s.middleSettingContainer,
-                s.bottomSettingContainer
-              ],
-              { justifyContent: "flex-start", gap: 10, paddingVertical: 10 }]
-              }
+              style={[
+                [
+                  s.settingContainer,
+                  s.middleSettingContainer,
+                  s.bottomSettingContainer,
+                ],
+                { justifyContent: "flex-start", gap: 10, paddingVertical: 10 },
+              ]}
             >
-              {Object.values(accounts).map((account, index) => (
-                <TouchableOpacity
-                  key={account.username}
-                  onPress={() => {
-                    handleSwitchAccount(account.username);
-                  }}
-                >
-                  <Image
-                    source={{
-                      uri: `https://uploads.scratch.mit.edu/get_image/user/${account.user.id}_64x64.png`,
+              {Object.values(accounts).map(
+                (account: AccountData, index: number) => (
+                  <TouchableOpacity
+                    key={account.username}
+                    onPress={() => {
+                      handleSwitchAccount(account.username);
                     }}
-                    style={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: 12,
-                      zIndex: 5 - index,
-                      marginLeft: -4,
-                      borderWidth: account.username === username ? 2 : 0,
-                      borderColor: colors.accent,
-                      opacity: account.username === username ? 1 : 0.5,
-                    }}
-                  />
-                </TouchableOpacity>
-              ))}
+                  >
+                    <Image
+                      source={{
+                        uri: `https://uploads.scratch.mit.edu/get_image/user/${account.user.id}_64x64.png`,
+                      }}
+                      style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: 12,
+                        zIndex: 5 - index,
+                        marginLeft: -4,
+                        borderWidth: account.username === username ? 2 : 0,
+                        borderColor: colors.accent,
+                        opacity: account.username === username ? 1 : 0.5,
+                      }}
+                    />
+                  </TouchableOpacity>
+                )
+              )}
             </SquircleView>
           )}
         </>
-      )
-      }
+      )}
       <ItchyText style={s.sectionHeader}>Player</ItchyText>
       <SquircleView
-        cornerSmoothing={0.6}
         style={[
           s.settingContainer,
           s.topSettingContainer,
@@ -276,10 +313,7 @@ export default function SettingsScreen() {
           value={twConfig?.interpolate}
         />
       </SquircleView>
-      <SquircleView
-        cornerSmoothing={0.6}
-        style={[s.settingContainer, s.middleSettingContainer]}
-      >
+      <SquircleView style={[s.settingContainer, s.middleSettingContainer]}>
         <ItchyText style={s.settingTitle}>Autoplay</ItchyText>
         <Switch
           thumbColor="white"
@@ -288,10 +322,7 @@ export default function SettingsScreen() {
           value={twConfig?.autoplay}
         />
       </SquircleView>
-      <SquircleView
-        cornerSmoothing={0.6}
-        style={[s.settingContainer, s.middleSettingContainer]}
-      >
+      <SquircleView style={[s.settingContainer, s.middleSettingContainer]}>
         <ItchyText style={s.settingTitle}>Force 60 FPS</ItchyText>
         <Switch
           thumbColor="white"
@@ -300,10 +331,7 @@ export default function SettingsScreen() {
           value={twConfig?.fps60}
         />
       </SquircleView>
-      <SquircleView
-        cornerSmoothing={0.6}
-        style={[s.settingContainer, s.middleSettingContainer]}
-      >
+      <SquircleView style={[s.settingContainer, s.middleSettingContainer]}>
         <ItchyText style={s.settingTitle}>High-quality pen</ItchyText>
         <Switch
           thumbColor="white"
@@ -312,10 +340,7 @@ export default function SettingsScreen() {
           value={twConfig?.hqPen}
         />
       </SquircleView>
-      <SquircleView
-        cornerSmoothing={0.6}
-        style={[s.settingContainer, s.middleSettingContainer]}
-      >
+      <SquircleView style={[s.settingContainer, s.middleSettingContainer]}>
         <ItchyText style={s.settingTitle}>Turbo mode</ItchyText>
         <Switch
           thumbColor="white"
@@ -325,7 +350,6 @@ export default function SettingsScreen() {
         />
       </SquircleView>
       <SquircleView
-        cornerSmoothing={0.6}
         style={[
           s.settingContainer,
           s.bottomSettingContainer,
@@ -345,7 +369,6 @@ export default function SettingsScreen() {
       </SquircleView>
       <ItchyText style={s.sectionHeader}>App</ItchyText>
       <SquircleView
-        cornerSmoothing={0.6}
         style={[
           s.settingContainer,
           s.topSettingContainer,
@@ -361,7 +384,6 @@ export default function SettingsScreen() {
         />
       </SquircleView>
       <SquircleView
-        cornerSmoothing={0.6}
         style={[
           s.settingContainer,
           s.middleSettingContainer,
@@ -378,10 +400,7 @@ export default function SettingsScreen() {
           opens an experimental infinite-scrolling feed of projects and studios.
         </ItchyText>
       </SquircleView>
-      <SquircleView
-        cornerSmoothing={0.6}
-        style={[s.settingContainer, s.middleSettingContainer]}
-      >
+      <SquircleView style={[s.settingContainer, s.middleSettingContainer]}>
         <ItchyText style={s.settingTitle}>Defer project loading</ItchyText>
         <Switch
           thumbColor="white"
@@ -391,7 +410,6 @@ export default function SettingsScreen() {
         />
       </SquircleView>
       <SquircleView
-        cornerSmoothing={0.6}
         style={[
           s.settingContainer,
           s.middleSettingContainer,
@@ -403,13 +421,11 @@ export default function SettingsScreen() {
         ]}
       >
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
-          When enabled, projects will only load when you click a button.  This saves data and lets project pages load faster.
+          When enabled, projects will only load when you click a button. This
+          saves data and lets project pages load faster.
         </ItchyText>
       </SquircleView>
-      <SquircleView
-        cornerSmoothing={0.6}
-        style={[s.settingContainer, s.middleSettingContainer]}
-      >
+      <SquircleView style={[s.settingContainer, s.middleSettingContainer]}>
         <ItchyText style={s.settingTitle}>Force dark theme</ItchyText>
         <Switch
           thumbColor="white"
@@ -419,7 +435,6 @@ export default function SettingsScreen() {
         />
       </SquircleView>
       <SquircleView
-        cornerSmoothing={0.6}
         style={[
           s.settingContainer,
           s.middleSettingContainer,
@@ -435,10 +450,7 @@ export default function SettingsScreen() {
           device is set to light mode.
         </ItchyText>
       </SquircleView>
-      <SquircleView
-        cornerSmoothing={0.6}
-        style={[s.settingContainer, s.middleSettingContainer]}
-      >
+      <SquircleView style={[s.settingContainer, s.middleSettingContainer]}>
         <ItchyText style={s.settingTitle}>Crash reports</ItchyText>
         <Switch
           thumbColor="white"
@@ -448,7 +460,6 @@ export default function SettingsScreen() {
         />
       </SquircleView>
       <SquircleView
-        cornerSmoothing={0.6}
         style={[
           s.settingContainer,
           s.bottomSettingContainer,
@@ -460,12 +471,13 @@ export default function SettingsScreen() {
         ]}
       >
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
-          Opt in or out of crash reporting.  Reports do not include any information about your Scratch account, and are only sent when Itchy crashes.  This helps us improve the app.
+          Opt in or out of crash reporting. Reports do not include any
+          information about your Scratch account, and are only sent when Itchy
+          crashes. This helps us improve the app.
         </ItchyText>
       </SquircleView>
       <ItchyText style={s.sectionHeader}>About</ItchyText>
       <SquircleView
-        cornerSmoothing={0.6}
         style={[
           s.settingContainer,
           s.topSettingContainer,
@@ -476,20 +488,14 @@ export default function SettingsScreen() {
           Itchy v{version}
         </ItchyText>
       </SquircleView>
-      <SquircleView
-        cornerSmoothing={0.6}
-        style={[s.settingContainer, s.middleSettingContainer]}
-      >
+      <SquircleView style={[s.settingContainer, s.middleSettingContainer]}>
         <TouchableOpacity onPress={() => router.push("/onboarding")}>
           <ItchyText style={{ color: colors.accent, fontSize: 16 }}>
             Redo onboarding flow
           </ItchyText>
         </TouchableOpacity>
       </SquircleView>
-      <SquircleView
-        cornerSmoothing={0.6}
-        style={[s.settingContainer, s.middleSettingContainer]}
-      >
+      <SquircleView style={[s.settingContainer, s.middleSettingContainer]}>
         <TouchableOpacity
           onPress={() =>
             linkWithFallback("https://itchy.micahlindley.com/privacy.html")
@@ -501,7 +507,6 @@ export default function SettingsScreen() {
         </TouchableOpacity>
       </SquircleView>
       <SquircleView
-        cornerSmoothing={0.6}
         style={[
           s.settingContainer,
           s.bottomSettingContainer,
@@ -540,14 +545,14 @@ export default function SettingsScreen() {
         <View style={{ flexDirection: "row", paddingTop: 8 }}>
           <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
             Created by Micah Lindley. Contributions to code, UI, and graphics
-            made by David Noé Bänziger, Sean Wallace, and other community members.
-            Made possible by open-source projects like TurboWarp, Scratch, React
-            Native, Expo, and many others.
+            made by David Noé Bänziger, Sean Wallace, and other community
+            members. Made possible by open-source projects like TurboWarp,
+            Scratch, React Native, Expo, and many others.
           </ItchyText>
         </View>
       </SquircleView>
       <View style={{ height: 120 }}></View>
       <AccountSwitchModal visible={switchingAccount} />
-    </ScrollView >
+    </ScrollView>
   );
 }

@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import ItchyText from "../components/ItchyText";
 import { Dimensions, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { useTheme } from "../utils/theme";
-import Carousel from "react-native-reanimated-carousel";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Image } from "expo-image";
+// @ts-expect-error
 import Pressable from "../components/Pressable";
 import onboarding from "../assets/onboarding/onboarding";
 import { Ionicons } from "@expo/vector-icons";
@@ -72,18 +73,21 @@ const data = [
 ];
 const { width, height } = Dimensions.get("screen");
 
-export default function Onboarding({ }) {
+export default function Onboarding({}) {
   const nav = useNavigation();
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
-  const carouselRef = useRef(null);
+  const carouselRef = useRef<ICarouselInstance>(null);
   const progress = useSharedValue(0);
   const [hasOpenedBefore, setHasOpenedBefore] =
     useMMKVBoolean("hasOpenedBefore");
   const [isAtEnd, setIsAtEnd] = useState(false);
 
   // Update isAtEnd whenever progress changes
-  const handleProgressChange = (offsetProgress, absoluteProgress) => {
+  const handleProgressChange = (
+    offsetProgress: number,
+    absoluteProgress: number
+  ) => {
     // Ensure progress is exactly at the last index when we're at the end
     if (absoluteProgress >= data.length - 1) {
       progress.value = data.length - 1;
@@ -106,7 +110,7 @@ export default function Onboarding({ }) {
     };
   }, []);
 
-  const onPressPagination = (index) => {
+  const onPressPagination = (index: number) => {
     // Remove the manual isAtEnd setting - let handleProgressChange handle it
     carouselRef.current?.scrollTo({
       /**
@@ -119,7 +123,10 @@ export default function Onboarding({ }) {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#0082ff", position: "relative" }} collapsable={false}>
+    <View
+      style={{ flex: 1, backgroundColor: "#0082ff", position: "relative" }}
+      collapsable={false}
+    >
       <Carousel
         ref={carouselRef}
         width={width}

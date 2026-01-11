@@ -7,10 +7,11 @@ import FeedItem from "../components/FeedItem";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { UserActivity } from "../utils/api-wrapper/types/user";
 
-export default function Feed({ }) {
+export default function Feed() {
   const { colors } = useTheme();
-  const [feed, setFeed] = useState([]);
+  const [feed, setFeed] = useState<UserActivity[]>([]);
   const [token] = useMMKVString("token");
   const [username] = useMMKVString("username");
   const insets = useSafeAreaInsets();
@@ -28,14 +29,17 @@ export default function Feed({ }) {
       style={{ flex: 1 }}
       contentContainerStyle={{
         paddingHorizontal: 15,
-        paddingTop: (typeof getLiquidPlusPadding) == "function" ? getLiquidPlusPadding() : 0,
+        paddingTop:
+          typeof getLiquidPlusPadding === "function"
+            ? getLiquidPlusPadding()
+            : 0,
         paddingBottom: insets.bottom + 35,
       }}
     >
       {feed.map((item, index) => (
         <Animated.View
           key={item.id}
-          entering={FadeInDown.delay(index * 50).springify()}
+          entering={FadeInDown.delay?.(index * 50)?.springify?.()}
         >
           <FeedItem
             item={item}
