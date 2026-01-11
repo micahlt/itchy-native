@@ -28,7 +28,7 @@ export default function Feed({ }) {
       style={{ flex: 1 }}
       contentContainerStyle={{
         paddingHorizontal: 15,
-        paddingTop: getLiquidPlusPadding(),
+        paddingTop: (typeof getLiquidPlusPadding) == "function" ? getLiquidPlusPadding() : 0,
         paddingBottom: insets.bottom + 35,
       }}
     >
