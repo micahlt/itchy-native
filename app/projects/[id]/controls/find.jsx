@@ -205,7 +205,7 @@ export default function FindControls() {
         options={{
           headerRight: () => (
             <PressableIcon
-              name="playlist-add"
+              name="add-circle"
               onPress={makeNewMapping}
               size={24}
               color={colors.textSecondary}
