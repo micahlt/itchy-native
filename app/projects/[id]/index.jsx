@@ -365,7 +365,10 @@ export default function Project() {
                   size={24}
                   color={colors.textSecondary}
                   backgroundColor="transparent"
-                  style={{ paddingRight: 0 }}
+                  style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 0
+                  }}
                 />
               </>
             ),

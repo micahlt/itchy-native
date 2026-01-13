@@ -110,7 +110,10 @@ export default function Studio() {
                 size={22}
                 color={colors.textSecondary}
                 backgroundColor="transparent"
-                style={{ paddingRight: 10 }}
+                style={{
+                  paddingLeft: 10,
+                  paddingVertical: 0
+                }}
               />
               <PressableIcon
                 onPress={openStudio}
@@ -118,7 +121,10 @@ export default function Studio() {
                 size={24}
                 color={colors.textSecondary}
                 backgroundColor="transparent"
-                style={{ paddingRight: 0 }}
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 0
+                }}
               />
             </>
           ),

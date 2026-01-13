@@ -209,7 +209,10 @@ export default function FindControls() {
               onPress={makeNewMapping}
               size={24}
               color={colors.textSecondary}
-              style={{ paddingRight: 0 }}
+              style={{
+                paddingHorizontal: 10,
+                paddingVertical: 0
+              }}
             />
           ),
         }}

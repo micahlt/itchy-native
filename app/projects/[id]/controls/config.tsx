@@ -501,7 +501,10 @@ export default function ControlsScreen() {
               onPress={handleSave}
               size={24}
               color={colors.text}
-              style={{ paddingRight: 0 }}
+              style={{
+                paddingHorizontal: 10,
+                paddingVertical: 0,
+              }}
             />
           ),
         }}

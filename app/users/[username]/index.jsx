@@ -131,7 +131,10 @@ export default function User() {
                 size={22}
                 color={colors.textSecondary}
                 backgroundColor="transparent"
-                style={{ paddingRight: 10 }}
+                style={{
+                  paddingLeft: 10,
+                  paddingVertical: 0
+                }}
               />
               <PressableIcon
                 onPressIn={openProfile}
@@ -139,7 +142,10 @@ export default function User() {
                 size={24}
                 color={colors.textSecondary}
                 backgroundColor="transparent"
-                style={{ paddingRight: 0 }}
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 0
+                }}
               />
               ,
             </>
