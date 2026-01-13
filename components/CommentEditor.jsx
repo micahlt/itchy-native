@@ -87,7 +87,7 @@ export default function CommentEditor({ onSubmit, reply, onClearReply, loading, 
                     style={{
                         width: width - 80,
                         color: colors.text,
-                        marginBottom: 5,
+                        marginBottom: Platform.OS == "ios" ? 10 : 5,
                         minHeight: 20,
                         maxHeight: 100,
                         textAlignVertical: 'top',
