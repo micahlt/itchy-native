@@ -39,6 +39,7 @@ import {
 } from "../../../utils/platformUtils";
 import injectedWebviewCode from "../../../utils/webview-inject";
 import { getCrashlytics, log, recordError } from "@react-native-firebase/crashlytics";
+import PressableIcon from "components/PressableIcon";
 const c = getCrashlytics();
 
 function GestureDetectorOptional({ children }) {
@@ -358,8 +359,8 @@ export default function Project() {
             headerShown: !isMaxed,
             headerRight: () => (
               <>
-                <Ionicons.Button
-                  onPressIn={() => router.push(`/projects/${id}/comments`)}
+                <PressableIcon
+                  onPress={() => router.push(`/projects/${id}/comments`)}
                   name="chatbubble-ellipses"
                   size={24}
                   color={colors.textSecondary}

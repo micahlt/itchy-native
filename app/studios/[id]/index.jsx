@@ -22,6 +22,7 @@ import HorizontalContentScroller from "../../../components/HorizontalContentScro
 import TexturedButton from "../../../components/TexturedButton";
 import SquircleView from "../../../components/SquircleView";
 import { getLiquidPlusPadding } from "../../../utils/platformUtils";
+import PressableIcon from "components/PressableIcon";
 
 export default function Studio() {
   const { id } = useLocalSearchParams();
@@ -103,16 +104,16 @@ export default function Studio() {
           title: studio?.title ? "" : "Loading...",
           headerRight: () => (
             <>
-              <Ionicons.Button
-                onPressIn={() => router.push(`/studios/${id}/comments`)}
+              <PressableIcon
+                onPress={() => router.push(`/studios/${id}/comments`)}
                 name="chatbubble-ellipses"
                 size={22}
                 color={colors.textSecondary}
                 backgroundColor="transparent"
-                style={{ paddingRight: 0 }}
+                style={{ paddingRight: 10 }}
               />
-              <Ionicons.Button
-                onPressIn={openStudio}
+              <PressableIcon
+                onPress={openStudio}
                 name="open"
                 size={24}
                 color={colors.textSecondary}

@@ -20,6 +20,7 @@ import { useMMKVString } from "react-native-mmkv";
 import HorizontalContentScroller from "../../../components/HorizontalContentScroller";
 import TexturedButton from "../../../components/TexturedButton";
 import { getLiquidPlusPadding } from "../../../utils/platformUtils";
+import PressableIcon from "components/PressableIcon";
 
 export default function User() {
   const { username } = useLocalSearchParams();
@@ -124,15 +125,15 @@ export default function User() {
           title: username,
           headerRight: () => (
             <>
-              <Ionicons.Button
+              <PressableIcon
                 onPressIn={() => router.push(`/users/${username}/comments`)}
                 name="chatbubble-ellipses"
                 size={22}
                 color={colors.textSecondary}
                 backgroundColor="transparent"
-                style={{ paddingRight: 0 }}
+                style={{ paddingRight: 10 }}
               />
-              <Ionicons.Button
+              <PressableIcon
                 onPressIn={openProfile}
                 name="open"
                 size={24}

@@ -10,6 +10,7 @@ import { controlOptionToFullName } from "../../../../utils/controlOptions";
 import { useMMKVObject } from "react-native-mmkv";
 import { TouchableOpacity } from "react-native";
 import { getLiquidPlusPadding } from "../../../../utils/platformUtils";
+import PressableIcon from "components/PressableIcon";
 
 export default function FindControls() {
   const { colors, isDark } = useTheme();
@@ -203,12 +204,11 @@ export default function FindControls() {
       <Stack.Screen
         options={{
           headerRight: () => (
-            <MaterialIcons.Button
+            <PressableIcon
               name="playlist-add"
-              onPressIn={makeNewMapping}
+              onPress={makeNewMapping}
               size={24}
               color={colors.textSecondary}
-              backgroundColor="transparent"
               style={{ paddingRight: 0 }}
             />
           ),

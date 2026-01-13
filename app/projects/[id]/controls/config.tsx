@@ -13,6 +13,7 @@ import { getLiquidPlusPadding } from "../../../../utils/platformUtils";
 import PickerBottomSheet from "../../../../components/PickerBottomSheet";
 // @ts-expect-error
 import Pressable from "../../../../components/Pressable";
+import PressableIcon from "components/PressableIcon";
 
 interface ControlMapping {
   controlOptions: {
@@ -495,12 +496,11 @@ export default function ControlsScreen() {
       <Stack.Screen
         options={{
           headerRight: () => (
-            <MaterialIcons.Button
+            <PressableIcon
               name="save"
-              onPressIn={handleSave}
+              onPress={handleSave}
               size={24}
               color={colors.text}
-              backgroundColor="transparent"
               style={{ paddingRight: 0 }}
             />
           ),
