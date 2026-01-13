@@ -4,7 +4,7 @@ import Pressable from "./Pressable"
 import { useTheme } from "../utils/theme";
 import { useRouter } from "expo-router";
 
-export default function UserList({ users = [], onEndReached }) {
+export default function UserList({ users = [], onEndReached, contentStyle = {} }) {
     const { colors } = useTheme();
     const router = useRouter();
 
@@ -20,5 +20,5 @@ export default function UserList({ users = [], onEndReached }) {
                 <ItchyText style={{ fontSize: 14, fontWeight: "bold", color: colors.text }}>{user.username}</ItchyText>
             </View>
         </Pressable>
-    }} style={{ flex: 1 }} contentContainerStyle={{ paddingTop: 5 }} onEndReached={onEndReached} onEndReachedThreshold={1.2} />
+    }} style={{ flex: 1 }} contentContainerStyle={contentStyle} onEndReached={onEndReached} onEndReachedThreshold={1.2} />
 }
