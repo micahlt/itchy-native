@@ -48,6 +48,7 @@ jobs:
         run: |
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
           # We use the 'preview' profile for internal/Ad-Hoc distribution
+          export EAS_PWD=$PWD
           eas build --platform ios --profile preview --local --non-interactive --output=./app-ios-debug.ipa
         env:
           NODE_ENV: development
