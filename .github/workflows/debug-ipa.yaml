@@ -1,0 +1,60 @@
+name: iOS Debug Build (BrowserStack)
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Reason for build (optional)"
+        required: false
+        default: "Testing on BrowserStack"
+
+env:
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+  EXPO_APPLE_ID: ${{ secrets.EXPO_APPLE_ID }}
+  EXPO_APPLE_PASSWORD: ${{ secrets.EXPO_APPLE_PASSWORD }}
+  EXPO_TEAM_ID: ${{ secrets.EXPO_TEAM_ID }}
+  NODE_OPTIONS: --openssl-legacy-provider
+
+jobs:
+  build-ios-debug:
+    runs-on: macos-26 # Uses latest stable macOS runner
+    steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🏗 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: 📦 Install dependencies
+        run: |
+          npm install
+          npm install -g eas-cli@latest
+
+      - name: 📱 Setup EAS build cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.eas-build-local
+          key: ${{ runner.os }}-eas-build-local-${{ hashFiles('package.json') }}
+
+      - name: ⏬️ Download Google Services configs
+        run: |
+          chmod +x ./utils/downloadGoogleServices.sh
+          bash ./utils/downloadGoogleServices.sh
+
+      - name: 📱 Build iOS Development IPA
+        run: |
+          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+          # We use the 'preview' profile for internal/Ad-Hoc distribution
+          eas build --platform ios --profile preview --local --non-interactive --output=./app-ios-debug.ipa
+        env:
+          NODE_ENV: development
+
+      - name: ⬆️ Upload IPA to GitHub Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-debug-ipa
+          path: ./app-ios-debug.ipa
+          retention-days: 5 # Keeps the file for 5 days
