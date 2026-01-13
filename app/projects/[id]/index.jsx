@@ -39,7 +39,7 @@ import {
 } from "../../../utils/platformUtils";
 import injectedWebviewCode from "../../../utils/webview-inject";
 import { getCrashlytics, log, recordError } from "@react-native-firebase/crashlytics";
-import PressableIcon from "components/PressableIcon";
+import PressableIcon from "../../../components/PressableIcon";
 const c = getCrashlytics();
 
 function GestureDetectorOptional({ children }) {

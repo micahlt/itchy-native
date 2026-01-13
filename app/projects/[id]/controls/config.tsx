@@ -13,7 +13,7 @@ import { getLiquidPlusPadding } from "../../../../utils/platformUtils";
 import PickerBottomSheet from "../../../../components/PickerBottomSheet";
 // @ts-expect-error
 import Pressable from "../../../../components/Pressable";
-import PressableIcon from "components/PressableIcon";
+import PressableIcon from "../../../../components/PressableIcon";
 
 interface ControlMapping {
   controlOptions: {

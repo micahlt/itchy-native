@@ -22,7 +22,7 @@ import HorizontalContentScroller from "../../../components/HorizontalContentScro
 import TexturedButton from "../../../components/TexturedButton";
 import SquircleView from "../../../components/SquircleView";
 import { getLiquidPlusPadding } from "../../../utils/platformUtils";
-import PressableIcon from "components/PressableIcon";
+import PressableIcon from "../../../components/PressableIcon";
 
 export default function Studio() {
   const { id } = useLocalSearchParams();

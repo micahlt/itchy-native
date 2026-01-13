@@ -20,7 +20,7 @@ import { useMMKVString } from "react-native-mmkv";
 import HorizontalContentScroller from "../../../components/HorizontalContentScroller";
 import TexturedButton from "../../../components/TexturedButton";
 import { getLiquidPlusPadding } from "../../../utils/platformUtils";
-import PressableIcon from "components/PressableIcon";
+import PressableIcon from "../../../components/PressableIcon";
 
 export default function User() {
   const { username } = useLocalSearchParams();
