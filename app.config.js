@@ -74,7 +74,7 @@ module.exports = {
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
       googleServicesFile:
-        process.env.GOOGLE_SERVICES_JSON || "./google-services.json",
+        process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
     },
     ios: {
       bundleIdentifier: "org.scratchclient4.itchy",
@@ -89,7 +89,7 @@ module.exports = {
         ITSAppUsesNonExemptEncryption: false
       },
       googleServicesFile:
-        process.env.GOOGLE_SERVICES_PLIST || "./GoogleService-Info.plist",
+        process.env.GOOGLE_SERVICES_PLIST ?? "./GoogleService-Info.plist",
     },
     extra: {
       router: {},
