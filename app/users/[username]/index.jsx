@@ -126,7 +126,7 @@ export default function User() {
           headerRight: () => (
             <>
               <PressableIcon
-                onPressIn={() => router.push(`/users/${username}/comments`)}
+                onPress={() => router.push(`/users/${username}/comments`)}
                 name="chatbubble-ellipses"
                 size={22}
                 color={colors.textSecondary}
@@ -137,7 +137,7 @@ export default function User() {
                 }}
               />
               <PressableIcon
-                onPressIn={openProfile}
+                onPress={openProfile}
                 name="open"
                 size={24}
                 color={colors.textSecondary}

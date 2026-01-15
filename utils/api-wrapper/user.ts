@@ -23,12 +23,12 @@ const APIUser = {
     return res.ok;
   },
   areCommentsOpen: async (username: string): Promise<boolean> => {
-    const res = await fetch(`https://api.scratch.mit.edu/users/${username}`);
+    const res = await fetch(`https://scratch.mit.edu/users/${username}`);
     if (res.ok) {
       const userHTML = await res.text();
       if (userHTML) {
         const dom = parse(userHTML);
-        if (dom.querySelector(".comments-off") != null) {
+        if (dom.querySelector(".comments-off") == null) {
           return true;
         } else {
           return false;
