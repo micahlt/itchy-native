@@ -135,6 +135,17 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: 🏗 Checkout repository
+        uses: actions/checkout@v4
+
+      # New Step: Generate the version info you were trying to use
+      - name: 📝 Get version info
+        id: build-info
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "build_number=${{ github.run_number }}" >> $GITHUB_OUTPUT
+          
       - name: ⬇️ Download Android Artifacts (if available)
         uses: actions/download-artifact@v4
         if: github.event.inputs.platform == 'all' || github.event.inputs.platform == 'android'
