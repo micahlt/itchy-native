@@ -460,7 +460,7 @@ export default function HomeScreen() {
       outlineWidth: dimensions.outlineWidth,
       borderWidth: 0.1,
       borderColor: colors.background,
-      borderTopWidth: 2,
+      borderTopWidth: 1,
       borderTopColor: colors.background,
       flex: 1,
       overflow: "visible" as const,

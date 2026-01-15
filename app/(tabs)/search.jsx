@@ -174,15 +174,18 @@ export default function Search() {
         cornerSmoothing={0.6}
         style={{
           backgroundColor: colors.background,
-          marginTop: 8,
-          paddingTop: 4,
-          marginHorizontal: 1.5,
+          marginTop: 4,
+          paddingTop: 10,
+          marginHorizontal: 0,
           borderTopLeftRadius: 32,
           borderTopRightRadius: 32,
           outlineColor: colors.outlineCard,
           outlineStyle: "solid",
           outlineWidth: dimensions.outlineWidth,
-          borderTopColor: colors.highlight,
+          borderWidth: 0.1,
+          borderColor: colors.background,
+          borderTopWidth: 1,
+          borderTopColor: colors.background,
           flex: 1,
           overflow: "visible",
           boxShadow:
@@ -195,7 +198,7 @@ export default function Search() {
             overflow: "hidden",
             borderTopLeftRadius: dimensions.largeRadius,
             borderTopRightRadius: dimensions.largeRadius,
-            marginTop: -4,
+            marginTop: -6,
           }}
         >
           <FlashList

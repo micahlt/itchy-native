@@ -276,9 +276,13 @@ export default function Messages() {
       <SquircleView
         cornerSmoothing={0.6}
         style={{
-          backgroundColor: colors.background,
+          boxShadow:
+            "0px -2px 16px rgba(0,94,185,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
           marginTop: 0,
-          marginHorizontal: 1.5,
+          paddingTop: 10,
+          marginLeft: 0,
+          marginRight: 0,
+          backgroundColor: colors.background,
           borderTopLeftRadius: 32,
           borderTopRightRadius: 32,
           outlineColor: colors.outlineCard,
@@ -286,12 +290,10 @@ export default function Messages() {
           outlineWidth: dimensions.outlineWidth,
           borderWidth: 0.1,
           borderColor: colors.background,
-          borderTopWidth: 4,
-          borderTopColor: colors.highlight,
+          borderTopWidth: 1,
+          borderTopColor: colors.background,
           flex: 1,
-          overflow: "visible",
-          boxShadow:
-            "0px -2px 16px rgba(0,94,185,0.15), 0px 6px 8px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
+          overflow: "visible"
         }}
       >
         <SquircleView
@@ -300,7 +302,7 @@ export default function Messages() {
             overflow: "hidden",
             borderTopLeftRadius: dimensions.largeRadius,
             borderTopRightRadius: dimensions.largeRadius,
-            marginTop: 0,
+            marginTop: 0 - 5,
           }}
         >
           <FlashList
