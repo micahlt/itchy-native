@@ -84,6 +84,7 @@ export default function CommentEditor({ onSubmit, reply, onClearReply, loading, 
             }}>
                 <TextInput
                     placeholder={commentsOpen ? "Add a comment..." : "Comments are disabled."}
+                    placeholderTextColor={colors.textSecondary}
                     style={{
                         width: width - 80,
                         color: colors.text,
