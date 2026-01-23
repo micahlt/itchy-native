@@ -21,7 +21,7 @@ import { Comment } from "utils/api-wrapper/types/project";
 import Pressable from "./Pressable";
 import APIUser from "utils/api-wrapper/user";
 import { User } from "utils/api-wrapper/types/user";
-import { useMMKVObject, useMMKVString } from "react-native-mmkv";
+import { useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
 
 type CommentEditorProps = {
   onSubmit: (...args: any[]) => any;
@@ -53,6 +53,8 @@ export default function CommentEditor({
   const [user] = useMMKVObject<User>("user");
   const [csrf] = useMMKVString("csrfToken");
   const [token] = useMMKVString("token");
+  const commentEditor = useRef<View>(null);
+  const [commentsHeight, setCommentsHeight] = useMMKVNumber("commentsHeight");
 
   useFocusEffect(
     useCallback(() => {
@@ -93,6 +95,12 @@ export default function CommentEditor({
       inputRef?.current?.focus();
     }
   }, [reply]);
+
+  useEffect(() => {
+    commentEditor?.current?.measure((x, y, width, height) => {
+      setCommentsHeight(height);
+    });
+  }, [content, reply]);
 
   const commentTooLong = useMemo(() => {
     return content.length > 500;
@@ -180,6 +188,7 @@ export default function CommentEditor({
           boxShadow:
             "0px -2px 16px rgba(0,94,185,0.15),0px 40px 25px rgba(0,0,0,0.5), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
         }}
+        ref={commentEditor}
       >
         {!!reply && (
           <View

@@ -3,22 +3,33 @@ import {
   log,
   recordError,
 } from "@react-native-firebase/crashlytics";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import Stack from "expo-router/stack";
 import { ThemeProvider, useTheme } from "../utils/theme";
 import { Platform, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useMMKVObject, useMMKVString } from "react-native-mmkv";
-import { MaterialIcons } from "@expo/vector-icons";
+import { useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import APIAuth from "../utils/api-wrapper/auth";
 import storage from "../utils/storage";
 import encryptedStorage from "../utils/encryptedStorage";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import { SWRConfig } from "swr";
 import * as Network from "expo-network";
 import { isLiquidPlus } from "../utils/platformUtils";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import RNShake from "react-native-shake";
+import SquircleView from "components/SquircleView";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+// @ts-expect-error
+import Pressable from "components/Pressable";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withTiming,
+  useAnimatedReaction,
+} from "react-native-reanimated";
 
 const c = getCrashlytics();
 
@@ -215,6 +226,71 @@ interface ThemeConsumerInnerProps {
 function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   const { colors } = useTheme();
   const liquidPlus = isLiquidPlus();
+  const insets = useSafeAreaInsets();
+  const path = usePathname();
+  const translateX = useSharedValue(0);
+  const translateY = useSharedValue(0);
+  const [commentsHeight] = useMMKVNumber("commentsHeight");
+
+  const shouldHide = useMemo(() => {
+    switch (path) {
+      case "/":
+        return true;
+      case "/settings":
+        return true;
+      case "/multiplay":
+        return true;
+      case "/messages":
+        return true;
+      case "/login":
+        return true;
+      case "/search":
+        return true;
+    }
+    if (path == "/") {
+      return true;
+    } else if (path == "/settings") {
+      return true;
+    } else if (path == "/multiplay") {
+      return true;
+    } else if (path == "/login") {
+      return true;
+    }
+  }, [path]);
+
+  const shouldElevate = useMemo(() => {
+    if (path.includes("/comments")) {
+      return true;
+    }
+  }, [path]);
+
+  useAnimatedReaction(
+    () => shouldHide,
+    (shouldHideValue) => {
+      translateX.value = withTiming(shouldHideValue ? -100 : 0, {
+        duration: 200,
+      });
+    }
+  );
+
+  useAnimatedReaction(
+    () => shouldElevate,
+    (shouldElevateValue) => {
+      translateY.value = withTiming(
+        shouldElevateValue ? -(commentsHeight ?? 90) : 0,
+        {
+          duration: 200,
+        }
+      );
+    }
+  );
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: translateX.value },
+      { translateY: translateY.value },
+    ],
+  }));
 
   // If colors aren't ready yet, render nothing (prevents flash)
   if (!colors) return null;
@@ -224,6 +300,40 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
       style={{ backgroundColor: colors.background, flex: 1 }}
       collapsable={false}
     >
+      <View
+        style={{
+          position: "absolute",
+          bottom: insets.bottom + 5,
+          left: 10,
+          zIndex: 100,
+        }}
+      >
+        <Animated.View
+          style={[
+            {
+              backgroundColor: colors.backgroundSecondary,
+              boxShadow:
+                "0px -2px 8px rgba(0,94,185,0.1),0px 5px 6px rgba(0,0,0,0.2), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
+              borderRadius: "100%",
+              overflow: "hidden",
+            },
+            animatedStyle,
+          ]}
+        >
+          <Pressable
+            onPress={() => router.push("/")}
+            android_ripple={{
+              color: colors.ripple,
+              foreground: true,
+            }}
+            style={{
+              padding: 20,
+            }}
+          >
+            <Ionicons size={20} name="home" color={colors.text} />
+          </Pressable>
+        </Animated.View>
+      </View>
       <Stack
         screenOptions={{
           contentStyle: {
