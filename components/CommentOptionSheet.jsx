@@ -11,6 +11,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../utils/theme";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import Comment from "./Comment";
+// @ts-expect-error
 import Pressable from "./Pressable";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -29,6 +30,7 @@ export default function CommentOptionSheet({
   context,
   setComment = () => { },
   onDeleteCommentID = () => { },
+  isPageAdmin = false
 }) {
   const { colors } = useTheme();
   const [user] = useMMKVObject("user");
@@ -49,13 +51,6 @@ export default function CommentOptionSheet({
   const onViewLayout = (e) => {
     setSheetHeight(e.nativeEvent.layout.height + insets.bottom);
   };
-
-  const canDelete = useMemo(() => {
-    if (!user || !comment) return false;
-    if (user.id == context.host) return true;
-    if (user.username === context.owner) return true;
-    return false;
-  }, [user, comment, context, csrf]);
 
   const openOnScratch = useCallback(() => {
     switch (context.type) {
@@ -201,7 +196,7 @@ export default function CommentOptionSheet({
             fullWidth={true}
           />
         </View>
-        {canDelete && (
+        {isPageAdmin && (
           <TexturedButton
             onPress={deleteComment}
             style={{ marginBottom: 10 }}

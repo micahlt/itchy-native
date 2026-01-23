@@ -4,6 +4,7 @@ import {
     Platform,
     View
 } from "react-native";
+import { useMemo } from "react";
 import { useTheme } from "../utils/theme";
 import Comment from "./Comment";
 import CommentEditor from "./CommentEditor";
@@ -34,6 +35,13 @@ export default function CommentList({
     scrollRef,
 }) {
     const { colors } = useTheme();
+
+    const isAdmin = useMemo(() => {
+        if (!user || !comments || !comments.length) return false;
+        if (user.id == commentOptionContext.host) return true;
+        if (user.username === commentOptionContext.owner) return true;
+        return false;
+    }, [user, comments, commentOptionContext]);
 
     const renderComment = ({ item, index }) => {
         return (
@@ -89,12 +97,14 @@ export default function CommentList({
                         onClearReply={() => setReply(undefined)}
                         loading={isPostingComment}
                         commentsOpen={commentsOpen}
+                        isPageAdmin={isAdmin}
                     />
                 )}
                 <CommentOptionSheet
                     comment={commentOptionsObj}
                     setComment={setCommentOptionsObj}
                     context={commentOptionContext}
+                    isPageAdmin={isAdmin}
                     onDeleteCommentID={onDeleteComment}
                 />
                 <MutedDialog

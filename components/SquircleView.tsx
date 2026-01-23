@@ -2,8 +2,8 @@ import React from "react";
 import { StyleProp, View, ViewProps, ViewStyle } from "react-native";
 
 type SquircleViewProps = ViewProps & {
-  style: StyleProp<ViewStyle>;
-  children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+  children?: React.ReactNode;
 };
 
 const SquircleView = React.forwardRef<View, SquircleViewProps>(

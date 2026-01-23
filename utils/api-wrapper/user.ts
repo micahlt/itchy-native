@@ -526,6 +526,36 @@ const APIUser = {
       return false;
     }
   },
+  toggleCommentsOpen: async (
+    username: string,
+    csrf: string,
+    token: string
+  ): Promise<boolean> => {
+    const req = await fetch(
+      `https://scratch.mit.edu/site-api/comments/user/${username}/toggle-comments/`,
+      {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrf,
+          "X-Token": token,
+          "x-requested-with": "XMLHttpRequest",
+          Referer: `https://scratch.mit.edu/`,
+          "User-Agent": consts.UserAgent,
+          Accept: "*/*",
+          Origin: "https://scratch.mit.edu",
+          "Cache-Control": "max-age=0, no-cache",
+          Pragma: "no-cache",
+        },
+      }
+    );
+    if (req.ok) {
+      return true;
+    } else {
+      console.warn(req.status);
+      console.warn(await req.text());
+      return false;
+    }
+  },
 };
 
 export default APIUser;
