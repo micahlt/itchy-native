@@ -356,7 +356,6 @@ export default function Project() {
         <Stack.Screen
           options={{
             title: metadata?.title || "Loading...",
-            headerShown: !isMaxed,
             headerRight: () => (
               <>
                 <PressableIcon

@@ -1,10 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
-import {
-  ColorValue,
-  StyleProp,
-  TextStyle,
-  TouchableOpacity,
-} from "react-native";
+import { ColorValue, StyleProp, TextStyle } from "react-native";
+
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 type PressableIconProps = {
   name: React.ComponentProps<typeof Ionicons>["name"];
