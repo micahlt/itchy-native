@@ -12,6 +12,7 @@ export default function Projects() {
     const [projects, setProjects] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [offset, setOffset] = useState(0);
+    const [pageTitle, setPageTitle] = useState("Projects in studio")
     useEffect(() => {
         refresh();
     }, [id]);
@@ -23,6 +24,11 @@ export default function Projects() {
             setProjects((prev) => [...prev, ...d]);
             setOffset((prev) => prev + d.length);
             setIsLoading(false);
+        }).catch(console.error);
+        ScratchAPIWrapper.studio.getStudio(id).then((d) => {
+            if (d?.title) {
+                setPageTitle(d.title)
+            }
         }).catch(console.error);
     }
 
@@ -36,7 +42,7 @@ export default function Projects() {
         <SafeAreaView edges={["bottom"]} style={{ flex: 1, backgroundColor: colors.background }}>
             <Stack.Screen
                 options={{
-                    title: "Projects in studio",
+                    title: pageTitle,
                 }}
             />
             <InfiniteScrollContentList data={projects} itemType="projects" isLoading={isLoading} onRefresh={refresh} onEndReached={load} />

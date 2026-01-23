@@ -1,5 +1,6 @@
 const REFRESH_TRIGGER_HEIGHT = 50;
 const MAX_PULL_HEIGHT = 75;
+const ITCHY_FEATURED_STUDIO_ID = 51280014;
 import { ImageStyle } from "expo-image";
 import {
   getCrashlytics,
@@ -200,6 +201,32 @@ export default function HomeScreen() {
     }
   );
 
+  const {
+    data: itchyFeaturedData,
+    isLoading: itchyFeaturedLoading,
+    mutate: refreshItchyFeatured,
+  } = useSWR(
+    "itchy-featured",
+    async () => {
+      try {
+        log(c, "Fetching Itchy Featured data");
+        const result = await ScratchAPIWrapper.studio.getProjects(
+          ITCHY_FEATURED_STUDIO_ID
+        );
+        log(c, "Successfully fetched Itchy Featured data");
+        return result;
+      } catch (error) {
+        log(c, "Failed to fetch Itchy Featured data");
+        recordError(c, error as Error);
+        throw error;
+      }
+    },
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
+
   // SWR for friends data
   const { data: friendsLoves = [], mutate: refreshFriendsLoves } = useSWR(
     username && token ? ["friendsLoves", username, token] : null,
@@ -273,6 +300,7 @@ export default function HomeScreen() {
       refreshExplore();
       refreshFriendsLoves();
       refreshFriendsProjects();
+      refreshItchyFeatured();
       // Refresh feed using SWR's global mutate
       if (username && token) {
         swrMutate(["feed", username, token]);
@@ -290,7 +318,12 @@ export default function HomeScreen() {
       log(c, "Error during refresh operation");
       recordError(c, error as Error);
     }
-  }, [refreshExplore, refreshFriendsLoves, refreshFriendsProjects]);
+  }, [
+    refreshExplore,
+    refreshFriendsLoves,
+    refreshFriendsProjects,
+    refreshItchyFeatured,
+  ]);
 
   // Memoize vib function to prevent recreations
   const vib = useCallback((length: "tick" | "long") => {
@@ -533,6 +566,20 @@ export default function HomeScreen() {
                 title="Created by Friends"
                 data={friendsProjects}
                 iconName="people"
+              />
+            ) : (
+              <></>
+            )}
+
+            {itchyFeaturedData?.length ? (
+              <HorizontalContentScroller
+                title="Featured by Itchy"
+                data={itchyFeaturedData}
+                iconName="checkbox"
+                onShowMore={() => {
+                  router.push(`/studios/${ITCHY_FEATURED_STUDIO_ID}/projects`);
+                  return true;
+                }}
               />
             ) : (
               <></>
