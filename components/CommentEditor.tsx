@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import ItchyText from "./ItchyText";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "../utils/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
@@ -40,7 +40,7 @@ export default function CommentEditor({
   commentsOpen = true,
   isPageAdmin = false,
 }: CommentEditorProps) {
-  const [content, setContent] = useState<string>();
+  const [content, setContent] = useState<string>("");
   const { width } = useWindowDimensions();
   const { colors, dimensions } = useTheme();
   const inputRef = useRef<RNTextInput>(null);
@@ -94,6 +94,10 @@ export default function CommentEditor({
     }
   }, [reply]);
 
+  const commentTooLong = useMemo(() => {
+    return content.length > 500;
+  }, [content]);
+
   const onPressSubmit = () => {
     if (loading) return;
     if (!content?.trim()) return;
@@ -130,7 +134,7 @@ export default function CommentEditor({
             marginLeft: "auto",
             borderRadius: dimensions.largeRadius,
             boxShadow:
-              "0px -2px 16px rgba(0,94,185,0.15),0px 40px 25px rgba(0,0,0,0.5), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
+              "0px -2px 8px rgba(0,94,185,0.1),0px 5px 6px rgba(0,0,0,0.2), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
             alignItems: "center",
             overflow: "hidden",
           }}
@@ -151,14 +155,14 @@ export default function CommentEditor({
             <Ionicons
               size={18}
               style={{ marginRight: 8 }}
-              color={colors.text}
+              color={colors.accent}
               name={
                 localCommentsOpen
                   ? "checkmark-circle"
                   : "checkmark-circle-outline"
               }
             />
-            <ItchyText style={{ color: colors.text, fontSize: 14 }}>
+            <ItchyText style={{ color: colors.accent, fontSize: 14 }}>
               {localCommentsOpen ? "Disable" : "Enable"} comments
             </ItchyText>
           </Pressable>
@@ -180,9 +184,9 @@ export default function CommentEditor({
         {!!reply && (
           <View
             style={{
-              paddingHorizontal: 15,
+              paddingHorizontal: 20,
               paddingTop: 15,
-              marginBottom: 0,
+              marginBottom: -10,
               zIndex: 1,
               flexDirection: "row",
               justifyContent: "flex-start",
@@ -206,6 +210,32 @@ export default function CommentEditor({
               />
             </TouchableOpacity>
           </View>
+        )}
+        {localCommentsOpen ? (
+          <View
+            style={{
+              paddingHorizontal: 20,
+              paddingTop: 15,
+              marginBottom: -5,
+              zIndex: 1,
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              alignItems: "center",
+            }}
+          >
+            <ItchyText
+              style={{
+                color: colors.textSecondary,
+                fontSize: 12,
+                lineHeight: 14,
+              }}
+            >
+              {500 - content.length > -1 ? 500 - content.length : 0} characters
+              remaining
+            </ItchyText>
+          </View>
+        ) : (
+          <></>
         )}
         <View
           style={{
@@ -242,7 +272,7 @@ export default function CommentEditor({
           />
           <TouchableOpacity
             onPress={onPressSubmit}
-            disabled={loading || !localCommentsOpen}
+            disabled={loading || !localCommentsOpen || commentTooLong}
             style={{
               width: 24,
               flexGrow: 1,
@@ -258,7 +288,11 @@ export default function CommentEditor({
               <MaterialIcons
                 name="send"
                 size={24}
-                color={localCommentsOpen ? colors.accent : colors.outline}
+                color={
+                  localCommentsOpen && !commentTooLong
+                    ? colors.accent
+                    : colors.outline
+                }
               />
             )}
           </TouchableOpacity>
