@@ -23,6 +23,7 @@ import TexturedButton from "../../../components/TexturedButton";
 import SquircleView from "../../../components/SquircleView";
 import { getLiquidPlusPadding } from "../../../utils/platformUtils";
 import PressableIcon from "../../../components/PressableIcon";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 export default function Studio() {
   const { id } = useLocalSearchParams();
@@ -147,144 +148,156 @@ export default function Studio() {
       >
         {studio && (
           <>
-            <ItchyText
-              style={{
-                color: colors.text,
-                fontSize: 24,
-                fontWeight: "bold",
-                marginHorizontal: "auto",
-                textAlign: "center",
-                paddingHorizontal: 15,
-                marginBottom: 15,
-              }}
-            >
-              {studio.title}
-            </ItchyText>
-            <SquircleView
-              co
-              style={{
-                width: width - 30,
-                aspectRatio: 1.7 / 1,
-                borderRadius: 15,
-                overflow: "hidden",
-                margin: "auto",
-              }}
-              cornerSmoothing={0.6}
-            >
-              <Image
-                source={{
-                  uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${id}.png`,
+            <Animated.View entering={FadeInDown.delay(0).springify()}>
+              <ItchyText
+                style={{
+                  color: colors.text,
+                  fontSize: 24,
+                  fontWeight: "bold",
+                  marginHorizontal: "auto",
+                  textAlign: "center",
+                  paddingHorizontal: 15,
+                  marginBottom: 15,
                 }}
-                style={{ width: "100%", height: "100%" }}
-              />
-            </SquircleView>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                padding: 15,
-                paddingBottom: 0,
-              }}
-            >
+              >
+                {studio.title}
+              </ItchyText>
+            </Animated.View>
+            <Animated.View entering={FadeInDown.delay(50).springify()}>
+              <SquircleView
+                co
+                style={{
+                  width: width - 30,
+                  aspectRatio: 1.7 / 1,
+                  borderRadius: 15,
+                  overflow: "hidden",
+                  margin: "auto",
+                }}
+                cornerSmoothing={0.6}
+              >
+                <Image
+                  source={{
+                    uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${id}.png`,
+                  }}
+                  style={{ width: "100%", height: "100%" }}
+                />
+              </SquircleView>
+            </Animated.View>
+            <Animated.View entering={FadeInDown.delay(100).springify()}>
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "space-around",
-                  marginRight: 10,
-                  flex: 1,
+                  padding: 15,
+                  paddingBottom: 0,
                 }}
               >
-                {studio?.stats?.followers && (
-                  <View style={{ alignItems: "center" }}>
-                    <ItchyText
-                      style={{
-                        color: colors.text,
-                        fontWeight: "bold",
-                        fontSize: 20,
-                      }}
-                    >
-                      {approximateNumber(studio.stats.followers)}
-                    </ItchyText>
-                    <ItchyText style={{ color: colors.text, fontSize: 12 }}>
-                      Followers
-                    </ItchyText>
-                  </View>
-                )}
-                {studio?.stats?.managers && (
-                  <View style={{ alignItems: "center" }}>
-                    <ItchyText
-                      style={{
-                        color: colors.text,
-                        fontWeight: "bold",
-                        fontSize: 20,
-                      }}
-                    >
-                      {approximateNumber(studio.stats.managers)}
-                    </ItchyText>
-                    <ItchyText style={{ color: colors.text, fontSize: 12 }}>
-                      Managers
-                    </ItchyText>
-                  </View>
-                )}
-                {studio?.history?.created && (
-                  <View style={{ alignItems: "center" }}>
-                    <ItchyText
-                      style={{
-                        color: colors.text,
-                        fontWeight: "bold",
-                        fontSize: 20,
-                      }}
-                    >
-                      {new Date(studio.history.created).getFullYear()}
-                    </ItchyText>
-                    <ItchyText style={{ color: colors.text, fontSize: 12 }}>
-                      Created
-                    </ItchyText>
-                  </View>
-                )}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-around",
+                    marginRight: 10,
+                    flex: 1,
+                  }}
+                >
+                  {studio?.stats?.followers && (
+                    <View style={{ alignItems: "center" }}>
+                      <ItchyText
+                        style={{
+                          color: colors.text,
+                          fontWeight: "bold",
+                          fontSize: 20,
+                        }}
+                      >
+                        {approximateNumber(studio.stats.followers)}
+                      </ItchyText>
+                      <ItchyText style={{ color: colors.text, fontSize: 12 }}>
+                        Followers
+                      </ItchyText>
+                    </View>
+                  )}
+                  {studio?.stats?.managers && (
+                    <View style={{ alignItems: "center" }}>
+                      <ItchyText
+                        style={{
+                          color: colors.text,
+                          fontWeight: "bold",
+                          fontSize: 20,
+                        }}
+                      >
+                        {approximateNumber(studio.stats.managers)}
+                      </ItchyText>
+                      <ItchyText style={{ color: colors.text, fontSize: 12 }}>
+                        Managers
+                      </ItchyText>
+                    </View>
+                  )}
+                  {studio?.history?.created && (
+                    <View style={{ alignItems: "center" }}>
+                      <ItchyText
+                        style={{
+                          color: colors.text,
+                          fontWeight: "bold",
+                          fontSize: 20,
+                        }}
+                      >
+                        {new Date(studio.history.created).getFullYear()}
+                      </ItchyText>
+                      <ItchyText style={{ color: colors.text, fontSize: 12 }}>
+                        Created
+                      </ItchyText>
+                    </View>
+                  )}
+                </View>
               </View>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginVertical: 15,
-                columnGap: 10,
-                paddingHorizontal: 15,
-              }}
-            >
-              {followingStatus !== undefined && (
+            </Animated.View>
+            <Animated.View entering={FadeInDown.delay(150).springify()}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginVertical: 15,
+                  columnGap: 10,
+                  paddingHorizontal: 15,
+                }}
+              >
+                {followingStatus !== undefined && (
+                  <TexturedButton
+                    style={{ flex: 1 }}
+                    onPress={changeFollowingStatus}
+                  >
+                    {followingStatus === true ? "Unfollow" : "Follow"}
+                  </TexturedButton>
+                )}
                 <TexturedButton
                   style={{ flex: 1 }}
-                  onPress={changeFollowingStatus}
+                  onPress={() => router.push(`/studios/${id}/activity`)}
                 >
-                  {followingStatus === true ? "Unfollow" : "Follow"}
+                  Activity
                 </TexturedButton>
-              )}
-              <TexturedButton
-                style={{ flex: 1 }}
-                onPress={() => router.push(`/studios/${id}/activity`)}
-              >
-                Activity
-              </TexturedButton>
-            </View>
-            <Card style={{ padding: 20, marginHorizontal: 15 }}>
-              <LinkifiedText
-                style={{ color: colors.text }}
-                text={studio.description}
+              </View>
+            </Animated.View>
+            <Animated.View entering={FadeInDown.delay(200).springify()}>
+              <Card style={{ padding: 20, marginHorizontal: 15 }}>
+                <LinkifiedText
+                  style={{ color: colors.text }}
+                  text={studio.description}
+                />
+              </Card>
+            </Animated.View>
+            <Animated.View entering={FadeInDown.delay(250).springify()}>
+              <HorizontalContentScroller
+                data={projects}
+                itemType="projects"
+                itemCount={studio.stats.projects}
+                headerStyle={{ marginTop: 20 }}
+                iconName="play"
+                onShowMore={() => router.push(`/studios/${id}/projects`)}
+                title="Projects"
               />
-            </Card>
-            <HorizontalContentScroller
-              data={projects}
-              itemType="projects"
-              itemCount={studio.stats.projects}
-              headerStyle={{ marginTop: 20 }}
-              iconName="play"
-              onShowMore={() => router.push(`/studios/${id}/projects`)}
-              title="Projects"
-            />
+            </Animated.View>
           </>
         )}
       </ScrollView>
