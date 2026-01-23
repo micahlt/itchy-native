@@ -19,11 +19,9 @@ import { SWRConfig } from "swr";
 import * as Network from "expo-network";
 import { isLiquidPlus } from "../utils/platformUtils";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import RNShake from "react-native-shake";
-import SquircleView from "components/SquircleView";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 // @ts-expect-error
-import Pressable from "components/Pressable";
+import Pressable from "../components/Pressable";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
