@@ -49,12 +49,14 @@ export const useMultiPlayHost = (
           hasInitialized.current = false; // Allow retry after error
           break;
 
-        case "disconnected":
-          setConnected(false);
-          setPeerConnected(false);
-          setRoomCode("");
-          setConnectionStatus("Idle");
-          hasInitialized.current = false; // Allow reconnection
+        case "connectionState":
+          if (message.payload == "disconnected") {
+            setConnected(false);
+            setPeerConnected(false);
+            setRoomCode("");
+            setConnectionStatus("Idle");
+            hasInitialized.current = false; // Allow reconnection
+          }
           break;
 
         default:

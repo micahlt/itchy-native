@@ -41,27 +41,39 @@ export default function MultiPlayConfigSheet({
   };
 
   const getStatusInfo = () => {
+    if (connectionStatus.startsWith("Room Created:")) {
+      return { text: "Room created! Waiting for player...", color: colors.accent };
+    }
+    if (connectionStatus.startsWith("Error:")) {
+      return { text: connectionStatus, color: "#ff4750" };
+    }
+
     switch (connectionStatus) {
-      case "idle":
+      case "Idle":
         return { text: "Ready to host", color: colors.textSecondary };
-      case "signaling-connected":
+      case "Initializing...":
         return { text: "Creating room...", color: colors.accent };
-      case "waiting-for-peer":
-        return { text: "Waiting for player to join", color: colors.accent };
-      case "peer-connected":
+      case "initial-connect":
+        return { text: "Connecting to server...", color: colors.accent };
+      case "connected-signaling":
+      case "connected-joining":
+        return { text: "Connected to server...", color: colors.accent };
+      case "waiting-host":
+        return { text: "Waiting for host...", color: colors.accent };
+      case "peer-joined":
         return {
-          text: "Player joined, establishing connection...",
+          text: "Player joined! Establishing connection...",
           color: "#32ee87",
         };
-      case "connected":
+      case "Data channel connected.":
         return { text: "Connection active", color: "#32ee87" };
-      case "disconnected":
-      case "closed":
+      case "disconnected-host":
+      case "disconnected-closed":
         return { text: "Disconnected", color: colors.textSecondary };
-      case "failed":
-        return { text: "Connection failed", color: "#ff4750" };
-      case "error":
-        return { text: "Error occurred", color: "#ff4750" };
+      case "join-failed":
+        return { text: "Failed to join room", color: "#ff4750" };
+      case "error-socket":
+        return { text: "Connection error", color: "#ff4750" };
       default:
         return { text: connectionStatus, color: colors.textSecondary };
     }
@@ -204,7 +216,7 @@ export default function MultiPlayConfigSheet({
           </View>
         )}
 
-        {connectionStatus === "failed" && (
+        {connectionStatus === "join-failed" && (
           <ItchyText
             style={{
               color: colors.textSecondary,
@@ -231,7 +243,7 @@ export default function MultiPlayConfigSheet({
           </ItchyText>
         )}
 
-        {connectionStatus !== "failed" && (
+        {connectionStatus !== "join-failed" && (
           <ItchyText
             selectable={true}
             style={{
@@ -290,15 +302,15 @@ export default function MultiPlayConfigSheet({
             style={{
               marginHorizontal: 5,
               backgroundColor:
-                connectionStatus !== "idle" || isUserUnder13()
+                connectionStatus !== "Idle" || isUserUnder13()
                   ? colors.backgroundTertiary
                   : colors.backgroundSecondary,
-              opacity: connectionStatus !== "idle" || isUserUnder13() ? 0.6 : 1,
+              opacity: connectionStatus !== "Idle" || isUserUnder13() ? 0.6 : 1,
             }}
             provider="gesture-handler"
             textStyle={{
               color:
-                connectionStatus !== "idle" || isUserUnder13()
+                connectionStatus !== "Idle" || isUserUnder13()
                   ? colors.textSecondary
                   : colors.text,
               fontSize: 16,
@@ -307,7 +319,7 @@ export default function MultiPlayConfigSheet({
           >
             {isUserUnder13()
               ? "Age Restricted"
-              : connectionStatus !== "idle" && connectionStatus !== "failed"
+              : connectionStatus !== "Idle" && connectionStatus !== "join-failed"
                 ? "Connecting..."
                 : "Start MultiPlay"}
           </TexturedButton>

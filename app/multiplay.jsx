@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -46,7 +46,13 @@ export default function MultiPlay() {
   const insets = useSafeAreaInsets();
   const rtcViewRef = useRef(null);
   const lastMouseUpdate = useRef(0);
-
+  // Handle disconnected-host state
+  useEffect(() => {
+    if (status === "disconnected-host") {
+      setLoading(false);
+      setRoomCode("");
+    }
+  }, [status]);
   // Check if user is under 13 years old
   const isUserUnder13 = () => {
     if (!user || !user.birthMonth || !user.birthYear) return true;
@@ -143,11 +149,19 @@ export default function MultiPlay() {
             editable={!isUserUnder13()}
           />
           <Chip.Icon
-            icon={status === "waiting-host" || status === "connected-signaling" ? "radio" : "warning"}
-            text={status}
+            icon={status === "Data channel connected." || status === "waiting-host" ? "radio" : "warning"}
+            text={status === "disconnected-host" ? "Host disconnected" : status}
             mode="filled"
             style={{ marginRight: 15 }}
-            color={status === "waiting-host" || status === "connected-signaling" ? "#1fa81f" : (status === "Idle" ? colors.accent : undefined)}
+            color={
+              status === "Data channel connected." || status === "waiting-host"
+                ? "#1fa81f"
+                : status === "disconnected-host"
+                  ? "#ff4750"
+                  : status === "Idle"
+                    ? colors.accent
+                    : undefined
+            }
           />
         </View>
         {isUserUnder13() && !stream ? (
@@ -183,6 +197,36 @@ export default function MultiPlay() {
             </ItchyText>
           </View>
         ) : <></>}
+        {status === "disconnected-host" && (
+          <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 8,
+              }}
+            >
+              <MaterialIcons
+                name="warning"
+                size={20}
+                color="#ff4750"
+                style={{ marginRight: 8 }}
+              />
+              <ItchyText
+                style={{
+                  color: "#ff4750",
+                  fontSize: 16,
+                  fontWeight: "bold",
+                }}
+              >
+                Connection Lost
+              </ItchyText>
+            </View>
+            <ItchyText style={{ color: colors.text, lineHeight: 17, marginBottom: 5 }}>
+              The host has disconnected. You can enter a new room code to join another session.
+            </ItchyText>
+          </View>
+        )}
         {!!stream ? (
           <GestureDetector gesture={composedGesture}>
             <View
