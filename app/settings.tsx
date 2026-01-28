@@ -176,8 +176,8 @@ export default function SettingsScreen() {
   const [crashlyticsEnabled, setCrashlyticsEnabled] = useState(
     c.isCrashlyticsCollectionEnabled
   );
-  const [experimentalFeed, setExperimentalFeed] =
-    useMMKVBoolean("experimentalFeed");
+  const [showHomeButton, setShowHomeButton] =
+    useMMKVBoolean("globalHomeButton");
 
   const handleForceDarkToggle = (v: boolean) => {
     // MMKV boolean hook stores true/false; clear not needed.
@@ -375,12 +375,12 @@ export default function SettingsScreen() {
           s.middleSettingContainer,
         ]}
       >
-        <ItchyText style={s.settingTitle}>Experimental feed</ItchyText>
+        <ItchyText style={s.settingTitle}>Magic home button</ItchyText>
         <Switch
           thumbColor="white"
           trackColor={{ false: "#686868", true: colors.accent }}
-          onValueChange={(v) => setExperimentalFeed(v)}
-          value={experimentalFeed === true}
+          onValueChange={(v) => setShowHomeButton(v)}
+          value={showHomeButton === true}
         />
       </SquircleView>
       <SquircleView
@@ -396,8 +396,8 @@ export default function SettingsScreen() {
         ]}
       >
         <ItchyText style={{ color: colors.text, fontSize: 12, opacity: 0.6 }}>
-          Displays an "Explore more" button at the bottom of the screen that
-          opens an experimental infinite-scrolling feed of projects and studios.
+          Displays a floating home button that intelligently positions itself so
+          you can get to the front page faster.
         </ItchyText>
       </SquircleView>
       <SquircleView style={[s.settingContainer, s.middleSettingContainer]}>

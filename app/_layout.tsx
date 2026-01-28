@@ -8,7 +8,12 @@ import Stack from "expo-router/stack";
 import { ThemeProvider, useTheme } from "../utils/theme";
 import { Platform, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
+import {
+  useMMKVBoolean,
+  useMMKVNumber,
+  useMMKVObject,
+  useMMKVString,
+} from "react-native-mmkv";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import APIAuth from "../utils/api-wrapper/auth";
@@ -229,30 +234,27 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   const translateX = useSharedValue(0);
   const translateY = useSharedValue(0);
   const [commentsHeight] = useMMKVNumber("commentsHeight");
+  const [showHomeButton, setShowHomeButton] =
+    useMMKVBoolean("globalHomeButton");
+
+  useEffect(() => {
+    if (showHomeButton == undefined || showHomeButton == null) {
+      setShowHomeButton(true);
+    }
+  });
 
   const shouldHide = useMemo(() => {
     switch (path) {
       case "/":
-        return true;
-      case "/settings":
-        return true;
-      case "/multiplay":
-        return true;
-      case "/messages":
-        return true;
       case "/login":
-        return true;
+      case "/settings":
+      case "/multiplay":
+      case "/messages":
       case "/search":
+      case "/onboarding":
         return true;
-    }
-    if (path == "/") {
-      return true;
-    } else if (path == "/settings") {
-      return true;
-    } else if (path == "/multiplay") {
-      return true;
-    } else if (path == "/login") {
-      return true;
+      default:
+        return !showHomeButton;
     }
   }, [path]);
 
