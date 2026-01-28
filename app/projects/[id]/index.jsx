@@ -41,6 +41,8 @@ import injectedWebviewCode from "../../../utils/webview-inject";
 import { getCrashlytics, log, recordError } from "@react-native-firebase/crashlytics";
 import PressableIcon from "../../../components/PressableIcon";
 import { useMultiPlayHost } from "../../../utils/hooks/useMultiPlayHost";
+import { useLatestMultiPlayScript } from "utils/hooks/useLatestMultiPlayScript";
+import webviewInject from "../../../utils/webview-inject";
 const c = getCrashlytics();
 
 function GestureDetectorOptional({ children }) {
@@ -78,18 +80,51 @@ export default function Project() {
   const webViewRef = useRef(null);
   const onlineConfigSheetRef = useRef(null);
   const [isMaxed, setIsMaxed] = useState(false);
+  const multiPlayInject = useLatestMultiPlayScript();
+
+  const iceServers = useMemo(() => {
+    const servers = [{ urls: "stun:stun.l.google.com:19302" }];
+    if (
+      process.env.EXPO_PUBLIC_TURN_USERNAME &&
+      process.env.EXPO_PUBLIC_TURN_CREDENTIAL &&
+      process.env.EXPO_PUBLIC_TURN_SERVER_URL
+    ) {
+      servers.push(
+        {
+          urls: `turn:${process.env.EXPO_PUBLIC_TURN_SERVER_URL}:80`,
+          username: process.env.EXPO_PUBLIC_TURN_USERNAME,
+          credential: process.env.EXPO_PUBLIC_TURN_CREDENTIAL,
+        },
+        {
+          urls: `turn:${process.env.EXPO_PUBLIC_TURN_SERVER_URL}:80?transport=tcp`,
+          username: process.env.EXPO_PUBLIC_TURN_USERNAME,
+          credential: process.env.EXPO_PUBLIC_TURN_CREDENTIAL,
+        },
+        {
+          urls: `turn:${process.env.EXPO_PUBLIC_TURN_SERVER_URL}:443`,
+          username: process.env.EXPO_PUBLIC_TURN_USERNAME,
+          credential: process.env.EXPO_PUBLIC_TURN_CREDENTIAL,
+        },
+        {
+          urls: `turns:${process.env.EXPO_PUBLIC_TURN_SERVER_URL}:443?transport=tcp`,
+          username: process.env.EXPO_PUBLIC_TURN_USERNAME,
+          credential: process.env.EXPO_PUBLIC_TURN_CREDENTIAL,
+        }
+      );
+    }
+    return servers;
+  }, []);
 
   const {
     connected,
     roomCode,
     connectionStatus,
     peerConnected,
-    iceServers,
     sendKeyEvent,
     webViewMessageHandler,
     createRoom,
     disconnect,
-  } = useMultiPlayHost(metadata, id, webViewRef);
+  } = useMultiPlayHost(webViewRef, iceServers);
 
   const dateInfo = useMemo(() => {
     return {
@@ -195,10 +230,10 @@ export default function Project() {
     }
   };
 
-  const twJSInject = `(${injectedWebviewCode.toString()})(${JSON.stringify({
-    color: colors.backgroundSecondary,
-    iceServers
-  })});`;
+  const twJSInject = useMemo(() => `(${webviewInject})(${JSON.stringify({
+    color: colors.backgroundSecondary
+  })});
+  ${multiPlayInject}`, [multiPlayInject, webviewInject, colors]);
 
   const openOnlineConfigSheet = () => {
     onlineConfigSheetRef.current?.expand();

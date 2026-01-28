@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   View,
   TextInput,
@@ -24,17 +24,19 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useMultiPlayClient } from "../utils/hooks/useMultiPlayClient";
 
 export default function MultiPlay() {
-  const {
-    roomCode,
-    setRoomCode,
-    status,
-    remoteStream,
-    projectMetadata,
-    loading,
-    joinRoom,
-    disconnect,
-    sendKeyEvent,
-  } = useMultiPlayClient();
+  const [roomCode, setRoomCode] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const config = {
+    signalingUrl: "wss://itchyws.micahlindley.com",
+    turn: {
+      serverUrl: process.env.EXPO_PUBLIC_TURN_SERVER_URL,
+      username: process.env.EXPO_PUBLIC_TURN_USERNAME,
+      credential: process.env.EXPO_PUBLIC_TURN_CREDENTIAL,
+    },
+  };
+
+  const { status, stream, join, leave, projectMetadata, sendKeyEvent } = useMultiPlayClient(config);
 
   const { colors, dimensions, isDark } = useTheme();
   const { width, height: appHeight } = useWindowDimensions();
@@ -132,7 +134,8 @@ export default function MultiPlay() {
               setRoomCode(t);
               const trimmed = t.trim().toUpperCase();
               if (trimmed.length === 6 && !isUserUnder13()) {
-                joinRoom(trimmed);
+                setLoading(true);
+                join(trimmed);
               }
             }}
             clearTextOnFocus={true}
@@ -140,14 +143,14 @@ export default function MultiPlay() {
             editable={!isUserUnder13()}
           />
           <Chip.Icon
-            icon={status == "Connected" ? "radio" : "warning"}
+            icon={status === "waiting-host" || status === "connected-signaling" ? "radio" : "warning"}
             text={status}
             mode="filled"
             style={{ marginRight: 15 }}
-            color={status == "Connected" ? "#1fa81f" : (status == "Idle" ? colors.accent : undefined)}
+            color={status === "waiting-host" || status === "connected-signaling" ? "#1fa81f" : (status === "Idle" ? colors.accent : undefined)}
           />
         </View>
-        {isUserUnder13() && !remoteStream ? (
+        {isUserUnder13() && !stream ? (
           <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
             <View
               style={{
@@ -180,7 +183,7 @@ export default function MultiPlay() {
             </ItchyText>
           </View>
         ) : <></>}
-        {!!remoteStream ? (
+        {!!stream ? (
           <GestureDetector gesture={composedGesture}>
             <View
               style={{
@@ -196,7 +199,7 @@ export default function MultiPlay() {
               }}
             >
               <RTCView
-                streamURL={remoteStream.toURL()}
+                streamURL={stream.toURL()}
                 style={{ height: "100%", width: "100%" }}
                 objectFit="cover"
                 onLayout={(event) => {
@@ -260,7 +263,7 @@ export default function MultiPlay() {
         >
           <Controls
             onControlPress={sendKeyEvent}
-            projectId={projectMetadata?.id}
+            projectId={null}
             showConfiguration={true}
           />
           {projectMetadata && (
@@ -332,7 +335,7 @@ export default function MultiPlay() {
               </View>
             </Card>
           )}
-          {!remoteStream ? (
+          {!stream ? (
             <Card style={{ paddingHorizontal: 20, paddingVertical: 15, marginTop: 5 }}>
               <ItchyText
                 style={{
@@ -378,7 +381,10 @@ export default function MultiPlay() {
             <Chip.Icon
               icon="exit"
               text="Leave MultiPlay"
-              onPress={() => nav.goBack()}
+              onPress={() => {
+                leave();
+                nav.goBack();
+              }}
             />
             <Chip.Icon
               icon="help-circle"
