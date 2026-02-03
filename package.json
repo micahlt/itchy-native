@@ -47,7 +47,7 @@
     "expo-status-bar": "~3.0.9",
     "expo-system-ui": "~6.0.9",
     "html-entities": "^2.6.0",
-    "itchy-multiplay": "file:../itchy-multiplay",
+    "itchy-multiplay": "^0.1.0",
     "node-html-parser": "^7.0.1",
     "prop-types": "^15.8.1",
     "react": "19.1.0",

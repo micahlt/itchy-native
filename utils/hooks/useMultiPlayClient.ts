@@ -1,12 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { MultiPlayKernel, ScratchCoords } from "itchy-multiplay";
+import {
+  MultiPlayConfig,
+  MultiPlayKernel,
+  ScratchCoords,
+} from "itchy-multiplay";
 import {
   RTCPeerConnection,
   RTCSessionDescription,
   RTCIceCandidate,
 } from "react-native-webrtc";
 
-export const useMultiPlayClient = (config: any) => {
+export const useMultiPlayClient = (config: MultiPlayConfig) => {
   const [status, setStatus] = useState("Idle");
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [projectMetadata, setProjectMetadata] = useState<any>();
@@ -29,7 +33,7 @@ export const useMultiPlayClient = (config: any) => {
 
     // Listen for events emitted by the SDK
     kernel.onEvent = (event) => {
-      console.log("Kernel Event:", event.type, event.payload);
+      // console.log("Kernel Event:", event.type, event.payload);
       if (event.type === "status") setStatus(event.payload);
       if (event.type === "stream") setStream(event.payload);
       if (event.type === "metadata") setProjectMetadata(event.payload);
