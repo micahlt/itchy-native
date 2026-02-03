@@ -7,8 +7,8 @@ import StudioCard from "./StudioCard";
 import { Ionicons } from "@expo/vector-icons";
 import TexturedButton from "./TexturedButton";
 import Animated, { FadeInRight } from "react-native-reanimated";
-import { Project } from "utils/api-wrapper/types/project";
-import { Studio } from "utils/api-wrapper/types/studio";
+import { Project } from "../utils/api-wrapper/types/project";
+import { Studio } from "../utils/api-wrapper/types/studio";
 
 type HorizontalContentScrollerProps = {
   data: Project[] | Studio[];

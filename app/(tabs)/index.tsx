@@ -44,8 +44,8 @@ import { Ionicons } from "@expo/vector-icons";
 import useSWR, { mutate as swrMutate } from "swr";
 import TexturedButton from "../../components/TexturedButton";
 import SquircleView from "../../components/SquircleView";
-import { Studio } from "utils/api-wrapper/types/studio";
-import { ItchyThemeColors } from "utils/theme/colors";
+import { Studio } from "../../utils/api-wrapper/types/studio";
+import { ItchyThemeColors } from "../../utils/theme/colors";
 
 const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
 const AnimatedView = Animated.createAnimatedComponent(SquircleView);

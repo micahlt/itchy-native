@@ -16,11 +16,11 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
 import SquircleView from "./SquircleView";
 import { useFocusEffect } from "expo-router";
-import { Comment } from "utils/api-wrapper/types/project";
+import { Comment } from "../utils/api-wrapper/types/project";
 // @ts-expect-error
 import Pressable from "./Pressable";
-import APIUser from "utils/api-wrapper/user";
-import { User } from "utils/api-wrapper/types/user";
+import APIUser from "../utils/api-wrapper/user";
+import { User } from "../utils/api-wrapper/types/user";
 import { useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
 
 type CommentEditorProps = {
