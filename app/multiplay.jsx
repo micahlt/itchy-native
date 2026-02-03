@@ -38,7 +38,7 @@ export default function MultiPlay() {
 
   const { status, stream, join, leave, projectMetadata, sendKeyEvent } = useMultiPlayClient(config);
 
-  const { colors, dimensions, isDark } = useTheme();
+  const { colors, dimensions } = useTheme();
   const { width, height: appHeight } = useWindowDimensions();
   // Controls are rendered inline (collapsible) instead of a separate sheet
   const [user] = useMMKVObject("user");

@@ -15,7 +15,7 @@ export default function useTurbowarpLink(id) {
             newLink.searchParams.set("settings-button", "true");
             newLink.searchParams.set("addons", "pause")
             if (!!username) {
-                newLink.searchParams.set("username", username);
+                newLink.searchParams.set("username", encodeURIComponent(username));
             }
             if (twConfig?.interpolate) {
                 newLink.searchParams.set("interpolate", "true");
