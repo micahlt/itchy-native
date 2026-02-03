@@ -41,7 +41,7 @@ import injectedWebviewCode from "../../../utils/webview-inject";
 import { getCrashlytics, log, recordError } from "@react-native-firebase/crashlytics";
 import PressableIcon from "../../../components/PressableIcon";
 import { useMultiPlayHost } from "../../../utils/hooks/useMultiPlayHost";
-import { useLatestMultiPlayScript } from "utils/hooks/useLatestMultiPlayScript";
+import { useLatestMultiPlayScript } from "../../../utils/hooks/useLatestMultiPlayScript";
 import webviewInject from "../../../utils/webview-inject";
 const c = getCrashlytics();
 
