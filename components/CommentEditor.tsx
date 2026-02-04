@@ -69,7 +69,7 @@ export default function CommentEditor({
       const height = e.endCoordinates.height;
       setKeyboardHeight(height);
       if (Platform.OS == "ios") {
-        bottomAnim.value = withTiming(height + 5);
+        bottomAnim.value = withTiming(height - 20);
       } else {
         bottomAnim.value = withTiming(height + 10);
       }

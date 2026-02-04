@@ -312,18 +312,13 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
               zIndex: 100,
             }}
           >
-            <Animated.View
-              style={[
-                {
-                  borderRadius: "100%",
-                  overflow: "hidden",
-                },
-                animatedStyle,
-              ]}
-            >
-              <GlassView isInteractive={true}>
+            <Animated.View style={animatedStyle}>
+              <GlassView
+                isInteractive={true}
+                style={{ borderRadius: "100%", overflow: "hidden" }}
+              >
                 <Pressable
-                  onPress={() => router.push("/")}
+                  onPress={() => router.dismissTo("/")}
                   android_ripple={{
                     color: colors.ripple,
                     foreground: true,
@@ -360,7 +355,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
             ]}
           >
             <Pressable
-              onPress={() => router.push("/")}
+              onPress={() => router.dismissTo("/")}
               android_ripple={{
                 color: colors.ripple,
                 foreground: true,
