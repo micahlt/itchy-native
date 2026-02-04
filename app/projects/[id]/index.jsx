@@ -290,8 +290,10 @@ export default function Project() {
                 scrollEnabled={false}
                 overScrollMode="never"
                 allowsFullscreenVideo={true}
+                allowsInlineMediaPlayback={true}
+                allowsProtectedMedia={true}
                 mediaPlaybackRequiresUserAction={false}
-                mediaCapturePermissionGrantType="grant"
+                mediaCapturePermissionGrantType="prompt"
                 style={{ backgroundColor: "transparent" }}
                 setBuiltInZoomControls={false}
                 nestedScrollEnabled={true}

@@ -9,18 +9,24 @@ import { useMMKVObject } from "react-native-mmkv";
 import Card from "./Card";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 import TexturedButton from "./TexturedButton";
+import { MultiPlayStatus } from "itchy-multiplay";
+
+interface User {
+  birthMonth?: number;
+  birthYear?: number;
+}
 
 export default function MultiPlayConfigSheet({
   roomCode = "",
   connected = false,
   connectionStatus = "idle",
   peerConnected = false,
-  createRoom,
-  disconnect,
-  onClose = () => { },
+  createRoom = () => {},
+  disconnect = () => {},
+  onClose = () => {},
 }) {
   const { colors } = useTheme();
-  const [user] = useMMKVObject("user");
+  const [user] = useMMKVObject<User>("user");
 
   // Check if user is under 13 years old
   const isUserUnder13 = () => {
@@ -42,7 +48,10 @@ export default function MultiPlayConfigSheet({
 
   const getStatusInfo = () => {
     if (connectionStatus.startsWith("Room Created:")) {
-      return { text: "Room created! Waiting for player...", color: colors.accent };
+      return {
+        text: "Room created! Waiting for player...",
+        color: colors.accent,
+      };
     }
     if (connectionStatus.startsWith("Error:")) {
       return { text: connectionStatus, color: "#ff4750" };
@@ -74,6 +83,11 @@ export default function MultiPlayConfigSheet({
         return { text: "Failed to join room", color: "#ff4750" };
       case "error-socket":
         return { text: "Connection error", color: "#ff4750" };
+      case "forbidden-video":
+        return {
+          text: "Can't use MultiPlay on a project with video.",
+          color: "#ff4750",
+        };
       default:
         return { text: connectionStatus, color: colors.textSecondary };
     }
@@ -298,7 +312,7 @@ export default function MultiPlayConfigSheet({
           </View>
         ) : (
           <TexturedButton
-            onPress={isUserUnder13() ? null : createRoom}
+            onPress={isUserUnder13() ? () => null : createRoom}
             style={{
               marginHorizontal: 5,
               backgroundColor:
@@ -319,9 +333,10 @@ export default function MultiPlayConfigSheet({
           >
             {isUserUnder13()
               ? "Age Restricted"
-              : connectionStatus !== "Idle" && connectionStatus !== "join-failed"
-                ? "Connecting..."
-                : "Start MultiPlay"}
+              : connectionStatus !== "Idle" &&
+                connectionStatus !== "join-failed"
+              ? "Connecting..."
+              : "Start MultiPlay"}
           </TexturedButton>
         )}
       </View>

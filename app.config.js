@@ -75,6 +75,13 @@ module.exports = {
       predictiveBackGestureEnabled: false,
       googleServicesFile:
         process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
+      permissions: [
+        'android.permission.VIBRATE',
+        'android.permission.CAMERA',
+        'android.permission.RECORD_AUDIO',
+        'android.permission.MICROPHONE',
+        'android.permission.MODIFY_AUDIO_SETTINGS',
+      ]
     },
     ios: {
       bundleIdentifier: "org.scratchclient4.itchy",

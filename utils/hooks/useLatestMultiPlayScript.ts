@@ -1,4 +1,4 @@
-const MULTIPLAY_VERSION = "0.1.0";
+const MULTIPLAY_VERSION = "0.2.0";
 const MULTIPLAY_SCRIPT_URL = `https://cdn.jsdelivr.net/npm/itchy-multiplay@${MULTIPLAY_VERSION}/dist/reactnative/mobile.iife.js`;
 
 import { useEffect, useState } from "react";
