@@ -22,6 +22,7 @@ import Pressable from "./Pressable";
 import APIUser from "../utils/api-wrapper/user";
 import { User } from "../utils/api-wrapper/types/user";
 import { useMMKVNumber, useMMKVObject, useMMKVString } from "react-native-mmkv";
+import { GlassView } from "expo-glass-effect";
 
 type CommentEditorProps = {
   onSubmit: (...args: any[]) => any;
@@ -134,62 +135,95 @@ export default function CommentEditor({
       }}
     >
       {isPageAdmin ? (
-        <View
-          style={{
-            flexDirection: "row",
-            backgroundColor: colors.backgroundSecondary,
-            marginBottom: 10,
-            marginLeft: "auto",
-            borderRadius: dimensions.largeRadius,
-            boxShadow:
-              "0px -2px 8px rgba(0,94,185,0.1),0px 5px 6px rgba(0,0,0,0.2), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
-            alignItems: "center",
-            overflow: "hidden",
-          }}
-        >
-          <Pressable
-            onPress={toggleComments}
-            android_ripple={{
-              color: colors.ripple,
-              borderless: true,
-              foreground: true,
-            }}
-            style={{
-              flexDirection: "row",
-              paddingVertical: 12,
-              paddingHorizontal: 16,
-            }}
-          >
-            <Ionicons
-              size={18}
-              style={{ marginRight: 8 }}
-              color={colors.accent}
-              name={
-                localCommentsOpen
-                  ? "checkmark-circle"
-                  : "checkmark-circle-outline"
-              }
-            />
-            <ItchyText style={{ color: colors.accent, fontSize: 14 }}>
-              {localCommentsOpen ? "Disable" : "Enable"} comments
-            </ItchyText>
-          </Pressable>
-        </View>
+        <>
+          {Platform.OS == "ios" ? (
+            <GlassView
+              tintColor={colors.backgroundSecondary}
+              style={{
+                flexDirection: "row",
+                marginBottom: 10,
+                marginLeft: "auto",
+                borderRadius: dimensions.largeRadius,
+                alignItems: "center",
+                overflow: "hidden",
+              }}
+            >
+              <Pressable
+                onPress={toggleComments}
+                android_ripple={{
+                  color: colors.ripple,
+                  borderless: true,
+                  foreground: true,
+                }}
+                style={{
+                  flexDirection: "row",
+                  paddingVertical: 12,
+                  paddingHorizontal: 16,
+                }}
+              >
+                <Ionicons
+                  size={18}
+                  style={{ marginRight: 8 }}
+                  color={colors.accent}
+                  name={
+                    localCommentsOpen
+                      ? "checkmark-circle"
+                      : "checkmark-circle-outline"
+                  }
+                />
+                <ItchyText style={{ color: colors.accent, fontSize: 14 }}>
+                  {localCommentsOpen ? "Disable" : "Enable"} comments
+                </ItchyText>
+              </Pressable>
+            </GlassView>
+          ) : (
+            <View
+              style={{
+                flexDirection: "row",
+                backgroundColor: colors.backgroundSecondary,
+                marginBottom: 10,
+                marginLeft: "auto",
+                borderRadius: dimensions.largeRadius,
+                boxShadow:
+                  "0px -2px 8px rgba(0,94,185,0.1),0px 5px 6px rgba(0,0,0,0.2), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
+                alignItems: "center",
+                overflow: "hidden",
+              }}
+            >
+              <Pressable
+                onPress={toggleComments}
+                android_ripple={{
+                  color: colors.ripple,
+                  borderless: true,
+                  foreground: true,
+                }}
+                style={{
+                  flexDirection: "row",
+                  paddingVertical: 12,
+                  paddingHorizontal: 16,
+                }}
+              >
+                <Ionicons
+                  size={18}
+                  style={{ marginRight: 8 }}
+                  color={colors.accent}
+                  name={
+                    localCommentsOpen
+                      ? "checkmark-circle"
+                      : "checkmark-circle-outline"
+                  }
+                />
+                <ItchyText style={{ color: colors.accent, fontSize: 14 }}>
+                  {localCommentsOpen ? "Disable" : "Enable"} comments
+                </ItchyText>
+              </Pressable>
+            </View>
+          )}
+        </>
       ) : (
         <></>
       )}
-      <SquircleView
-        style={{
-          borderRadius: dimensions.largeRadius,
-          backgroundColor: colors.backgroundSecondary,
-          paddingTop: 5,
-          width: width - 15,
-          marginLeft: 7.5,
-          boxShadow:
-            "0px -2px 16px rgba(0,94,185,0.15),0px 40px 25px rgba(0,0,0,0.5), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
-        }}
-        ref={commentEditor}
-      >
+      <CommentEditorWrapperComponent ref={commentEditor}>
         {!!reply && (
           <View
             style={{
@@ -306,7 +340,55 @@ export default function CommentEditor({
             )}
           </TouchableOpacity>
         </View>
-      </SquircleView>
+      </CommentEditorWrapperComponent>
     </Animated.View>
   );
+}
+
+type CommentEditorWrapperComponentProps = {
+  children: React.ReactNode;
+  ref: React.RefObject<View | null>;
+};
+
+function CommentEditorWrapperComponent({
+  children,
+  ref,
+}: CommentEditorWrapperComponentProps) {
+  const { colors, dimensions } = useTheme();
+  const { width } = useWindowDimensions();
+  if (Platform.OS == "ios") {
+    return (
+      <View ref={ref}>
+        <GlassView
+          style={{
+            borderCurve: "continuous",
+            borderRadius: dimensions.largeRadius,
+            paddingVertical: 5,
+            width: width - 15,
+            marginLeft: 7.5,
+          }}
+          tintColor={colors.backgroundSecondary}
+        >
+          {children}
+        </GlassView>
+      </View>
+    );
+  } else {
+    return (
+      <SquircleView
+        style={{
+          borderRadius: dimensions.largeRadius,
+          backgroundColor: colors.backgroundSecondary,
+          paddingTop: 5,
+          width: width - 15,
+          marginLeft: 7.5,
+          boxShadow:
+            "0px -2px 16px rgba(0,94,185,0.15),0px 40px 25px rgba(0,0,0,0.5), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
+        }}
+        ref={ref}
+      >
+        {children}
+      </SquircleView>
+    );
+  }
 }
