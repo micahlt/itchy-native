@@ -93,6 +93,8 @@ module.exports = {
       infoPlist: {
         NSCameraUsageDescription:
           "Itchy needs access to the camera to support projects that include camera features.",
+        NSMicrophoneUsageDescription:
+          "Itchy needs access to your microphone to support projects that include audio features.",
         ITSAppUsesNonExemptEncryption: false
       },
       googleServicesFile:
