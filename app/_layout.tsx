@@ -238,7 +238,6 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   const [commentsHeight] = useMMKVNumber("commentsHeight");
   const [showHomeButton, setShowHomeButton] =
     useMMKVBoolean("globalHomeButton");
-  const AnimatedGlassView = Animated.createAnimatedComponent;
 
   useEffect(() => {
     if (showHomeButton == undefined || showHomeButton == null) {
