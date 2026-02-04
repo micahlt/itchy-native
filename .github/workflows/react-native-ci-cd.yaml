@@ -19,6 +19,13 @@ on:
           - ios
           - android
           - all
+      release:
+        type: choice
+        description: "The GitHub Release type for this run"
+        options:
+          - draft
+          - prerelease
+          - release
 
 env:
   EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
@@ -38,7 +45,7 @@ jobs:
       - name: Skip CI check
         run: echo "Proceeding with workflow"
 
-  build-and-release:
+  build:
     needs: check-skip
     if: (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')) || github.event_name == 'workflow_dispatch'
     strategy:
@@ -131,7 +138,7 @@ jobs:
           path: ./app-ios-prod.ipa
 
   create-release:
-    needs: build-and-release
+    needs: build
     runs-on: ubuntu-latest
     
     steps:
@@ -163,7 +170,8 @@ jobs:
       - name: 📝 Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          prerelease: true
+          prerelease: ${{ github.event.inputs.release == 'prerelease' }}
+          draft: ${{ github.event.inputs.release == 'draft' }}
           name: "Release v${{ steps.build-info.outputs.version }}-${{ steps.build-info.outputs.build_number }}"
           tag_name: "v${{ steps.build-info.outputs.version }}-${{ steps.build-info.outputs.build_number }}"
           files: |
