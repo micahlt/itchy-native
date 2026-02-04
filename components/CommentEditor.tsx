@@ -139,6 +139,7 @@ export default function CommentEditor({
           {Platform.OS == "ios" ? (
             <GlassView
               tintColor={colors.backgroundSecondary}
+              isInteractive={true}
               style={{
                 flexDirection: "row",
                 marginBottom: 10,
@@ -363,7 +364,7 @@ function CommentEditorWrapperComponent({
           style={{
             borderCurve: "continuous",
             borderRadius: dimensions.largeRadius,
-            paddingVertical: 5,
+            paddingBottom: 5,
             width: width - 15,
             marginLeft: 7.5,
           }}

@@ -316,6 +316,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
               <GlassView
                 isInteractive={true}
                 style={{ borderRadius: "100%", overflow: "hidden" }}
+                tintColor={colors.backgroundSecondary}
               >
                 <Pressable
                   onPress={() => router.dismissTo("/")}
