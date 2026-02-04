@@ -118,226 +118,228 @@ export default function User() {
     }
   };
 
-  return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <Stack.Screen
-        options={{
-          title: username,
-          headerRight: () => (
-            <>
-              <PressableIcon
-                onPress={() => router.push(`/users/${username}/comments`)}
-                name="chatbubble-ellipses"
-                size={22}
-                color={colors.textSecondary}
-                backgroundColor="transparent"
-                style={{
-                  paddingLeft: 10,
-                  paddingVertical: 0
-                }}
-              />
-              <PressableIcon
-                onPress={openProfile}
-                name="open"
-                size={24}
-                color={colors.textSecondary}
-                backgroundColor="transparent"
-                style={{
-                  paddingHorizontal: 10,
-                  paddingVertical: 0
-                }}
-              />
-              ,
-            </>
-          ),
-        }}
-      />
-
-      <ScrollView
-        // refreshControl={
-        //   <RefreshControl
-        //     refreshing={loading}
-        //     onRefresh={load}
-        //     progressBackgroundColor={colors.accent}
-        //     colors={isDark ? ["black"] : ["white"]}
-        //   />
-        // }
-        contentContainerStyle={{
-          paddingTop: getLiquidPlusPadding(),
-          paddingBottom: 100,
-        }}
-      >
-        {!!profile ? (
+  return (<>
+    <Stack.Screen
+      options={{
+        title: username,
+        headerRight: () => (
           <>
+            <PressableIcon
+              onPress={() => router.push(`/users/${username}/comments`)}
+              name="chatbubble-ellipses"
+              size={22}
+              color={colors.textSecondary}
+              backgroundColor="transparent"
+              style={{
+                paddingLeft: 10,
+                paddingVertical: 0
+              }}
+            />
+            <PressableIcon
+              onPress={openProfile}
+              name="open"
+              size={24}
+              color={colors.textSecondary}
+              backgroundColor="transparent"
+              style={{
+                paddingHorizontal: 10,
+                paddingVertical: 0
+              }}
+            />
+            ,
+          </>
+        ),
+      }}
+    />
+
+    <ScrollView
+      // refreshControl={
+      //   <RefreshControl
+      //     refreshing={loading}
+      //     onRefresh={load}
+      //     progressBackgroundColor={colors.accent}
+      //     colors={isDark ? ["black"] : ["white"]}
+      //   />
+      // }
+      style={{
+        flex: 1, backgroundColor: colors.background, borderColor: "green", borderWidth: 1
+      }}
+      contentContainerStyle={{
+        paddingTop: getLiquidPlusPadding(),
+        paddingBottom: 100,
+      }}
+    >
+      {!!profile ? (
+        <>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              padding: 20,
+              paddingBottom: 0,
+            }}
+          >
+            <Image
+              source={{ uri: profile.profile.images["90x90"] }}
+              placeholder={require("../../../assets/avatar.png")}
+              placeholderContentFit="cover"
+              style={{
+                height: 75,
+                width: 75,
+                borderRadius: 75,
+                marginRight: 25,
+                backgroundColor: "white",
+              }}
+            />
             <View
               style={{
                 flexDirection: "row",
                 alignItems: "center",
-                padding: 20,
-                paddingBottom: 0,
+                justifyContent: "space-around",
+                marginRight: 10,
+                flex: 1,
               }}
             >
-              <Image
-                source={{ uri: profile.profile.images["90x90"] }}
-                placeholder={require("../../../assets/avatar.png")}
-                placeholderContentFit="cover"
-                style={{
-                  height: 75,
-                  width: 75,
-                  borderRadius: 75,
-                  marginRight: 25,
-                  backgroundColor: "white",
-                }}
-              />
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-around",
-                  marginRight: 10,
-                  flex: 1,
+              <Pressable
+                style={{ alignItems: "center" }}
+                onPress={() => router.push(`users/${username}/followers`)}
+                android_ripple={{
+                  color: colors.ripple,
+                  borderless: false,
+                  foreground: true,
                 }}
               >
-                <Pressable
-                  style={{ alignItems: "center" }}
-                  onPress={() => router.push(`users/${username}/followers`)}
-                  android_ripple={{
-                    color: colors.ripple,
-                    borderless: false,
-                    foreground: true,
+                <ItchyText
+                  style={{
+                    color: colors.accent,
+                    fontWeight: "bold",
+                    fontSize: 20,
                   }}
                 >
-                  <ItchyText
-                    style={{
-                      color: colors.accent,
-                      fontWeight: "bold",
-                      fontSize: 20,
-                    }}
-                  >
-                    {profileStats?.followers}
-                  </ItchyText>
-                  <ItchyText style={{ color: colors.text, fontSize: 12 }}>
-                    Followers
-                  </ItchyText>
-                </Pressable>
-                <Pressable
-                  style={{ alignItems: "center" }}
-                  onPress={() => router.push(`users/${username}/following`)}
-                  android_ripple={{
-                    color: colors.ripple,
-                    borderless: false,
-                    foreground: true,
+                  {profileStats?.followers}
+                </ItchyText>
+                <ItchyText style={{ color: colors.text, fontSize: 12 }}>
+                  Followers
+                </ItchyText>
+              </Pressable>
+              <Pressable
+                style={{ alignItems: "center" }}
+                onPress={() => router.push(`users/${username}/following`)}
+                android_ripple={{
+                  color: colors.ripple,
+                  borderless: false,
+                  foreground: true,
+                }}
+              >
+                <ItchyText
+                  style={{
+                    color: colors.accent,
+                    fontWeight: "bold",
+                    fontSize: 20,
                   }}
                 >
-                  <ItchyText
-                    style={{
-                      color: colors.accent,
-                      fontWeight: "bold",
-                      fontSize: 20,
-                    }}
-                  >
-                    {profileStats?.following}
-                  </ItchyText>
-                  <ItchyText style={{ color: colors.text, fontSize: 12 }}>
-                    Following
-                  </ItchyText>
-                </Pressable>
-                <View style={{ alignItems: "center" }}>
-                  <ItchyText
-                    style={{
-                      color: colors.accent,
-                      fontWeight: "bold",
-                      fontSize: 20,
-                    }}
-                  >
-                    {new Date(profile.history.joined).getFullYear()}
-                  </ItchyText>
-                  <ItchyText style={{ color: colors.text, fontSize: 12 }}>
-                    Joined{" "}
-                  </ItchyText>
-                </View>
+                  {profileStats?.following}
+                </ItchyText>
+                <ItchyText style={{ color: colors.text, fontSize: 12 }}>
+                  Following
+                </ItchyText>
+              </Pressable>
+              <View style={{ alignItems: "center" }}>
+                <ItchyText
+                  style={{
+                    color: colors.accent,
+                    fontWeight: "bold",
+                    fontSize: 20,
+                  }}
+                >
+                  {new Date(profile.history.joined).getFullYear()}
+                </ItchyText>
+                <ItchyText style={{ color: colors.text, fontSize: 12 }}>
+                  Joined{" "}
+                </ItchyText>
               </View>
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginVertical: 15,
-                columnGap: 10,
-                paddingHorizontal: 20,
-              }}
-            >
-              {myUsername === username ? (
-                <TexturedButton
-                  size={11}
-                  style={{ flex: 1 }}
-                  onPress={openProfile}
-                >
-                  Edit Profile
-                </TexturedButton>
-              ) : null}
-              {followingStatus !== undefined ? (
-                <TexturedButton
-                  size={11}
-                  style={{ flex: 1 }}
-                  onPress={changeFollowingStatus}
-                >
-                  {followingStatus === true ? "Unfollow" : "Follow"}
-                </TexturedButton>
-              ) : null}
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+              marginVertical: 15,
+              columnGap: 10,
+              paddingHorizontal: 20,
+            }}
+          >
+            {myUsername === username ? (
               <TexturedButton
                 size={11}
                 style={{ flex: 1 }}
-                onPress={() => router.push(`/users/${username}/about`)}
+                onPress={openProfile}
               >
-                About
+                Edit Profile
               </TexturedButton>
-              <TexturedButton
-                size={11}
-                style={{ flex: 1 }}
-                onPress={() => router.push(`/users/${username}/activity`)}
-              >
-                Activity
-              </TexturedButton>
-            </View>
-            {profile.featuredProject ? (
-              <ProjectCard
-                project={profile.featuredProject}
-                width={width - 40}
-                style={{ margin: "auto", marginTop: 0 }}
-              />
             ) : null}
-
-            <HorizontalContentScroller
-              title="Created Projects"
-              data={projects}
-              iconName="sparkles"
-              headerStyle={{ marginTop: 16 }}
-              onShowMore={() => router.push(`/users/${username}/projects`)}
+            {followingStatus !== undefined ? (
+              <TexturedButton
+                size={11}
+                style={{ flex: 1 }}
+                onPress={changeFollowingStatus}
+              >
+                {followingStatus === true ? "Unfollow" : "Follow"}
+              </TexturedButton>
+            ) : null}
+            <TexturedButton
+              size={11}
+              style={{ flex: 1 }}
+              onPress={() => router.push(`/users/${username}/about`)}
+            >
+              About
+            </TexturedButton>
+            <TexturedButton
+              size={11}
+              style={{ flex: 1 }}
+              onPress={() => router.push(`/users/${username}/activity`)}
+            >
+              Activity
+            </TexturedButton>
+          </View>
+          {profile.featuredProject ? (
+            <ProjectCard
+              project={profile.featuredProject}
+              width={width - 40}
+              style={{ margin: "auto", marginTop: 0 }}
             />
+          ) : null}
 
-            <HorizontalContentScroller
-              title="Favorites"
-              data={favorites}
-              iconName="star"
-              headerStyle={{ marginTop: 5 }}
-              onShowMore={() => router.push(`/users/${username}/favorites`)}
-            />
+          <HorizontalContentScroller
+            title="Created Projects"
+            data={projects}
+            iconName="sparkles"
+            headerStyle={{ marginTop: 16 }}
+            onShowMore={() => router.push(`/users/${username}/projects`)}
+          />
 
-            <HorizontalContentScroller
-              title="Curated Studios"
-              data={curatedStudios}
-              itemType="studios"
-              iconName="albums"
-              headerStyle={{ marginTop: 5 }}
-              onShowMore={() => router.push(`/users/${username}/studios`)}
-            />
-          </>
-        ) : (
-          <></>
-        )}
-      </ScrollView>
-    </View>
+          <HorizontalContentScroller
+            title="Favorites"
+            data={favorites}
+            iconName="star"
+            headerStyle={{ marginTop: 5 }}
+            onShowMore={() => router.push(`/users/${username}/favorites`)}
+          />
+
+          <HorizontalContentScroller
+            title="Curated Studios"
+            data={curatedStudios}
+            itemType="studios"
+            iconName="albums"
+            headerStyle={{ marginTop: 5 }}
+            onShowMore={() => router.push(`/users/${username}/studios`)}
+          />
+        </>
+      ) : (
+        <></>
+      )}
+    </ScrollView>
+  </>
   );
 }

@@ -105,6 +105,10 @@ export default function PickerBottomSheet({
         setSearchQuery("");
         onClose();
       }}
+      style={{
+        zIndex: 10000,
+      }}
+      $modal={true}
       backgroundStyle={{ backgroundColor: colors.backgroundSecondary }}
       backdropComponent={renderBackdrop}
       handleIndicatorStyle={{ backgroundColor: colors.textSecondary }}

@@ -246,7 +246,11 @@ export default function CommentEditor({
                 {reply.author.username}
               </ItchyText>
             </ItchyText>
-            <TouchableOpacity onPress={onClearReply} style={{ marginTop: -2 }}>
+            <TouchableOpacity
+              onPress={onClearReply}
+              hitSlop={8}
+              style={{ marginTop: -2 }}
+            >
               <MaterialIcons
                 name="cancel"
                 size={16}
@@ -380,7 +384,6 @@ function CommentEditorWrapperComponent({
         style={{
           borderRadius: dimensions.largeRadius,
           backgroundColor: colors.backgroundSecondary,
-          paddingTop: 5,
           width: width - 15,
           marginLeft: 7.5,
           boxShadow:

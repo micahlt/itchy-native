@@ -61,58 +61,60 @@ export default function CommentList({
             </Animated.View>
         );
     }; return (
-        <View style={{ flex: 1, backgroundColor: colors.background }}>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : undefined}
-                style={{ flex: 1 }}
-            >
-                <FlatList
-                    ref={scrollRef}
-                    contentContainerStyle={{
-                        padding: 10,
-                        paddingTop: getLiquidPlusPadding(10, 70),
-                        paddingBottom: 100,
-                    }}
+        <>
+            <View style={{ flex: 1, backgroundColor: colors.background }}>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === "ios" ? "padding" : undefined}
                     style={{ flex: 1 }}
-                    data={comments}
-                    renderItem={renderComment}
-                    keyExtractor={(item) => item.id.toString()}
-                    onEndReached={onEndReached}
-                    onEndReachedThreshold={1.2}
-                    onScrollToIndexFailed={({ index }) => {
-                        scrollRef.current?.scrollToOffset({
-                            offset: index * 1000,
-                            animated: true,
-                        });
-                        const wait = new Promise((resolve) => setTimeout(resolve, 500));
-                        wait.then(() => {
-                            scrollRef.current?.scrollToIndex({ index, animated: true });
-                        });
-                    }}
-                />
-                {!!user && (
-                    <CommentEditor
-                        onSubmit={onPostComment}
-                        reply={reply}
-                        onClearReply={() => setReply(undefined)}
-                        loading={isPostingComment}
-                        commentsOpen={commentsOpen}
-                        isPageAdmin={isAdmin}
+                >
+                    <FlatList
+                        ref={scrollRef}
+                        contentContainerStyle={{
+                            padding: 10,
+                            paddingTop: getLiquidPlusPadding(10, 70),
+                            paddingBottom: 100,
+                        }}
+                        style={{ flex: 1 }}
+                        data={comments}
+                        renderItem={renderComment}
+                        keyExtractor={(item) => item.id.toString()}
+                        onEndReached={onEndReached}
+                        onEndReachedThreshold={1.2}
+                        onScrollToIndexFailed={({ index }) => {
+                            scrollRef.current?.scrollToOffset({
+                                offset: index * 1000,
+                                animated: true,
+                            });
+                            const wait = new Promise((resolve) => setTimeout(resolve, 500));
+                            wait.then(() => {
+                                scrollRef.current?.scrollToIndex({ index, animated: true });
+                            });
+                        }}
                     />
-                )}
-                <CommentOptionSheet
-                    comment={commentOptionsObj}
-                    setComment={setCommentOptionsObj}
-                    context={commentOptionContext}
-                    isPageAdmin={isAdmin}
-                    onDeleteCommentID={onDeleteComment}
-                />
-                <MutedDialog
-                    visible={showMutedDialog}
-                    muteExpiresAt={muteExpiresAt}
-                    onClose={() => setShowMutedDialog(false)}
-                />
-            </KeyboardAvoidingView>
-        </View>
+                    {!!user && (
+                        <CommentEditor
+                            onSubmit={onPostComment}
+                            reply={reply}
+                            onClearReply={() => setReply(undefined)}
+                            loading={isPostingComment}
+                            commentsOpen={commentsOpen}
+                            isPageAdmin={isAdmin}
+                        />
+                    )}
+                    <MutedDialog
+                        visible={showMutedDialog}
+                        muteExpiresAt={muteExpiresAt}
+                        onClose={() => setShowMutedDialog(false)}
+                    />
+                </KeyboardAvoidingView>
+            </View>
+            <CommentOptionSheet
+                comment={commentOptionsObj}
+                setComment={setCommentOptionsObj}
+                context={commentOptionContext}
+                isPageAdmin={isAdmin}
+                onDeleteCommentID={onDeleteComment}
+            />
+        </>
     );
 }

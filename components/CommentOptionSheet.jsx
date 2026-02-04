@@ -7,12 +7,9 @@ import React, {
 } from "react";
 import { View } from "react-native";
 import ItchyText from "./ItchyText";
-import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../utils/theme";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import Comment from "./Comment";
-// @ts-expect-error
-import Pressable from "./Pressable";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import linkWithFallback from "../utils/linkWithFallback";
@@ -159,6 +156,7 @@ export default function CommentOptionSheet({
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
         shadowColor: "#000",
+        zIndex: 10000
       }}
       backdropMaskColor="#000000aa"
       onClose={() => setComment(undefined)}
@@ -166,14 +164,13 @@ export default function CommentOptionSheet({
       enablePanDownToClose={true}
       backgroundStyle={{ backgroundColor: colors.backgroundSecondary }}
       backdropComponent={renderBackdrop}
-      bottomInset={insets.bottom}
       handleIndicatorStyle={{ backgroundColor: colors.textSecondary }}
     >
       <BottomSheetView
         onLayout={onViewLayout}
         style={{
           paddingTop: getLiquidPlusPadding(0, 0),
-          paddingBottom: 10,
+          paddingBottom: 10 + insets.bottom,
           paddingHorizontal: 20,
           backgroundColor: colors.backgroundSecondary,
         }}
