@@ -33,6 +33,8 @@ import Animated, {
   withTiming,
   useAnimatedReaction,
 } from "react-native-reanimated";
+import { FullWindowOverlay } from "react-native-screens";
+import { GlassView } from "expo-glass-effect";
 
 const c = getCrashlytics();
 
@@ -236,6 +238,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   const [commentsHeight] = useMMKVNumber("commentsHeight");
   const [showHomeButton, setShowHomeButton] =
     useMMKVBoolean("globalHomeButton");
+  const AnimatedGlassView = Animated.createAnimatedComponent;
 
   useEffect(() => {
     if (showHomeButton == undefined || showHomeButton == null) {
@@ -300,40 +303,78 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
       style={{ backgroundColor: colors.background, flex: 1 }}
       collapsable={false}
     >
-      <View
-        style={{
-          position: "absolute",
-          bottom: insets.bottom + 5,
-          left: 10,
-          zIndex: 100,
-        }}
-      >
-        <Animated.View
-          style={[
-            {
-              backgroundColor: colors.backgroundSecondary,
-              boxShadow:
-                "0px -2px 8px rgba(0,94,185,0.1),0px 5px 6px rgba(0,0,0,0.2), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
-              borderRadius: "100%",
-              overflow: "hidden",
-            },
-            animatedStyle,
-          ]}
-        >
-          <Pressable
-            onPress={() => router.push("/")}
-            android_ripple={{
-              color: colors.ripple,
-              foreground: true,
-            }}
+      {Platform.OS === "ios" ? (
+        <FullWindowOverlay>
+          <View
             style={{
-              padding: 20,
+              position: "absolute",
+              bottom: insets.bottom + 5,
+              left: 10,
+              zIndex: 100,
             }}
           >
-            <Ionicons size={20} name="home" color={colors.text} />
-          </Pressable>
-        </Animated.View>
-      </View>
+            <Animated.View
+              style={[
+                {
+                  borderRadius: "100%",
+                  overflow: "hidden",
+                },
+                animatedStyle,
+              ]}
+            >
+              <GlassView isInteractive={true}>
+                <Pressable
+                  onPress={() => router.push("/")}
+                  android_ripple={{
+                    color: colors.ripple,
+                    foreground: true,
+                  }}
+                  style={{
+                    padding: 20,
+                  }}
+                >
+                  <Ionicons size={20} name="home" color={colors.text} />
+                </Pressable>
+              </GlassView>
+            </Animated.View>
+          </View>
+        </FullWindowOverlay>
+      ) : (
+        <View
+          style={{
+            position: "absolute",
+            bottom: insets.bottom + 5,
+            left: 10,
+            zIndex: 100,
+          }}
+        >
+          <Animated.View
+            style={[
+              {
+                backgroundColor: colors.backgroundSecondary,
+                boxShadow:
+                  "0px -2px 8px rgba(0,94,185,0.1),0px 5px 6px rgba(0,0,0,0.2), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
+                borderRadius: "100%",
+                overflow: "hidden",
+              },
+              animatedStyle,
+            ]}
+          >
+            <Pressable
+              onPress={() => router.push("/")}
+              android_ripple={{
+                color: colors.ripple,
+                foreground: true,
+              }}
+              style={{
+                padding: 20,
+              }}
+            >
+              <Ionicons size={20} name="home" color={colors.text} />
+            </Pressable>
+          </Animated.View>
+        </View>
+      )}
       <Stack
         screenOptions={{
           contentStyle: {
