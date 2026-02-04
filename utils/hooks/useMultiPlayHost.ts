@@ -49,6 +49,12 @@ export const useMultiPlayHost = (
           hasInitialized.current = false; // Allow retry after error
           break;
 
+        case "video-error":
+          console.error("[MultiPlay Host] Video:", message.payload);
+          setConnectionStatus(`${message.payload}`);
+          hasInitialized.current = false;
+          break;
+
         case "connectionState":
           if (message.payload == "disconnected") {
             setConnected(false);
