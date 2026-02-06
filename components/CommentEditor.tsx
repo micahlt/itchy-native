@@ -138,7 +138,6 @@ export default function CommentEditor({
         <>
           {Platform.OS == "ios" ? (
             <GlassView
-              tintColor={colors.backgroundSecondary}
               isInteractive={true}
               style={{
                 flexDirection: "row",

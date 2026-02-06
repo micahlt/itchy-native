@@ -57,6 +57,7 @@ module.exports = {
           ],
         },
       ],
+      ["expo-gradle-jvmargs", { "xmx": "4g", "maxMetaspace": "1024m" }]
     ],
     splash: {
       image: "./assets/splash.png",
