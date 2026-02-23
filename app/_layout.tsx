@@ -243,7 +243,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
     if (showHomeButton == undefined || showHomeButton == null) {
       setShowHomeButton(true);
     }
-  });
+  }, [showHomeButton]);
 
   const shouldHide = useMemo(() => {
     switch (path) {
