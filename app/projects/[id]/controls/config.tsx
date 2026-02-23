@@ -14,6 +14,7 @@ import PickerBottomSheet from "../../../../components/PickerBottomSheet";
 // @ts-expect-error
 import Pressable from "../../../../components/Pressable";
 import PressableIcon from "../../../../components/PressableIcon";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 interface ControlMapping {
   controlOptions: {
@@ -871,17 +872,18 @@ export default function ControlsScreen() {
           </>
         )}
       </ScrollView>
-
-      {/* Single Picker Bottom Sheet */}
-      <PickerBottomSheet
-        options={activePickerConfig?.options || []}
-        selectedValue={activePickerConfig?.currentValue}
-        onValueChange={activePickerConfig?.onSelect || (() => {})}
-        placeholder={activePickerConfig?.placeholder || "Select an option"}
-        searchable={activePickerConfig?.searchable || false}
-        isOpen={activePicker !== null}
-        onClose={() => setActivePicker(null)}
-      />
+      <BottomSheetModalProvider>
+        {/* Single Picker Bottom Sheet */}
+        <PickerBottomSheet
+          options={activePickerConfig?.options || []}
+          selectedValue={activePickerConfig?.currentValue}
+          onValueChange={activePickerConfig?.onSelect || (() => {})}
+          placeholder={activePickerConfig?.placeholder || "Select an option"}
+          searchable={activePickerConfig?.searchable || false}
+          isOpen={activePicker !== null}
+          onClose={() => setActivePicker(null)}
+        />
+      </BottomSheetModalProvider>
     </>
   );
 }

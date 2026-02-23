@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import ItchyText from "../components/ItchyText";
-import { Dimensions, View } from "react-native";
+import { Dimensions, Platform, View } from "react-native";
 import { useSharedValue } from "react-native-reanimated";
 import { useTheme } from "../utils/theme";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
@@ -12,6 +12,7 @@ import onboarding from "../assets/onboarding/onboarding";
 import { Ionicons } from "@expo/vector-icons";
 import { useMMKVBoolean } from "react-native-mmkv";
 import { router, useNavigation } from "expo-router";
+import { GlassView } from "expo-glass-effect";
 
 const data = [
   {
@@ -200,19 +201,22 @@ export default function Onboarding({}) {
           }}
           style={{ margin: "auto" }}
         >
-          <View
+          <GlassView
+            isInteractive={true}
             style={{
-              backgroundColor: "#f4a935",
+              backgroundColor: Platform.OS == "ios" ? undefined : "#f4a935",
               padding: 10,
               borderRadius: 100,
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "center",
-              outlineColor: "#d68a1a",
+              outlineColor: Platform.OS == "ios" ? undefined : "#d68a1a",
               outlineStyle: "solid",
-              outlineWidth: 1.5,
+              outlineWidth: Platform.OS == "ios" ? 0 : 1.5,
               boxShadow:
-                "0px 2px 4px 0px #ffffff22 inset, 0px 2px 0px 0px #f9c56a inset",
+                Platform.OS == "ios"
+                  ? undefined
+                  : "0px 2px 4px 0px #ffffff22 inset, 0px 2px 0px 0px #f9c56a inset",
             }}
           >
             <Ionicons
@@ -220,7 +224,7 @@ export default function Onboarding({}) {
               size={36}
               color="white"
             />
-          </View>
+          </GlassView>
         </Pressable>
       </View>
     </View>

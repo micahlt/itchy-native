@@ -6,8 +6,8 @@ import Controls from "./Controls";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 
 export default function ControlsSheet({
-  onControlPress = () => {},
-  onClose = () => {},
+  onControlPress = () => { },
+  onClose = () => { },
   opened = false,
   height: passedHeight = 300,
   projectId = 0,
