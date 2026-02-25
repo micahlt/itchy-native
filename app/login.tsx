@@ -15,6 +15,7 @@ import TexturedButton from "../components/TexturedButton";
 import linkWithFallback from "../utils/linkWithFallback";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 import { saveAccount } from "../utils/account-manager";
+import { GlassView } from "expo-glass-effect";
 
 interface SavedLogin {
   username: string;
@@ -164,6 +165,7 @@ export default function LoginScreen() {
           paddingHorizontal: 10,
           backgroundColor: colors.accent,
           outlineColor: colors.accentOverlay,
+          borderTopWidth: 0,
           borderTopColor: "rgba(255,255,255,0.2)",
         }}
         textStyle={{ color: "white" }}

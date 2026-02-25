@@ -162,7 +162,7 @@ export default function User() {
       //   />
       // }
       style={{
-        flex: 1, backgroundColor: colors.background, borderColor: "green", borderWidth: 1
+        flex: 1, backgroundColor: colors.background
       }}
       contentContainerStyle={{
         paddingTop: getLiquidPlusPadding(),

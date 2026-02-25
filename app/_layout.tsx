@@ -258,7 +258,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
       default:
         return !showHomeButton;
     }
-  }, [path]);
+  }, [path, showHomeButton]);
 
   const shouldElevate = useMemo(() => {
     if (path.includes("/comments")) {
@@ -269,10 +269,12 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   useAnimatedReaction(
     () => shouldHide,
     (shouldHideValue) => {
+      console.log("shouldHideValue", shouldHideValue);
       translateX.value = withTiming(shouldHideValue ? -100 : 0, {
-        duration: 200,
+        duration: 250,
       });
-    }
+    },
+    [shouldHide, path, showHomeButton]
   );
 
   useAnimatedReaction(
@@ -281,18 +283,21 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
       translateY.value = withTiming(
         shouldElevateValue ? -(commentsHeight ?? 90) : 0,
         {
-          duration: 200,
+          duration: 350,
         }
       );
     }
   );
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [
-      { translateX: translateX.value },
-      { translateY: translateY.value },
-    ],
-  }));
+  const animatedStyle = useAnimatedStyle(
+    () => ({
+      transform: [
+        { translateX: translateX.value },
+        { translateY: translateY.value },
+      ],
+    }),
+    [path, shouldHide]
+  );
 
   // If colors aren't ready yet, render nothing (prevents flash)
   if (!colors) return null;
@@ -313,10 +318,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
             }}
           >
             <Animated.View style={animatedStyle}>
-              <GlassView
-                isInteractive={true}
-                style={{ borderRadius: "100%", overflow: "hidden" }}
-              >
+              <GlassView isInteractive={true} style={{ borderRadius: 1000 }}>
                 <Pressable
                   onPress={() => router.dismissTo("/")}
                   android_ripple={{

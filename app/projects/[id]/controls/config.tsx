@@ -406,7 +406,7 @@ export default function ControlsScreen() {
       console.log("Loading project with ID:", id);
       APIProject.getProject(id)
         .then((project) => {
-          console.log("Project loaded:", project);
+          // console.log("Project loaded:", project);
           setProject(project);
         })
         .catch((error) => {

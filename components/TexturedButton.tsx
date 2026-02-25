@@ -1,10 +1,11 @@
-import { StyleProp, View, ViewStyle } from "react-native";
+import { Platform, StyleProp, View, ViewStyle } from "react-native";
 import { useTheme } from "../utils/theme";
 import ItchyText from "./ItchyText";
 // @ts-ignore
 import Pressable from "./Pressable";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
+import { GlassView } from "expo-glass-effect";
 
 export default function TexturedButton({
   style = {},
@@ -27,20 +28,34 @@ export default function TexturedButton({
 }) {
   const { colors, dimensions, isDark } = useTheme();
   return (
-    <View
-      style={{
-        borderRadius: 100,
-        overflow: "hidden",
-        outlineColor: colors.outline,
-        outlineWidth: dimensions.outlineWidth,
-        backgroundColor: colors.backgroundSecondary,
-        borderColor: colors.backgroundSecondary,
-        borderWidth: 0,
-        borderTopWidth: 0,
-        borderTopColor: isDark ? colors.backgroundTertiary : colors.highlight,
-        boxShadow: `0px 2px 4px 0px #ffffff22 inset, 0px 2px 0px 0px ${colors.topLight} inset`,
-        ...(typeof style == "object" ? style : {}),
-      }}
+    <GlassView
+      isInteractive={true}
+      style={
+        Platform.OS == "ios"
+          ? {
+              borderRadius: 100,
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: colors.backgroundSecondary,
+              borderWidth: 0,
+              borderTopWidth: 0,
+              ...(typeof style == "object" ? style : {}),
+            }
+          : {
+              borderRadius: 100,
+              overflow: "hidden",
+              outlineColor: colors.outline,
+              outlineWidth: dimensions.outlineWidth,
+              backgroundColor: colors.backgroundSecondary,
+              borderColor: colors.backgroundSecondary,
+              borderWidth: 0,
+              borderTopWidth: 0,
+              borderTopColor: isDark
+                ? colors.backgroundTertiary
+                : colors.highlight,
+              boxShadow: `0px 2px 4px 0px #ffffff22 inset, 0px 2px 0px 0px ${colors.topLight} inset`,
+              ...(typeof style == "object" ? style : {}),
+            }
+      }
     >
       <Pressable
         style={{
@@ -64,7 +79,10 @@ export default function TexturedButton({
             name={icon as keyof typeof Ionicons.glyphMap}
             color={colors.text}
             size={size * 1.25}
-            style={{ marginRight: children == null ? 0 : size * 0.5 }}
+            style={{
+              marginRight: children == null ? 0 : size * 0.5,
+              color: colors.text,
+            }}
           />
         ) : (
           <></>
@@ -91,6 +109,6 @@ export default function TexturedButton({
           <></>
         )}
       </Pressable>
-    </View>
+    </GlassView>
   );
 }

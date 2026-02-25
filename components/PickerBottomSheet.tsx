@@ -56,13 +56,9 @@ export default function PickerBottomSheet({
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    console.log("PickerBottomSheet isOpen changed:", isOpen);
-    console.log("Options count:", options.length);
     if (isOpen) {
-      console.log("Presenting bottom sheet modal");
       sheetRef.current?.present();
     } else {
-      console.log("Dismissing bottom sheet modal");
       sheetRef.current?.dismiss();
     }
   }, [isOpen]);
