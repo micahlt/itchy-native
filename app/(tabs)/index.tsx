@@ -32,17 +32,13 @@ import {
 } from "react-native-mmkv";
 import Feed from "../../components/Feed";
 import SignInPrompt from "../../components/SignInPrompt";
-import {
-  useSafeAreaInsets,
-  WithSafeAreaInsetsProps,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import StudioCard from "../../components/StudioCard";
 import { Redirect, router, useFocusEffect } from "expo-router";
 import HorizontalContentScroller from "../../components/HorizontalContentScroller";
 import ItchyText from "../../components/ItchyText";
 import { Ionicons } from "@expo/vector-icons";
 import useSWR, { mutate as swrMutate } from "swr";
-import TexturedButton from "../../components/TexturedButton";
 import SquircleView from "../../components/SquircleView";
 import { Studio } from "../../utils/api-wrapper/types/studio";
 import { ItchyThemeColors } from "../../utils/theme/colors";
@@ -154,7 +150,6 @@ export default function HomeScreen() {
   const [user] = useMMKVObject("user");
   const [username] = useMMKVString("username");
   const [token] = useMMKVString("token");
-  const [experimentalFeed] = useMMKVBoolean("experimentalFeed");
   const insets = useSafeAreaInsets();
 
   const scrollRef = useRef<ScrollView | null>(null);
@@ -624,42 +619,6 @@ export default function HomeScreen() {
               <></>
             )}
             <View style={{ marginTop: 10 }}></View>
-            {experimentalFeed ? (
-              <TexturedButton
-                onPress={() => router.push("scroll")}
-                icon="globe"
-                iconSide="left"
-                style={{ margin: "auto" }}
-                size={18}
-              >
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <ItchyText style={{ color: colors.text }}>
-                    Explore more{" "}
-                  </ItchyText>
-                  <View
-                    style={{
-                      backgroundColor: colors.accent,
-                      paddingHorizontal: 5,
-                      borderRadius: 10,
-                      marginLeft: 5,
-                    }}
-                  >
-                    <ItchyText
-                      style={{
-                        color: "#fff",
-                        fontSize: 12,
-                        lineHeight: 20,
-                        fontWeight: "bold",
-                      }}
-                    >
-                      BETA
-                    </ItchyText>
-                  </View>
-                </View>
-              </TexturedButton>
-            ) : (
-              <></>
-            )}
           </AnimatedView>
         </AnimatedScrollView>
       </GestureDetector>
