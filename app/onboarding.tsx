@@ -144,6 +144,7 @@ export default function Onboarding({}) {
             }}
           >
             <Image
+              renderToHardwareTextureAndroid={true}
               source={item.imgSrc}
               style={{
                 height: width * 0.6,

@@ -474,6 +474,13 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           }}
         />
         <Stack.Screen
+          name="tag"
+          options={{
+            presentation: "modal",
+            animation: "fade_from_bottom",
+          }}
+        />
+        <Stack.Screen
           name="feed"
           options={{
             presentation: "modal",

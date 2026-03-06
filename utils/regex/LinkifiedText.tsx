@@ -4,12 +4,13 @@ import { useTheme } from "../theme";
 import { useMemo, memo } from "react";
 import { ViewProps, ViewStyle } from "react-native";
 const username = /(@[\d_\-a-zA-Z]+)/;
+const hashtag = /(#.\S+)/;
 const project = /https*:\/\/scratch.mit.edu\/projects\/(\d*) *\/*/;
 const studio = /https*:\/\/scratch.mit.edu\/studios\/(\d*) *\/*/;
 const existingLink = /<a href=".+">(.+)<\/a>/g;
 const emoji = /<img src="(.+)".*>/g;
 const globalRegex =
-  /(https*:\/\/scratch.mit.edu\/(?:(?:projects)|(?:studios)|(?:users))\/[\d_\-A-Za-z]+)\/*|(@[\d_\-a-zA-Z]+)/g;
+  /(https*:\/\/scratch.mit.edu\/(?:(?:projects)|(?:studios)|(?:users))\/[\d_\-A-Za-z]+)\/*|(@[\d_\-a-zA-Z]+)|(#.\S+)/g;
 
 const emojis: { [key: string]: string } = {
   meow: "😺",
@@ -71,6 +72,16 @@ function LinkifiedText({
             <ItchyText
               style={{ ...(props?.style || {}), color: colors.accent }}
               onPress={() => router.push(`/users/${part.split("@")[1]}`)}
+              key={index}
+            >
+              {part}
+            </ItchyText>
+          );
+        } else if (part.match(hashtag)) {
+          return (
+            <ItchyText
+              style={{ ...(props?.style || {}), color: colors.accent }}
+              onPress={() => router.navigate(`/tag?q=${part.split("#")[1]}`)}
               key={index}
             >
               {part}

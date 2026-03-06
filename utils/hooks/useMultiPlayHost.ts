@@ -20,15 +20,15 @@ export const useMultiPlayHost = (
 
     try {
       const message = JSON.parse(rawData);
-      console.log("[MultiPlay Host] WebView message:", message);
+      // console.log("[MultiPlay Host] WebView message:", message);
 
       switch (message.type) {
         case "loader-ready":
-          console.log("[MultiPlay Host] Loader is ready");
+          // console.log("[MultiPlay Host] Loader is ready");
           break;
 
         case "test":
-          console.log("TEST!");
+          // console.log("TEST!");
           break;
 
         case "status":
@@ -70,7 +70,7 @@ export const useMultiPlayHost = (
       }
     } catch (error) {
       // Handle non-JSON messages (plain strings)
-      console.log("[MultiPlay Host] Non-JSON message:", rawData);
+      // console.log("[MultiPlay Host] Non-JSON message:", rawData);
     }
   };
 

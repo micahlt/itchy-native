@@ -16,7 +16,7 @@ import ProjectCard from "../../components/ProjectCard";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Chip from "../../components/Chip";
 import StudioCard from "../../components/StudioCard";
-import { useFocusEffect, useNavigation } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
 import searchForUser from "../../utils/searchForUser";
 import UserCard from "../../components/UserCard";
 import { FlashList } from "@shopify/flash-list";
@@ -28,6 +28,7 @@ import Card from "../../components/Card";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 export default function Search() {
+  const local = useLocalSearchParams();
   const { colors, dimensions, isDark } = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [type, setType] = useState("projects");
@@ -36,7 +37,6 @@ export default function Search() {
   const searchBarRef = useRef(null);
   const scrollRef = useRef(null);
   const { width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
   const [searchHistory, setSearchHistory] = useMMKVObject("searchHistory");
   const navigation = useNavigation();
 
@@ -48,6 +48,15 @@ export default function Search() {
 
     return unsubscribe;
   }, [navigation]);
+
+  useEffect(() => {
+    if (query == "") {
+      if (!!local.q) {
+        setQuery(local.q);
+        search(local.q);
+      }
+    }
+  }, [local, query])
 
   useFocusEffect(
     useCallback(() => {
