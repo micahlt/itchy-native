@@ -8,7 +8,7 @@ import {
 import ItchyText from "../../../components/ItchyText";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import WebView from "react-native-webview";
@@ -120,7 +120,6 @@ export default function Project() {
     roomCode,
     connectionStatus,
     peerConnected,
-    sendKeyEvent,
     webViewMessageHandler,
     createRoom,
     disconnect,
@@ -132,6 +131,16 @@ export default function Project() {
       modified: timeago.ago(metadata?.history?.modified),
     };
   }, [metadata?.history]);
+
+  const handleControlPress = (key, type) => {
+    const message = JSON.stringify({ key, type });
+    log(c, `Sending key event to WebView: ${message}`)
+    webViewRef.current?.injectJavaScript(`
+            (function(){
+                window.postMessage(${JSON.stringify(message)},'*');
+            })();
+            true;`);
+  };
 
   useEffect(() => {
     log(c, "Project page rendered");
@@ -461,7 +470,7 @@ export default function Project() {
                 <RemixNotice originalProjectID={metadata?.remix?.parent} />
               )}
               <Controls
-                onControlPress={sendKeyEvent}
+                onControlPress={(key, type, coords) => handleControlPress(key, type, coords)}
                 projectId={id}
                 showConfiguration={true}
                 style={{ margin: 20, marginTop: 0, marginBottom: 0 }}

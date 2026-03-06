@@ -269,7 +269,6 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   useAnimatedReaction(
     () => shouldHide,
     (shouldHideValue) => {
-      console.log("shouldHideValue", shouldHideValue);
       translateX.value = withTiming(shouldHideValue ? -100 : 0, {
         duration: 250,
       });
