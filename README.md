@@ -8,7 +8,7 @@ Itchy Native is a mobile app that acts as a client for the [Scratch](https://scr
 
 ## Installation
 
-You can install one of the CI-generated APK files from the [releases page](https://github.com/micahlt/itchy-native/releases) or you can install the app from the platforms' respective app stores below.
+You can install one of the CI-generated IPA or APK files from the [releases page](https://github.com/micahlt/itchy-native/releases) or you can install the app from the platforms' respective app stores below.
 
 [<img height="50" width="180" src="https://itchy.micahlindley.com/assets/google_play.svg" />](https://play.google.com/store/apps/details?id=org.scratchclient4.itchy)
 [<img height="50" width="180" src="https://itchy.micahlindley.com/assets/app_store.svg" />](https://apps.apple.com/us/app/itchy-for-scratch/id6743445859)
