@@ -5,10 +5,7 @@ import {
   View,
 } from "react-native";
 import { useTheme } from "../utils/theme";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import APIExplore from "../utils/api-wrapper/explore";
 import ProjectCard from "../components/ProjectCard";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -52,7 +49,7 @@ export default function Tag() {
       }
       setTag(local.q as string);
       search(local.q as string);
-    }, [])
+    }, []),
   );
 
   const search = (searchQuery: string | null = null) => {

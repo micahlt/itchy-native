@@ -67,7 +67,7 @@ export default function App() {
   >("localControllerMappings");
   const [savedLogins] = useMMKVObject<SavedLogin[]>(
     "savedLogins",
-    encryptedStorage
+    encryptedStorage,
   );
 
   // Check network connectivity when app opens
@@ -77,7 +77,7 @@ export default function App() {
         const networkState = await Network.getNetworkStateAsync();
         if (!networkState.isConnected || !networkState.isInternetReachable) {
           router.replace(
-            "/error?errorText=You appear to be offline. Please check your internet connection and try again."
+            "/error?errorText=You appear to be offline. Please check your internet connection and try again.",
           );
         }
       } catch (error) {
@@ -124,12 +124,12 @@ export default function App() {
               }
               log(c, "Searching saved logins");
               const currentLogin = savedLogins.find(
-                (o) => o.username === storage.getString("username")
+                (o) => o.username === storage.getString("username"),
               );
               if (!currentLogin) {
                 log(
                   c,
-                  "Current login uname and password do not exist.  Staying logged out"
+                  "Current login uname and password do not exist.  Staying logged out",
                 );
                 return;
               }
@@ -167,12 +167,12 @@ export default function App() {
             }
             log(c, "Searching saved logins");
             const currentLogin = savedLogins.find(
-              (o) => o.username === storage.getString("username")
+              (o) => o.username === storage.getString("username"),
             );
             if (!currentLogin) {
               log(
                 c,
-                "Current login uname and password do not exist.  Staying logged out"
+                "Current login uname and password do not exist.  Staying logged out",
               );
               return storage.delete("username");
             }
@@ -204,23 +204,23 @@ export default function App() {
     }
   }, []);
   return (
-    <SWRConfig
-      value={{
-        dedupingInterval: 2000,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        errorRetryCount: 2,
-      }}
-    >
-      <ThemeProvider>
-        <GestureHandlerRootView collapsable={false}>
+    <GestureHandlerRootView collapsable={false}>
+      <SWRConfig
+        value={{
+          dedupingInterval: 2000,
+          revalidateOnFocus: false,
+          revalidateOnReconnect: false,
+          errorRetryCount: 2,
+        }}
+      >
+        <ThemeProvider>
           <BottomSheetModalProvider>
             {/* Inner component consumes theme after ThemeProvider mounts */}
             <ThemeConsumerInner twConfig={twConfig} />
           </BottomSheetModalProvider>
-        </GestureHandlerRootView>
-      </ThemeProvider>
-    </SWRConfig>
+        </ThemeProvider>
+      </SWRConfig>
+    </GestureHandlerRootView>
   );
 }
 
@@ -273,7 +273,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         duration: 250,
       });
     },
-    [shouldHide, path, showHomeButton]
+    [shouldHide, path, showHomeButton],
   );
 
   useAnimatedReaction(
@@ -283,9 +283,9 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         shouldElevateValue ? -(commentsHeight ?? 90) : 0,
         {
           duration: 350,
-        }
+        },
       );
-    }
+    },
   );
 
   const animatedStyle = useAnimatedStyle(
@@ -295,7 +295,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         { translateY: translateY.value },
       ],
     }),
-    [path, shouldHide]
+    [path, shouldHide],
   );
 
   // If colors aren't ready yet, render nothing (prevents flash)
@@ -375,7 +375,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           contentStyle: {
             backgroundColor: colors.background,
           },
-          headerShown: true,
+          headerShown: false,
           headerBackButtonDisplayMode: "default",
           headerTitleStyle: {
             color: colors.text,
@@ -391,13 +391,11 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           animationDuration: 120,
         }}
       >
-        <Stack.Screen
-          name="(tabs)"
-          options={{ headerShown: false, animation: "default" }}
-        />
+        <Stack.Screen name="(tabs)" options={{ animation: "default" }} />
         <Stack.Screen
           name="projects/[id]/index"
           options={{
+            headerShown: true,
             animation: "fade_from_bottom",
             headerBackButtonDisplayMode: "minimal",
             headerBackVisible: Platform.OS === "ios",
@@ -413,6 +411,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="projects/[id]/comments"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",
           }}
@@ -420,6 +419,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="studios/[id]/index"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",
             headerRight: () => (
@@ -434,6 +434,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="studios/[id]/comments"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",
           }}
@@ -441,6 +442,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="users/[username]/index"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",
             headerRight: () => (
@@ -455,6 +457,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="users/[username]/about"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",
           }}
@@ -462,6 +465,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="users/[username]/activity"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",
           }}
@@ -469,6 +473,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="users/[username]/comments"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",
           }}
@@ -476,6 +481,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="tag"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",
           }}
@@ -483,6 +489,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="feed"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",
             headerTitle: "What's Happening",
@@ -491,13 +498,14 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="onboarding"
           options={{
-            animation: "fade_from_bottom",
             headerShown: false,
+            animation: "fade_from_bottom",
           }}
         />
         <Stack.Screen
           name="settings"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",
             headerTitle: "Settings",
@@ -506,6 +514,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="login"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "default",
             headerTitle: "Log In",
@@ -514,6 +523,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="multiplay"
           options={{
+            headerShown: true,
             animation: "fade_from_bottom",
             headerTitle: "MultiPlay",
           }}
@@ -521,6 +531,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="projects/[id]/controls/find"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",
             headerTitle: "Find Controller Setups",
@@ -529,6 +540,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="projects/[id]/controls/config"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",
             headerTitle: "Controller Config",
@@ -537,6 +549,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="error"
           options={{
+            headerShown: true,
             presentation: "modal",
             animation: "fade",
             headerTitle: "Error",
