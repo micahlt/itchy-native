@@ -1,16 +1,18 @@
 import { View, ViewStyle } from "react-native";
 import ItchyText from "./ItchyText";
-import { FlatList } from "react-native-gesture-handler";
+import Reanimated from "react-native-reanimated";
 import { useTheme } from "../utils/theme";
 import ProjectCard from "./ProjectCard";
 import StudioCard from "./StudioCard";
 import { Ionicons } from "@expo/vector-icons";
 import TexturedButton from "./TexturedButton";
+import { memo } from "react";
 import Animated, { FadeInRight } from "react-native-reanimated";
 import { Project } from "../utils/api-wrapper/types/project";
 import { Studio } from "../utils/api-wrapper/types/studio";
+import { FlatList } from "react-native-gesture-handler";
 
-type HorizontalContentScrollerProps = {
+type RegularHorizontalContentScrollerProps = {
   data: Project[] | Studio[];
   itemType?: "projects" | "studios";
   iconName?: string;
@@ -20,7 +22,38 @@ type HorizontalContentScrollerProps = {
   itemCount?: number | null;
 };
 
-export default function HorizontalContentScroller({
+type ItemRendererProps = {
+  itemType: "projects" | "studios";
+  item: Project | Studio;
+  index: number;
+};
+
+const ItemRenderer = memo(function ItemRenderer({
+  itemType,
+  item,
+  index,
+}: ItemRendererProps) {
+  let content = null;
+  if (itemType == "projects") {
+    content = <ProjectCard project={item} />;
+  } else if (itemType == "studios") {
+    //  @ts-ignore
+    content = <StudioCard studio={item} />;
+  }
+
+  if (!content) return null;
+
+  return (
+    <Animated.View
+      entering={FadeInRight.delay(index * 50).springify()}
+      style={{ marginRight: 10 }}
+    >
+      {content}
+    </Animated.View>
+  );
+});
+
+export default memo(function HorizontalContentScroller({
   data,
   itemType = "projects",
   iconName,
@@ -28,7 +61,7 @@ export default function HorizontalContentScroller({
   title = "Projects",
   onShowMore,
   itemCount = null,
-}: HorizontalContentScrollerProps) {
+}: RegularHorizontalContentScrollerProps) {
   const { colors } = useTheme();
   return (
     <>
@@ -68,25 +101,6 @@ export default function HorizontalContentScroller({
       </View>
       <FlatList
         horizontal
-        data={data as unknown as any[]}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item, index }) => {
-          let content = null;
-          if (itemType == "projects") {
-            content = <ProjectCard project={item} />;
-          } else if (itemType == "studios") {
-            //  @ts-ignore
-            content = <StudioCard studio={item} />;
-          }
-
-          if (!content) return null;
-
-          return (
-            <Animated.View entering={FadeInRight.delay(index * 50).springify()}>
-              {content}
-            </Animated.View>
-          );
-        }}
         nestedScrollEnabled={true}
         keyboardShouldPersistTaps="handled"
         scrollEnabled={!!data?.length}
@@ -95,10 +109,19 @@ export default function HorizontalContentScroller({
           paddingTop: 10,
           paddingBottom: 15,
         }}
-        ItemSeparatorComponent={() => <View style={{ width: 10 }} />}
         showsHorizontalScrollIndicator={false}
-        removeClippedSubviews={false}
+        data={data as any[]}
+        keyExtractor={(item, index) =>
+          item.id ? String(item.id) : String(index)
+        }
+        renderItem={({ item, index }) => (
+          <ItemRenderer itemType={itemType} item={item} index={index} />
+        )}
+        initialNumToRender={3}
+        windowSize={3}
+        maxToRenderPerBatch={3}
+        removeClippedSubviews={true}
       />
     </>
   );
-}
+});

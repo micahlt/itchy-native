@@ -10,10 +10,10 @@ const APIAuth = {
     await CookieManager.clearAll();
     const csrfFetch = await expoFetch("https://scratch.mit.edu/csrf_token/");
     const setCookieHeader = csrfFetch.headers.get("set-cookie");
-    console.log("CSRF Set-Cookie:", setCookieHeader);
+    // console.log("CSRF Set-Cookie:", setCookieHeader);
     let initialCSRF =
       /scratchcsrftoken=(.*?);/gm.exec(setCookieHeader || "")?.[1] || "";
-    console.log("Extracted CSRF:", initialCSRF);
+    // console.log("Extracted CSRF:", initialCSRF);
     // a lot of this code is taken from
     // https://github.com/webdev03/meowclient/blob/main/src/ScratchSession.ts
     const headers = {
@@ -111,7 +111,7 @@ const APIAuth = {
           "Content-Type": "application/x-www-form-urlencoded",
           Accept: "*/*",
         },
-      }
+      },
     );
     CookieManager.clearAll();
     clearCookies();

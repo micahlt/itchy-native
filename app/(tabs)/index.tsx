@@ -1,20 +1,24 @@
 const REFRESH_TRIGGER_HEIGHT = 50;
 const MAX_PULL_HEIGHT = 75;
 const ITCHY_FEATURED_STUDIO_ID = 51280014;
-import { ImageStyle } from "expo-image";
 import {
   getCrashlytics,
   log,
   recordError,
 } from "@react-native-firebase/crashlytics";
-import {
-  Platform,
-  View,
-  Animated,
-  Easing,
-  Insets,
-  ViewStyle,
-} from "react-native";
+import { Platform, View, Insets } from "react-native";
+import Reanimated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  withRepeat,
+  Easing as ReanimatedEasing,
+  interpolate,
+  Extrapolation,
+  useAnimatedScrollHandler,
+} from "react-native-reanimated";
+import { scheduleOnRN } from "react-native-worklets";
 import * as Haptics from "expo-haptics";
 import ScratchAPIWrapper from "../../utils/api-wrapper";
 import {
@@ -22,6 +26,7 @@ import {
   GestureDetector,
   ScrollView,
   TouchableOpacity,
+  FlatList,
 } from "react-native-gesture-handler";
 import { useTheme } from "../../utils/theme";
 import { memo, useCallback, useEffect, useMemo, useRef } from "react";
@@ -43,8 +48,8 @@ import SquircleView from "../../components/SquircleView";
 import { Studio } from "../../utils/api-wrapper/types/studio";
 import { ItchyThemeColors } from "../../utils/theme/colors";
 
-const AnimatedScrollView = Animated.createAnimatedComponent(ScrollView);
-const AnimatedView = Animated.createAnimatedComponent(SquircleView);
+const AnimatedScrollView = Reanimated.createAnimatedComponent(ScrollView);
+const AnimatedView = Reanimated.createAnimatedComponent(SquircleView);
 
 const c = getCrashlytics();
 
@@ -58,11 +63,11 @@ const Header = memo(
   }: {
     insets: Insets;
     colors: ItchyThemeColors;
-    headerStyle: ViewStyle;
-    logoStyle: Animated.WithAnimatedObject<ImageStyle>;
+    headerStyle: any;
+    logoStyle: any;
     username: string;
   }) => (
-    <Animated.View
+    <Reanimated.View
       collapsable={false}
       style={[
         headerStyle,
@@ -85,7 +90,7 @@ const Header = memo(
           color={colors.textSecondary}
         />
       </TouchableOpacity>
-      <Animated.Image
+      <Reanimated.Image
         source={require("../../assets/logo-transparent.png")}
         style={[logoStyle, { height: 65, width: 65 }]}
       />
@@ -100,8 +105,8 @@ const Header = memo(
           color={colors.textSecondary}
         />
       </TouchableOpacity>
-    </Animated.View>
-  )
+    </Reanimated.View>
+  ),
 );
 
 // Memoized studios section
@@ -125,51 +130,43 @@ const FeaturedStudios = memo(
           Featured Studios
         </ItchyText>
       </View>
-      <ScrollView
+      <FlatList
         horizontal
+        data={studios}
+        keyExtractor={(item, index) => `studio-${item.id || index}`}
+        renderItem={({ item }) => <StudioCard studio={item} />}
         contentContainerStyle={{
           padding: 20,
           paddingTop: 10,
           paddingBottom: 10,
-          columnGap: 10,
+          gap: 10,
         }}
         showsHorizontalScrollIndicator={false}
-      >
-        {studios.map((item, index) => (
-          <StudioCard key={`studio-${item.id || index}`} studio={item} />
-        ))}
-      </ScrollView>
+        initialNumToRender={3}
+        windowSize={3}
+        maxToRenderPerBatch={3}
+        removeClippedSubviews={true}
+      />
     </>
-  )
+  ),
 );
 
 export default function HomeScreen() {
   const { colors, dimensions } = useTheme();
-  const [hasOpenedBefore, setHasOpenedBefore] =
-    useMMKVBoolean("hasOpenedBefore");
-  const [user] = useMMKVObject("user");
+  const [hasOpenedBefore] = useMMKVBoolean("hasOpenedBefore");
   const [username] = useMMKVString("username");
   const [token] = useMMKVString("token");
   const insets = useSafeAreaInsets();
 
   const scrollRef = useRef<ScrollView | null>(null);
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const panPosition = useRef(new Animated.Value(0)).current;
-  const rotate = useRef(new Animated.Value(0)).current;
+  const scrollY = useSharedValue(0);
+  const panPosition = useSharedValue(0);
+  const rotate = useSharedValue(0);
 
-  // Refs for mutable values that don't need to trigger re-renders
-  const isAtTop = useRef(true);
-  const didVibrate = useRef(false);
+  // Shared values for worklets
+  const isAtTop = useSharedValue(true);
+  const didVibrate = useSharedValue(false);
   const rotationPaused = useRef(false);
-  const panPositionValue = useRef(0);
-
-  // Listener to keep track of panPosition value for logic
-  useEffect(() => {
-    const id = panPosition.addListener(({ value }) => {
-      panPositionValue.current = value;
-    });
-    return () => panPosition.removeListener(id);
-  }, []);
 
   // SWR data fetching for explore data
   const {
@@ -193,7 +190,7 @@ export default function HomeScreen() {
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-    }
+    },
   );
 
   const {
@@ -206,7 +203,7 @@ export default function HomeScreen() {
       try {
         log(c, "Fetching Itchy Featured data");
         const result = await ScratchAPIWrapper.studio.getProjects(
-          ITCHY_FEATURED_STUDIO_ID
+          ITCHY_FEATURED_STUDIO_ID,
         );
         log(c, "Successfully fetched Itchy Featured data");
         return result;
@@ -219,7 +216,7 @@ export default function HomeScreen() {
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-    }
+    },
   );
 
   // SWR for friends data
@@ -231,7 +228,7 @@ export default function HomeScreen() {
         log(c, "Fetching friends loved projects");
         const result = await ScratchAPIWrapper.explore.getFriendsLoves(
           username,
-          token
+          token,
         );
         log(c, `Successfully fetched ${result.length} friends loved projects`);
         return result;
@@ -244,7 +241,7 @@ export default function HomeScreen() {
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-    }
+    },
   );
 
   const { data: friendsProjects = [], mutate: refreshFriendsProjects } = useSWR(
@@ -255,11 +252,11 @@ export default function HomeScreen() {
         log(c, "Fetching friends created projects");
         const result = await ScratchAPIWrapper.explore.getFriendsProjects(
           username,
-          token
+          token,
         );
         log(
           c,
-          `Successfully fetched ${result.length} friends created projects`
+          `Successfully fetched ${result.length} friends created projects`,
         );
         return result;
       } catch (error) {
@@ -271,7 +268,7 @@ export default function HomeScreen() {
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-    }
+    },
   );
 
   // Simple refresh function using SWR mutate
@@ -281,15 +278,15 @@ export default function HomeScreen() {
       rotationPaused.current = false;
 
       // Start rotation
-      rotate.setValue(0);
-      Animated.loop(
-        Animated.timing(rotate, {
-          toValue: 1,
+      rotate.value = 0;
+      rotate.value = withRepeat(
+        withTiming(1, {
           duration: 1000,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        })
-      ).start();
+          easing: ReanimatedEasing.linear,
+        }),
+        -1,
+        false,
+      );
 
       // Refresh all data sources
       refreshExplore();
@@ -306,8 +303,7 @@ export default function HomeScreen() {
       // Stop rotation after a delay
       setTimeout(() => {
         rotationPaused.current = true;
-        rotate.stopAnimation();
-        rotate.setValue(0);
+        rotate.value = 0;
       }, 2000);
     } catch (error) {
       log(c, "Error during refresh operation");
@@ -345,9 +341,8 @@ export default function HomeScreen() {
       return () => {
         log(c, "Cleaning up home screen animations");
         rotationPaused.current = true;
-        rotate.stopAnimation();
-        rotate.setValue(0);
-        panPosition.setValue(0);
+        rotate.value = 0;
+        panPosition.value = 0;
       };
     } catch (error) {
       log(c, "Error during home screen initialization");
@@ -360,50 +355,38 @@ export default function HomeScreen() {
       if (!!scrollRef?.current) {
         scrollRef?.current.scrollTo({ x: 0, y: 0, animated: false });
       }
-    }, [scrollRef])
+    }, [scrollRef]),
   );
 
-  const headerStyle = {
-    transform: [
-      {
-        translateY: scrollY,
-      },
-    ],
-  };
+  const headerStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: scrollY.value }],
+    };
+  });
 
-  const logoStyle: Animated.WithAnimatedObject<ImageStyle> = {
-    transform: [
-      {
-        translateY:
-          Platform.OS === "ios"
-            ? panPosition.interpolate({
-                inputRange: [0, 1000],
-                outputRange: [0, 2000],
-              }) // * 2
-            : panPosition.interpolate({
-                inputRange: [0, 1000],
-                outputRange: [0, 500],
-              }), // / 2
-      },
-      {
-        scale: panPosition.interpolate({
-          inputRange: [0, MAX_PULL_HEIGHT],
-          outputRange: [1, 1 + MAX_PULL_HEIGHT / 100],
-          extrapolate: "clamp",
-        }),
-      },
-      {
-        rotate: rotate.interpolate({
-          inputRange: [0, 1],
-          outputRange: ["0deg", "360deg"],
-        }),
-      },
-    ],
-  };
+  const logoStyle = useAnimatedStyle(() => {
+    const translateY =
+      Platform.OS === "ios"
+        ? interpolate(panPosition.value, [0, 1000], [0, 2000])
+        : interpolate(panPosition.value, [0, 1000], [0, 500]);
+    const scale = interpolate(
+      panPosition.value,
+      [0, MAX_PULL_HEIGHT],
+      [1, 1 + MAX_PULL_HEIGHT / 100],
+      Extrapolation.CLAMP,
+    );
+    const rotateDeg = interpolate(rotate.value, [0, 1], [0, 360]);
 
-  const contentStyle = {
-    transform: [{ translateY: panPosition }],
-  };
+    return {
+      transform: [{ translateY }, { scale }, { rotate: `${rotateDeg}deg` }],
+    };
+  });
+
+  const contentStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: panPosition.value }],
+    };
+  });
 
   // Memoize pan gesture to prevent recreations
   const panGesture = useMemo(
@@ -411,65 +394,55 @@ export default function HomeScreen() {
       Gesture.Pan()
         // @ts-ignore
         .simultaneousWithExternalGesture(scrollRef)
-        .runOnJS(true)
         .onUpdate((e) => {
-          if (isAtTop.current && e.translationY > 0) {
+          if (isAtTop.value && e.translationY > 0) {
             const newPan =
               e.translationY * 0.18 +
               0.5 *
                 (1 -
                   Math.min(e.translationY, MAX_PULL_HEIGHT) / MAX_PULL_HEIGHT);
 
-            panPosition.setValue(newPan);
+            panPosition.value = newPan;
 
-            if (Math.floor(newPan) % 18 == 0) vib("tick");
+            if (Math.floor(newPan) % 18 == 0) scheduleOnRN(vib, "tick");
             if (newPan > REFRESH_TRIGGER_HEIGHT) {
-              if (!didVibrate.current) {
-                vib("long");
-                didVibrate.current = true;
+              if (!didVibrate.value) {
+                scheduleOnRN(vib, "long");
+                didVibrate.value = true;
               }
             }
           }
         })
         .onEnd((e) => {
-          didVibrate.current = false;
-          if (
-            isAtTop.current &&
-            panPositionValue.current > REFRESH_TRIGGER_HEIGHT
-          ) {
-            vib("long");
-            refresh();
+          didVibrate.value = false;
+          if (isAtTop.value && panPosition.value > REFRESH_TRIGGER_HEIGHT) {
+            scheduleOnRN(vib, "long");
+            scheduleOnRN(refresh);
           }
-          Animated.spring(panPosition, {
-            toValue: 0,
-            friction: 6,
-            tension: 30,
-            useNativeDriver: true,
-          }).start();
+          panPosition.value = withSpring(0, {
+            damping: 10,
+            stiffness: 100,
+            mass: 0.5,
+          });
         }),
-    [vib, refresh]
+    [vib, refresh],
   );
 
   // Memoize scroll handlers
   const onScrollBeginDrag = useCallback(
     (e: { nativeEvent: { contentOffset: { y: number } } }) => {
       const offsetY = e.nativeEvent.contentOffset.y;
-      isAtTop.current = offsetY <= 0;
+      isAtTop.value = offsetY <= 0;
     },
-    []
+    [],
   );
 
-  const onScroll = useMemo(
-    () =>
-      Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
-        useNativeDriver: true,
-        listener: (e: { nativeEvent: { contentOffset: { y: number } } }) => {
-          const offsetY = e.nativeEvent.contentOffset.y;
-          isAtTop.current = offsetY <= 0;
-        },
-      }),
-    [scrollY]
-  );
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+      isAtTop.value = event.contentOffset.y <= 0;
+    },
+  });
 
   // Memoize content style object
   const containerStyle = useMemo(
@@ -493,7 +466,7 @@ export default function HomeScreen() {
       flex: 1,
       overflow: "visible" as const,
     }),
-    [colors, insets.bottom, dimensions]
+    [colors, insets.bottom, dimensions],
   );
 
   return (
@@ -508,7 +481,7 @@ export default function HomeScreen() {
           ref={scrollRef}
           scrollEventThrottle={16}
           onScrollBeginDrag={onScrollBeginDrag}
-          onScroll={onScroll}
+          onScroll={scrollHandler}
           showsVerticalScrollIndicator={false}
         >
           <Header
