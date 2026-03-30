@@ -1,7 +1,7 @@
 import consts from "./consts";
 import fetch from "../fetch-provider";
 import { fetch as expoFetch } from "expo/fetch";
-import CookieManager from "@react-native-cookies/cookies";
+import CookieManager from "@preeternal/react-native-cookie-manager";
 import { setCookies, clearCookies } from "../cookie-manager";
 import { AuthSession } from "./types/auth";
 

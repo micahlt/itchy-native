@@ -19,7 +19,7 @@ module.exports = {
             deploymentTarget: "15.1",
           },
           android: {
-            compileSdkVersion: 35,
+            compileSdkVersion: 36,
             targetSdkVersion: 35,
             buildToolsVersion: "35.0.0",
             kotlinVersion: "2.2.20",
@@ -34,10 +34,12 @@ module.exports = {
         {
           assets: [
             "assets/icons/search_24_black.png",
-            "assets/icons/search_24_white.png"
+            "assets/icons/search_24_white.png",
           ],
         },
       ],
+      "expo-image",
+      "expo-sharing",
       [
         "react-native-edge-to-edge",
         {
@@ -57,7 +59,7 @@ module.exports = {
           ],
         },
       ],
-      ["expo-gradle-jvmargs", { "xmx": "4g", "maxMetaspace": "1024m" }]
+      ["expo-gradle-jvmargs", { xmx: "4g", maxMetaspace: "1024m" }],
     ],
     splash: {
       image: "./assets/splash.png",
@@ -72,31 +74,30 @@ module.exports = {
         foregroundImage: "./assets/icon-foreground.png",
         monochromeImage: "./assets/icon-monochrome.png",
       },
-      edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
       googleServicesFile:
         process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
       permissions: [
-        'android.permission.VIBRATE',
-        'android.permission.CAMERA',
-        'android.permission.RECORD_AUDIO',
-        'android.permission.MICROPHONE',
-        'android.permission.MODIFY_AUDIO_SETTINGS',
-      ]
+        "android.permission.VIBRATE",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MICROPHONE",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+      ],
     },
     ios: {
       bundleIdentifier: "org.scratchclient4.itchy",
       buildNumber: "80",
       icon: "./assets/iosicon.icon",
       config: {
-        usesNonExemptEncryption: false
+        usesNonExemptEncryption: false,
       },
       infoPlist: {
         NSCameraUsageDescription:
           "Itchy needs access to the camera to support projects that include camera features.",
         NSMicrophoneUsageDescription:
           "Itchy needs access to your microphone to support projects that include audio features.",
-        ITSAppUsesNonExemptEncryption: false
+        ITSAppUsesNonExemptEncryption: false,
       },
       googleServicesFile:
         process.env.GOOGLE_SERVICES_PLIST ?? "./GoogleService-Info.plist",

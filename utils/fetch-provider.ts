@@ -1,10 +1,10 @@
 import { fetch as expoFetch, FetchRequestInit } from "expo/fetch";
 import { getCookieString, setCookies } from "./cookie-manager";
-import CookieManager from "@react-native-cookies/cookies";
+import CookieManager from "@preeternal/react-native-cookie-manager";
 
 const customFetch = async (
   url: string,
-  options: FetchRequestInit = {}
+  options: FetchRequestInit = {},
 ): Promise<Response> => {
   await CookieManager.clearAll();
   const cookieString = getCookieString();
