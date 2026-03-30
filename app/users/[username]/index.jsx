@@ -189,7 +189,7 @@ export default function User() {
     </View>
   );
 
-  const renderButtons = ({ style }) => (
+  const renderButtons = ({ style } = { style: {} }) => (
     <View
       style={{
         flexDirection: "row",

@@ -165,7 +165,10 @@ export default function Studio() {
                 {studio.title}
               </ItchyText>
             </Animated.View>
-            <Animated.View entering={FadeInDown.delay(50).springify()}>
+            <Animated.View
+              entering={FadeInDown.delay(50).springify()}
+              style={{ margin: "auto" }}
+            >
               <Image
                 source={{
                   uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${id}.png`,
@@ -173,8 +176,10 @@ export default function Studio() {
                 style={{
                   margin: "auto",
                   aspectRatio: "16 / 9",
+                  padding: 20,
+                  marginHorizontal: 15,
                   maxWidth: 500,
-                  width: 500,
+                  width: width - 30,
                   borderRadius: dimensions.mediumRadius,
                 }}
               />
