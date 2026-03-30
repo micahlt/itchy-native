@@ -4,25 +4,36 @@ import ProjectCard from "./ProjectCard";
 import StudioCard from "./StudioCard";
 import UserCard from "./UserCard";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
+import { useIsTablet } from "utils/hooks/useIsTablet";
+import { useMemo } from "react";
 
 export default function InfiniteScrollContentList({
   data = [],
   itemType = "projects",
   isLoading = false,
-  onRefresh = () => { },
-  onEndReached = () => { },
+  onRefresh = () => {},
+  onEndReached = () => {},
   disablePTR = false,
 }) {
   const { colors, isDark } = useTheme();
   const { width } = useWindowDimensions();
+  const isTablet = useIsTablet();
+
+  const itemWidth = useMemo(() => {
+    if (isTablet) {
+      return width / 2;
+    } else {
+      return width;
+    }
+  }, [isTablet, width]);
 
   return (
     <FlatList
       data={data}
-      renderItem={({ item }) => renderItem(item, width, itemType)}
+      renderItem={({ item }) => renderItem(item, itemWidth, itemType)}
       keyExtractor={(item) => item.id}
-      numColumns={2}
-      columnWrapperStyle={{ gap: 10 }}
+      numColumns={isTablet ? 4 : 2}
+      columnWrapperStyle={{ gap: isTablet ? 18 : 10 }}
       contentContainerStyle={{
         marginHorizontal: 20,
         gap: 10,
@@ -50,7 +61,7 @@ export default function InfiniteScrollContentList({
             colors={isDark ? ["black"] : ["white"]}
             onRefresh={onRefresh}
           />
-        )
+        ),
       })}
       onEndReached={onEndReached}
     />

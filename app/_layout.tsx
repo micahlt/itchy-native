@@ -377,7 +377,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           contentStyle: {
             backgroundColor: colors.background,
           },
-          headerShown: false,
+          headerShown: true,
           headerBackButtonDisplayMode: "default",
           headerTitleStyle: {
             color: colors.text,
@@ -393,7 +393,10 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           animationDuration: 120,
         }}
       >
-        <Stack.Screen name="(tabs)" options={{ animation: "default" }} />
+        <Stack.Screen
+          name="(tabs)"
+          options={{ headerShown: false, animation: "default" }}
+        />
         <Stack.Screen
           name="projects/[id]/index"
           options={{

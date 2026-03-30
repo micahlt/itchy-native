@@ -13,10 +13,15 @@ import {
 } from "react-native-safe-area-context";
 import APIExplore from "../../utils/api-wrapper/explore";
 import ProjectCard from "../../components/ProjectCard";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Chip from "../../components/Chip";
 import StudioCard from "../../components/StudioCard";
-import { router, useFocusEffect, useLocalSearchParams, useNavigation } from "expo-router";
+import {
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+  useNavigation,
+} from "expo-router";
 import searchForUser from "../../utils/searchForUser";
 import UserCard from "../../components/UserCard";
 import { FlashList } from "@shopify/flash-list";
@@ -26,6 +31,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useMMKVObject } from "react-native-mmkv";
 import Card from "../../components/Card";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { useIsTablet } from "utils/hooks/useIsTablet";
 
 export default function Search() {
   const local = useLocalSearchParams();
@@ -39,6 +45,7 @@ export default function Search() {
   const { width } = useWindowDimensions();
   const [searchHistory, setSearchHistory] = useMMKVObject("searchHistory");
   const navigation = useNavigation();
+  const isTablet = useIsTablet();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("tabPress", (e) => {
@@ -56,7 +63,7 @@ export default function Search() {
         search(local.q);
       }
     }
-  }, [local, query])
+  }, [local, query]);
 
   useFocusEffect(
     useCallback(() => {
@@ -67,7 +74,7 @@ export default function Search() {
       return () => {
         searchBarRef?.current?.blur();
       };
-    }, [])
+    }, []),
   );
 
   const search = (searchQuery = null) => {
@@ -112,6 +119,14 @@ export default function Search() {
         break;
     }
   };
+
+  const itemWidth = useMemo(() => {
+    if (isTablet) {
+      return width / 2;
+    } else {
+      return width;
+    }
+  }, [isTablet, width]);
 
   useEffect(() => {
     search();
@@ -212,13 +227,15 @@ export default function Search() {
         >
           <FlashList
             data={results}
-            renderItem={({ item, index }) => renderItem(item, width, type, index)}
+            renderItem={({ item, index }) =>
+              renderItem(item, itemWidth, type, index)
+            }
             keyExtractor={(item) => item.id}
-            numColumns={2}
+            numColumns={isTablet ? 4 : 2}
             ref={scrollRef}
             columnWrapperStyle={{ gap: 10 }}
             contentContainerStyle={{
-              marginHorizontal: 15,
+              marginHorizontal: isTablet ? 26 : 15,
               paddingTop: 0,
               gap: 30,
               marginTop: -12,

@@ -198,6 +198,8 @@ export default function SettingsScreen() {
       contentContainerStyle={{
         paddingTop: getLiquidPlusPadding(),
         maxWidth: 500,
+        width: "100%",
+        margin: "auto",
       }}
     >
       <ItchyText style={s.sectionHeader}>Account</ItchyText>

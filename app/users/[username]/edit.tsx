@@ -152,7 +152,12 @@ export default function Edit() {
       {!!didGetProfile ? (
         <ScrollView
           style={{ padding: 10 }}
-          contentContainerStyle={{ paddingTop: getLiquidPlusPadding() }}
+          contentContainerStyle={{
+            paddingTop: getLiquidPlusPadding(),
+            maxWidth: 500,
+            width: "100%",
+            marginHorizontal: "auto",
+          }}
         >
           <Card
             style={{
