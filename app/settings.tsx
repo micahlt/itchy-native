@@ -146,7 +146,7 @@ export default function SettingsScreen() {
           flex: 1,
         },
       }),
-    [isDark]
+    [isDark],
   );
 
   useEffect(() => {
@@ -171,10 +171,10 @@ export default function SettingsScreen() {
   // Force dark theme setting persisted in MMKV
   const [forceDark, setForceDark] = useMMKVBoolean("forceDark");
   const [deferProjectLoading, setDeferProjectLoading] = useMMKVBoolean(
-    "deferProjectLoading"
+    "deferProjectLoading",
   );
   const [crashlyticsEnabled, setCrashlyticsEnabled] = useState(
-    c.isCrashlyticsCollectionEnabled
+    c.isCrashlyticsCollectionEnabled,
   );
   const [showHomeButton, setShowHomeButton] =
     useMMKVBoolean("globalHomeButton");
@@ -187,7 +187,7 @@ export default function SettingsScreen() {
 
   async function handleCrashlyticsToggle() {
     await setCrashlyticsCollectionEnabled(c, !crashlyticsEnabled).then(() =>
-      setCrashlyticsEnabled(c.isCrashlyticsCollectionEnabled)
+      setCrashlyticsEnabled(c.isCrashlyticsCollectionEnabled),
     );
   }
 
@@ -195,7 +195,10 @@ export default function SettingsScreen() {
     <ScrollView
       overScrollMode="always"
       bounces={true}
-      contentContainerStyle={{ paddingTop: getLiquidPlusPadding() }}
+      contentContainerStyle={{
+        paddingTop: getLiquidPlusPadding(),
+        maxWidth: 500,
+      }}
     >
       <ItchyText style={s.sectionHeader}>Account</ItchyText>
       <SquircleView
@@ -291,7 +294,7 @@ export default function SettingsScreen() {
                       }}
                     />
                   </TouchableOpacity>
-                )
+                ),
               )}
             </SquircleView>
           )}

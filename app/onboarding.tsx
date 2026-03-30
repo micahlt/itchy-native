@@ -87,7 +87,7 @@ export default function Onboarding({}) {
   // Update isAtEnd whenever progress changes
   const handleProgressChange = (
     offsetProgress: number,
-    absoluteProgress: number
+    absoluteProgress: number,
   ) => {
     // Ensure progress is exactly at the last index when we're at the end
     if (absoluteProgress >= data.length - 1) {
@@ -149,6 +149,8 @@ export default function Onboarding({}) {
               style={{
                 height: width * 0.6,
                 width: width * 0.6,
+                maxHeight: 400,
+                maxWidth: 400,
                 marginHorizontal: "auto",
               }}
             />
@@ -170,6 +172,8 @@ export default function Onboarding({}) {
                 marginTop: 10,
                 paddingHorizontal: 36,
                 marginBottom: 70,
+                marginHorizontal: "auto",
+                maxWidth: 550,
               }}
             >
               {item.description}

@@ -82,7 +82,7 @@ export default function TexturedButton({
     >
       <Pressable
         style={{
-          paddingHorizontal: size / 2,
+          paddingHorizontal: size,
           paddingBottom: size / 1.5,
           paddingTop: size / 1.5,
           flexDirection: "row",
