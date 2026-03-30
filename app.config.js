@@ -82,7 +82,7 @@ module.exports = {
     },
     userInterfaceStyle: "automatic",
     android: {
-      versionCode: 80,
+      versionCode: 81,
       package: "org.scratchclient4.itchy",
       adaptiveIcon: {
         backgroundColor: "#0082FF",
@@ -102,7 +102,7 @@ module.exports = {
     },
     ios: {
       bundleIdentifier: "org.scratchclient4.itchy",
-      buildNumber: "80",
+      buildNumber: "81",
       icon: "./assets/iosicon.icon",
       config: {
         usesNonExemptEncryption: false,
