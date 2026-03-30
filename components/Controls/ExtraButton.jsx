@@ -57,11 +57,7 @@ export default function ExtraButton({
         <ItchyText
           style={{
             fontSize: fontSize,
-            color: isFullscreen
-              ? "rgba(255, 255, 255, 0.8)"
-              : isPressed
-                ? colors.text
-                : colors.backgroundTertiary,
+            color: isPressed ? colors.text : colors.backgroundTertiary,
             fontWeight: "bold",
           }}
         >

@@ -100,11 +100,7 @@ export default function ButtonPad({
         >
           <ItchyText
             style={{
-              color: isFullscreen
-                ? "rgba(255, 255, 255, 0.8)"
-                : isPressed
-                  ? colors.text
-                  : colors.backgroundTertiary,
+              color: isPressed ? colors.text : colors.backgroundTertiary,
               fontSize: Math.max(14, Math.min(18, buttonSize * 0.26)),
               fontWeight: "bold",
             }}

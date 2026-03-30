@@ -121,13 +121,9 @@ export default function Joystick({
               width: handleRadius * 2,
               height: handleRadius * 2,
               borderRadius: handleRadius,
-              backgroundColor: isFullscreen
-                ? isPressed
-                  ? "rgba(255, 255, 255, 0.5)"
-                  : "rgba(255, 255, 255, 0.3)"
-                : isPressed
-                  ? "rgba(255, 255, 255, 0.8)"
-                  : "rgba(255, 255, 255, 0.6)",
+              backgroundColor: isPressed
+                ? "rgba(255, 255, 255, 0.8)"
+                : "rgba(255, 255, 255, 0.6)",
               position: "absolute",
               justifyContent: "center",
               alignItems: "center",

@@ -59,13 +59,9 @@ export default function Dpad({
             {
               width: buttonSize,
               height: buttonSize,
-              backgroundColor: isFullscreen
-                ? isPressed
-                  ? "rgba(255, 255, 255, 0.4)"
-                  : "rgba(255, 255, 255, 0.2)"
-                : isPressed
-                  ? "rgba(255, 255, 255, 0.4)"
-                  : "rgba(255, 255, 255, 0.2)",
+              backgroundColor: isPressed
+                ? "rgba(255, 255, 255, 0.4)"
+                : "rgba(255, 255, 255, 0.2)",
               justifyContent: "center",
               alignItems: "center",
               borderColor: isFullscreen

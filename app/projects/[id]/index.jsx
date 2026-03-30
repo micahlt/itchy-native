@@ -314,11 +314,24 @@ export default function Project() {
     onlineConfigSheetRef.current?.close();
   };
 
-  const fullScreen = async () => {
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-    setIsFullscreen(true);
-    StatusBar.setHidden(true);
-    setForceHideHomeButton(true);
+  const fullScreen = async (makeFullScreen = true) => {
+    if (makeFullScreen) {
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+      setIsFullscreen(true);
+      StatusBar.setHidden(true);
+      setForceHideHomeButton(true);
+      await NavigationBar.setVisibilityAsync("hidden");
+    } else {
+      if (!isTablet) {
+        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+      } else {
+        ScreenOrientation.unlockAsync();
+      }
+      setIsFullscreen(false);
+      StatusBar.setHidden(false);
+      setForceHideHomeButton(false);
+      await NavigationBar.setVisibilityAsync("visible");
+    }
   };
 
   useFocusEffect(
@@ -703,6 +716,22 @@ export default function Project() {
           </View>
         </ScrollView>
       </View>
+      {isFullscreen && (
+        <PressableIcon
+          onPress={() => fullScreen(false)}
+          name="contract"
+          size={24}
+          color={colors.textSecondary}
+          backgroundColor="red"
+          style={{
+            position: "absolute",
+            bottom: 10,
+            left: 10,
+            padding: 10,
+            zIndex: 1050,
+          }}
+        />
+      )}
       <BottomSheet
         ref={onlineConfigSheetRef}
         index={-1}
