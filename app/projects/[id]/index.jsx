@@ -37,6 +37,7 @@ import {
 import * as ScreenOrientation from "expo-screen-orientation";
 import * as NavigationBar from "expo-navigation-bar";
 import Animated, { FadeInRight } from "react-native-reanimated";
+import * as Haptics from "expo-haptics";
 import { getLiquidPlusPadding } from "../../../utils/platformUtils";
 import {
   getCrashlytics,
@@ -196,10 +197,29 @@ export default function Project() {
       const value = data.split("__itchy_")[1].split(":")[1];
       switch (signature) {
         case "vib":
-          if (value == 1) {
-            Vibration.vibrate(1000000, true);
-          } else {
-            Vibration.cancel();
+          switch (value) {
+            case "on":
+              return Vibration.vibrate(100000, true);
+            case "off":
+              return Vibration.cancel();
+            case "heavy":
+              Vibration.cancel();
+              return Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+            case "medium":
+              Vibration.cancel();
+              return Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            case "light":
+              Vibration.cancel();
+              return Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            case "rigid":
+              Vibration.cancel();
+              return Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
+            case "soft":
+              Vibration.cancel();
+              return Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Soft);
+            case "select":
+              Vibration.cancel();
+              return Haptics.selectionAsync();
           }
           break;
         default:
