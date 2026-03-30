@@ -220,6 +220,8 @@ export default function Project() {
             case "select":
               Vibration.cancel();
               return Haptics.selectionAsync();
+            default:
+              return Vibration.cancel();
           }
           break;
         default:
