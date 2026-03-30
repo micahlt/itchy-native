@@ -28,8 +28,8 @@ const APIUser = {
     if (res.ok) {
       const userHTML = await res.text();
       if (userHTML) {
-        const dom = parse(userHTML);
-        if (dom.querySelector(".comments-off") == null) {
+        console.log(userHTML.substring(4740, 10000));
+        if (userHTML.includes("comments_allowed: true")) {
           return true;
         } else {
           return false;

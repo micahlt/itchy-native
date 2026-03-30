@@ -62,7 +62,7 @@ export default function CommentEditor({
       if (Platform.OS === "android") {
         bottomAnim.value = -3;
       }
-    }, [])
+    }, []),
   );
 
   useEffect(() => {
@@ -96,6 +96,10 @@ export default function CommentEditor({
       inputRef?.current?.focus();
     }
   }, [reply]);
+
+  useEffect(() => {
+    setLocalCommentsOpen(commentsOpen);
+  }, [commentsOpen]);
 
   useEffect(() => {
     commentEditor?.current?.measure((x, y, width, height) => {
@@ -287,6 +291,7 @@ export default function CommentEditor({
         <View
           style={{
             paddingHorizontal: 15,
+            paddingTop: 5,
             flexDirection: "row",
             alignItems: "center",
           }}
