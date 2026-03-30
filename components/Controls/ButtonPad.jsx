@@ -3,10 +3,12 @@ import { View } from "react-native";
 import ItchyText from "../ItchyText";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { useTheme } from "../../utils/theme";
+import { useFullscreen } from "./FullscreenContext";
 
 export default function ButtonPad({ onControlPress = () => { }, mapping = {}, containerWidth = 300 }) {
     const { colors } = useTheme();
     const heldDirections = useRef(new Set());
+    const isFullscreen = useFullscreen();
 
     // Responsive sizing based on container width
     const buttonSize = Math.max(50, Math.min(70, containerWidth * 0.15)); // 8% of container width, min 50, max 70
@@ -69,20 +71,21 @@ export default function ButtonPad({ onControlPress = () => { }, mapping = {}, co
                             width: buttonSize,
                             height: buttonSize,
                             borderRadius: buttonSize / 2, // Make the button circular
-                            backgroundColor: isPressed
-                                ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.2)",
+                            backgroundColor: isFullscreen ? (isPressed ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.2)") : (isPressed
+                                ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.2)"),
                             justifyContent: "center",
                             alignItems: "center",
                             borderWidth: 0,
                             borderColor: colors.backgroundSecondary,
-                            boxShadow: "0px 4px 14px 0px rgba(0, 0, 0, 0.1), 0px 6px 10px 0px rgba(255, 255, 255, 0.15) inset, 0px 2px 5px 0px rgba(255, 255, 255, 0.2) inset",
-                            outlineColor: "rgba(69, 137, 236, 1)",
-                            outlineWidth: 1.5
+                            boxShadow: isFullscreen ? "none" : "0px 4px 14px 0px rgba(0, 0, 0, 0.1), 0px 6px 10px 0px rgba(255, 255, 255, 0.15) inset, 0px 2px 5px 0px rgba(255, 255, 255, 0.2) inset",
+                            outlineColor: isFullscreen ? "transparent" : "rgba(69, 137, 236, 1)",
+                            outlineWidth: isFullscreen ? 0 : 1.5,
+                            opacity: isFullscreen ? 0.6 : 1,
                         },
                         style,
                     ]}
                 >
-                    <ItchyText style={{ color: isPressed ? colors.text : colors.backgroundTertiary, fontSize: Math.max(14, Math.min(18, buttonSize * 0.26)), fontWeight: "bold" }}>
+                    <ItchyText style={{ color: isFullscreen ? "rgba(255, 255, 255, 0.8)" : (isPressed ? colors.text : colors.backgroundTertiary), fontSize: Math.max(14, Math.min(18, buttonSize * 0.26)), fontWeight: "bold" }}>
                         {labelText}
                     </ItchyText>
                 </View>

@@ -238,6 +238,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   const [commentsHeight] = useMMKVNumber("commentsHeight");
   const [showHomeButton, setShowHomeButton] =
     useMMKVBoolean("globalHomeButton");
+  const [forceHideHomeButton] = useMMKVBoolean("forceHideHomeButton");
 
   useEffect(() => {
     if (showHomeButton == undefined || showHomeButton == null) {
@@ -246,6 +247,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   }, [showHomeButton]);
 
   const shouldHide = useMemo(() => {
+    if (forceHideHomeButton) return true;
     switch (path) {
       case "/":
       case "/login":
@@ -258,7 +260,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
       default:
         return !showHomeButton;
     }
-  }, [path, showHomeButton]);
+  }, [path, showHomeButton, forceHideHomeButton]);
 
   const shouldElevate = useMemo(() => {
     if (path.includes("/comments")) {

@@ -4,13 +4,14 @@ import {
   Share,
   ScrollView,
   Platform,
+  StatusBar,
   Vibration,
 } from "react-native";
 import ItchyText from "../../../components/ItchyText";
 import { useTheme } from "../../../utils/theme";
 import { Stack } from "expo-router/stack";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect, useLocalSearchParams, useRouter } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import WebView from "react-native-webview";
 import Chip from "../../../components/Chip";
@@ -21,7 +22,6 @@ import { Image } from "expo-image";
 import { useMMKVString, useMMKVBoolean } from "react-native-mmkv";
 import storage from "../../../utils/storage";
 import useTurbowarpLink from "../../../utils/hooks/useTurbowarpLink";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import timeago from "time-ago";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
 import RemixNotice from "../../../components/RemixNotice";
@@ -32,14 +32,17 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import {
   Gesture,
   GestureDetector,
-  ScrollView as GHScrollView
+  ScrollView as GHScrollView,
 } from "react-native-gesture-handler";
+import * as ScreenOrientation from "expo-screen-orientation";
+import * as NavigationBar from "expo-navigation-bar";
 import Animated, { FadeInRight } from "react-native-reanimated";
+import { getLiquidPlusPadding } from "../../../utils/platformUtils";
 import {
-  getLiquidPlusPadding,
-} from "../../../utils/platformUtils";
-import injectedWebviewCode from "../../../utils/webview-inject";
-import { getCrashlytics, log, recordError } from "@react-native-firebase/crashlytics";
+  getCrashlytics,
+  log,
+  recordError,
+} from "@react-native-firebase/crashlytics";
 import PressableIcon from "../../../components/PressableIcon";
 import { useMultiPlayHost } from "../../../utils/hooks/useMultiPlayHost";
 import { useLatestMultiPlayScript } from "../../../utils/hooks/useLatestMultiPlayScript";
@@ -54,33 +57,38 @@ function GestureDetectorOptional({ children }) {
     .manualActivation(false)
     .shouldCancelWhenOutside(false);
   if (Platform.OS == "ios") {
-    return <>{children}</>
+    return <>{children}</>;
   } else {
-    return <GestureDetector gesture={pan}>
-      {children}
-    </GestureDetector>
+    return <GestureDetector gesture={pan}>{children}</GestureDetector>;
   }
 }
 
 export default function Project() {
   const { id } = useLocalSearchParams();
   const { colors, dimensions, isDark } = useTheme();
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
   const [metadata, setMetadata] = useState(null);
   const [interactions, setInteractions] = useState({
     loved: false,
     favorited: false,
   });
   const [username] = useMMKVString("username");
+  const [forceHideHomeButton, setForceHideHomeButton] = useMMKVBoolean(
+    "forceHideHomeButton",
+  );
   const [token] = useMMKVString("token");
   const [deferProjectLoading] = useMMKVBoolean("deferProjectLoading");
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [webViewDimensions, setWebViewDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
   const [manuallyLoaded, setManuallyLoaded] = useState(false);
   const router = useRouter();
   const twLink = useTurbowarpLink(id);
   const insets = useSafeAreaInsets();
   const webViewRef = useRef(null);
   const onlineConfigSheetRef = useRef(null);
-  const [isMaxed, setIsMaxed] = useState(false);
   const multiPlayInject = useLatestMultiPlayScript();
 
   const iceServers = useMemo(() => {
@@ -110,7 +118,7 @@ export default function Project() {
           urls: `turns:${process.env.EXPO_PUBLIC_TURN_SERVER_URL}:443?transport=tcp`,
           username: process.env.EXPO_PUBLIC_TURN_USERNAME,
           credential: process.env.EXPO_PUBLIC_TURN_CREDENTIAL,
-        }
+        },
       );
     }
     return servers;
@@ -135,7 +143,7 @@ export default function Project() {
 
   const handleControlPress = (key, type) => {
     const message = JSON.stringify({ key, type });
-    log(c, `Sending key event to WebView: ${message}`)
+    log(c, `Sending key event to WebView: ${message}`);
     webViewRef.current?.injectJavaScript(`
             (function(){
                 window.postMessage(${JSON.stringify(message)},'*');
@@ -152,17 +160,17 @@ export default function Project() {
       .then((d) => {
         if (d.code == "NotFound") {
           router.replace("/error?errorText=Couldn't find that project.");
-          log(c, "Project was not found")
+          log(c, "Project was not found");
           return;
         } else if (!!d?.code) {
-          log(c, `Other project metadata fetching error: ${d?.code}`)
+          log(c, `Other project metadata fetching error: ${d?.code}`);
           return;
         }
         setMetadata(d);
       })
       .catch((error) => {
         console.error(error);
-        log(c, "Project metadata fetch failed")
+        log(c, "Project metadata fetch failed");
         recordError(c, error);
       });
     if (!!username) {
@@ -175,7 +183,7 @@ export default function Project() {
         })
         .catch((error) => {
           console.error(error);
-          log(c, "Error getting project interactions")
+          log(c, "Error getting project interactions");
           recordError(c, error);
         });
     }
@@ -213,7 +221,7 @@ export default function Project() {
           username,
           token,
           storage.getString("csrfToken"),
-          storage.getString("cookieSet")
+          storage.getString("cookieSet"),
         )
         .then((d) => {
           if (!d.statusChanged) return;
@@ -228,7 +236,7 @@ export default function Project() {
         })
         .catch((error) => {
           console.error(error);
-          log(c, "Error toggling project love")
+          log(c, "Error toggling project love");
           recordError(c, error);
         });
     } else if (interaction == "favorite") {
@@ -240,11 +248,14 @@ export default function Project() {
           username,
           token,
           storage.getString("csrfToken"),
-          storage.getString("cookieSet")
+          storage.getString("cookieSet"),
         )
         .then((d) => {
           if (!d.statusChanged) return;
-          setInteractions({ ...interactions, favorited: !interactions.favorited });
+          setInteractions({
+            ...interactions,
+            favorited: !interactions.favorited,
+          });
           setMetadata({
             ...metadata,
             stats: {
@@ -253,18 +264,22 @@ export default function Project() {
                 metadata.stats.favorites + (interactions.favorited ? -1 : 1),
             },
           });
-        }).catch((error) => {
-          console.error(error);
-          log(c, "Error toggling project favorite")
-          recordError(c, error);
         })
+        .catch((error) => {
+          console.error(error);
+          log(c, "Error toggling project favorite");
+          recordError(c, error);
+        });
     }
   };
 
-  const twJSInject = useMemo(() => `(${webviewInject})(${JSON.stringify({
-    color: colors.backgroundSecondary
-  })});
-  ${multiPlayInject}`, [multiPlayInject, webviewInject, colors]);
+  const twJSInject = useMemo(
+    () => `(${webviewInject})(${JSON.stringify({
+      color: colors.backgroundSecondary,
+    })});
+  ${multiPlayInject}`,
+    [multiPlayInject, webviewInject, colors],
+  );
 
   const openOnlineConfigSheet = () => {
     onlineConfigSheetRef.current?.expand();
@@ -274,12 +289,30 @@ export default function Project() {
     onlineConfigSheetRef.current?.close();
   };
 
+  const fullScreen = async () => {
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+    setIsFullscreen(true);
+    StatusBar.setHidden(true);
+    setForceHideHomeButton(true);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      return async () => {
+        await ScreenOrientation.unlockAsync();
+        StatusBar.setHidden(false);
+        setForceHideHomeButton(false);
+      };
+    }, []),
+  );
+
   return (
     <>
       <View style={{ flex: 1, backgroundColor: colors.background }}>
         <Stack.Screen
           options={{
             title: metadata?.title || "Loading...",
+            headerShown: !isFullscreen,
             headerRight: () => (
               <>
                 <PressableIcon
@@ -289,8 +322,19 @@ export default function Project() {
                   color={colors.textSecondary}
                   backgroundColor="transparent"
                   style={{
+                    paddingLeft: 10,
+                    paddingVertical: 0,
+                  }}
+                />
+                <PressableIcon
+                  onPress={() => fullScreen()}
+                  name="expand"
+                  size={24}
+                  color={colors.textSecondary}
+                  backgroundColor="transparent"
+                  style={{
                     paddingHorizontal: 10,
-                    paddingVertical: 0
+                    paddingVertical: 0,
                   }}
                 />
               </>
@@ -299,9 +343,10 @@ export default function Project() {
         />
         <ScrollView
           contentContainerStyle={{
-            paddingBottom: insets.bottom + 10,
-            paddingTop: isMaxed ? insets.top : getLiquidPlusPadding(0, 120),
+            paddingBottom: isFullscreen ? 0 : insets.bottom + 10,
+            paddingTop: isFullscreen ? 0 : getLiquidPlusPadding(0, 120),
           }}
+          scrollEnabled={!isFullscreen}
         >
           <GestureDetectorOptional>
             {!deferProjectLoading || manuallyLoaded ? (
@@ -309,11 +354,12 @@ export default function Project() {
                 source={{ uri: twLink }}
                 containerStyle={{
                   flex: 0,
-                  marginTop: 5,
-                  width: isMaxed ? width : width - 40,
-                  aspectRatio: 480 / 425,
+                  marginTop: isFullscreen ? 0 : 5,
+                  width: isFullscreen ? undefined : width - 40,
+                  height: isFullscreen ? height : undefined,
+                  aspectRatio: isFullscreen ? 480 / 360 : 480 / 425,
                   margin: "auto",
-                  borderRadius: 10,
+                  borderRadius: isFullscreen ? 0 : 10,
                 }}
                 androidLayerType="hardware"
                 renderToHardwareTextureAndroid={true}
@@ -332,17 +378,19 @@ export default function Project() {
                 ref={webViewRef}
                 onMessage={handleWebviewMessage}
                 onLayout={(event) => {
-                  const { y, height } = event.nativeEvent.layout;
+                  const { width, height } = event.nativeEvent.layout;
+                  setWebViewDimensions({ width, height });
                 }}
               />
             ) : (
               <View
                 style={{
-                  marginTop: 5,
-                  width: isMaxed ? width : width - 40,
-                  aspectRatio: 480 / 425,
+                  marginTop: isFullscreen ? 0 : 5,
+                  width: isFullscreen ? undefined : width - 40,
+                  height: isFullscreen ? height : undefined,
+                  aspectRatio: isFullscreen ? 480 / 360 : 480 / 425,
                   margin: "auto",
-                  borderRadius: 10,
+                  borderRadius: isFullscreen ? 0 : 10,
                   backgroundColor: colors.backgroundSecondary,
                   justifyContent: "center",
                   alignItems: "center",
@@ -379,124 +427,135 @@ export default function Project() {
               </View>
             )}
           </GestureDetectorOptional>
-          {metadata && (
-            <GHScrollView
-              horizontal
-              contentContainerStyle={{
-                paddingVertical: 10,
-                paddingHorizontal: 20,
-                columnGap: 5,
-              }}
-              showsHorizontalScrollIndicator={false}
-            >
-              {isMaxed && (
-                <Animated.View entering={FadeInRight.delay(50)}>
-                  <Chip.Icon
-                    icon="close-fullscreen"
-                    text="Exit Play Mode"
-                    onPress={() => setIsMaxed(false)}
-                  />
-                </Animated.View>
-              )}
-              <Animated.View entering={FadeInRight.delay(100)}>
-                <Chip.Image
-                  imageURL={metadata.author?.profile?.images["32x32"]}
-                  text={metadata.author?.username}
-                  onPress={() =>
-                    router.push(`/users/${metadata?.author?.username}`)
-                  }
-                  textStyle={{ fontWeight: "bold" }}
-                  mode={undefined}
-                  color={colors.text}
-                />
-              </Animated.View>
-              <Animated.View entering={FadeInRight.delay(150)}>
-                <Chip.Icon
-                  icon="heart"
-                  text={approximateNumber(metadata.stats.loves)}
-                  color="#ff4750"
-                  mode={interactions.loved ? "filled" : "outlined"}
-                  onPress={() => toggleInteraction("love")}
-                  provider="gesture-handler"
-                />
-              </Animated.View>
-              <Animated.View entering={FadeInRight.delay(200)}>
-                <Chip.Icon
-                  icon="star"
-                  text={approximateNumber(metadata.stats.favorites)}
-                  color="#ddbf37"
-                  mode={interactions.favorited ? "filled" : "outlined"}
-                  onPress={() => toggleInteraction("favorite")}
-                  provider="gesture-handler"
-                />
-              </Animated.View>
-              <Animated.View entering={FadeInRight.delay(250)}>
-                <Chip.Icon
-                  icon="sync"
-                  text={approximateNumber(metadata.stats.remixes)}
-                  color={isDark ? "#32ee87" : "#0ca852"}
-                  mode="filled"
-                  provider="gesture-handler"
-                />
-              </Animated.View>
-              <Animated.View entering={FadeInRight.delay(300)}>
-                <Chip.Icon
-                  icon="eye"
-                  text={approximateNumber(metadata.stats.views)}
-                  color="#47b5ff"
-                  mode="filled"
-                  provider="gesture-handler"
-                />
-              </Animated.View>
-              <Animated.View entering={FadeInRight.delay(350)}>
-                <Chip.Icon
-                  icon="radio"
-                  text="MultiPlay"
-                  color="#4769ff"
-                  mode="filled"
-                  onPress={openOnlineConfigSheet}
-                  provider="gesture-handler"
-                />
-              </Animated.View>
-              <Animated.View entering={FadeInRight.delay(400)}>
-                <Chip.Icon
-                  icon="share"
-                  text="Share"
-                  color="#7847ff"
-                  mode="filled"
-                  onPress={() =>
-                    Share.share(
-                      Platform.OS === "android"
-                        ? {
-                          message: `https://scratch.mit.edu/projects/${id}`,
-                          dialogTitle: "Share this project",
-                        }
-                        : {
-                          url: `https://scratch.mit.edu/projects/${id}`,
-                          message: "Check out this project on Scratch!",
-                        },
-                      {
-                        dialogTitle: "Share this project",
-                        tintColor: colors.accent,
-                      }
-                    )
-                  }
-                  provider="gesture-handler"
-                />
-              </Animated.View>
-            </GHScrollView>
-          )}
-          {!isMaxed && (
+          {!isFullscreen && (
             <>
+              {metadata && (
+                <GHScrollView
+                  horizontal
+                  contentContainerStyle={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 20,
+                    columnGap: 5,
+                  }}
+                  showsHorizontalScrollIndicator={false}
+                >
+                  <Animated.View entering={FadeInRight.delay(100)}>
+                    <Chip.Image
+                      imageURL={metadata.author?.profile?.images["32x32"]}
+                      text={metadata.author?.username}
+                      onPress={() =>
+                        router.push(`/users/${metadata?.author?.username}`)
+                      }
+                      textStyle={{ fontWeight: "bold" }}
+                      mode={undefined}
+                      color={colors.text}
+                    />
+                  </Animated.View>
+                  <Animated.View entering={FadeInRight.delay(150)}>
+                    <Chip.Icon
+                      icon="heart"
+                      text={approximateNumber(metadata.stats.loves)}
+                      color="#ff4750"
+                      mode={interactions.loved ? "filled" : "outlined"}
+                      onPress={() => toggleInteraction("love")}
+                      provider="gesture-handler"
+                    />
+                  </Animated.View>
+                  <Animated.View entering={FadeInRight.delay(200)}>
+                    <Chip.Icon
+                      icon="star"
+                      text={approximateNumber(metadata.stats.favorites)}
+                      color="#ddbf37"
+                      mode={interactions.favorited ? "filled" : "outlined"}
+                      onPress={() => toggleInteraction("favorite")}
+                      provider="gesture-handler"
+                    />
+                  </Animated.View>
+                  <Animated.View entering={FadeInRight.delay(250)}>
+                    <Chip.Icon
+                      icon="sync"
+                      text={approximateNumber(metadata.stats.remixes)}
+                      color={isDark ? "#32ee87" : "#0ca852"}
+                      mode="filled"
+                      provider="gesture-handler"
+                    />
+                  </Animated.View>
+                  <Animated.View entering={FadeInRight.delay(300)}>
+                    <Chip.Icon
+                      icon="eye"
+                      text={approximateNumber(metadata.stats.views)}
+                      color="#47b5ff"
+                      mode="filled"
+                      provider="gesture-handler"
+                    />
+                  </Animated.View>
+                  <Animated.View entering={FadeInRight.delay(350)}>
+                    <Chip.Icon
+                      icon="radio"
+                      text="MultiPlay"
+                      color="#4769ff"
+                      mode="filled"
+                      onPress={openOnlineConfigSheet}
+                      provider="gesture-handler"
+                    />
+                  </Animated.View>
+                  <Animated.View entering={FadeInRight.delay(400)}>
+                    <Chip.Icon
+                      icon="share"
+                      text="Share"
+                      color="#7847ff"
+                      mode="filled"
+                      onPress={() =>
+                        Share.share(
+                          Platform.OS === "android"
+                            ? {
+                                message: `https://scratch.mit.edu/projects/${id}`,
+                                dialogTitle: "Share this project",
+                              }
+                            : {
+                                url: `https://scratch.mit.edu/projects/${id}`,
+                                message: "Check out this project on Scratch!",
+                              },
+                          {
+                            dialogTitle: "Share this project",
+                            tintColor: colors.accent,
+                          },
+                        )
+                      }
+                      provider="gesture-handler"
+                    />
+                  </Animated.View>
+                </GHScrollView>
+              )}
               {metadata?.remix?.parent && (
                 <RemixNotice originalProjectID={metadata?.remix?.parent} />
               )}
-              <Controls
-                onControlPress={(key, type, coords) => handleControlPress(key, type, coords)}
-                projectId={id}
-                showConfiguration={true}
-                style={{ margin: 20, marginTop: 0, marginBottom: 0 }}
-              />
+            </>
+          )}
+          <Controls
+            onControlPress={(key, type, coords) =>
+              handleControlPress(key, type, coords)
+            }
+            projectId={id}
+            showConfiguration={!isFullscreen}
+            splitLayout={isFullscreen}
+            splitWidth={webViewDimensions.width - 30}
+            style={
+              isFullscreen
+                ? {
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: height,
+                    marginTop: 0,
+                    margin: 0,
+                  }
+                : { margin: 20, marginTop: 0, marginBottom: 0 }
+            }
+          />
+          {!isFullscreen && (
+            <>
               {metadata?.instructions && (
                 <Card
                   style={{

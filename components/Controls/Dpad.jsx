@@ -3,10 +3,12 @@ import { View } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../../utils/theme";
+import { useFullscreen } from "./FullscreenContext";
 
 export default function Dpad({ onControlPress = () => { }, mapping = {}, containerWidth = 300 }) {
     const { colors } = useTheme();
     const heldDirections = useRef(new Set());
+    const isFullscreen = useFullscreen();
 
     // Responsive sizing based on container width
     const buttonSize = Math.max(40, Math.min(60, containerWidth * 0.15)); // 12% of container width, min 40, max 60
@@ -53,17 +55,20 @@ export default function Dpad({ onControlPress = () => { }, mapping = {}, contain
                         {
                             width: buttonSize,
                             height: buttonSize,
-                            backgroundColor: isPressed
-                                ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.2)",
+                            backgroundColor: isFullscreen ? (isPressed ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.2)") : (isPressed
+                                ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.2)"),
                             justifyContent: "center",
                             alignItems: "center",
-                            borderColor: "rgba(69, 137, 236, 1)",
-                            boxShadow: "box-shadow: 0px 8px 6px 0px rgba(255, 255, 255, 0.2) inset, 0px 4px 5px 0px rgba(255, 255, 255, 0.5) inset, 0px 4px 14px 5px rgba(0, 0, 0, 0.4)"
+                            borderColor: isFullscreen ? "transparent" : "rgba(69, 137, 236, 1)",
+                            boxShadow: isFullscreen ? "none" : "box-shadow: 0px 8px 6px 0px rgba(255, 255, 255, 0.2) inset, 0px 4px 5px 0px rgba(255, 255, 255, 0.5) inset, 0px 4px 14px 5px rgba(0, 0, 0, 0.4)",
+                            borderWidth: isFullscreen ? 0 : undefined,
+                            opacity: isFullscreen ? 0.6 : 1,
                         },
                         style,
+                        isFullscreen && { borderWidth: 0, boxShadow: "none" }
                     ]}
                 >
-                    <MaterialIcons name={icon} color={isPressed ? colors.text : colors.backgroundTertiary} size={iconSize} />
+                    <MaterialIcons name={icon} color={isFullscreen ? "rgba(255, 255, 255, 0.8)" : (isPressed ? colors.text : colors.backgroundTertiary)} size={iconSize} />
                 </View>
             </PanGestureHandler>
         );
@@ -123,7 +128,7 @@ export default function Dpad({ onControlPress = () => { }, mapping = {}, contain
                     left: buttonSize,
                     width: buttonSize,
                     height: buttonSize,
-                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    backgroundColor: isFullscreen ? "transparent" : "rgba(255, 255, 255, 0.2)",
                     borderWidth: 0
                 }}
             />

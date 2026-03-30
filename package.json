@@ -47,6 +47,7 @@
     "expo-navigation-bar": "~55.0.9",
     "expo-network": "~55.0.9",
     "expo-router": "~55.0.8",
+    "expo-screen-orientation": "~55.0.9",
     "expo-sharing": "~55.0.14",
     "expo-status-bar": "~55.0.4",
     "expo-system-ui": "~55.0.11",

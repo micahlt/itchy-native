@@ -5,7 +5,7 @@ module.exports = {
     version: "2.8.0",
     scheme: "itchy",
     newArchEnabled: true,
-    orientation: "portrait",
+    orientation: "default",
     plugins: [
       "@react-native-firebase/app",
       "@react-native-firebase/crashlytics",
@@ -74,6 +74,12 @@ module.exports = {
           ],
         },
       ],
+      [
+        "expo-screen-orientation",
+        {
+          initialOrientation: "DEFAULT",
+        },
+      ],
       ["expo-gradle-jvmargs", { xmx: "4g", maxMetaspace: "1024m" }],
     ],
     splash: {
@@ -82,7 +88,7 @@ module.exports = {
     },
     userInterfaceStyle: "automatic",
     android: {
-      versionCode: 80,
+      versionCode: 81,
       package: "org.scratchclient4.itchy",
       adaptiveIcon: {
         backgroundColor: "#0082FF",
@@ -102,8 +108,9 @@ module.exports = {
     },
     ios: {
       bundleIdentifier: "org.scratchclient4.itchy",
-      buildNumber: "80",
+      buildNumber: "81",
       icon: "./assets/iosicon.icon",
+      supportsTablet: true,
       config: {
         usesNonExemptEncryption: false,
       },

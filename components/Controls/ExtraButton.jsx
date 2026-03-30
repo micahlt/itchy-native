@@ -4,11 +4,13 @@ import ItchyText from "../ItchyText";
 import { useTheme } from "../../utils/theme";
 import { useState } from "react";
 import { controlOptionToShortName } from "../../utils/controlOptions";
+import { useFullscreen } from "./FullscreenContext";
 
 export default function ExtraButton({ onControlPress = () => { }, keyboardKey = "" }) {
     const { colors } = useTheme();
     const { width } = useWindowDimensions();
     const [isPressed, setIsPressed] = useState(false);
+    const isFullscreen = useFullscreen();
 
     // Responsive sizing based on screen width
     const buttonSize = Math.max(40, Math.min(55, width * 0.075)); // 7.5% of screen width, min 40, max 55
@@ -30,18 +32,19 @@ export default function ExtraButton({ onControlPress = () => { }, keyboardKey = 
                 style={{
                     width: buttonSize,
                     height: buttonSize,
-                    backgroundColor: isPressed
-                        ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.2)",
+                    backgroundColor: isFullscreen ? (isPressed ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.2)") : (isPressed
+                        ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.2)"),
                     justifyContent: "center",
                     alignItems: "center",
                     borderRadius: buttonSize / 2,
                     margin: Math.max(8, buttonSize * 0.15), // Responsive margin
-                    boxShadow: "0px 4px 14px 0px rgba(0, 0, 0, 0.1), 0px 6px 10px 0px rgba(255, 255, 255, 0.15) inset, 0px 2px 5px 0px rgba(255, 255, 255, 0.2) inset",
-                    outlineColor: "rgba(69, 137, 236, 1)",
-                    outlineWidth: 1.5
+                    boxShadow: isFullscreen ? "none" : "0px 4px 14px 0px rgba(0, 0, 0, 0.1), 0px 6px 10px 0px rgba(255, 255, 255, 0.15) inset, 0px 2px 5px 0px rgba(255, 255, 255, 0.2) inset",
+                    outlineColor: isFullscreen ? "transparent" : "rgba(69, 137, 236, 1)",
+                    outlineWidth: isFullscreen ? 0 : 1.5,
+                    opacity: isFullscreen ? 0.6 : 1,
                 }}
             >
-                <ItchyText style={{ fontSize: fontSize, color: isPressed ? colors.text : colors.backgroundTertiary, fontWeight: "bold" }}>
+                <ItchyText style={{ fontSize: fontSize, color: isFullscreen ? "rgba(255, 255, 255, 0.8)" : (isPressed ? colors.text : colors.backgroundTertiary), fontWeight: "bold" }}>
                     {controlOptionToShortName(keyboardKey)}
                 </ItchyText>
             </View>
