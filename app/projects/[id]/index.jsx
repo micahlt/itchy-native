@@ -194,6 +194,7 @@ export default function Project() {
 
   const handleWebviewMessage = (evt) => {
     const data = evt.nativeEvent.data;
+    console.log(data);
     if (typeof data == "string" && data.startsWith("__itchy_")) {
       const signature = data.split("__itchy_")[1].split(":")[0];
       const value = data.split("__itchy_")[1].split(":")[1];

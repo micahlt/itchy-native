@@ -75,24 +75,27 @@ export default `function injectedWebviewCode(args) {
                 const stage = targets?.find((t) => t.isStage == true);
                 try {
                 const nativeVariables = Object.values(stage.variables).filter(v => v.name.startsWith("__itchy_"));
-                nativeVariables.forEach(v => {
-                    nativeVarStates.set(v.name, v.value)
-                });
-                const updateNativeVars = () => {
-                    const stageVars = Object.values(stage.variables);
-                    stageVars.forEach((variable) => {
-                    // If the variable name exists in our tracking Map, sync the value
-                    if (nativeVarStates.has(variable.name) && nativeVarStates.get(variable.name) != variable.value) {
-                        nativeVarStates.set(variable.name, variable.value);
-                        window.ReactNativeWebView.postMessage(variable.name + ":" + variable.value);
-                    }
-                    requestAnimationFrame(updateNativeVars);
-                  });
-                };
+                if (nativeVariables.length > 0) {
+                    nativeVariables.forEach(v => {
+                        nativeVarStates.set(v.name, v.value)
+                    });
+                    window.ReactNativeWebView.postMessage("Native vars set up");
+                    const updateNativeVars = () => {
+                        const stageVars = Object.values(stage.variables);
+                        stageVars.forEach((variable) => {
+                            // If the variable name exists in our tracking Map, sync the value
+                            if (nativeVarStates.has(variable.name) && nativeVarStates.get(variable.name) != variable.value) {
+                                nativeVarStates.set(variable.name, variable.value);
+                                window.ReactNativeWebView.postMessage(variable.name + ":" + variable.value);
+                            }
+                        });
+                        requestAnimationFrame(updateNativeVars);
+                    };
 
-                requestAnimationFrame(updateNativeVars);
-} catch (err) {
-                window.ReactNativeWebView.postMessage("__itchy_err " + err);
+                    requestAnimationFrame(updateNativeVars);
+                }
+                } catch (err) {
+                  window.ReactNativeWebView.postMessage("__itchy_err " + err);
                 }
                 // Start the message listener for keyboard input. Accept either JSON messages
                 // or plain strings; if parsing fails we ignore non-JSON messages.
