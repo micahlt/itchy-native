@@ -8,6 +8,19 @@ import MutedDialog from "./MutedDialog";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+const FULL_SCREEN_MODAL_CARD_TOP_OFFSET = Platform.select({
+  ios: 10, // This value is a constant for all types of iOS devices
+  default: 0,
+});
+
+const useFullScreenModalHeaderHeight = () => {
+  const { top: topInset } = useSafeAreaInsets();
+  const headerHeight = useHeaderHeight();
+  return topInset + FULL_SCREEN_MODAL_CARD_TOP_OFFSET + headerHeight;
+};
 
 export default function CommentList({
   comments,
@@ -29,6 +42,7 @@ export default function CommentList({
   commentsOpen,
   scrollRef,
 }) {
+  const headerHeight = useHeaderHeight();
   const { colors } = useTheme();
 
   const isAdmin = useMemo(() => {
@@ -37,6 +51,8 @@ export default function CommentList({
     if (user.username === commentOptionContext.owner) return true;
     return false;
   }, [user, comments, commentOptionContext]);
+
+  const keyboardVerticalOffset = useFullScreenModalHeaderHeight();
 
   const renderComment = ({ item, index }) => {
     return (
@@ -61,6 +77,7 @@ export default function CommentList({
     <>
       <View style={{ flex: 1, backgroundColor: colors.background }}>
         <KeyboardAvoidingView
+          keyboardVerticalOffset={keyboardVerticalOffset}
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           style={{ flex: 1 }}
         >
