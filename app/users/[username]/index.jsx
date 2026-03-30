@@ -20,6 +20,7 @@ import Card from "../../../components/Card";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
 import timeago from "time-ago";
 import { flag } from "country-emoji";
+import { dimensions } from "utils/theme/dimensions";
 
 export default function User() {
   const { username } = useLocalSearchParams();
@@ -140,10 +141,10 @@ export default function User() {
           style={{
             color: colors.accent,
             fontWeight: "bold",
-            fontSize: 20,
+            fontSize: isTablet ? 30 : 20,
           }}
         >
-          {profileStats?.followers}
+          {profileStats?.followers?.toUpperCase()}
         </ItchyText>
         <ItchyText style={{ color: colors.text, fontSize: 12 }}>
           Followers
@@ -162,7 +163,7 @@ export default function User() {
           style={{
             color: colors.accent,
             fontWeight: "bold",
-            fontSize: 20,
+            fontSize: isTablet ? 30 : 20,
           }}
         >
           {profileStats?.following}
@@ -176,7 +177,7 @@ export default function User() {
           style={{
             color: colors.accent,
             fontWeight: "bold",
-            fontSize: 20,
+            fontSize: isTablet ? 30 : 20,
           }}
         >
           {new Date(profile.history.joined).getFullYear()}
@@ -324,8 +325,7 @@ export default function User() {
             >
               {isTablet && (
                 <View style={{ flex: 1, paddingRight: 20 }}>
-                  {renderButtons({ style: { marginTop: 0 } })}
-                  <Card style={{ marginBottom: 10, padding: 16 }}>
+                  <View style={{ marginBottom: 10, padding: 16 }}>
                     <View
                       style={{ flexDirection: "row", alignItems: "center" }}
                     >
@@ -334,16 +334,17 @@ export default function User() {
                         placeholder={require("../../../assets/avatar.png")}
                         placeholderContentFit="cover"
                         style={{
-                          height: 60,
-                          width: 60,
-                          borderRadius: 60,
+                          height: 90,
+                          width: 90,
+                          borderRadius: dimensions.mediumRadius,
                           marginRight: 15,
                           backgroundColor: "white",
                         }}
                       />
                       {renderStats()}
                     </View>
-                  </Card>
+                  </View>
+                  {renderButtons({ style: { marginTop: 0 } })}
                   {profile.profile.bio ? (
                     <Card style={{ marginBottom: 10, padding: 16 }}>
                       <ItchyText

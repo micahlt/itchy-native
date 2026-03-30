@@ -48,6 +48,7 @@ import PressableIcon from "../../../components/PressableIcon";
 import { useMultiPlayHost } from "../../../utils/hooks/useMultiPlayHost";
 import { useLatestMultiPlayScript } from "../../../utils/hooks/useLatestMultiPlayScript";
 import webviewInject from "../../../utils/webview-inject";
+import { useIsTablet } from "../../../utils/hooks/useIsTablet";
 const c = getCrashlytics();
 
 function GestureDetectorOptional({ children }) {
@@ -68,6 +69,7 @@ export default function Project() {
   const { id } = useLocalSearchParams();
   const { colors, dimensions, isDark } = useTheme();
   const { width, height } = useWindowDimensions();
+  const isTablet = useIsTablet();
   const [metadata, setMetadata] = useState(null);
   const [interactions, setInteractions] = useState({
     loved: false,
@@ -328,6 +330,191 @@ export default function Project() {
     }, []),
   );
 
+  const renderInteractions = () => (
+    <View>
+      {metadata && (
+        <GHScrollView
+          horizontal
+          style={{ flex: 0 }}
+          contentContainerStyle={{
+            paddingVertical: 10,
+            paddingHorizontal: !isFullscreen && isTablet ? 0 : 20,
+            columnGap: 5,
+            marginBottom: 0,
+          }}
+          showsHorizontalScrollIndicator={false}
+        >
+          <Animated.View entering={FadeInRight.delay(100)}>
+            <Chip.Image
+              imageURL={metadata.author?.profile?.images["32x32"]}
+              text={metadata.author?.username}
+              onPress={() =>
+                router.push(`/users/${metadata?.author?.username}`)
+              }
+              textStyle={{ fontWeight: "bold" }}
+              mode={undefined}
+              color={colors.text}
+            />
+          </Animated.View>
+          <Animated.View entering={FadeInRight.delay(150)}>
+            <Chip.Icon
+              icon="heart"
+              text={approximateNumber(metadata.stats.loves)}
+              color="#ff4750"
+              mode={interactions.loved ? "filled" : "outlined"}
+              onPress={() => toggleInteraction("love")}
+              provider="gesture-handler"
+            />
+          </Animated.View>
+          <Animated.View entering={FadeInRight.delay(200)}>
+            <Chip.Icon
+              icon="star"
+              text={approximateNumber(metadata.stats.favorites)}
+              color="#ddbf37"
+              mode={interactions.favorited ? "filled" : "outlined"}
+              onPress={() => toggleInteraction("favorite")}
+              provider="gesture-handler"
+            />
+          </Animated.View>
+          <Animated.View entering={FadeInRight.delay(250)}>
+            <Chip.Icon
+              icon="sync"
+              text={approximateNumber(metadata.stats.remixes)}
+              color={isDark ? "#32ee87" : "#0ca852"}
+              mode="filled"
+              provider="gesture-handler"
+            />
+          </Animated.View>
+          <Animated.View entering={FadeInRight.delay(300)}>
+            <Chip.Icon
+              icon="eye"
+              text={approximateNumber(metadata.stats.views)}
+              color="#47b5ff"
+              mode="filled"
+              provider="gesture-handler"
+            />
+          </Animated.View>
+          <Animated.View entering={FadeInRight.delay(350)}>
+            <Chip.Icon
+              icon="radio"
+              text="MultiPlay"
+              color="#4769ff"
+              mode="filled"
+              onPress={openOnlineConfigSheet}
+              provider="gesture-handler"
+            />
+          </Animated.View>
+          <Animated.View entering={FadeInRight.delay(400)}>
+            <Chip.Icon
+              icon="share"
+              text="Share"
+              color="#7847ff"
+              mode="filled"
+              onPress={() =>
+                Share.share(
+                  Platform.OS === "android"
+                    ? {
+                        message: `https://scratch.mit.edu/projects/${id}`,
+                        dialogTitle: "Share this project",
+                      }
+                    : {
+                        url: `https://scratch.mit.edu/projects/${id}`,
+                        message: "Check out this project on Scratch!",
+                      },
+                  {
+                    dialogTitle: "Share this project",
+                    tintColor: colors.accent,
+                  },
+                )
+              }
+              provider="gesture-handler"
+            />
+          </Animated.View>
+        </GHScrollView>
+      )}
+      {metadata?.remix?.parent && (
+        <RemixNotice originalProjectID={metadata?.remix?.parent} />
+      )}
+    </View>
+  );
+
+  const renderDetails = () => (
+    <>
+      {metadata?.instructions && (
+        <Card
+          style={{
+            margin: !isFullscreen && isTablet ? 0 : 20,
+            marginTop: 0,
+            marginBottom: 10,
+            padding: 16,
+            borderRadius: dimensions.mediumRadius,
+          }}
+        >
+          <ItchyText
+            style={{
+              fontWeight: "bold",
+              color: colors.text,
+              fontSize: 16,
+              marginBottom: 10,
+            }}
+          >
+            Instructions
+          </ItchyText>
+          <LinkifiedText
+            style={{ color: colors.text }}
+            text={metadata?.instructions}
+          />
+        </Card>
+      )}
+      {metadata?.description && (
+        <Card
+          style={{
+            margin: !isFullscreen && isTablet ? 0 : 20,
+            marginTop: 0,
+            marginBottom: 10,
+            padding: 16,
+            borderRadius: dimensions.mediumRadius,
+          }}
+        >
+          <ItchyText
+            style={{
+              fontWeight: "bold",
+              color: colors.text,
+              fontSize: 16,
+              marginBottom: 10,
+            }}
+          >
+            Credits
+          </ItchyText>
+          <LinkifiedText
+            style={{ color: colors.text }}
+            text={metadata?.description}
+          />
+        </Card>
+      )}
+      {dateInfo && (
+        <Card
+          style={{
+            margin: !isFullscreen && isTablet ? 0 : 20,
+            marginTop: 0,
+            marginBottom: 30,
+            padding: 16,
+            borderRadius: dimensions.mediumRadius,
+          }}
+        >
+          <ItchyText style={{ color: colors.textSecondary, fontSize: 12 }}>
+            Created {dateInfo.created}
+          </ItchyText>
+          {dateInfo.modified != dateInfo.created && (
+            <ItchyText style={{ color: colors.textSecondary, fontSize: 12 }}>
+              Modified {dateInfo.modified}
+            </ItchyText>
+          )}
+        </Card>
+      )}
+    </>
+  );
+
   return (
     <>
       <View style={{ flex: 1, backgroundColor: colors.background }}>
@@ -370,292 +557,149 @@ export default function Project() {
           }}
           scrollEnabled={!isFullscreen}
         >
-          <GestureDetectorOptional>
-            {!deferProjectLoading || manuallyLoaded ? (
-              <WebView
-                source={{ uri: twLink }}
-                containerStyle={{
-                  flex: 0,
-                  marginTop: isFullscreen ? 0 : 5,
-                  width: isFullscreen ? undefined : width - 40,
-                  height: isFullscreen ? height : undefined,
-                  aspectRatio: isFullscreen ? 480 / 360 : 480 / 425,
-                  margin: "auto",
-                  borderRadius: isFullscreen ? 0 : 10,
-                }}
-                androidLayerType="hardware"
-                renderToHardwareTextureAndroid={true}
-                bounces={false}
-                scrollEnabled={false}
-                overScrollMode="never"
-                allowsFullscreenVideo={true}
-                allowsInlineMediaPlayback={true}
-                allowsProtectedMedia={true}
-                mediaPlaybackRequiresUserAction={false}
-                mediaCapturePermissionGrantType="prompt"
-                style={{ backgroundColor: "transparent" }}
-                setBuiltInZoomControls={false}
-                nestedScrollEnabled={true}
-                injectedJavaScript={twJSInject}
-                ref={webViewRef}
-                onMessage={handleWebviewMessage}
-                onLayout={(event) => {
-                  const { width, height } = event.nativeEvent.layout;
-                  setWebViewDimensions({ width, height });
-                }}
+          <View
+            style={
+              !isFullscreen && isTablet
+                ? {
+                    flexDirection: "row",
+                    marginRight: 10,
+                    alignContent: "flex-start",
+                    alignItems: "flex-start",
+                    flex: 0,
+                  }
+                : undefined
+            }
+          >
+            <View
+              style={{
+                flex: !isFullscreen && isTablet ? 1 : undefined,
+              }}
+            >
+              <GestureDetectorOptional>
+                {!deferProjectLoading || manuallyLoaded ? (
+                  <WebView
+                    source={{ uri: twLink }}
+                    containerStyle={{
+                      flex: 0,
+                      marginTop: isFullscreen ? 0 : 5,
+                      width: isFullscreen
+                        ? undefined
+                        : isTablet
+                          ? width / 2
+                          : width - 40,
+                      height: isFullscreen ? height : undefined,
+                      aspectRatio: isFullscreen ? 480 / 360 : 480 / 425,
+                      margin: "auto",
+                      borderRadius: isFullscreen ? 0 : 10,
+                    }}
+                    androidLayerType="hardware"
+                    renderToHardwareTextureAndroid={true}
+                    bounces={false}
+                    scrollEnabled={false}
+                    overScrollMode="never"
+                    allowsFullscreenVideo={true}
+                    allowsInlineMediaPlayback={true}
+                    allowsProtectedMedia={true}
+                    mediaPlaybackRequiresUserAction={false}
+                    mediaCapturePermissionGrantType="prompt"
+                    style={{ backgroundColor: "transparent" }}
+                    setBuiltInZoomControls={false}
+                    nestedScrollEnabled={true}
+                    injectedJavaScript={twJSInject}
+                    ref={webViewRef}
+                    onMessage={handleWebviewMessage}
+                    onLayout={(event) => {
+                      const { width, height } = event.nativeEvent.layout;
+                      setWebViewDimensions({ width, height });
+                    }}
+                  />
+                ) : (
+                  <View
+                    style={{
+                      marginTop: isFullscreen ? 0 : 5,
+                      width: isFullscreen
+                        ? undefined
+                        : isTablet
+                          ? width / 2
+                          : width - 40,
+                      height: isFullscreen ? height : undefined,
+                      aspectRatio: isFullscreen ? 480 / 360 : 480 / 425,
+                      margin: "auto",
+                      borderRadius: isFullscreen ? 0 : 10,
+                      backgroundColor: colors.backgroundSecondary,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {metadata && (
+                      <Image
+                        source={{
+                          uri: metadata.thumbnail_url
+                            ? `https:${metadata.thumbnail_url}`
+                            : metadata.image,
+                        }}
+                        style={{
+                          position: "absolute",
+                          width: "100%",
+                          height: "100%",
+                          opacity: 0.5,
+                        }}
+                        contentFit="cover"
+                        transition={200}
+                        blurRadius={5}
+                      />
+                    )}
+                    <TexturedButton
+                      onPress={() => setManuallyLoaded(true)}
+                      icon="play"
+                      iconSide="left"
+                      style={{ backgroundColor: colors.accent }}
+                      textStyle={{ color: "white" }}
+                    >
+                      Load project
+                    </TexturedButton>
+                  </View>
+                )}
+              </GestureDetectorOptional>
+              {!isFullscreen && !isTablet && renderInteractions()}
+              <Controls
+                onControlPress={(key, type, coords) =>
+                  handleControlPress(key, type, coords)
+                }
+                projectId={id}
+                showConfiguration={!isFullscreen}
+                splitLayout={isFullscreen}
+                splitWidth={webViewDimensions.width - 30}
+                style={
+                  isFullscreen
+                    ? {
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: height,
+                        marginTop: 0,
+                        margin: 0,
+                      }
+                    : { margin: 20, marginTop: 0, marginBottom: 0 }
+                }
               />
-            ) : (
+              {!isFullscreen && !isTablet && renderDetails()}
+            </View>
+            {!isFullscreen && isTablet && (
               <View
                 style={{
-                  marginTop: isFullscreen ? 0 : 5,
-                  width: isFullscreen ? undefined : width - 40,
-                  height: isFullscreen ? height : undefined,
-                  aspectRatio: isFullscreen ? 480 / 360 : 480 / 425,
-                  margin: "auto",
-                  borderRadius: isFullscreen ? 0 : 10,
-                  backgroundColor: colors.backgroundSecondary,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  overflow: "hidden",
+                  flex: 0.777,
+                  paddingRight: 20,
+                  marginBottom: "auto",
                 }}
               >
-                {metadata && (
-                  <Image
-                    source={{
-                      uri: metadata.thumbnail_url
-                        ? `https:${metadata.thumbnail_url}`
-                        : metadata.image,
-                    }}
-                    style={{
-                      position: "absolute",
-                      width: "100%",
-                      height: "100%",
-                      opacity: 0.5,
-                    }}
-                    contentFit="cover"
-                    transition={200}
-                    blurRadius={5}
-                  />
-                )}
-                <TexturedButton
-                  onPress={() => setManuallyLoaded(true)}
-                  icon="play"
-                  iconSide="left"
-                  style={{ backgroundColor: colors.accent }}
-                  textStyle={{ color: "white" }}
-                >
-                  Load project
-                </TexturedButton>
+                {renderInteractions()}
+                {renderDetails()}
               </View>
             )}
-          </GestureDetectorOptional>
-          {!isFullscreen && (
-            <>
-              {metadata && (
-                <GHScrollView
-                  horizontal
-                  contentContainerStyle={{
-                    paddingVertical: 10,
-                    paddingHorizontal: 20,
-                    columnGap: 5,
-                  }}
-                  showsHorizontalScrollIndicator={false}
-                >
-                  <Animated.View entering={FadeInRight.delay(100)}>
-                    <Chip.Image
-                      imageURL={metadata.author?.profile?.images["32x32"]}
-                      text={metadata.author?.username}
-                      onPress={() =>
-                        router.push(`/users/${metadata?.author?.username}`)
-                      }
-                      textStyle={{ fontWeight: "bold" }}
-                      mode={undefined}
-                      color={colors.text}
-                    />
-                  </Animated.View>
-                  <Animated.View entering={FadeInRight.delay(150)}>
-                    <Chip.Icon
-                      icon="heart"
-                      text={approximateNumber(metadata.stats.loves)}
-                      color="#ff4750"
-                      mode={interactions.loved ? "filled" : "outlined"}
-                      onPress={() => toggleInteraction("love")}
-                      provider="gesture-handler"
-                    />
-                  </Animated.View>
-                  <Animated.View entering={FadeInRight.delay(200)}>
-                    <Chip.Icon
-                      icon="star"
-                      text={approximateNumber(metadata.stats.favorites)}
-                      color="#ddbf37"
-                      mode={interactions.favorited ? "filled" : "outlined"}
-                      onPress={() => toggleInteraction("favorite")}
-                      provider="gesture-handler"
-                    />
-                  </Animated.View>
-                  <Animated.View entering={FadeInRight.delay(250)}>
-                    <Chip.Icon
-                      icon="sync"
-                      text={approximateNumber(metadata.stats.remixes)}
-                      color={isDark ? "#32ee87" : "#0ca852"}
-                      mode="filled"
-                      provider="gesture-handler"
-                    />
-                  </Animated.View>
-                  <Animated.View entering={FadeInRight.delay(300)}>
-                    <Chip.Icon
-                      icon="eye"
-                      text={approximateNumber(metadata.stats.views)}
-                      color="#47b5ff"
-                      mode="filled"
-                      provider="gesture-handler"
-                    />
-                  </Animated.View>
-                  <Animated.View entering={FadeInRight.delay(350)}>
-                    <Chip.Icon
-                      icon="radio"
-                      text="MultiPlay"
-                      color="#4769ff"
-                      mode="filled"
-                      onPress={openOnlineConfigSheet}
-                      provider="gesture-handler"
-                    />
-                  </Animated.View>
-                  <Animated.View entering={FadeInRight.delay(400)}>
-                    <Chip.Icon
-                      icon="share"
-                      text="Share"
-                      color="#7847ff"
-                      mode="filled"
-                      onPress={() =>
-                        Share.share(
-                          Platform.OS === "android"
-                            ? {
-                                message: `https://scratch.mit.edu/projects/${id}`,
-                                dialogTitle: "Share this project",
-                              }
-                            : {
-                                url: `https://scratch.mit.edu/projects/${id}`,
-                                message: "Check out this project on Scratch!",
-                              },
-                          {
-                            dialogTitle: "Share this project",
-                            tintColor: colors.accent,
-                          },
-                        )
-                      }
-                      provider="gesture-handler"
-                    />
-                  </Animated.View>
-                </GHScrollView>
-              )}
-              {metadata?.remix?.parent && (
-                <RemixNotice originalProjectID={metadata?.remix?.parent} />
-              )}
-            </>
-          )}
-          <Controls
-            onControlPress={(key, type, coords) =>
-              handleControlPress(key, type, coords)
-            }
-            projectId={id}
-            showConfiguration={!isFullscreen}
-            splitLayout={isFullscreen}
-            splitWidth={webViewDimensions.width - 30}
-            style={
-              isFullscreen
-                ? {
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: height,
-                    marginTop: 0,
-                    margin: 0,
-                  }
-                : { margin: 20, marginTop: 0, marginBottom: 0 }
-            }
-          />
-          {!isFullscreen && (
-            <>
-              {metadata?.instructions && (
-                <Card
-                  style={{
-                    margin: 20,
-                    marginTop: 0,
-                    marginBottom: 10,
-                    padding: 16,
-                    borderRadius: dimensions.mediumRadius,
-                  }}
-                >
-                  <ItchyText
-                    style={{
-                      fontWeight: "bold",
-                      color: colors.text,
-                      fontSize: 16,
-                      marginBottom: 10,
-                    }}
-                  >
-                    Instructions
-                  </ItchyText>
-                  <LinkifiedText
-                    style={{ color: colors.text }}
-                    text={metadata?.instructions}
-                  />
-                </Card>
-              )}
-              {metadata?.description && (
-                <Card
-                  style={{
-                    margin: 20,
-                    marginTop: 0,
-                    marginBottom: 10,
-                    padding: 16,
-                    borderRadius: dimensions.mediumRadius,
-                  }}
-                >
-                  <ItchyText
-                    style={{
-                      fontWeight: "bold",
-                      color: colors.text,
-                      fontSize: 16,
-                      marginBottom: 10,
-                    }}
-                  >
-                    Credits
-                  </ItchyText>
-                  <LinkifiedText
-                    style={{ color: colors.text }}
-                    text={metadata?.description}
-                  />
-                </Card>
-              )}
-              {dateInfo && (
-                <Card
-                  style={{
-                    margin: 20,
-                    marginTop: 0,
-                    marginBottom: 30,
-                    padding: 16,
-                    borderRadius: dimensions.mediumRadius,
-                  }}
-                >
-                  <ItchyText
-                    style={{ color: colors.textSecondary, fontSize: 12 }}
-                  >
-                    Created {dateInfo.created}
-                  </ItchyText>
-                  {dateInfo.modified != dateInfo.created && (
-                    <ItchyText
-                      style={{ color: colors.textSecondary, fontSize: 12 }}
-                    >
-                      Modified {dateInfo.modified}
-                    </ItchyText>
-                  )}
-                </Card>
-              )}
-            </>
-          )}
+          </View>
         </ScrollView>
       </View>
       <BottomSheet

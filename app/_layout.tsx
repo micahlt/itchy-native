@@ -490,6 +490,22 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           }}
         />
         <Stack.Screen
+          name="users/[username]/followers"
+          options={{
+            headerShown: true,
+            presentation: "modal",
+            animation: "fade_from_bottom",
+          }}
+        />
+        <Stack.Screen
+          name="users/[username]/following"
+          options={{
+            headerShown: true,
+            presentation: "modal",
+            animation: "fade_from_bottom",
+          }}
+        />
+        <Stack.Screen
           name="tag"
           options={{
             headerShown: true,
