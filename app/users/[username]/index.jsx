@@ -275,7 +275,7 @@ export default function User() {
                 <TexturedButton
                   size={11}
                   style={{ flex: 1 }}
-                  onPress={openProfile}
+                  onPress={() => router.push(`/users/${username}/edit`)}
                 >
                   Edit Profile
                 </TexturedButton>

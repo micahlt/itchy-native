@@ -2,6 +2,7 @@ import { decode } from "html-entities";
 import { parse } from "node-html-parser";
 import consts from "./consts";
 import fetch from "../fetch-provider";
+import { File } from "expo-file-system";
 import { CompleteUser, User, UserActivity } from "./types/user";
 import { Comment, Project } from "./types/project";
 import { Studio } from "./types/studio";
@@ -43,13 +44,13 @@ const APIUser = {
   getCompleteProfile: async (username: string): Promise<CompleteUser> => {
     const res = await fetch(`https://api.scratch.mit.edu/users/${username}`);
     const featured = await fetch(
-      `https://scratch.mit.edu/site-api/users/all/${username}`
+      `https://scratch.mit.edu/site-api/users/all/${username}`,
     );
     const follower = await fetch(
-      `https://scratch.mit.edu/users/${username}/followers/`
+      `https://scratch.mit.edu/users/${username}/followers/`,
     );
     const following = await fetch(
-      `https://scratch.mit.edu/users/${username}/following/`
+      `https://scratch.mit.edu/users/${username}/following/`,
     );
 
     const data = await res.json();
@@ -75,13 +76,13 @@ const APIUser = {
         followersHTML
           .match(/Followers \((-?\d*)\)/g)?.[0]
           ?.split("(")[1]
-          ?.split(")")[0]
+          ?.split(")")[0],
       ),
       following: Number(
         followingHTML
           .match(/Following \((-?\d*)\)/g)?.[0]
           ?.split("(")[1]
-          ?.split(")")[0]
+          ?.split(")")[0],
       ),
     };
   },
@@ -92,37 +93,37 @@ const APIUser = {
   },
   getProjects: async (
     username: string,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<Project[]> => {
     const res = await fetch(
-      `https://api.scratch.mit.edu/users/${username}/projects?offset=${offset}&limit=20`
+      `https://api.scratch.mit.edu/users/${username}/projects?offset=${offset}&limit=20`,
     );
     const data = await res.json();
     return data;
   },
   getFavorites: async (
     username: string,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<Project[]> => {
     const res = await fetch(
-      `https://api.scratch.mit.edu/users/${username}/favorites?offset=${offset}&limit=20`
+      `https://api.scratch.mit.edu/users/${username}/favorites?offset=${offset}&limit=20`,
     );
     const data = await res.json();
     return data;
   },
   getCuratedStudios: async (
     username: string,
-    offset: number = 0
+    offset: number = 0,
   ): Promise<Studio[]> => {
     const res = await fetch(
-      `https://api.scratch.mit.edu/users/${username}/studios/curate?offset=${offset}&limit=20`
+      `https://api.scratch.mit.edu/users/${username}/studios/curate?offset=${offset}&limit=20`,
     );
     const data = await res.json();
     return data;
   },
   getComments: async (
     username: string,
-    page: number = 1
+    page: number = 1,
   ): Promise<Comment[]> => {
     // Algorithm taken from https://github.com/webdev03/meowclient
     const res = await fetch(
@@ -133,7 +134,7 @@ const APIUser = {
           "User-Agent": consts.UserAgent,
           Pragma: "no-cache",
         },
-      }
+      },
     );
     const commentHTML = await res.text();
     const dom = parse(commentHTML);
@@ -227,7 +228,7 @@ const APIUser = {
   },
   getActivity: async (
     username: string,
-    max: number = 50
+    max: number = 50,
   ): Promise<UserActivity[]> => {
     const userFetch = await fetch(
       `https://api.scratch.mit.edu/users/${username}`,
@@ -237,7 +238,7 @@ const APIUser = {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-      }
+      },
     );
     const user = await userFetch.json();
     const activityFetch = await fetch(
@@ -249,7 +250,7 @@ const APIUser = {
           Accept: "text/html",
           Referer: `https://scratch.mit.edu/users/${username}/`,
         },
-      }
+      },
     );
     const activityHTML = await activityFetch.text();
     let dom = parse(activityHTML);
@@ -277,7 +278,7 @@ const APIUser = {
           obj.project_id = Number(
             (selected?.childNodes[3] as unknown as HTMLElement)
               ?.getAttribute("href")
-              ?.split("/")[2]
+              ?.split("/")[2],
           );
           obj.gallery_title = selected?.childNodes[5]?.innerText;
           break;
@@ -288,7 +289,7 @@ const APIUser = {
           obj.project_id = Number(
             (selected?.childNodes[3] as unknown as HTMLElement)
               ?.getAttribute("href")
-              ?.split("/")[2]
+              ?.split("/")[2],
           );
           break;
         }
@@ -298,7 +299,7 @@ const APIUser = {
           obj.project_id = Number(
             (selected?.childNodes[3] as unknown as HTMLElement)
               ?.getAttribute("href")
-              ?.split("/")[2]
+              ?.split("/")[2],
           );
           break;
         }
@@ -308,7 +309,7 @@ const APIUser = {
           obj.project_id = Number(
             (selected?.childNodes[3] as unknown as HTMLElement)
               ?.getAttribute("href")
-              ?.split("/")[2]
+              ?.split("/")[2],
           );
           break;
         }
@@ -327,7 +328,7 @@ const APIUser = {
           obj.gallery_id = Number(
             (selected?.childNodes[3] as unknown as HTMLElement)
               ?.getAttribute("href")
-              ?.split("/")[2]
+              ?.split("/")[2],
           );
         }
       }
@@ -337,7 +338,7 @@ const APIUser = {
   },
   getFollowers: async (username: string, page: number): Promise<User[]> => {
     const followers = await fetch(
-      `https://scratch.mit.edu/users/${username}/followers/?page=${page}`
+      `https://scratch.mit.edu/users/${username}/followers/?page=${page}`,
     );
     const dom = parse(await followers.text());
     const items = dom.querySelectorAll(".user");
@@ -354,7 +355,7 @@ const APIUser = {
         .querySelector("img")
         ?.getAttribute("data-original");
       user.id = user.profile.images["60x60"]?.match(
-        /(?!get_image\/user\/)(\d+|default)(?=_)+/g
+        /(?!get_image\/user\/)(\d+|default)(?=_)+/g,
       )?.[0];
       if (user.id === "default") user.id = null;
     }
@@ -362,7 +363,7 @@ const APIUser = {
   },
   getFollowing: async (username: string, page: number): Promise<User[]> => {
     const following = await fetch(
-      `https://scratch.mit.edu/users/${username}/following/?page=${page}`
+      `https://scratch.mit.edu/users/${username}/following/?page=${page}`,
     );
     const dom = parse(await following.text());
     const items = dom.querySelectorAll(".user");
@@ -379,7 +380,7 @@ const APIUser = {
         .querySelector("img")
         ?.getAttribute("data-original");
       user.id = user.profile.images["60x60"]?.match(
-        /(?!get_image\/user\/)(\d+|default)(?=_)+/g
+        /(?!get_image\/user\/)(\d+|default)(?=_)+/g,
       )?.[0];
       if (user.id === "default") user.id = null;
     }
@@ -399,7 +400,7 @@ const APIUser = {
   follow: async (
     usernameToFollow: string,
     myUsername: string,
-    csrf: string
+    csrf: string,
   ): Promise<boolean> => {
     const req = await fetch(
       `https://scratch.mit.edu/site-api/users/followers/${usernameToFollow}/add/?usernames=${myUsername}`,
@@ -417,7 +418,7 @@ const APIUser = {
           Pragma: "no-cache",
         },
         body: "",
-      }
+      },
     );
     if (req.ok) {
       return true;
@@ -428,7 +429,7 @@ const APIUser = {
   unfollow: async (
     usernameToUnfollow: string,
     myUsername: string,
-    csrf: string
+    csrf: string,
   ): Promise<boolean> => {
     const req = await fetch(
       `https://scratch.mit.edu/site-api/users/followers/${usernameToUnfollow}/remove/?usernames=${myUsername}`,
@@ -446,7 +447,7 @@ const APIUser = {
           Pragma: "no-cache",
         },
         body: "",
-      }
+      },
     );
     if (req.ok) {
       return true;
@@ -459,7 +460,7 @@ const APIUser = {
     content: string = "",
     csrf: string,
     parentID: string = "",
-    commentee: string = ""
+    commentee: string = "",
   ): Promise<string | false> => {
     const req = await fetch(
       `https://scratch.mit.edu/site-api/comments/user/${username}/add/`,
@@ -481,7 +482,7 @@ const APIUser = {
           parent_id: parentID || "",
           commentee_id: commentee || "",
         }),
-      }
+      },
     );
     if (req.ok) {
       const t = await req.text();
@@ -496,7 +497,7 @@ const APIUser = {
     username: string,
     commentID: string,
     csrf: string,
-    token: string
+    token: string,
   ): Promise<boolean> => {
     const req = await fetch(
       `https://scratch.mit.edu/site-api/comments/user/${username}/del/`,
@@ -516,7 +517,7 @@ const APIUser = {
         body: JSON.stringify({
           id: commentID,
         }),
-      }
+      },
     );
     if (req.ok) {
       return true;
@@ -529,7 +530,7 @@ const APIUser = {
   toggleCommentsOpen: async (
     username: string,
     csrf: string,
-    token: string
+    token: string,
   ): Promise<boolean> => {
     const req = await fetch(
       `https://scratch.mit.edu/site-api/comments/user/${username}/toggle-comments/`,
@@ -546,13 +547,79 @@ const APIUser = {
           "Cache-Control": "max-age=0, no-cache",
           Pragma: "no-cache",
         },
-      }
+      },
     );
     if (req.ok) {
       return true;
     } else {
       console.warn(req.status);
       console.warn(await req.text());
+      return false;
+    }
+  },
+  setProfileContent: async (
+    username: string,
+    bio: string = "",
+    status: string = "",
+    csrf: string,
+  ): Promise<boolean | false> => {
+    const req = await fetch(
+      `https://scratch.mit.edu/site-api/users/all/${username}/`,
+      {
+        method: "PUT",
+        headers: {
+          "X-CSRFToken": csrf,
+          "x-requested-with": "XMLHttpRequest",
+          Referer: `https://scratch.mit.edu/users/${username}/`,
+          "User-Agent": consts.UserAgent,
+          Accept: "text/plain",
+          "Content-Type": "text/plain; charset=UTF-8",
+          Origin: "https://scratch.mit.edu",
+          "Cache-Control": "max-age=0, no-cache",
+          Pragma: "no-cache",
+        },
+        body: JSON.stringify({
+          bio,
+          status,
+        }),
+      },
+    );
+    if (req.ok) {
+      return true;
+    } else {
+      console.error(req.json());
+      return false;
+    }
+  },
+  setProfilePicture: async (
+    username: string,
+    imageUri: string,
+    mimeType: string,
+    fileName: string,
+    csrf: string,
+  ): Promise<boolean> => {
+    let formData = new FormData();
+    formData.append("file", new File(imageUri));
+
+    const req = await fetch(
+      `https://scratch.mit.edu/site-api/users/all/${username}/`,
+      {
+        method: "POST",
+        headers: {
+          "X-CSRFToken": csrf,
+          "x-requested-with": "XMLHttpRequest",
+          Referer: `https://scratch.mit.edu/users/${username}/`,
+          "User-Agent": consts.UserAgent,
+          Accept: "*/*",
+          Origin: "https://scratch.mit.edu",
+        },
+        body: formData,
+      },
+    );
+    if (req.ok) {
+      return true;
+    } else {
+      console.error(await req.text());
       return false;
     }
   },

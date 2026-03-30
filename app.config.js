@@ -50,6 +50,21 @@ module.exports = {
         },
       ],
       [
+        "expo-image-picker",
+        {
+          photosPermission:
+            "Allow Itchy to access your photos to upload a profile picture.",
+          colors: {
+            cropToolbarColor: "#000000",
+          },
+          dark: {
+            colors: {
+              cropToolbarColor: "#000000",
+            },
+          },
+        },
+      ],
+      [
         "expo-font",
         {
           fonts: [

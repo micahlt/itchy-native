@@ -27,15 +27,17 @@ export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useMMKVObject<any>("user");
   const [savedLogins, setSavedLogins] = useMMKVObject<SavedLogin[]>(
     "savedLogins",
-    encryptedStorage
+    encryptedStorage,
   );
   const passwordInput = useRef<TextInput>(null);
   const liquidPlusPadding = useMemo(() => getLiquidPlusPadding(), []);
 
   const logIn = () => {
+    setLoading(true);
     ScratchAPIWrapper.auth
       .login(username, password)
       .then((d) => {
@@ -57,6 +59,7 @@ export default function LoginScreen() {
       })
       .catch((e) => {
         setError(e.message);
+        setLoading(false);
         console.error(e);
       });
   };
@@ -171,6 +174,7 @@ export default function LoginScreen() {
         textStyle={{ color: "white" }}
         size={13}
         onPress={logIn}
+        loading={loading}
       >
         Log In
       </TexturedButton>

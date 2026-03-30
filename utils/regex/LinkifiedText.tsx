@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import ItchyText from "../../components/ItchyText";
 import { useTheme } from "../theme";
 import { useMemo, memo } from "react";
-import { ViewProps, ViewStyle } from "react-native";
+import { TextStyle, ViewProps, ViewStyle } from "react-native";
 const username = /(@[\d_\-a-zA-Z]+)/;
 const hashtag = /(#.\S+)/;
 const project = /https*:\/\/scratch.mit.edu\/projects\/(\d*) *\/*/;
@@ -48,7 +48,7 @@ const emojis: { [key: string]: string } = {
 function LinkifiedText({
   text,
   ...props
-}: { text: string; style: ViewStyle } & ViewProps) {
+}: { text: string; style: TextStyle } & ViewProps) {
   const { colors } = useTheme();
 
   const textParts = useMemo(() => {

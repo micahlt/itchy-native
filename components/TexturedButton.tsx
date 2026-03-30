@@ -1,4 +1,11 @@
-import { Platform, StyleProp, View, ViewStyle } from "react-native";
+import {
+  ActivityIndicator,
+  Platform,
+  StyleProp,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
 import { useTheme } from "../utils/theme";
 import ItchyText from "./ItchyText";
 // @ts-ignore
@@ -15,15 +22,17 @@ export default function TexturedButton({
   iconSide = "right",
   size = 12,
   provider = "native",
+  loading = false,
   children,
 }: {
   style?: StyleProp<ViewStyle>;
   onPress?: Function;
-  textStyle?: Object;
+  textStyle?: TextStyle;
   icon?: false | keyof typeof Ionicons.glyphMap;
   iconSide?: "right" | "left";
   size?: number;
   provider?: "native" | "gesture-handler";
+  loading?: boolean;
   children?: React.ReactNode;
 }) {
   const { colors, dimensions, isDark } = useTheme();
@@ -38,6 +47,13 @@ export default function TexturedButton({
               borderColor: colors.backgroundSecondary,
               borderWidth: 0,
               borderTopWidth: 0,
+              filter: loading
+                ? [
+                    {
+                      contrast: 0.7,
+                    },
+                  ]
+                : [],
               ...(typeof style == "object" ? style : {}),
             }
           : {
@@ -54,12 +70,19 @@ export default function TexturedButton({
                 : colors.highlight,
               boxShadow: `0px 2px 4px 0px #ffffff22 inset, 0px 2px 0px 0px ${colors.topLight} inset`,
               ...(typeof style == "object" ? style : {}),
+              filter: loading
+                ? [
+                    {
+                      contrast: 0.7,
+                    },
+                  ]
+                : [],
             }
       }
     >
       <Pressable
         style={{
-          paddingHorizontal: size,
+          paddingHorizontal: size / 2,
           paddingBottom: size / 1.5,
           paddingTop: size / 1.5,
           flexDirection: "row",
@@ -72,9 +95,10 @@ export default function TexturedButton({
           borderless: true,
           foreground: true,
         }}
+        disabled={loading}
         provider={provider}
       >
-        {icon && iconSide == "left" ? (
+        {icon && iconSide == "left" && !loading ? (
           <Ionicons
             name={icon as keyof typeof Ionicons.glyphMap}
             color={colors.text}
@@ -86,6 +110,15 @@ export default function TexturedButton({
           />
         ) : (
           <></>
+        )}
+        {loading && (
+          <ActivityIndicator
+            color={textStyle.color ? textStyle.color : colors.text}
+            style={{
+              marginRight: children == null ? 0 : size * 0.5,
+            }}
+            size={size * 1.5}
+          />
         )}
         <ItchyText
           style={{
