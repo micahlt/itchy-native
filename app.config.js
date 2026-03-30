@@ -2,7 +2,7 @@ module.exports = {
   expo: {
     name: "Itchy",
     slug: "itchy-native",
-    version: "2.7.11",
+    version: "2.8.0",
     scheme: "itchy",
     newArchEnabled: true,
     orientation: "portrait",

@@ -28,7 +28,6 @@ const APIUser = {
     if (res.ok) {
       const userHTML = await res.text();
       if (userHTML) {
-        console.log(userHTML.substring(4740, 10000));
         if (userHTML.includes("comments_allowed: true")) {
           return true;
         } else {
