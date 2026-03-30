@@ -4,6 +4,7 @@ import {
   Share,
   ScrollView,
   Platform,
+  Vibration,
 } from "react-native";
 import ItchyText from "../../../components/ItchyText";
 import { useTheme } from "../../../utils/theme";
@@ -180,6 +181,27 @@ export default function Project() {
     }
   }, [id]);
 
+  const handleWebviewMessage = (evt) => {
+    const data = evt.nativeEvent.data;
+    if (typeof data == "string" && data.startsWith("__itchy_")) {
+      const signature = data.split("__itchy_")[1].split(":")[0];
+      const value = data.split("__itchy_")[1].split(":")[1];
+      switch (signature) {
+        case "vib":
+          if (value == 1) {
+            Vibration.vibrate(1000000, true);
+          } else {
+            Vibration.cancel();
+          }
+          break;
+        default:
+          return;
+      }
+    } else {
+      webViewMessageHandler(evt);
+    }
+  };
+
   const toggleInteraction = (interaction) => {
     log(c, `Toggling interaction ${interaction} on project ${id}`);
     if (interaction == "love") {
@@ -308,7 +330,7 @@ export default function Project() {
                 nestedScrollEnabled={true}
                 injectedJavaScript={twJSInject}
                 ref={webViewRef}
-                onMessage={webViewMessageHandler}
+                onMessage={handleWebviewMessage}
                 onLayout={(event) => {
                   const { y, height } = event.nativeEvent.layout;
                 }}
