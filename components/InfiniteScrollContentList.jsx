@@ -6,13 +6,14 @@ import UserCard from "./UserCard";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 import { useIsTablet } from "utils/hooks/useIsTablet";
 import { useMemo } from "react";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 export default function InfiniteScrollContentList({
   data = [],
   itemType = "projects",
   isLoading = false,
-  onRefresh = () => {},
-  onEndReached = () => {},
+  onRefresh = () => { },
+  onEndReached = () => { },
   disablePTR = false,
 }) {
   const { colors, isDark } = useTheme();
@@ -30,7 +31,7 @@ export default function InfiniteScrollContentList({
   return (
     <FlatList
       data={data}
-      renderItem={({ item }) => renderItem(item, itemWidth, itemType)}
+      renderItem={({ item, index }) => renderItem(item, itemWidth, itemType, index)}
       keyExtractor={(item) => item.id}
       numColumns={isTablet ? 4 : 2}
       columnWrapperStyle={{ gap: isTablet ? 18 : 10 }}
@@ -68,14 +69,22 @@ export default function InfiniteScrollContentList({
   );
 }
 
-function renderItem(item, width, type) {
-  if (type === "projects") {
-    return <ProjectCard project={item} width={(width - 50) / 2} />;
-  }
-  if (type === "studios") {
-    return <StudioCard studio={item} width={(width - 50) / 2} />;
-  }
-  if (type === "users") {
-    return <UserCard user={item} width={(width - 50) / 2} />;
-  }
+function renderItem(item, width, type, index) {
+  const content = (() => {
+    if (type === "projects") {
+      return <ProjectCard project={item} width={(width - 50) / 2} />;
+    }
+    if (type === "studios") {
+      return <StudioCard studio={item} width={(width - 50) / 2} />;
+    }
+    if (type === "users") {
+      return <UserCard user={item} width={(width - 50) / 2} />;
+    }
+  })();
+
+  return (
+    <Animated.View entering={FadeInDown.delay(index * 25).duration(80).springify()}>
+      {content}
+    </Animated.View>
+  );
 }

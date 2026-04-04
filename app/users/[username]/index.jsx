@@ -21,6 +21,7 @@ import LinkifiedText from "../../../utils/regex/LinkifiedText";
 import timeago from "time-ago";
 import { flag } from "country-emoji";
 import { dimensions } from "utils/theme/dimensions";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 export default function User() {
   const { username } = useLocalSearchParams();
@@ -293,7 +294,8 @@ export default function User() {
         {!!profile ? (
           <>
             {!isTablet && (
-              <View
+              <Animated.View
+                entering={FadeInDown.delay(0).springify()}
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
@@ -314,10 +316,15 @@ export default function User() {
                   }}
                 />
                 {renderStats()}
-              </View>
+              </Animated.View>
             )}
-            {!isTablet && renderButtons()}
-            <View
+            {!isTablet && (
+              <Animated.View entering={FadeInDown.delay(50).springify()}>
+                {renderButtons()}
+              </Animated.View>
+            )}
+            <Animated.View
+              entering={FadeInDown.delay(100).springify()}
               style={{
                 flexDirection: isTablet ? "row" : "column",
                 paddingHorizontal: isTablet ? 20 : 0,
@@ -405,32 +412,38 @@ export default function User() {
                   />
                 ) : null}
               </View>
-            </View>
+            </Animated.View>
 
-            <HorizontalContentScroller
-              title="Created Projects"
-              data={projects}
-              iconName="sparkles"
-              headerStyle={{ marginTop: 16 }}
-              onShowMore={() => router.push(`/users/${username}/projects`)}
-            />
+            <Animated.View entering={FadeInDown.delay(150).springify()}>
+              <HorizontalContentScroller
+                title="Created Projects"
+                data={projects}
+                iconName="sparkles"
+                headerStyle={{ marginTop: 16 }}
+                onShowMore={() => router.push(`/users/${username}/projects`)}
+              />
+            </Animated.View>
 
-            <HorizontalContentScroller
-              title="Favorites"
-              data={favorites}
-              iconName="star"
-              headerStyle={{ marginTop: 5 }}
-              onShowMore={() => router.push(`/users/${username}/favorites`)}
-            />
+            <Animated.View entering={FadeInDown.delay(200).springify()}>
+              <HorizontalContentScroller
+                title="Favorites"
+                data={favorites}
+                iconName="star"
+                headerStyle={{ marginTop: 5 }}
+                onShowMore={() => router.push(`/users/${username}/favorites`)}
+              />
+            </Animated.View>
 
-            <HorizontalContentScroller
-              title="Curated Studios"
-              data={curatedStudios}
-              itemType="studios"
-              iconName="albums"
-              headerStyle={{ marginTop: 5 }}
-              onShowMore={() => router.push(`/users/${username}/studios`)}
-            />
+            <Animated.View entering={FadeInDown.delay(250).springify()}>
+              <HorizontalContentScroller
+                title="Curated Studios"
+                data={curatedStudios}
+                itemType="studios"
+                iconName="albums"
+                headerStyle={{ marginTop: 5 }}
+                onShowMore={() => router.push(`/users/${username}/studios`)}
+              />
+            </Animated.View>
           </>
         ) : (
           <></>
