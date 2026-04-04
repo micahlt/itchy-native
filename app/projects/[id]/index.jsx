@@ -347,7 +347,7 @@ export default function Project() {
   );
 
   const renderInteractions = () => (
-    <View>
+    <View style={{ flex: 1 }}>
       {metadata && (
         <GHScrollView
           horizontal
@@ -578,17 +578,18 @@ export default function Project() {
               !isFullscreen && isTablet
                 ? {
                   flexDirection: "row",
-                  marginRight: 10,
                   alignContent: "flex-start",
                   alignItems: "flex-start",
-                  flex: 0,
+                  flex: 1,
+                  columnGap: 20
                 }
                 : undefined
             }
           >
             <View
               style={{
-                flex: !isFullscreen && isTablet ? 1 : undefined,
+                flex: !isFullscreen && isTablet ? 0 : undefined,
+                paddingLeft: !isFullscreen && isTablet ? 20 : undefined
               }}
             >
               <GestureDetectorOptional>
@@ -601,12 +602,12 @@ export default function Project() {
                       width: isFullscreen
                         ? undefined
                         : isTablet
-                          ? width / 2
+                          ? width * 0.5
                           : width - 40,
                       height: isFullscreen ? height : undefined,
                       aspectRatio: isFullscreen ? 480 / 360 : 480 / 425,
                       margin: "auto",
-                      borderRadius: isFullscreen ? 0 : 10,
+                      borderRadius: isFullscreen ? 0 : 10
                     }}
                     androidLayerType="hardware"
                     renderToHardwareTextureAndroid={true}
@@ -706,13 +707,14 @@ export default function Project() {
             {!isFullscreen && isTablet && (
               <View
                 style={{
-                  flex: 0.777,
-                  paddingRight: 20,
+                  flex: 1,
                   marginBottom: "auto",
                 }}
               >
                 {renderInteractions()}
-                {renderDetails()}
+                <View style={{ paddingRight: 20 }}>
+                  {renderDetails()}
+                </View>
               </View>
             )}
           </View>

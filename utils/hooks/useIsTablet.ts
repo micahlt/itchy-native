@@ -20,7 +20,7 @@ export function useIsTablet() {
         setIsTablet(width >= TABLET_BREAKPOINT);
       }
     })();
-  }, [width]);
+  }, [width, horizontal]);
 
   return isTablet;
 }
