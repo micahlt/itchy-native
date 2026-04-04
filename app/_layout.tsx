@@ -463,7 +463,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           name="users/[username]/index"
           options={{
             headerShown: true,
-            presentation: "modal",
+            presentation: "pageSheet",
             animation: "fade_from_bottom",
             headerRight: () => (
               <MaterialIcons
