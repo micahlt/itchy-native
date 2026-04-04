@@ -5,7 +5,7 @@ import { Platform } from "react-native";
  * iOS 26+ requires additional top padding for modals and sheets
  * @returns {boolean} True if device is iOS 26+
  */
-export const isLiquidPlus = (): boolean => {
+export const isiOSLiquidPlus = (): boolean => {
   return Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
 };
 
@@ -28,5 +28,5 @@ export const getLiquidPlusPadding = (
   defaultPadding: number = 0,
   liquidPlusPadding: number = 60,
 ): number => {
-  return isLiquidPlus() ? liquidPlusPadding : defaultPadding;
+  return isiOSLiquidPlus() ? liquidPlusPadding : defaultPadding;
 };

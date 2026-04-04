@@ -22,7 +22,7 @@ import encryptedStorage from "../utils/encryptedStorage";
 import { router, usePathname } from "expo-router";
 import { SWRConfig } from "swr";
 import * as Network from "expo-network";
-import { isLiquidPlus } from "../utils/platformUtils";
+import { isiOSLiquidPlus } from "../utils/platformUtils";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 // @ts-expect-error
@@ -245,7 +245,7 @@ interface ThemeConsumerInnerProps {
 
 function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   const { colors } = useTheme();
-  const liquidPlus = isLiquidPlus();
+  const liquidPlus = isiOSLiquidPlus();
   const insets = useSafeAreaInsets();
   const path = usePathname();
   const translateX = useSharedValue(0);

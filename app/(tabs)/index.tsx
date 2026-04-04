@@ -49,7 +49,8 @@ import { Studio } from "../../utils/api-wrapper/types/studio";
 import { ItchyThemeColors } from "../../utils/theme/colors";
 import { useIsTablet } from "utils/hooks/useIsTablet";
 import { IPADOS_TOP_TABS_OFFSET } from "utils/magicNumbers";
-import { isiOS18Plus, isLiquidPlus } from "utils/platformUtils";
+import { isiOS18Plus, isiOSLiquidPlus } from "utils/platformUtils";
+import useiPadOSTopMargin from "utils/hooks/useiPadOSTopMargin";
 
 const AnimatedScrollView = Reanimated.createAnimatedComponent(ScrollView);
 const AnimatedView = Reanimated.createAnimatedComponent(SquircleView);
@@ -160,14 +161,7 @@ export default function HomeScreen() {
   const [username] = useMMKVString("username");
   const [token] = useMMKVString("token");
   const insets = useSafeAreaInsets();
-  const isTablet = useIsTablet();
-  const iPadOSTopMargin = useMemo(() => {
-    if (Platform.OS === "ios" && isTablet && isiOS18Plus()) {
-      return insets.top + IPADOS_TOP_TABS_OFFSET;
-    } else {
-      return 0;
-    }
-  }, [insets, isTablet, Platform]);
+  const iPadOSTopMargin = useiPadOSTopMargin();
 
   const scrollRef = useRef<ScrollView | null>(null);
   const scrollY = useSharedValue(0);

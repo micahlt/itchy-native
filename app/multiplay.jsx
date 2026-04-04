@@ -22,6 +22,7 @@ import linkWithFallback from "../utils/linkWithFallback";
 import { useMMKVObject } from "react-native-mmkv";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useMultiPlayClient } from "../utils/hooks/useMultiPlayClient";
+import useiPadOSTopMargin from "utils/hooks/useiPadOSTopMargin";
 
 export default function MultiPlay() {
   const [roomCode, setRoomCode] = useState("");
@@ -40,6 +41,7 @@ export default function MultiPlay() {
 
   const { colors, dimensions } = useTheme();
   const { width, height: appHeight } = useWindowDimensions();
+  const iPadOSTopMargin = useiPadOSTopMargin();
   // Controls are rendered inline (collapsible) instead of a separate sheet
   const [user] = useMMKVObject("user");
   const nav = useNavigation();
@@ -104,7 +106,7 @@ export default function MultiPlay() {
         contentContainerStyle={{
           flexGrow: 1,
           paddingBottom: insets.bottom + 20,
-          paddingTop: insets.top,
+          paddingTop: iPadOSTopMargin,
           backgroundColor: colors.accentTransparent,
         }}
       >

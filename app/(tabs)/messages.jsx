@@ -13,6 +13,7 @@ import SquircleView from "../../components/SquircleView";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { FlashList } from "@shopify/flash-list";
 import { useFocusEffect } from "expo-router";
+import useiPadOSTopMargin from "utils/hooks/useiPadOSTopMargin";
 
 const c = getCrashlytics();
 
@@ -31,6 +32,7 @@ export default function Messages() {
     forum: false,
   });
   const scrollRef = useRef();
+  const iPadOSTopMargin = useiPadOSTopMargin();
 
   useEffect(() => {
     log(c, "Messages page rendered")
@@ -258,7 +260,7 @@ export default function Messages() {
   return (
     <SafeAreaView
       edges={["top"]}
-      style={{ flex: 1, backgroundColor: colors.accentTransparent }}
+      style={{ flex: 1, backgroundColor: colors.accentTransparent, paddingTop: iPadOSTopMargin }}
       collapsable={false}
     >
       <ItchyText

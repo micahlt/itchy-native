@@ -32,6 +32,7 @@ import { useMMKVObject } from "react-native-mmkv";
 import Card from "../../components/Card";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { useIsTablet } from "utils/hooks/useIsTablet";
+import useiPadOSTopMargin from "utils/hooks/useiPadOSTopMargin";
 
 export default function Search() {
   const local = useLocalSearchParams();
@@ -46,6 +47,7 @@ export default function Search() {
   const [searchHistory, setSearchHistory] = useMMKVObject("searchHistory");
   const navigation = useNavigation();
   const isTablet = useIsTablet();
+  const iPadOSTopMargin = useiPadOSTopMargin();
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("tabPress", (e) => {
@@ -135,7 +137,7 @@ export default function Search() {
   return (
     <SafeAreaView
       edges={["top"]}
-      style={{ flex: 1, backgroundColor: colors.accentTransparent }}
+      style={{ flex: 1, backgroundColor: colors.accentTransparent, paddingTop: iPadOSTopMargin }}
       collapsable={false}
     >
       <TextInput
@@ -309,6 +311,9 @@ function EmptySearchComponent({
               onPress={() => onHistoryPress(historyItem)}
               style={{
                 marginBottom: 8,
+                maxWidth: 325,
+                width: "100%",
+                marginHorizontal: "auto"
               }}
               pressableStyle={{
                 paddingHorizontal: 16,
