@@ -167,7 +167,9 @@ export default function Studio() {
             </Animated.View>
             <Animated.View
               entering={FadeInDown.delay(50).springify()}
-              style={{ margin: "auto" }}
+              style={{
+                flexDirection: "row"
+              }}
             >
               <Image
                 source={{
@@ -175,13 +177,12 @@ export default function Studio() {
                 }}
                 style={{
                   margin: "auto",
-                  aspectRatio: "16 / 9",
-                  padding: 20,
-                  marginHorizontal: 15,
+                  width: "100%",
                   maxWidth: 500,
-                  width: width - 30,
-                  borderRadius: dimensions.mediumRadius,
+                  aspectRatio: "16 / 9",
+                  borderRadius: dimensions.mediumRadius
                 }}
+                contentFit="cover"
               />
             </Animated.View>
             <Animated.View entering={FadeInDown.delay(100).springify()}>

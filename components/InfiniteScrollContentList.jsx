@@ -31,6 +31,7 @@ export default function InfiniteScrollContentList({
   return (
     <FlatList
       data={data}
+      key={isTablet ? "tablet" : "phone"}
       renderItem={({ item, index }) => renderItem(item, itemWidth, itemType, index)}
       keyExtractor={(item) => item.id}
       numColumns={isTablet ? 4 : 2}

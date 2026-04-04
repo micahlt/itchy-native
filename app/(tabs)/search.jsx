@@ -228,6 +228,7 @@ export default function Search() {
           }}
         >
           <FlashList
+            key={isTablet ? "tablet" : "phone"}
             data={results}
             renderItem={({ item, index }) =>
               renderItem(item, itemWidth, type, index)
