@@ -42,14 +42,14 @@ export default function TabLayout() {
                 activeIndicatorColor={colors.accentTransparent}
                 ignoresTopSafeArea={true}
                 tabBarStyle={{
-                    backgroundColor: colors.backgroundSecondary
+                    backgroundColor: colors.backgroundSecondary,
                 }}
                 screenOptions={{
                     headerShown: false,
                     // ensure the tab bar does not hide or shift when keyboard opens
                     tabBarHideOnKeyboard: false,
                 }}
-                sidebarAdaptable={true}
+                sidebarAdaptable={false}
                 translucent={false}
             >
                 <Tabs.Screen

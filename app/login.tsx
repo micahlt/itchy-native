@@ -78,14 +78,23 @@ export default function LoginScreen() {
           justifyContent: "center",
           alignItems: "center",
           marginTop: 5,
+          padding: 10,
         }}
       >
         <Image
           source={require("../assets/auth.png")}
-          style={{ width: "65%", aspectRatio: "16 / 9" }}
+          style={{ width: "65%", aspectRatio: "16 / 9", maxWidth: 300 }}
         />
       </View>
-      <Card style={{ padding: 20, paddingBottom: 35, margin: 20 }}>
+      <Card
+        style={{
+          padding: 20,
+          paddingBottom: 35,
+          margin: 20,
+          maxWidth: 450,
+          marginHorizontal: "auto",
+        }}
+      >
         <TextInput
           placeholder="Username"
           style={{
@@ -183,7 +192,12 @@ export default function LoginScreen() {
           linkWithFallback("https://itchy.micahlindley.com/privacy")
         }
         pressableStyle={{ padding: 20 }}
-        style={{ margin: 20, marginTop: 10 }}
+        style={{
+          margin: 20,
+          marginTop: 10,
+          maxWidth: 450,
+          marginHorizontal: "auto",
+        }}
       >
         <ItchyText style={{ color: colors.textSecondary, textAlign: "center" }}>
           By logging in, you agree to the{" "}

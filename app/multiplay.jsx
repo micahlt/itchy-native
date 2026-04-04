@@ -22,6 +22,8 @@ import linkWithFallback from "../utils/linkWithFallback";
 import { useMMKVObject } from "react-native-mmkv";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useMultiPlayClient } from "../utils/hooks/useMultiPlayClient";
+import useiPadOSTopMargin from "utils/hooks/useiPadOSTopMargin";
+import { useIsTablet } from "utils/hooks/useIsTablet";
 
 export default function MultiPlay() {
   const [roomCode, setRoomCode] = useState("");
@@ -40,12 +42,14 @@ export default function MultiPlay() {
 
   const { colors, dimensions } = useTheme();
   const { width, height: appHeight } = useWindowDimensions();
+  const iPadOSTopMargin = useiPadOSTopMargin();
   // Controls are rendered inline (collapsible) instead of a separate sheet
   const [user] = useMMKVObject("user");
   const nav = useNavigation();
   const insets = useSafeAreaInsets();
   const rtcViewRef = useRef(null);
   const lastMouseUpdate = useRef(0);
+  const isTablet = useIsTablet();
   // Handle disconnected-host state
   useEffect(() => {
     if (status === "disconnected-host") {
@@ -104,7 +108,7 @@ export default function MultiPlay() {
         contentContainerStyle={{
           flexGrow: 1,
           paddingBottom: insets.bottom + 20,
-          paddingTop: insets.top,
+          paddingTop: insets.top + iPadOSTopMargin,
           backgroundColor: colors.accentTransparent,
         }}
       >
@@ -133,20 +137,26 @@ export default function MultiPlay() {
               marginLeft: 20,
             }}
             value={roomCode}
-            placeholder={isUserUnder13() ? "age restricted" : "Room Code"}
+            placeholder={
+              isUserUnder13()
+                ? "age restricted"
+                : isTablet
+                  ? "tablet unsupported"
+                  : "Room Code"
+            }
             autoCapitalize="characters"
             maxLength={6}
             onChangeText={(t) => {
               setRoomCode(t);
               const trimmed = t.trim().toUpperCase();
-              if (trimmed.length === 6 && !isUserUnder13()) {
+              if (trimmed.length === 6 && !isUserUnder13() && !isTablet) {
                 setLoading(true);
                 join(trimmed);
               }
             }}
             clearTextOnFocus={true}
             clearButtonMode="always"
-            editable={!isUserUnder13()}
+            editable={!isUserUnder13() && !isTablet}
           />
           <Chip.Icon
             icon={status === "Data channel connected." || status === "waiting-host" ? "radio" : "warning"}
@@ -305,11 +315,23 @@ export default function MultiPlay() {
             minHeight: appHeight - insets.top + insets.bottom / 2,
           }}
         >
-          <Controls
-            onControlPress={sendKeyEvent}
-            projectId={null}
-            showConfiguration={true}
-          />
+          {isTablet ? (
+            <Card style={{ paddingHorizontal: 20, paddingVertical: 15, marginTop: 5 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
+                <MaterialIcons name="tablet-mac" size={20} color={colors.accent} style={{ marginRight: 8 }} />
+                <ItchyText style={{ color: colors.accent, fontSize: 16, fontWeight: "bold" }}>Tablet Support Coming Soon</ItchyText>
+              </View>
+              <ItchyText style={{ color: colors.text, lineHeight: 17, marginBottom: 5 }}>
+                Connecting to MultiPlay sessions on tablets is not yet supported, but we're working on it!
+              </ItchyText>
+            </Card>
+          ) : (
+            <Controls
+              onControlPress={sendKeyEvent}
+              projectId={null}
+              showConfiguration={true}
+            />
+          )}
           {projectMetadata && (
             <Card
               style={{

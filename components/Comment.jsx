@@ -32,7 +32,7 @@ export default function Comment({
 
   const timestamp = useMemo(
     () => formatCommentTime(comment.datetime_created),
-    [comment]
+    [comment],
   );
   const content = useMemo(() => decode(comment.content), [comment]);
   const isSelected = useMemo(() => selected == comment.id, [selected, comment]);
@@ -69,7 +69,7 @@ export default function Comment({
         .getCommentReplies(
           parentMetadata.project,
           parentMetadata.author,
-          comment.id
+          comment.id,
         )
         .then((d) => {
           setReplies(d);

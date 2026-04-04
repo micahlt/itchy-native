@@ -147,6 +147,7 @@ export default function CommentEditor({
                 flexDirection: "row",
                 marginBottom: 10,
                 marginLeft: "auto",
+                marginRight: 5,
                 borderRadius: dimensions.largeRadius,
                 alignItems: "center",
                 overflow: "hidden",
@@ -187,6 +188,7 @@ export default function CommentEditor({
                 backgroundColor: colors.backgroundSecondary,
                 marginBottom: 10,
                 marginLeft: "auto",
+                marginRight: 5,
                 borderRadius: dimensions.largeRadius,
                 boxShadow:
                   "0px -2px 8px rgba(0,94,185,0.1),0px 5px 6px rgba(0,0,0,0.2), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
@@ -388,8 +390,8 @@ function CommentEditorWrapperComponent({
         style={{
           borderRadius: dimensions.largeRadius,
           backgroundColor: colors.backgroundSecondary,
-          width: width - 15,
-          marginLeft: 7.5,
+          width: width - 20,
+          marginLeft: 10,
           boxShadow:
             "0px -2px 16px rgba(0,94,185,0.15),0px 40px 25px rgba(0,0,0,0.5), 0px 4px 5px 0px #ffffff15 inset, 0px 3px 0px 0px #FFFFFF11 inset",
         }}

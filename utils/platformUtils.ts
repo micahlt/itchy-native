@@ -5,8 +5,17 @@ import { Platform } from "react-native";
  * iOS 26+ requires additional top padding for modals and sheets
  * @returns {boolean} True if device is iOS 26+
  */
-export const isLiquidPlus = (): boolean => {
+export const isiOSLiquidPlus = (): boolean => {
   return Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 26;
+};
+
+/**
+ * Check if the device is running iOS 18 or higher
+ * iPadOS 18+ requires additional top padding for the top tab bar
+ * @returns {boolean} True if device is iOS 18+
+ */
+export const isiOS18Plus = (): boolean => {
+  return Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 18;
 };
 
 /**
@@ -17,7 +26,7 @@ export const isLiquidPlus = (): boolean => {
  */
 export const getLiquidPlusPadding = (
   defaultPadding: number = 0,
-  liquidPlusPadding: number = 60
+  liquidPlusPadding: number = 60,
 ): number => {
-  return isLiquidPlus() ? liquidPlusPadding : defaultPadding;
+  return isiOSLiquidPlus() ? liquidPlusPadding : defaultPadding;
 };

@@ -24,10 +24,11 @@ import SquircleView from "../../../components/SquircleView";
 import { getLiquidPlusPadding } from "../../../utils/platformUtils";
 import PressableIcon from "../../../components/PressableIcon";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { useIsTablet } from "utils/hooks/useIsTablet";
 
 export default function Studio() {
   const { id } = useLocalSearchParams();
-  const { colors, isDark } = useTheme();
+  const { colors, dimensions } = useTheme();
   const { width } = useWindowDimensions();
   const [studio, setStudio] = useState(null);
   const [projects, setProjects] = useState(null);
@@ -37,6 +38,7 @@ export default function Studio() {
   const [csrfToken] = useMMKVString("csrfToken");
   const [token] = useMMKVString("token");
   const insets = useSafeAreaInsets();
+  const isTablet = useIsTablet();
 
   const load = () => {
     setProjects(null);
@@ -113,7 +115,7 @@ export default function Studio() {
                 backgroundColor="transparent"
                 style={{
                   paddingLeft: 10,
-                  paddingVertical: 0
+                  paddingVertical: 0,
                 }}
               />
               <PressableIcon
@@ -124,7 +126,7 @@ export default function Studio() {
                 backgroundColor="transparent"
                 style={{
                   paddingHorizontal: 10,
-                  paddingVertical: 0
+                  paddingVertical: 0,
                 }}
               />
             </>
@@ -147,7 +149,7 @@ export default function Studio() {
         style={{ flex: 1 }}
       >
         {studio && (
-          <>
+          <View>
             <Animated.View entering={FadeInDown.delay(0).springify()}>
               <ItchyText
                 style={{
@@ -163,25 +165,25 @@ export default function Studio() {
                 {studio.title}
               </ItchyText>
             </Animated.View>
-            <Animated.View entering={FadeInDown.delay(50).springify()}>
-              <SquircleView
-                co
-                style={{
-                  width: width - 30,
-                  aspectRatio: 1.7 / 1,
-                  borderRadius: 15,
-                  overflow: "hidden",
-                  margin: "auto",
+            <Animated.View
+              entering={FadeInDown.delay(50).springify()}
+              style={{
+                flexDirection: "row"
+              }}
+            >
+              <Image
+                source={{
+                  uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${id}.png`,
                 }}
-                cornerSmoothing={0.6}
-              >
-                <Image
-                  source={{
-                    uri: `https://uploads.scratch.mit.edu/galleries/thumbnails/${id}.png`,
-                  }}
-                  style={{ width: "100%", height: "100%" }}
-                />
-              </SquircleView>
+                style={{
+                  margin: "auto",
+                  width: "100%",
+                  maxWidth: 500,
+                  aspectRatio: "16 / 9",
+                  borderRadius: dimensions.mediumRadius
+                }}
+                contentFit="cover"
+              />
             </Animated.View>
             <Animated.View entering={FadeInDown.delay(100).springify()}>
               <View
@@ -190,6 +192,8 @@ export default function Studio() {
                   alignItems: "center",
                   padding: 15,
                   paddingBottom: 0,
+                  margin: "auto",
+                  maxWidth: 500,
                 }}
               >
                 <View
@@ -298,7 +302,7 @@ export default function Studio() {
                 title="Projects"
               />
             </Animated.View>
-          </>
+          </View>
         )}
       </ScrollView>
     </View>

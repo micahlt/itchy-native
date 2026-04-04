@@ -64,11 +64,39 @@ export default `function injectedWebviewCode(args) {
             const vm = window.vm;
             const keyboard = vm?.runtime?.ioDevices?.keyboard;
             const mouse = vm?.runtime?.ioDevices?.mouse;
+            const targets = vm?.runtime?.executableTargets;
 
-            if (keyboard && keyboard._keysPressed && typeof keyboard._keyStringToScratchKey === 'function' && mouse && mouse._buttons) {
+            if (keyboard && keyboard._keysPressed && typeof keyboard._keyStringToScratchKey === 'function' && mouse && mouse._buttons && targets.length > 0) {
                 clearInterval(waitForVM);
                 window.ReactNativeWebView.postMessage("VM ready! Setting up input handlers...");
 
+                // Native Variables handlers add cool functionality that makes Scratch projects feel like native apps.
+                const nativeVarStates = new Map();
+                const stage = targets?.find((t) => t.isStage == true);
+                try {
+                const nativeVariables = Object.values(stage.variables).filter(v => v.name.startsWith("__itchy_"));
+                if (nativeVariables.length > 0) {
+                    nativeVariables.forEach(v => {
+                        nativeVarStates.set(v.name, v.value)
+                    });
+                    window.ReactNativeWebView.postMessage("Native vars set up");
+                    const updateNativeVars = () => {
+                        const stageVars = Object.values(stage.variables);
+                        stageVars.forEach((variable) => {
+                            // If the variable name exists in our tracking Map, sync the value
+                            if (nativeVarStates.has(variable.name) && nativeVarStates.get(variable.name) != variable.value) {
+                                nativeVarStates.set(variable.name, variable.value);
+                                window.ReactNativeWebView.postMessage(variable.name + ":" + variable.value);
+                            }
+                        });
+                        requestAnimationFrame(updateNativeVars);
+                    };
+
+                    requestAnimationFrame(updateNativeVars);
+                }
+                } catch (err) {
+                  window.ReactNativeWebView.postMessage("__itchy_err " + err);
+                }
                 // Start the message listener for keyboard input. Accept either JSON messages
                 // or plain strings; if parsing fails we ignore non-JSON messages.
                 window.addEventListener("message", (e) => {

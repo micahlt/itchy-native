@@ -4,6 +4,9 @@ import ProjectCard from "./ProjectCard";
 import StudioCard from "./StudioCard";
 import UserCard from "./UserCard";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
+import { useIsTablet } from "utils/hooks/useIsTablet";
+import { useMemo } from "react";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 export default function InfiniteScrollContentList({
   data = [],
@@ -15,14 +18,24 @@ export default function InfiniteScrollContentList({
 }) {
   const { colors, isDark } = useTheme();
   const { width } = useWindowDimensions();
+  const isTablet = useIsTablet();
+
+  const itemWidth = useMemo(() => {
+    if (isTablet) {
+      return width / 2;
+    } else {
+      return width;
+    }
+  }, [isTablet, width]);
 
   return (
     <FlatList
       data={data}
-      renderItem={({ item }) => renderItem(item, width, itemType)}
+      key={isTablet ? "tablet" : "phone"}
+      renderItem={({ item, index }) => renderItem(item, itemWidth, itemType, index)}
       keyExtractor={(item) => item.id}
-      numColumns={2}
-      columnWrapperStyle={{ gap: 10 }}
+      numColumns={isTablet ? 4 : 2}
+      columnWrapperStyle={{ gap: isTablet ? 18 : 10 }}
       contentContainerStyle={{
         marginHorizontal: 20,
         gap: 10,
@@ -50,21 +63,29 @@ export default function InfiniteScrollContentList({
             colors={isDark ? ["black"] : ["white"]}
             onRefresh={onRefresh}
           />
-        )
+        ),
       })}
       onEndReached={onEndReached}
     />
   );
 }
 
-function renderItem(item, width, type) {
-  if (type === "projects") {
-    return <ProjectCard project={item} width={(width - 50) / 2} />;
-  }
-  if (type === "studios") {
-    return <StudioCard studio={item} width={(width - 50) / 2} />;
-  }
-  if (type === "users") {
-    return <UserCard user={item} width={(width - 50) / 2} />;
-  }
+function renderItem(item, width, type, index) {
+  const content = (() => {
+    if (type === "projects") {
+      return <ProjectCard project={item} width={(width - 50) / 2} />;
+    }
+    if (type === "studios") {
+      return <StudioCard studio={item} width={(width - 50) / 2} />;
+    }
+    if (type === "users") {
+      return <UserCard user={item} width={(width - 50) / 2} />;
+    }
+  })();
+
+  return (
+    <Animated.View entering={FadeInDown.delay(index * 25).duration(80).springify()}>
+      {content}
+    </Animated.View>
+  );
 }

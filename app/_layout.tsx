@@ -22,7 +22,7 @@ import encryptedStorage from "../utils/encryptedStorage";
 import { router, usePathname } from "expo-router";
 import { SWRConfig } from "swr";
 import * as Network from "expo-network";
-import { isLiquidPlus } from "../utils/platformUtils";
+import { isiOSLiquidPlus } from "../utils/platformUtils";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 // @ts-expect-error
@@ -35,6 +35,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { FullWindowOverlay } from "react-native-screens";
 import { GlassView } from "expo-glass-effect";
+import { SizeClassProvider } from "react-native-size-class";
 
 const c = getCrashlytics();
 
@@ -214,14 +215,28 @@ export default function App() {
         }}
       >
         <ThemeProvider>
-          <BottomSheetModalProvider>
-            {/* Inner component consumes theme after ThemeProvider mounts */}
-            <ThemeConsumerInner twConfig={twConfig} />
-          </BottomSheetModalProvider>
+          <RNSizeClassProvider>
+            <BottomSheetModalProvider>
+              {/* Inner component consumes theme after ThemeProvider mounts */}
+              <ThemeConsumerInner twConfig={twConfig} />
+            </BottomSheetModalProvider>
+          </RNSizeClassProvider>
         </ThemeProvider>
       </SWRConfig>
     </GestureHandlerRootView>
   );
+}
+
+function RNSizeClassProvider({
+  children,
+}: {
+  children: React.ReactElement | React.ReactElement[];
+}) {
+  if (Platform.OS === "ios") {
+    return <SizeClassProvider>{children}</SizeClassProvider>;
+  } else {
+    return <>{children}</>;
+  }
 }
 
 interface ThemeConsumerInnerProps {
@@ -230,7 +245,7 @@ interface ThemeConsumerInnerProps {
 
 function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   const { colors } = useTheme();
-  const liquidPlus = isLiquidPlus();
+  const liquidPlus = isiOSLiquidPlus();
   const insets = useSafeAreaInsets();
   const path = usePathname();
   const translateX = useSharedValue(0);
@@ -238,6 +253,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   const [commentsHeight] = useMMKVNumber("commentsHeight");
   const [showHomeButton, setShowHomeButton] =
     useMMKVBoolean("globalHomeButton");
+  const [forceHideHomeButton] = useMMKVBoolean("forceHideHomeButton");
 
   useEffect(() => {
     if (showHomeButton == undefined || showHomeButton == null) {
@@ -246,6 +262,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
   }, [showHomeButton]);
 
   const shouldHide = useMemo(() => {
+    if (forceHideHomeButton) return true;
     switch (path) {
       case "/":
       case "/login":
@@ -258,7 +275,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
       default:
         return !showHomeButton;
     }
-  }, [path, showHomeButton]);
+  }, [path, showHomeButton, forceHideHomeButton]);
 
   const shouldElevate = useMemo(() => {
     if (path.includes("/comments")) {
@@ -375,7 +392,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           contentStyle: {
             backgroundColor: colors.background,
           },
-          headerShown: false,
+          headerShown: true,
           headerBackButtonDisplayMode: "default",
           headerTitleStyle: {
             color: colors.text,
@@ -391,7 +408,10 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           animationDuration: 120,
         }}
       >
-        <Stack.Screen name="(tabs)" options={{ animation: "default" }} />
+        <Stack.Screen
+          name="(tabs)"
+          options={{ headerShown: false, animation: "default" }}
+        />
         <Stack.Screen
           name="projects/[id]/index"
           options={{
@@ -482,6 +502,22 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           name="users/[username]/edit"
           options={{
             title: "Edit Profile",
+            headerShown: true,
+            presentation: "modal",
+            animation: "fade_from_bottom",
+          }}
+        />
+        <Stack.Screen
+          name="users/[username]/followers"
+          options={{
+            headerShown: true,
+            presentation: "modal",
+            animation: "fade_from_bottom",
+          }}
+        />
+        <Stack.Screen
+          name="users/[username]/following"
+          options={{
             headerShown: true,
             presentation: "modal",
             animation: "fade_from_bottom",

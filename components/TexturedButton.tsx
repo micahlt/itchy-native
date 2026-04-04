@@ -82,7 +82,7 @@ export default function TexturedButton({
     >
       <Pressable
         style={{
-          paddingHorizontal: size / 2,
+          paddingHorizontal: size,
           paddingBottom: size / 1.5,
           paddingTop: size / 1.5,
           flexDirection: "row",
@@ -101,11 +101,11 @@ export default function TexturedButton({
         {icon && iconSide == "left" && !loading ? (
           <Ionicons
             name={icon as keyof typeof Ionicons.glyphMap}
-            color={colors.text}
+            color={textStyle?.color || colors.text}
             size={size * 1.25}
             style={{
               marginRight: children == null ? 0 : size * 0.5,
-              color: colors.text,
+              color: textStyle?.color || colors.text,
             }}
           />
         ) : (
