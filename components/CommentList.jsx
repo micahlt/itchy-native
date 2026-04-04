@@ -67,6 +67,7 @@ export default function CommentList({
             impactAsync(ImpactFeedbackStyle.Medium);
             setCommentOptionsObj(c);
           }}
+          isStudioComment={commentOptionContext.type === "studio"}
         />
       </Animated.View>
     );

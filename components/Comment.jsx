@@ -18,9 +18,10 @@ export default function Comment({
   parentMetadata = {},
   selected = 0,
   partOfSelection = false,
-  onPress = () => {},
-  onLongPress = () => {},
+  onPress = () => { },
+  onLongPress = () => { },
   fullWidth = false,
+  isStudioComment = false
 }) {
   const { colors } = useTheme();
   const router = useRouter();
@@ -134,15 +135,27 @@ export default function Comment({
               textStyle={{ fontWeight: "bold" }}
               onPress={openAuthor}
             />
-            <ItchyText
-              style={{
-                color: colors.textSecondary,
-                fontSize: 12,
-                marginTop: 2,
-              }}
-            >
-              {timestamp}
-            </ItchyText>
+            <View
+              style={{ alignItems: "flex-end" }}>
+              <ItchyText
+                style={{
+                  color: colors.textSecondary,
+                  fontSize: 12,
+                  marginTop: isReply ? 0 : -5,
+                }}
+              >
+                {timestamp}
+              </ItchyText>
+              {!isReply && isStudioComment && <ItchyText
+                style={{
+                  color: colors.accent,
+                  fontSize: 12,
+                  marginTop: -2,
+                }}
+              >
+                {25 - replies.length} replies remaining
+              </ItchyText>}
+            </View>
           </View>
           <LinkifiedText
             style={{ color: colors.text, fontSize: 14 }}
