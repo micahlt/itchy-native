@@ -35,6 +35,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { FullWindowOverlay } from "react-native-screens";
 import { GlassView } from "expo-glass-effect";
+import { SizeClassProvider } from "react-native-size-class";
 
 const c = getCrashlytics();
 
@@ -214,14 +215,28 @@ export default function App() {
         }}
       >
         <ThemeProvider>
-          <BottomSheetModalProvider>
-            {/* Inner component consumes theme after ThemeProvider mounts */}
-            <ThemeConsumerInner twConfig={twConfig} />
-          </BottomSheetModalProvider>
+          <RNSizeClassProvider>
+            <BottomSheetModalProvider>
+              {/* Inner component consumes theme after ThemeProvider mounts */}
+              <ThemeConsumerInner twConfig={twConfig} />
+            </BottomSheetModalProvider>
+          </RNSizeClassProvider>
         </ThemeProvider>
       </SWRConfig>
     </GestureHandlerRootView>
   );
+}
+
+function RNSizeClassProvider({
+  children,
+}: {
+  children: React.ReactElement | React.ReactElement[];
+}) {
+  if (Platform.OS === "ios") {
+    return <SizeClassProvider>{children}</SizeClassProvider>;
+  } else {
+    return <>{children}</>;
+  }
 }
 
 interface ThemeConsumerInnerProps {

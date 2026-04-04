@@ -78,6 +78,7 @@ export default function LoginScreen() {
           justifyContent: "center",
           alignItems: "center",
           marginTop: 5,
+          padding: 10,
         }}
       >
         <Image

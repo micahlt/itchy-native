@@ -1,20 +1,20 @@
 import { Platform, useWindowDimensions } from "react-native";
-import SizeClass from "react-native-size-classes";
+import { useSizeClass } from "react-native-size-class";
 import { TABLET_BREAKPOINT } from "../magicNumbers";
 import { useEffect, useState } from "react";
 
 export function useIsTablet() {
   const [isTablet, setIsTablet] = useState(false);
   const { width } = useWindowDimensions();
+  const { horizontal } = useSizeClass();
 
   useEffect(() => {
     (async () => {
       if (Platform.OS === "ios") {
-        const sizeClasses = await SizeClass.getSizeClasses();
-        if (sizeClasses.horizontal == "compact") {
-          setIsTablet(false);
-        } else {
+        if (horizontal === "regular") {
           setIsTablet(true);
+        } else {
+          setIsTablet(false);
         }
       } else {
         setIsTablet(width >= TABLET_BREAKPOINT);
