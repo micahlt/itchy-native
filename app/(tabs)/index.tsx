@@ -47,6 +47,8 @@ import useSWR, { mutate as swrMutate } from "swr";
 import SquircleView from "../../components/SquircleView";
 import { Studio } from "../../utils/api-wrapper/types/studio";
 import { ItchyThemeColors } from "../../utils/theme/colors";
+import { useIsTablet } from "utils/hooks/useIsTablet";
+import { IPADOS_TOPBAR_HEIGHT } from "utils/magicNumbers";
 
 const AnimatedScrollView = Reanimated.createAnimatedComponent(ScrollView);
 const AnimatedView = Reanimated.createAnimatedComponent(SquircleView);
@@ -73,7 +75,7 @@ const Header = memo(
         headerStyle,
         {
           flexDirection: "row",
-          alignItems: "center",
+          alignItems: "flex-start",
           justifyContent: "space-between",
           paddingTop: (insets?.top || 0) + 5,
           paddingBottom: 15,
@@ -85,7 +87,7 @@ const Header = memo(
       <TouchableOpacity onPress={() => router.push(`/multiplay`)}>
         <Ionicons
           name="radio"
-          style={{ marginLeft: 7 }}
+          style={{ marginLeft: 7, marginTop: 20 }}
           size={26}
           color={colors.textSecondary}
         />
@@ -99,7 +101,7 @@ const Header = memo(
         onLongPress={() => router.push(`/users/${username}`)}
       >
         <Ionicons
-          style={{ marginRight: 7 }}
+          style={{ marginRight: 7, marginTop: 20 }}
           name="settings"
           size={26}
           color={colors.textSecondary}
@@ -157,6 +159,14 @@ export default function HomeScreen() {
   const [username] = useMMKVString("username");
   const [token] = useMMKVString("token");
   const insets = useSafeAreaInsets();
+  const isTablet = useIsTablet();
+  const iPadOSTopMargin = useMemo(() => {
+    if (Platform.OS === "android" && isTablet) {
+      return insets.top + 15;
+    } else {
+      return 0;
+    }
+  }, [insets, isTablet, Platform]);
 
   const scrollRef = useRef<ScrollView | null>(null);
   const scrollY = useSharedValue(0);
@@ -379,6 +389,7 @@ export default function HomeScreen() {
 
     return {
       transform: [{ translateY }, { scale }, { rotate: `${rotateDeg}deg` }],
+      marginTop: iPadOSTopMargin,
     };
   });
 

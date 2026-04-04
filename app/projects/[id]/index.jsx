@@ -316,8 +316,10 @@ export default function Project() {
 
   const fullScreen = async (makeFullScreen = true) => {
     if (makeFullScreen) {
-      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
       setIsFullscreen(true);
+      if (!isTablet) {
+        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+      }
       StatusBar.setHidden(true);
       setForceHideHomeButton(true);
       await NavigationBar.setVisibilityAsync("hidden");
@@ -428,13 +430,13 @@ export default function Project() {
                 Share.share(
                   Platform.OS === "android"
                     ? {
-                        message: `https://scratch.mit.edu/projects/${id}`,
-                        dialogTitle: "Share this project",
-                      }
+                      message: `https://scratch.mit.edu/projects/${id}`,
+                      dialogTitle: "Share this project",
+                    }
                     : {
-                        url: `https://scratch.mit.edu/projects/${id}`,
-                        message: "Check out this project on Scratch!",
-                      },
+                      url: `https://scratch.mit.edu/projects/${id}`,
+                      message: "Check out this project on Scratch!",
+                    },
                   {
                     dialogTitle: "Share this project",
                     tintColor: colors.accent,
@@ -575,12 +577,12 @@ export default function Project() {
             style={
               !isFullscreen && isTablet
                 ? {
-                    flexDirection: "row",
-                    marginRight: 10,
-                    alignContent: "flex-start",
-                    alignItems: "flex-start",
-                    flex: 0,
-                  }
+                  flexDirection: "row",
+                  marginRight: 10,
+                  alignContent: "flex-start",
+                  alignItems: "flex-start",
+                  flex: 0,
+                }
                 : undefined
             }
           >
@@ -688,14 +690,14 @@ export default function Project() {
                 style={
                   isFullscreen
                     ? {
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: height,
-                        marginTop: 0,
-                        margin: 0,
-                      }
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: height,
+                      marginTop: 0,
+                      margin: 0,
+                    }
                     : { margin: 20, marginTop: 0, marginBottom: 0 }
                 }
               />
