@@ -727,23 +727,23 @@ export default function Project() {
             )}
           </View>
         </ScrollView>
+        {isFullscreen && (
+          <PressableIcon
+            onPress={() => fullScreen(false)}
+            name="contract"
+            size={24}
+            color={colors.textSecondary}
+            backgroundColor="red"
+            style={{
+              position: "absolute",
+              bottom: 20,
+              left: 20,
+              zIndex: 1050,
+              elevation: 10,
+            }}
+          />
+        )}
       </View>
-      {isFullscreen && (
-        <PressableIcon
-          onPress={() => fullScreen(false)}
-          name="contract"
-          size={24}
-          color={colors.textSecondary}
-          backgroundColor="red"
-          style={{
-            position: "absolute",
-            bottom: 10,
-            left: 10,
-            padding: 10,
-            zIndex: 1050,
-          }}
-        />
-      )}
       <BottomSheet
         ref={onlineConfigSheetRef}
         index={-1}
