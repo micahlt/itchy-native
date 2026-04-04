@@ -10,6 +10,15 @@ export const isLiquidPlus = (): boolean => {
 };
 
 /**
+ * Check if the device is running iOS 18 or higher
+ * iPadOS 18+ requires additional top padding for the top tab bar
+ * @returns {boolean} True if device is iOS 18+
+ */
+export const isiOS18Plus = (): boolean => {
+  return Platform.OS === "ios" && parseInt(Platform.Version, 10) >= 18;
+};
+
+/**
  * Get the appropriate top padding for iOS 26+ screens
  * @param {number} defaultPadding - Padding to use for non-iOS26+ devices (default: 0)
  * @param {number} liquidPlusPadding - Padding to use for iOS 26+ devices (default: 60)
@@ -17,7 +26,7 @@ export const isLiquidPlus = (): boolean => {
  */
 export const getLiquidPlusPadding = (
   defaultPadding: number = 0,
-  liquidPlusPadding: number = 60
+  liquidPlusPadding: number = 60,
 ): number => {
   return isLiquidPlus() ? liquidPlusPadding : defaultPadding;
 };
