@@ -417,6 +417,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           options={{
             headerShown: true,
             animation: "fade_from_bottom",
+            presentation: "fullScreenModal",
             headerBackButtonDisplayMode: "minimal",
             headerBackVisible: Platform.OS === "ios",
             headerRight: () => (
@@ -463,7 +464,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           name="users/[username]/index"
           options={{
             headerShown: true,
-            presentation: "pageSheet",
+            presentation: "fullScreenModal",
             animation: "fade_from_bottom",
             headerRight: () => (
               <MaterialIcons
