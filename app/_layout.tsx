@@ -22,7 +22,7 @@ import encryptedStorage from "../utils/encryptedStorage";
 import { router, usePathname } from "expo-router";
 import { SWRConfig } from "swr";
 import * as Network from "expo-network";
-import { isiOSLiquidPlus } from "../utils/platformUtils";
+import { isiOS18Plus, isiOSLiquidPlus } from "../utils/platformUtils";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 // @ts-expect-error
@@ -36,6 +36,7 @@ import Animated, {
 import { FullWindowOverlay } from "react-native-screens";
 import { GlassView } from "expo-glass-effect";
 import { SizeClassProvider } from "react-native-size-class";
+import { useIsTablet } from "utils/hooks/useIsTablet";
 
 const c = getCrashlytics();
 
@@ -315,6 +316,16 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
     [path, shouldHide],
   );
 
+  const isTablet = useIsTablet();
+
+  const largePageDisplayType = useMemo(() => {
+    if (Platform.OS === "ios" && isTablet) {
+      return "fullScreenModal";
+    } else {
+      return "modal";
+    }
+  }, [isTablet]);
+
   // If colors aren't ready yet, render nothing (prevents flash)
   if (!colors) return null;
 
@@ -417,7 +428,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           options={{
             headerShown: true,
             animation: "fade_from_bottom",
-            presentation: "fullScreenModal",
+            presentation: largePageDisplayType,
             headerBackButtonDisplayMode: "minimal",
             headerBackVisible: Platform.OS === "ios",
             headerRight: () => (
@@ -464,7 +475,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           name="users/[username]/index"
           options={{
             headerShown: true,
-            presentation: "fullScreenModal",
+            presentation: largePageDisplayType,
             animation: "fade_from_bottom",
             headerRight: () => (
               <MaterialIcons
