@@ -48,7 +48,7 @@ import SquircleView from "../../components/SquircleView";
 import { Studio } from "../../utils/api-wrapper/types/studio";
 import { ItchyThemeColors } from "../../utils/theme/colors";
 import { useIsTablet } from "utils/hooks/useIsTablet";
-import { IPADOS_TOPBAR_HEIGHT } from "utils/magicNumbers";
+import { IPADOS_TOP_TABS_OFFSET } from "utils/magicNumbers";
 import { isiOS18Plus, isLiquidPlus } from "utils/platformUtils";
 
 const AnimatedScrollView = Reanimated.createAnimatedComponent(ScrollView);
@@ -163,7 +163,7 @@ export default function HomeScreen() {
   const isTablet = useIsTablet();
   const iPadOSTopMargin = useMemo(() => {
     if (Platform.OS === "ios" && isTablet && isiOS18Plus()) {
-      return insets.top + 10;
+      return insets.top + IPADOS_TOP_TABS_OFFSET;
     } else {
       return 0;
     }
