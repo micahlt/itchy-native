@@ -318,9 +318,7 @@ export default function Project() {
   const fullScreen = async (makeFullScreen = true) => {
     if (makeFullScreen) {
       setIsFullscreen(true);
-      if (!isTablet) {
-        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-      }
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
       StatusBar.setHidden(true);
       setForceHideHomeButton(true);
       if (Platform.OS === "android") await NavigationBar.setVisibilityAsync("hidden");
