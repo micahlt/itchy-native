@@ -2,7 +2,7 @@ module.exports = {
   expo: {
     name: "Itchy",
     slug: "itchy-native",
-    version: "2.8.0",
+    version: "2.8.1",
     scheme: "itchy",
     newArchEnabled: true,
     orientation: "default",
@@ -88,7 +88,7 @@ module.exports = {
     },
     userInterfaceStyle: "automatic",
     android: {
-      versionCode: 81,
+      versionCode: 82,
       package: "org.scratchclient4.itchy",
       adaptiveIcon: {
         backgroundColor: "#0082FF",
@@ -108,7 +108,7 @@ module.exports = {
     },
     ios: {
       bundleIdentifier: "org.scratchclient4.itchy",
-      buildNumber: "81",
+      buildNumber: "82",
       icon: "./assets/iosicon.icon",
       supportsTablet: true,
       config: {
