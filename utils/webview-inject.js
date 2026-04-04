@@ -81,10 +81,9 @@ export default `function injectedWebviewCode(args) {
                     });
                     window.ReactNativeWebView.postMessage("Native vars set up");
                     const updateNativeVars = () => {
-                        const stageVars = Object.values(stage.variables);
-                        stageVars.forEach((variable) => {
-                            // If the variable name exists in our tracking Map, sync the value
-                            if (nativeVarStates.has(variable.name) && nativeVarStates.get(variable.name) != variable.value) {
+                        nativeVariables.forEach((variable) => {
+                            // If the variable value has changed, sync the value
+                            if (nativeVarStates.get(variable.name) != variable.value) {
                                 nativeVarStates.set(variable.name, variable.value);
                                 window.ReactNativeWebView.postMessage(variable.name + ":" + variable.value);
                             }
