@@ -1,10 +1,10 @@
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import ItchyText from "./ItchyText";
 import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
 import { Image } from "react-native";
 import { useRouter } from "expo-router";
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import SquircleView from "./SquircleView";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import * as Clipboard from "expo-clipboard";
@@ -17,12 +17,14 @@ import {
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
+import { TABLET_BREAKPOINT } from "utils/magicNumbers";
 
 export default function ProjectCard({ project, width = 250, style = {} }) {
   const { colors, dimensions, isDark } = useTheme();
   const router = useRouter();
   const bottomSheetModalRef = useRef(null);
   const insets = useSafeAreaInsets();
+  const { width: screenWidth } = useWindowDimensions();
 
   const openProject = useCallback(() => {
     router.navigate(`/projects/${project.id}`);
@@ -49,6 +51,12 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
     [],
   );
 
+  const sheetMarginHorizontal = useMemo(
+    () => (screenWidth > TABLET_BREAKPOINT ? (screenWidth - 600) / 2 : 0),
+    [screenWidth],
+  );
+
+
   if (!project) return null;
 
   const username = project.creator || project.author?.username;
@@ -67,7 +75,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
             foreground: true,
             color: colors.ripple,
           }}
-          onPress={() => {}}
+          onPress={() => { }}
           onLongPress={handleLongPress}
         >
           <SquircleView
@@ -183,8 +191,9 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
       <BottomSheetModal
         ref={bottomSheetModalRef}
         enableDynamicSizing={true}
+        style={{ marginHorizontal: sheetMarginHorizontal }}
         backdropComponent={renderBackdrop}
-        backgroundStyle={{ backgroundColor: colors.backgroundSecondary }}
+        backgroundStyle={{ backgroundColor: colors.background }}
         handleIndicatorStyle={{ backgroundColor: colors.textSecondary }}
       >
         <BottomSheetView
@@ -192,7 +201,7 @@ export default function ProjectCard({ project, width = 250, style = {} }) {
             paddingTop: getLiquidPlusPadding(0, 0),
             paddingBottom: insets.bottom,
             paddingHorizontal: 20,
-            backgroundColor: colors.backgroundSecondary,
+            backgroundColor: colors.background,
           }}
         >
           <ItchyText

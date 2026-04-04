@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import ItchyText from "./ItchyText";
 import { useTheme } from "../utils/theme";
 import { useMMKVObject, useMMKVString } from "react-native-mmkv";
@@ -21,6 +21,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 import TexturedButton from "./TexturedButton";
+import { TABLET_BREAKPOINT } from "utils/magicNumbers";
 
 export default function CommentOptionSheet({
   comment,
@@ -35,6 +36,7 @@ export default function CommentOptionSheet({
   const sheetRef = useRef(null);
   const [sheetHeight, setSheetHeight] = useState(0);
   const insets = useSafeAreaInsets();
+  const { width: screenWidth } = useWindowDimensions();
 
   useEffect(() => {
     if (!!comment) {
@@ -130,6 +132,7 @@ export default function CommentOptionSheet({
           left: 0,
           right: 0,
           bottom: 0,
+          display: "flex"
         }),
         [colors.background]
       );
@@ -147,6 +150,8 @@ export default function CommentOptionSheet({
     [sheetRef]
   );
 
+  const marginHorizontal = useMemo(() => screenWidth > TABLET_BREAKPOINT ? (screenWidth - 600) / 2 : 0, [screenWidth]);
+
   if (!comment) return null;
 
   return (
@@ -155,8 +160,11 @@ export default function CommentOptionSheet({
       style={{
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
+        maxWidth: 600,
+        width: '100%',
+        marginHorizontal: marginHorizontal,
         shadowColor: "#000",
-        zIndex: 10000
+        zIndex: 10000,
       }}
       backdropMaskColor="#000000aa"
       onClose={() => setComment(undefined)}

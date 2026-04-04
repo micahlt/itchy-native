@@ -5,13 +5,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import {
-  View,
-  TextInput,
-  ScrollView,
-  TouchableWithoutFeedback,
-  useWindowDimensions,
-} from "react-native";
+import { View, TextInput, useWindowDimensions } from "react-native";
 import ItchyText from "./ItchyText";
 import { useTheme } from "../utils/theme";
 // @ts-expect-error
@@ -19,11 +13,11 @@ import Pressable from "./Pressable";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   BottomSheetModal,
-  BottomSheetView,
   BottomSheetBackdrop,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
+import { TABLET_BREAKPOINT } from "utils/magicNumbers";
 
 interface PickerOption {
   label: string;
@@ -52,7 +46,7 @@ export default function PickerBottomSheet({
   const { colors } = useTheme();
   const sheetRef = useRef<BottomSheetModal>(null);
   const insets = useSafeAreaInsets();
-  const { height } = useWindowDimensions();
+  const { height, width: screenWidth } = useWindowDimensions();
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -68,7 +62,7 @@ export default function PickerBottomSheet({
       return options;
     }
     return options.filter((option) =>
-      option.label.toLowerCase().includes(searchQuery.toLowerCase())
+      option.label.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [options, searchQuery, searchable]);
 
@@ -78,7 +72,7 @@ export default function PickerBottomSheet({
       setSearchQuery("");
       onClose();
     },
-    [onValueChange, onClose]
+    [onValueChange, onClose],
   );
 
   const renderBackdrop = useCallback(
@@ -90,7 +84,12 @@ export default function PickerBottomSheet({
         opacity={0.6}
       />
     ),
-    []
+    [],
+  );
+
+  const marginHorizontal = useMemo(
+    () => (screenWidth > TABLET_BREAKPOINT ? (screenWidth - 600) / 2 : 0),
+    [screenWidth],
   );
 
   return (
@@ -103,6 +102,7 @@ export default function PickerBottomSheet({
       }}
       style={{
         zIndex: 10000,
+        marginHorizontal: marginHorizontal,
       }}
       $modal={true}
       backgroundStyle={{ backgroundColor: colors.backgroundSecondary }}

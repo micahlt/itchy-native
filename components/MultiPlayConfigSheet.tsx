@@ -1,5 +1,5 @@
-import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import React, { useMemo } from "react";
+import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 import ItchyText from "./ItchyText";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -9,7 +9,7 @@ import { useMMKVObject } from "react-native-mmkv";
 import Card from "./Card";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 import TexturedButton from "./TexturedButton";
-import { MultiPlayStatus } from "itchy-multiplay";
+import { TABLET_BREAKPOINT } from "utils/magicNumbers";
 
 interface User {
   birthMonth?: number;
@@ -97,7 +97,10 @@ export default function MultiPlayConfigSheet({
 
   return (
     <BottomSheetView
-      style={{ padding: 20, paddingTop: getLiquidPlusPadding(10, 70) }}
+      style={{
+        padding: 20,
+        paddingTop: getLiquidPlusPadding(10, 70),
+      }}
     >
       <View
         style={{ flexDirection: "row", alignItems: "center", marginBottom: 10 }}
@@ -247,7 +250,7 @@ export default function MultiPlayConfigSheet({
               onPress={() =>
                 linkWithFallback(
                   "https://itchy.micahlindley.com/multiplay",
-                  colors.accent
+                  colors.accent,
                 )
               }
             >
@@ -334,9 +337,9 @@ export default function MultiPlayConfigSheet({
             {isUserUnder13()
               ? "Age Restricted"
               : connectionStatus !== "Idle" &&
-                connectionStatus !== "join-failed"
-              ? "Connecting..."
-              : "Start MultiPlay"}
+                  connectionStatus !== "join-failed"
+                ? "Connecting..."
+                : "Start MultiPlay"}
           </TexturedButton>
         )}
       </View>

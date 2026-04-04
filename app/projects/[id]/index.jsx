@@ -49,6 +49,7 @@ import { useMultiPlayHost } from "../../../utils/hooks/useMultiPlayHost";
 import { useLatestMultiPlayScript } from "../../../utils/hooks/useLatestMultiPlayScript";
 import webviewInject from "../../../utils/webview-inject";
 import { useIsTablet } from "../../../utils/hooks/useIsTablet";
+import { TABLET_BREAKPOINT } from "utils/magicNumbers";
 const c = getCrashlytics();
 
 function GestureDetectorOptional({ children }) {
@@ -346,6 +347,12 @@ export default function Project() {
       };
     }, []),
   );
+
+  const sheetMarginHorizontal = useMemo(
+    () => (width > TABLET_BREAKPOINT ? (width - 600) / 2 : 0),
+    [width],
+  );
+
 
   const renderInteractions = () => (
     <View style={{ flex: 1 }}>
@@ -742,6 +749,9 @@ export default function Project() {
         index={-1}
         snapPoints={[]}
         enablePanDownToClose={true}
+        style={{
+          marginHorizontal: sheetMarginHorizontal
+        }}
         backgroundStyle={{
           backgroundColor: colors.background,
         }}

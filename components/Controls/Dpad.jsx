@@ -6,7 +6,7 @@ import { useTheme } from "../../utils/theme";
 import { useFullscreen } from "./FullscreenContext";
 
 export default function Dpad({
-  onControlPress = () => {},
+  onControlPress = () => { },
   mapping = {},
   containerWidth = 300,
 }) {
@@ -115,7 +115,7 @@ export default function Dpad({
           borderLeftWidth: 1.5,
           borderRightWidth: 1.5,
           borderBottomWidth: 0,
-          borderColor: "rgba(69, 137, 236, 1)",
+          borderColor: isFullscreen ? "transparent" : "rgba(69, 137, 236, 1)",
           marginBottom: 0,
         }}
       />
@@ -134,7 +134,7 @@ export default function Dpad({
           borderLeftWidth: 1.5,
           borderBottomWidth: 1.5,
           borderRightWidth: 0,
-          borderColor: "rgba(69, 137, 236, 1)",
+          borderColor: isFullscreen ? "transparent" : "rgba(69, 137, 236, 1)",
           boxShadow: "-5px 4px 8px rgba(0,0,0,0.1)",
         }}
       />
@@ -147,9 +147,7 @@ export default function Dpad({
           left: buttonSize,
           width: buttonSize,
           height: buttonSize,
-          backgroundColor: isFullscreen
-            ? "transparent"
-            : "rgba(255, 255, 255, 0.2)",
+          backgroundColor: isFullscreen ? "rgba(255, 255, 255, 0.11)" : "rgba(255, 255, 255, 0.2)",
           borderWidth: 0,
         }}
       />
@@ -168,7 +166,7 @@ export default function Dpad({
           borderRightWidth: 1.5,
           borderBottomWidth: 1.5,
           borderLeftWidth: 0,
-          borderColor: "rgba(69, 137, 236, 1)",
+          borderColor: isFullscreen ? "transparent" : "rgba(69, 137, 236, 1)",
           boxShadow: "5px 4px 8px rgba(0,0,0,0.1)",
         }}
       />
@@ -187,7 +185,7 @@ export default function Dpad({
           borderLeftWidth: 1.5,
           borderRightWidth: 1.5,
           borderTopWidth: 0,
-          borderColor: "rgba(69, 137, 236, 1)",
+          borderColor: isFullscreen ? "transparent" : "rgba(69, 137, 236, 1)",
           boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
         }}
       />

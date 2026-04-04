@@ -124,14 +124,14 @@ export default function CommentList({
             onClose={() => setShowMutedDialog(false)}
           />
         </KeyboardAvoidingView>
+        <CommentOptionSheet
+          comment={commentOptionsObj}
+          setComment={setCommentOptionsObj}
+          context={commentOptionContext}
+          isPageAdmin={isAdmin}
+          onDeleteCommentID={onDeleteComment}
+        />
       </View>
-      <CommentOptionSheet
-        comment={commentOptionsObj}
-        setComment={setCommentOptionsObj}
-        context={commentOptionContext}
-        isPageAdmin={isAdmin}
-        onDeleteCommentID={onDeleteComment}
-      />
     </>
   );
 }
