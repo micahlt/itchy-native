@@ -18,7 +18,7 @@ export default function useiPadOSTopMargin() {
     } else {
       return 0;
     }
-  }, [insets, isTablet, Platform]);
+  }, [insets, isTablet]);
 
   return iPadOSTopMargin;
 }

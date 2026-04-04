@@ -42,7 +42,6 @@ export default function CommentList({
   commentsOpen,
   scrollRef,
 }) {
-  const headerHeight = useHeaderHeight();
   const { colors } = useTheme();
 
   const isAdmin = useMemo(() => {

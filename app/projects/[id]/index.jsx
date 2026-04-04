@@ -322,7 +322,7 @@ export default function Project() {
       }
       StatusBar.setHidden(true);
       setForceHideHomeButton(true);
-      await NavigationBar.setVisibilityAsync("hidden");
+      if (Platform.OS === "android") await NavigationBar.setVisibilityAsync("hidden");
     } else {
       if (!isTablet) {
         ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
@@ -332,7 +332,7 @@ export default function Project() {
       setIsFullscreen(false);
       StatusBar.setHidden(false);
       setForceHideHomeButton(false);
-      await NavigationBar.setVisibilityAsync("visible");
+      if (Platform.OS === "android") await NavigationBar.setVisibilityAsync("visible");
     }
   };
 
@@ -342,6 +342,7 @@ export default function Project() {
         await ScreenOrientation.unlockAsync();
         StatusBar.setHidden(false);
         setForceHideHomeButton(false);
+        if (Platform.OS === "android") await NavigationBar.setVisibilityAsync("visible");
       };
     }, []),
   );

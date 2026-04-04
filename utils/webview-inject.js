@@ -66,7 +66,7 @@ export default `function injectedWebviewCode(args) {
             const mouse = vm?.runtime?.ioDevices?.mouse;
             const targets = vm?.runtime?.executableTargets;
 
-            if (keyboard && keyboard._keysPressed && typeof keyboard._keyStringToScratchKey === 'function' && mouse && mouse._buttons && targets.length > 0) {
+            if (keyboard && keyboard._keysPressed && typeof keyboard._keyStringToScratchKey === 'function' && mouse && mouse._buttons && Array.isArray(targets) && targets.length > 0) {
                 clearInterval(waitForVM);
                 window.ReactNativeWebView.postMessage("VM ready! Setting up input handlers...");
 

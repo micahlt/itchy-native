@@ -2,7 +2,6 @@ import {
   View,
   useWindowDimensions,
   ScrollView,
-  RefreshControl,
 } from "react-native";
 import ItchyText from "../../../components/ItchyText";
 import { useTheme } from "../../../utils/theme";
@@ -12,7 +11,6 @@ import { router, useLocalSearchParams } from "expo-router";
 import ScratchAPIWrapper from "../../../utils/api-wrapper";
 import { Image } from "expo-image";
 import approximateNumber from "approximate-number";
-import { Ionicons } from "@expo/vector-icons";
 import linkWithFallback from "../../../utils/linkWithFallback";
 import Card from "../../../components/Card";
 import LinkifiedText from "../../../utils/regex/LinkifiedText";
@@ -20,11 +18,9 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMMKVString } from "react-native-mmkv";
 import HorizontalContentScroller from "../../../components/HorizontalContentScroller";
 import TexturedButton from "../../../components/TexturedButton";
-import SquircleView from "../../../components/SquircleView";
 import { getLiquidPlusPadding } from "../../../utils/platformUtils";
 import PressableIcon from "../../../components/PressableIcon";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import { useIsTablet } from "utils/hooks/useIsTablet";
 
 export default function Studio() {
   const { id } = useLocalSearchParams();
@@ -38,7 +34,6 @@ export default function Studio() {
   const [csrfToken] = useMMKVString("csrfToken");
   const [token] = useMMKVString("token");
   const insets = useSafeAreaInsets();
-  const isTablet = useIsTablet();
 
   const load = () => {
     setProjects(null);
