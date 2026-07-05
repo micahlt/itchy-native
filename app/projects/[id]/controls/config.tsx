@@ -8,7 +8,7 @@ import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import { useEffect, useMemo, useState } from "react";
 import getControlOptions from "../../../../utils/controlOptions";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { MaterialIcons } from "@expo/vector-icons";
+import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { getLiquidPlusPadding } from "../../../../utils/platformUtils";
 import PickerBottomSheet from "../../../../components/PickerBottomSheet";
 // @ts-expect-error

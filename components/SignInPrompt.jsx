@@ -3,7 +3,7 @@ import ItchyText from "./ItchyText";
 import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
 import { useRouter } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
+import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import SquircleView from "./SquircleView";
 import TexturedButton from "./TexturedButton";
 

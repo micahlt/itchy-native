@@ -16,7 +16,7 @@ module.exports = {
           ios: {
             useFrameworks: "static",
             reactNativeReleaseLevel: "experimental",
-            deploymentTarget: "15.1",
+            deploymentTarget: "16.4",
           },
           android: {
             compileSdkVersion: 36,

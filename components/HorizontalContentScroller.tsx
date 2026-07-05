@@ -4,7 +4,7 @@ import Reanimated from "react-native-reanimated";
 import { useTheme } from "../utils/theme";
 import ProjectCard from "./ProjectCard";
 import StudioCard from "./StudioCard";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 import TexturedButton from "./TexturedButton";
 import { memo } from "react";
 import Animated, { FadeInRight } from "react-native-reanimated";

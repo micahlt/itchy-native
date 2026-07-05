@@ -10,7 +10,7 @@ import { useTheme } from "../utils/theme";
 import ItchyText from "./ItchyText";
 // @ts-ignore
 import Pressable from "./Pressable";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 import React from "react";
 import { GlassView } from "expo-glass-effect";
 

@@ -8,7 +8,7 @@ import MutedDialog from "./MutedDialog";
 import { getLiquidPlusPadding } from "../utils/platformUtils";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { impactAsync, ImpactFeedbackStyle } from "expo-haptics";
-import { useHeaderHeight } from "@react-navigation/elements";
+import { useHeaderHeight } from "expo-router/react-navigation";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const FULL_SCREEN_MODAL_CARD_TOP_OFFSET = Platform.select({

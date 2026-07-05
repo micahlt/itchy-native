@@ -5,7 +5,7 @@ import { useTheme } from "../../../../utils/theme";
 import { TextInput } from "react-native-gesture-handler";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import Card from "../../../../components/Card";
-import { MaterialIcons } from "@expo/vector-icons";
+import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { controlOptionToFullName } from "../../../../utils/controlOptions";
 import { useMMKVObject } from "react-native-mmkv";
 import { TouchableOpacity } from "react-native";
