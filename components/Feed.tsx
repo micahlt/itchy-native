@@ -5,7 +5,7 @@ import { useTheme } from "../utils/theme";
 import APIExplore from "../utils/api-wrapper/explore";
 import { useMMKVString } from "react-native-mmkv";
 import FeedItem from "./FeedItem";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { useRouter } from "expo-router";
 import SquircleView from "./SquircleView";
 import TexturedButton from "./TexturedButton";
@@ -99,7 +99,7 @@ export default memo(function Feed({ username, style }: FeedProps) {
             </View>
           ) : (
             /* Skeleton loading items */
-            [1, 2, 3].map((index) => (
+            ([1, 2, 3].map((index) => (
               <View
                 key={`skeleton-${index}`}
                 style={{
@@ -110,7 +110,7 @@ export default memo(function Feed({ username, style }: FeedProps) {
                   opacity: 0.6,
                 }}
               />
-            ))
+            )))
           )}
         </SquircleView>
       </>

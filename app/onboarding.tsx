@@ -9,7 +9,7 @@ import { Image } from "expo-image";
 // @ts-expect-error
 import Pressable from "../components/Pressable";
 import onboarding from "../assets/onboarding/onboarding";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { useMMKVBoolean } from "react-native-mmkv";
 import { router, useNavigation } from "expo-router";
 import { GlassView } from "expo-glass-effect";

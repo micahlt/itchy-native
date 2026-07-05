@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 import ItchyText from "./ItchyText";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import { MaterialIcons } from "@expo/vector-icons";
+import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { useTheme } from "../utils/theme";
 import linkWithFallback from "../utils/linkWithFallback";
 import { useMMKVObject } from "react-native-mmkv";

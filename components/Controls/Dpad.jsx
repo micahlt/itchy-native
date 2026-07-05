@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { View } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
-import { MaterialIcons } from "@expo/vector-icons";
+import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { useTheme } from "../../utils/theme";
 import { useFullscreen } from "./FullscreenContext";
 

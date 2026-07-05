@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import ItchyText from "../components/ItchyText";
 import { useTheme } from "../utils/theme";
-import { MaterialIcons } from "@expo/vector-icons";
+import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { router, useLocalSearchParams } from "expo-router";
 // @ts-expect-error
 import Pressable from "../components/Pressable";

@@ -27,7 +27,7 @@ import UserCard from "../../components/UserCard";
 import { FlashList } from "@shopify/flash-list";
 import SquircleView from "../../components/SquircleView";
 import ItchyText from "../../components/ItchyText";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { useMMKVObject } from "react-native-mmkv";
 import Card from "../../components/Card";
 import Animated, { FadeInDown } from "react-native-reanimated";

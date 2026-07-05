@@ -13,7 +13,7 @@ import { useTheme } from "../utils/theme";
 import SquircleView from "../components/SquircleView";
 import Card from "../components/Card";
 import { Stack } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
+import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import Controls from "../components/Controls";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Chip from "../components/Chip";

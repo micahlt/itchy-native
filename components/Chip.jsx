@@ -2,7 +2,7 @@ import { Image } from "expo-image";
 import { View } from "react-native";
 import Pressable from "./Pressable";
 import { useTheme } from "../utils/theme";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 import tinycolor from "tinycolor2";
 import { useCallback, useMemo } from "react";
 import ItchyText from "./ItchyText";

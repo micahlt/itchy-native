@@ -5,7 +5,7 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { MaterialIcons } from "@expo/vector-icons";
+import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { useTheme } from "../../utils/theme";
 import { useFullscreen } from "./FullscreenContext";
 

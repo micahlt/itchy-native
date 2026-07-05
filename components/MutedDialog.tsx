@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Modal, NativeSyntheticEvent } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { useTheme } from "../utils/theme";
 import ItchyText from "./ItchyText";
 import SquircleView from "./SquircleView";

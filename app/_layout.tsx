@@ -14,7 +14,8 @@ import {
   useMMKVObject,
   useMMKVString,
 } from "react-native-mmkv";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
+import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { Image } from "expo-image";
 import APIAuth from "../utils/api-wrapper/auth";
 import storage from "../utils/storage";

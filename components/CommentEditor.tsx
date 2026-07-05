@@ -9,7 +9,8 @@ import {
   TextInput as RNTextInput,
 } from "react-native";
 import ItchyText from "./ItchyText";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
+import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "../utils/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
