@@ -881,6 +881,7 @@ export default function ControlsScreen() {
           placeholder={activePickerConfig?.placeholder || "Select an option"}
           searchable={activePickerConfig?.searchable || false}
           isOpen={activePicker !== null}
+          height="full"
           onClose={() => setActivePicker(null)}
         />
       </BottomSheetModalProvider>

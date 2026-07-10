@@ -575,7 +575,7 @@ export default function Project() {
         <ScrollView
           contentContainerStyle={{
             paddingBottom: isFullscreen ? 0 : insets.bottom + 10,
-            paddingTop: isFullscreen ? 0 : getLiquidPlusPadding(0, 120),
+            paddingTop: isFullscreen ? 0 : getLiquidPlusPadding(0, 60),
           }}
           scrollEnabled={!isFullscreen}
         >
