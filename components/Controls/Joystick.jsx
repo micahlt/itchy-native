@@ -5,12 +5,11 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { useTheme } from "../../utils/theme";
 import { useFullscreen } from "./FullscreenContext";
 
 export default function Joystick({
-  onControlPress = () => {},
+  onControlPress = () => { },
   mapping = {},
   containerWidth = 300,
 }) {

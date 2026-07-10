@@ -8,7 +8,7 @@ import { useMMKVObject, useMMKVString } from "react-native-mmkv";
 import { useEffect, useMemo, useState } from "react";
 import getControlOptions from "../../../../utils/controlOptions";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import MaterialIcons from "@react-native-vector-icons/material-icons/static";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { getLiquidPlusPadding } from "../../../../utils/platformUtils";
 import PickerBottomSheet from "../../../../components/PickerBottomSheet";
 // @ts-expect-error
@@ -56,8 +56,8 @@ export default function ControlsScreen() {
     typeof params.id === "string"
       ? params.id
       : Array.isArray(params.id)
-      ? params.id[0]
-      : undefined;
+        ? params.id[0]
+        : undefined;
   const { colors, isDark } = useTheme();
   const insets = useSafeAreaInsets();
   const [project, setProject] = useState<Project>();
@@ -87,7 +87,7 @@ export default function ControlsScreen() {
         },
         extra: [],
       },
-    }
+    },
   );
   const { width } = useWindowDimensions();
   const [token] = useMMKVString("token");
@@ -100,7 +100,7 @@ export default function ControlsScreen() {
 
   const applyPreset = (
     controlType: "primary" | "secondary",
-    preset: string
+    preset: string,
   ) => {
     const presets: Record<
       string,
@@ -244,7 +244,7 @@ export default function ControlsScreen() {
               ...prev.controls,
               extra: Array.from(
                 { length: value as number },
-                (_, i) => prev.controls.extra[i] || "0"
+                (_, i) => prev.controls.extra[i] || "0",
               ),
             },
           })),
@@ -453,7 +453,7 @@ export default function ControlsScreen() {
           fontSize: 16,
         },
       }),
-    [isDark]
+    [isDark],
   );
 
   const handleSave = () => {
@@ -470,7 +470,7 @@ export default function ControlsScreen() {
           controlOptions: controls.controlOptions,
           controls: controls.controls,
         }),
-      }
+      },
     )
       .then((response) => response.json())
       .then((data) => {
@@ -557,8 +557,8 @@ export default function ControlsScreen() {
                   {controls?.controlOptions?.primaryController === "none" &&
                     "None"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -584,8 +584,8 @@ export default function ControlsScreen() {
                   {controls?.controlOptions?.secondaryController === "none" &&
                     "None"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -604,8 +604,8 @@ export default function ControlsScreen() {
                 >
                   {controls?.controlOptions?.extrasCount || "None"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -628,8 +628,8 @@ export default function ControlsScreen() {
                   {getSelectedPreset("primary") === "arrows" && "Arrow Keys"}
                   {getSelectedPreset("primary") === "ijkl" && "IJKL"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -647,11 +647,11 @@ export default function ControlsScreen() {
                   style={{ color: colors.textSecondary, fontSize: 16 }}
                 >
                   {controlOptions.find(
-                    (o) => o.value === controls?.controls?.primary?.up
+                    (o) => o.value === controls?.controls?.primary?.up,
                   )?.label || "None"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -669,11 +669,11 @@ export default function ControlsScreen() {
                   style={{ color: colors.textSecondary, fontSize: 16 }}
                 >
                   {controlOptions.find(
-                    (o) => o.value === controls?.controls?.primary?.down
+                    (o) => o.value === controls?.controls?.primary?.down,
                   )?.label || "None"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -691,11 +691,11 @@ export default function ControlsScreen() {
                   style={{ color: colors.textSecondary, fontSize: 16 }}
                 >
                   {controlOptions.find(
-                    (o) => o.value === controls?.controls?.primary?.left
+                    (o) => o.value === controls?.controls?.primary?.left,
                   )?.label || "None"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -713,11 +713,11 @@ export default function ControlsScreen() {
                   style={{ color: colors.textSecondary, fontSize: 16 }}
                 >
                   {controlOptions.find(
-                    (o) => o.value === controls?.controls?.primary?.right
+                    (o) => o.value === controls?.controls?.primary?.right,
                   )?.label || "None"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -740,8 +740,8 @@ export default function ControlsScreen() {
                   {getSelectedPreset("secondary") === "arrows" && "Arrow Keys"}
                   {getSelectedPreset("secondary") === "ijkl" && "IJKL"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -759,11 +759,11 @@ export default function ControlsScreen() {
                   style={{ color: colors.textSecondary, fontSize: 16 }}
                 >
                   {controlOptions.find(
-                    (o) => o.value === controls?.controls?.secondary?.up
+                    (o) => o.value === controls?.controls?.secondary?.up,
                   )?.label || "None"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -781,11 +781,11 @@ export default function ControlsScreen() {
                   style={{ color: colors.textSecondary, fontSize: 16 }}
                 >
                   {controlOptions.find(
-                    (o) => o.value === controls?.controls?.secondary?.down
+                    (o) => o.value === controls?.controls?.secondary?.down,
                   )?.label || "None"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -803,11 +803,11 @@ export default function ControlsScreen() {
                   style={{ color: colors.textSecondary, fontSize: 16 }}
                 >
                   {controlOptions.find(
-                    (o) => o.value === controls?.controls?.secondary?.left
+                    (o) => o.value === controls?.controls?.secondary?.left,
                   )?.label || "None"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -825,11 +825,11 @@ export default function ControlsScreen() {
                   style={{ color: colors.textSecondary, fontSize: 16 }}
                 >
                   {controlOptions.find(
-                    (o) => o.value === controls?.controls?.secondary?.right
+                    (o) => o.value === controls?.controls?.secondary?.right,
                   )?.label || "None"}
                 </ItchyText>
-                <MaterialIcons
-                  name="keyboard-arrow-down"
+                <Ionicons
+                  name="chevron-down"
                   size={24}
                   color={colors.textSecondary}
                 />
@@ -858,11 +858,11 @@ export default function ControlsScreen() {
                     style={{ color: colors.textSecondary, fontSize: 16 }}
                   >
                     {controlOptions.find(
-                      (o) => o.value === controls?.controls?.extra?.[index]
+                      (o) => o.value === controls?.controls?.extra?.[index],
                     )?.label || "None"}
                   </ItchyText>
-                  <MaterialIcons
-                    name="keyboard-arrow-down"
+                  <Ionicons
+                    name="chevron-down"
                     size={24}
                     color={colors.textSecondary}
                   />

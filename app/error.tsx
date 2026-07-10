@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import ItchyText from "../components/ItchyText";
 import { useTheme } from "../utils/theme";
-import MaterialIcons from "@react-native-vector-icons/material-icons/static";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { router, useLocalSearchParams } from "expo-router";
 // @ts-expect-error
 import Pressable from "../components/Pressable";
@@ -19,8 +19,8 @@ export default function Error() {
         paddingTop: 30,
       }}
     >
-      <MaterialIcons
-        name="error-outline"
+      <Ionicons
+        name="alert-circle"
         size={80}
         color={colors.accent}
         style={{ marginBottom: 20 }}

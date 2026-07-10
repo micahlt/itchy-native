@@ -8,7 +8,6 @@ import Dpad from "./Controls/Dpad";
 import ButtonPad from "./Controls/ButtonPad";
 import ExtraButton from "./Controls/ExtraButton";
 import Ionicons from "@react-native-vector-icons/ionicons/static";
-import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { router } from "expo-router";
 import { useMMKVObject } from "react-native-mmkv";
 import SquircleView from "./SquircleView";
@@ -54,7 +53,7 @@ const MAPPING_CONFIG = {
 };
 
 export default function Controls({
-  onControlPress = () => {},
+  onControlPress = () => { },
   projectId = 0,
   showConfiguration = true,
   style = {},
@@ -291,12 +290,12 @@ export default function Controls({
               <>
                 {currentMapping.controlOptions.primaryController ===
                   "joystick" && (
-                  <Joystick
-                    onControlPress={onControlPressProxy}
-                    mapping={currentMapping.controls.primary}
-                    containerWidth={splitWidth}
-                  />
-                )}
+                    <Joystick
+                      onControlPress={onControlPressProxy}
+                      mapping={currentMapping.controls.primary}
+                      containerWidth={splitWidth}
+                    />
+                  )}
                 {currentMapping.controlOptions.primaryController === "dpad" && (
                   <Dpad
                     onControlPress={onControlPressProxy}
@@ -306,12 +305,12 @@ export default function Controls({
                 )}
                 {currentMapping.controlOptions.primaryController ===
                   "buttonpad" && (
-                  <ButtonPad
-                    onControlPress={onControlPressProxy}
-                    mapping={currentMapping.controls.primary}
-                    containerWidth={splitWidth}
-                  />
-                )}
+                    <ButtonPad
+                      onControlPress={onControlPressProxy}
+                      mapping={currentMapping.controls.primary}
+                      containerWidth={splitWidth}
+                    />
+                  )}
               </>
             )}
           </View>
@@ -326,28 +325,28 @@ export default function Controls({
               <>
                 {currentMapping.controlOptions.secondaryController ===
                   "joystick" && (
-                  <Joystick
-                    onControlPress={onControlPressProxy}
-                    mapping={currentMapping.controls.secondary}
-                    containerWidth={splitWidth}
-                  />
-                )}
+                    <Joystick
+                      onControlPress={onControlPressProxy}
+                      mapping={currentMapping.controls.secondary}
+                      containerWidth={splitWidth}
+                    />
+                  )}
                 {currentMapping.controlOptions.secondaryController ===
                   "dpad" && (
-                  <Dpad
-                    onControlPress={onControlPressProxy}
-                    mapping={currentMapping.controls.secondary}
-                    containerWidth={splitWidth}
-                  />
-                )}
+                    <Dpad
+                      onControlPress={onControlPressProxy}
+                      mapping={currentMapping.controls.secondary}
+                      containerWidth={splitWidth}
+                    />
+                  )}
                 {currentMapping.controlOptions.secondaryController ===
                   "buttonpad" && (
-                  <ButtonPad
-                    onControlPress={onControlPressProxy}
-                    mapping={currentMapping.controls.secondary}
-                    containerWidth={splitWidth}
-                  />
-                )}
+                    <ButtonPad
+                      onControlPress={onControlPressProxy}
+                      mapping={currentMapping.controls.secondary}
+                      containerWidth={splitWidth}
+                    />
+                  )}
               </>
             )}
             {currentMapping?.controls?.extra?.length > 0 && (
@@ -453,56 +452,56 @@ export default function Controls({
                       <>
                         {currentMapping.controlOptions.primaryController ===
                           "joystick" && (
-                          <Joystick
-                            onControlPress={() => {}}
-                            mapping={currentMapping.controls.primary}
-                            containerWidth={containerDimensions.width}
-                          />
-                        )}
+                            <Joystick
+                              onControlPress={() => { }}
+                              mapping={currentMapping.controls.primary}
+                              containerWidth={containerDimensions.width}
+                            />
+                          )}
                         {currentMapping.controlOptions.primaryController ===
                           "dpad" && (
-                          <Dpad
-                            onControlPress={() => {}}
-                            mapping={currentMapping.controls.primary}
-                            containerWidth={containerDimensions.width}
-                          />
-                        )}
+                            <Dpad
+                              onControlPress={() => { }}
+                              mapping={currentMapping.controls.primary}
+                              containerWidth={containerDimensions.width}
+                            />
+                          )}
                         {currentMapping.controlOptions.primaryController ===
                           "buttonpad" && (
-                          <ButtonPad
-                            onControlPress={() => {}}
-                            mapping={currentMapping.controls.primary}
-                            containerWidth={containerDimensions.width}
-                          />
-                        )}
+                            <ButtonPad
+                              onControlPress={() => { }}
+                              mapping={currentMapping.controls.primary}
+                              containerWidth={containerDimensions.width}
+                            />
+                          )}
                       </>
                     )}
                     {currentMapping.controlOptions.showSecondaryController && (
                       <>
                         {currentMapping.controlOptions.secondaryController ===
                           "joystick" && (
-                          <Joystick
-                            onControlPress={() => {}}
-                            mapping={currentMapping.controls.secondary}
-                            containerWidth={containerDimensions.width}
-                          />
-                        )}
+                            <Joystick
+                              onControlPress={() => { }}
+                              mapping={currentMapping.controls.secondary}
+                              containerWidth={containerDimensions.width}
+                            />
+                          )}
                         {currentMapping.controlOptions.secondaryController ===
                           "dpad" && (
-                          <Dpad
-                            onControlPress={() => {}}
-                            mapping={currentMapping.controls.secondary}
-                            containerWidth={containerDimensions.width}
-                          />
-                        )}
+                            <Dpad
+                              onControlPress={() => { }}
+                              mapping={currentMapping.controls.secondary}
+                              containerWidth={containerDimensions.width}
+                            />
+                          )}
                         {currentMapping.controlOptions.secondaryController ===
                           "buttonpad" && (
-                          <ButtonPad
-                            onControlPress={() => {}}
-                            mapping={currentMapping.controls.secondary}
-                            containerWidth={containerDimensions.width}
-                          />
-                        )}
+                            <ButtonPad
+                              onControlPress={() => { }}
+                              mapping={currentMapping.controls.secondary}
+                              containerWidth={containerDimensions.width}
+                            />
+                          )}
                       </>
                     )}
                   </View>
@@ -523,7 +522,7 @@ export default function Controls({
                       {currentMapping.controls.extra.map((key, index) => (
                         <ExtraButton
                           key={index}
-                          onControlPress={() => {}}
+                          onControlPress={() => { }}
                           keyboardKey={key}
                         />
                       ))}
@@ -608,62 +607,62 @@ export default function Controls({
                       >
                         {currentMapping.controlOptions
                           .showPrimaryController && (
-                          <>
-                            {currentMapping.controlOptions.primaryController ===
-                              "joystick" && (
-                              <Joystick
-                                onControlPress={onControlPressProxy}
-                                mapping={currentMapping.controls.primary}
-                                containerWidth={containerDimensions.width}
-                              />
-                            )}
-                            {currentMapping.controlOptions.primaryController ===
-                              "dpad" && (
-                              <Dpad
-                                onControlPress={onControlPressProxy}
-                                mapping={currentMapping.controls.primary}
-                                containerWidth={containerDimensions.width}
-                              />
-                            )}
-                            {currentMapping.controlOptions.primaryController ===
-                              "buttonpad" && (
-                              <ButtonPad
-                                onControlPress={onControlPressProxy}
-                                mapping={currentMapping.controls.primary}
-                                containerWidth={containerDimensions.width}
-                              />
-                            )}
-                          </>
-                        )}
+                            <>
+                              {currentMapping.controlOptions.primaryController ===
+                                "joystick" && (
+                                  <Joystick
+                                    onControlPress={onControlPressProxy}
+                                    mapping={currentMapping.controls.primary}
+                                    containerWidth={containerDimensions.width}
+                                  />
+                                )}
+                              {currentMapping.controlOptions.primaryController ===
+                                "dpad" && (
+                                  <Dpad
+                                    onControlPress={onControlPressProxy}
+                                    mapping={currentMapping.controls.primary}
+                                    containerWidth={containerDimensions.width}
+                                  />
+                                )}
+                              {currentMapping.controlOptions.primaryController ===
+                                "buttonpad" && (
+                                  <ButtonPad
+                                    onControlPress={onControlPressProxy}
+                                    mapping={currentMapping.controls.primary}
+                                    containerWidth={containerDimensions.width}
+                                  />
+                                )}
+                            </>
+                          )}
                         {currentMapping.controlOptions
                           .showSecondaryController && (
-                          <>
-                            {currentMapping.controlOptions
-                              .secondaryController === "joystick" && (
-                              <Joystick
-                                onControlPress={onControlPressProxy}
-                                mapping={currentMapping.controls.secondary}
-                                containerWidth={containerDimensions.width}
-                              />
-                            )}
-                            {currentMapping.controlOptions
-                              .secondaryController === "dpad" && (
-                              <Dpad
-                                onControlPress={onControlPressProxy}
-                                mapping={currentMapping.controls.secondary}
-                                containerWidth={containerDimensions.width}
-                              />
-                            )}
-                            {currentMapping.controlOptions
-                              .secondaryController === "buttonpad" && (
-                              <ButtonPad
-                                onControlPress={onControlPressProxy}
-                                mapping={currentMapping.controls.secondary}
-                                containerWidth={containerDimensions.width}
-                              />
-                            )}
-                          </>
-                        )}
+                            <>
+                              {currentMapping.controlOptions
+                                .secondaryController === "joystick" && (
+                                  <Joystick
+                                    onControlPress={onControlPressProxy}
+                                    mapping={currentMapping.controls.secondary}
+                                    containerWidth={containerDimensions.width}
+                                  />
+                                )}
+                              {currentMapping.controlOptions
+                                .secondaryController === "dpad" && (
+                                  <Dpad
+                                    onControlPress={onControlPressProxy}
+                                    mapping={currentMapping.controls.secondary}
+                                    containerWidth={containerDimensions.width}
+                                  />
+                                )}
+                              {currentMapping.controlOptions
+                                .secondaryController === "buttonpad" && (
+                                  <ButtonPad
+                                    onControlPress={onControlPressProxy}
+                                    mapping={currentMapping.controls.secondary}
+                                    containerWidth={containerDimensions.width}
+                                  />
+                                )}
+                            </>
+                          )}
                       </View>
                       {currentMapping.controls.extra.length > 0 && (
                         <View
@@ -781,8 +780,8 @@ export default function Controls({
             }}
             disabled={isCollapsed}
           >
-            <MaterialIcons
-              name="settings"
+            <Ionicons
+              name="cog"
               backgroundColor="transparent"
               color={colors.textSecondary}
               size={16}

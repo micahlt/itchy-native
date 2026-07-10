@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { View } from "react-native";
 import { PanGestureHandler } from "react-native-gesture-handler";
-import MaterialIcons from "@react-native-vector-icons/material-icons/static";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { useTheme } from "../../utils/theme";
 import { useFullscreen } from "./FullscreenContext";
 
@@ -77,7 +77,7 @@ export default function Dpad({
             isFullscreen && { borderWidth: 0, boxShadow: "none" },
           ]}
         >
-          <MaterialIcons
+          <Ionicons
             name={icon}
             color={
               isFullscreen
@@ -104,7 +104,7 @@ export default function Dpad({
       {/* Up button */}
       <DpadButton
         direction={mapping.up}
-        icon="keyboard-arrow-up"
+        icon="chevron-up"
         style={{
           position: "absolute",
           top: 1,
@@ -123,7 +123,7 @@ export default function Dpad({
       {/* Left button */}
       <DpadButton
         direction={mapping.left}
-        icon="keyboard-arrow-left"
+        icon="chevron-left"
         style={{
           position: "absolute",
           top: buttonSize,
@@ -155,7 +155,7 @@ export default function Dpad({
       {/* Right button */}
       <DpadButton
         direction={mapping.right}
-        icon="keyboard-arrow-right"
+        icon="chevron-right"
         style={{
           position: "absolute",
           top: buttonSize,
@@ -174,7 +174,7 @@ export default function Dpad({
       {/* Down button */}
       <DpadButton
         direction={mapping.down}
-        icon="keyboard-arrow-down"
+        icon="chevron-down"
         style={{
           position: "absolute",
           top: buttonSize * 2,

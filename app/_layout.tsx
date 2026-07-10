@@ -15,7 +15,6 @@ import {
   useMMKVString,
 } from "react-native-mmkv";
 import Ionicons from "@react-native-vector-icons/ionicons/static";
-import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { Image } from "expo-image";
 import APIAuth from "../utils/api-wrapper/auth";
 import storage from "../utils/storage";
@@ -433,8 +432,8 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
             headerBackButtonDisplayMode: "minimal",
             headerBackVisible: Platform.OS === "ios",
             headerRight: () => (
-              <MaterialIcons
-                name="question-answer"
+              <Ionicons
+                name="chatbubble-ellipses"
                 size={24}
                 color={colors.textSecondary}
               />
@@ -456,8 +455,8 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
             presentation: "modal",
             animation: "fade_from_bottom",
             headerRight: () => (
-              <MaterialIcons
-                name="launch"
+              <Ionicons
+                name="open-outline"
                 size={24}
                 color={colors.textSecondary}
               />
@@ -479,8 +478,8 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
             presentation: largePageDisplayType,
             animation: "fade_from_bottom",
             headerRight: () => (
-              <MaterialIcons
-                name="launch"
+              <Ionicons
+                name="open-outline"
                 size={24}
                 color={colors.textSecondary}
               />

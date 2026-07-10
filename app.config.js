@@ -9,7 +9,7 @@ module.exports = {
     plugins: [
       "@react-native-firebase/app",
       "@react-native-firebase/crashlytics",
-      "./plugins/withFirebaseStaticFrameworkFix.js",
+      // "./plugins/withFirebaseStaticFrameworkFix.js",
       [
         "expo-build-properties",
         {
@@ -17,6 +17,7 @@ module.exports = {
             useFrameworks: "static",
             reactNativeReleaseLevel: "experimental",
             deploymentTarget: "16.4",
+            // forceStaticLinking: ["RNFBApp"],
           },
           android: {
             compileSdkVersion: 36,
@@ -28,6 +29,7 @@ module.exports = {
         },
       ],
       "expo-router",
+      "@react-native-vector-icons/ionicons",
       "react-native-bottom-tabs",
       [
         "expo-asset",

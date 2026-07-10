@@ -184,6 +184,7 @@ export default function LoginScreen() {
         size={13}
         onPress={logIn}
         loading={loading}
+        glassEffectStyle="clear"
       >
         Log In
       </TexturedButton>

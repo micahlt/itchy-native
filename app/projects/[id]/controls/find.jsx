@@ -5,12 +5,12 @@ import { useTheme } from "../../../../utils/theme";
 import { TextInput } from "react-native-gesture-handler";
 import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import Card from "../../../../components/Card";
-import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { controlOptionToFullName } from "../../../../utils/controlOptions";
 import { useMMKVObject } from "react-native-mmkv";
 import { TouchableOpacity } from "react-native";
 import { getLiquidPlusPadding } from "../../../../utils/platformUtils";
 import PressableIcon from "../../../../components/PressableIcon";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 
 export default function FindControls() {
   const { colors, isDark } = useTheme();
@@ -294,8 +294,8 @@ export default function FindControls() {
               <Fragment key="empty-state">
                 {!isLoading && (
                   <View style={{ padding: 20, alignItems: "center" }}>
-                    <MaterialIcons
-                      name="videogame-asset-off"
+                    <Ionicons
+                      name="game-controller-outline"
                       size={64}
                       color={colors.textSecondary}
                       style={{ marginBottom: 20 }}
@@ -327,8 +327,8 @@ export default function FindControls() {
                 style={{ padding: 20, alignItems: "center" }}
                 key="no-results"
               >
-                <MaterialIcons
-                  name="search-off"
+                <Ionicons
+                  name="search"
                   size={64}
                   color={colors.textSecondary}
                   style={{ marginBottom: 20 }}

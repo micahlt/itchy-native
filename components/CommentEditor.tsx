@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import ItchyText from "./ItchyText";
 import Ionicons from "@react-native-vector-icons/ionicons/static";
-import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTheme } from "../utils/theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -257,8 +256,8 @@ export default function CommentEditor({
               hitSlop={8}
               style={{ marginTop: -2 }}
             >
-              <MaterialIcons
-                name="cancel"
+              <Ionicons
+                name="close-circle"
                 size={16}
                 color={colors.textSecondary}
               />
@@ -340,7 +339,7 @@ export default function CommentEditor({
             {loading ? (
               <ActivityIndicator color={colors.accent} />
             ) : (
-              <MaterialIcons
+              <Ionicons
                 name="send"
                 size={24}
                 color={
