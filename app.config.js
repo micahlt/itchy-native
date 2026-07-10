@@ -39,6 +39,7 @@ module.exports = {
         },
       ],
       "expo-image",
+      "expo-status-bar",
       "expo-sharing",
       [
         "react-native-edge-to-edge",

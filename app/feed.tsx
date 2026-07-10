@@ -39,7 +39,7 @@ export default function Feed() {
       {feed.map((item, index) => (
         <Animated.View
           key={item.id}
-          entering={FadeInDown.delay?.(index * 50)?.springify?.()}
+          entering={FadeInDown.delay?.(index * 25)?.springify?.()}
         >
           <FeedItem
             item={item}

@@ -68,7 +68,7 @@ const data = [
     key: 7,
     title: "Security",
     description:
-      "Itchy communicates directly with the official Scratch website uses, so your account data stays secure.",
+      "Itchy communicates directly with the official Scratch servers, so your account data stays secure.  None of your passwords go anywhere except Scratch and your device.",
     imgSrc: onboarding.security,
   },
 ];

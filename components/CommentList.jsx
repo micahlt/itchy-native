@@ -56,7 +56,7 @@ export default function CommentList({
   const renderComment = ({ item, index }) => {
     return (
       <Animated.View
-        entering={FadeInDown.delay(index * 50).springify()}
+        entering={FadeInDown.delay(index * 25).springify()}
         collapsable={false}
       >
         <Comment
