@@ -123,6 +123,8 @@ module.exports = {
         NSMicrophoneUsageDescription:
           "Itchy needs access to your microphone to support projects that include audio features.",
         ITSAppUsesNonExemptEncryption: false,
+        EXDefaultScreenOrientationMask:
+          "UIInterfaceOrientationMaskAllButUpsideDown",
       },
       googleServicesFile:
         process.env.GOOGLE_SERVICES_PLIST ?? "./GoogleService-Info.plist",

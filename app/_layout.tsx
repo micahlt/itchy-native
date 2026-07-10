@@ -428,7 +428,7 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
           options={{
             headerShown: true,
             animation: "fade_from_bottom",
-            presentation: largePageDisplayType,
+            presentation: "card",
             headerBackButtonDisplayMode: "minimal",
             headerBackVisible: Platform.OS === "ios",
             headerRight: () => (
