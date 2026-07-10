@@ -2,16 +2,13 @@ import { useTheme } from '../../utils/theme';
 import { useEffect, useState } from 'react';
 import ScratchAPIWrapper from '../../utils/api-wrapper';
 import { useMMKVString } from 'react-native-mmkv';
-import { withLayoutContext } from "expo-router";
-import { createNativeBottomTabNavigator } from "@bottom-tabs/react-navigation";
+import { VectorIcon, withLayoutContext } from "expo-router";
+import { NativeTabs } from 'expo-router/unstable-native-tabs';
 import { SystemBars } from "react-native-edge-to-edge"
 import { getCrashlytics, log, recordError } from '@react-native-firebase/crashlytics';
+import Ionicons from '@react-native-vector-icons/ionicons/static';
 
 const c = getCrashlytics();
-
-export const Tabs = withLayoutContext(
-    createNativeBottomTabNavigator().Navigator
-);
 
 export default function TabLayout() {
     const { colors, isDark } = useTheme();
@@ -37,46 +34,39 @@ export default function TabLayout() {
         <>
             <SystemBars style={isDark ? "light" : "dark"} backgroundColor={colors.background} />
 
-            <Tabs
+            <NativeTabs
                 tabBarActiveTintColor={colors.accent}
                 activeIndicatorColor={colors.accentTransparent}
-                ignoresTopSafeArea={true}
+                ignoresTopSafeArea={false}
                 tabBarStyle={{
                     backgroundColor: colors.backgroundSecondary,
                 }}
-                screenOptions={{
-                    headerShown: false,
-                    // ensure the tab bar does not hide or shift when keyboard opens
-                    tabBarHideOnKeyboard: false,
-                }}
+                disableTransparentOnScrollEdge={true}
                 sidebarAdaptable={false}
-                translucent={false}
-            >
-                <Tabs.Screen
-                    name="index"
-                    options={{
-                        title: 'Explore',
-                        tabBarIcon: () => require("../../assets/icons/explore.png"),
-                    }}
-                />
-                <Tabs.Screen
-                    name="search"
-                    options={{
-                        title: 'Search',
-                        tabBarIcon: () => require("../../assets/icons/search.png"),
+                translucent={true}
+                backgroundColor={colors.backgroundSecondary}
 
-                    }}
-                />
-                <Tabs.Screen
-                    name="messages"
-                    options={{
-                        title: 'Messages',
-                        tabBarIcon: () => require("../../assets/icons/messages.png"),
-                        tabBarBadge: String(messageCount > 0 ? messageCount : ""),
-                        sceneStyle: { backgroundColor: "green" }
-                    }}
-                />
-            </Tabs>
+            >
+                <NativeTabs.Trigger name="index" contentStyle={{
+                    backgroundColor: colors.background
+                }}>
+                    <NativeTabs.Trigger.Icon renderingMode="template" src={<VectorIcon family={Ionicons} name="earth" />} />
+                    <NativeTabs.Trigger.Label>Explore</NativeTabs.Trigger.Label>
+                </NativeTabs.Trigger>
+                <NativeTabs.Trigger name="search" contentStyle={{
+                    backgroundColor: colors.background
+                }}>
+                    <NativeTabs.Trigger.Icon renderingMode="template" src={<VectorIcon family={Ionicons} name="search" />} />
+                    <NativeTabs.Trigger.Label>Search</NativeTabs.Trigger.Label>
+                </NativeTabs.Trigger>
+                <NativeTabs.Trigger name="messages" contentStyle={{
+                    backgroundColor: colors.background
+                }}>
+                    <NativeTabs.Trigger.Icon renderingMode="template" src={<VectorIcon family={Ionicons} name="mail" />}></NativeTabs.Trigger.Icon>
+                    <NativeTabs.Trigger.Label>Messages</NativeTabs.Trigger.Label>
+                    <NativeTabs.Trigger.Badge hidden={messageCount < 1 ? true : false}>{messageCount}</NativeTabs.Trigger.Badge>
+                </NativeTabs.Trigger>
+            </NativeTabs >
         </>
     );
 }

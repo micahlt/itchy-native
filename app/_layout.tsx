@@ -410,7 +410,6 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
             fontWeight: "bold",
           },
           headerTintColor: colors.text,
-          // fixes back button artifact for iOS, check how it impacts android
           headerLeft: () => null,
           headerTransparent: liquidPlus,
           headerStyle: {
@@ -426,9 +425,9 @@ function ThemeConsumerInner({ twConfig }: ThemeConsumerInnerProps) {
         <Stack.Screen
           name="projects/[id]/index"
           options={{
-            headerShown: true,
+            headerShown: false,
             animation: "fade_from_bottom",
-            presentation: "card",
+            // presentation: largePageDisplayType,
             headerBackButtonDisplayMode: "minimal",
             headerBackVisible: Platform.OS === "ios",
             headerRight: () => (

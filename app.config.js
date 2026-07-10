@@ -2,7 +2,7 @@ module.exports = {
   expo: {
     name: "Itchy",
     slug: "itchy-native",
-    version: "2.8.1",
+    version: "2.8.4",
     scheme: "itchy",
     newArchEnabled: true,
     orientation: "default",
@@ -30,7 +30,6 @@ module.exports = {
       ],
       "expo-router",
       "@react-native-vector-icons/ionicons",
-      "react-native-bottom-tabs",
       [
         "expo-asset",
         {
@@ -91,7 +90,7 @@ module.exports = {
     },
     userInterfaceStyle: "automatic",
     android: {
-      versionCode: 82,
+      versionCode: 84,
       package: "org.scratchclient4.itchy",
       adaptiveIcon: {
         backgroundColor: "#0082FF",
@@ -111,7 +110,7 @@ module.exports = {
     },
     ios: {
       bundleIdentifier: "org.scratchclient4.itchy",
-      buildNumber: "82",
+      buildNumber: "84",
       icon: "./assets/iosicon.icon",
       supportsTablet: true,
       config: {

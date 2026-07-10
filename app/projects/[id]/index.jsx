@@ -331,7 +331,7 @@ export default function Project() {
     } else {
       if (!isTablet && Platform.OS != "ios") {
         ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
-      } else {
+      } else if (Platform.OS != "ios") {
         ScreenOrientation.unlockAsync();
       }
       setIsFullscreen(false);
@@ -344,7 +344,9 @@ export default function Project() {
   useFocusEffect(
     useCallback(() => {
       return async () => {
-        await ScreenOrientation.unlockAsync();
+        if (Platform.OS != "ios") {
+          await ScreenOrientation.unlockAsync();
+        }
         StatusBar.setHidden(false);
         setForceHideHomeButton(false);
         if (Platform.OS === "android") await NavigationBar.setVisibilityAsync("visible");
@@ -553,7 +555,7 @@ export default function Project() {
         <Stack.Screen
           options={{
             title: metadata?.title || "Loading...",
-            headerShown: !isFullscreen,
+            // headerShown: !isFullscreen
             headerRight: () => (
               <>
                 <PressableIcon
@@ -585,10 +587,15 @@ export default function Project() {
         <ScrollView
           contentContainerStyle={{
             paddingBottom: isFullscreen ? 0 : insets.bottom + 10,
-            paddingTop: isFullscreen ? 0 : getLiquidPlusPadding(0, 60),
+            paddingTop: isFullscreen ? 0 : getLiquidPlusPadding(0, 120),
           }}
           scrollEnabled={!isFullscreen}
         >
+          {!isFullscreen && <Stack.Header>
+            <Stack.Title>
+              <ItchyText>Hey there</ItchyText>
+            </Stack.Title>
+          </Stack.Header>}
           <View
             style={
               !isFullscreen && isTablet

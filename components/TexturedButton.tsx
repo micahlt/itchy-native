@@ -10,7 +10,9 @@ import { useTheme } from "../utils/theme";
 import ItchyText from "./ItchyText";
 // @ts-ignore
 import Pressable from "./Pressable";
-import Ionicons from "@react-native-vector-icons/ionicons/static";
+import Ionicons, {
+  IoniconsIconName,
+} from "@react-native-vector-icons/ionicons/static";
 import React from "react";
 import { GlassView } from "expo-glass-effect";
 
@@ -29,7 +31,7 @@ export default function TexturedButton({
   style?: StyleProp<ViewStyle>;
   onPress?: Function;
   textStyle?: TextStyle;
-  icon?: false | keyof typeof Ionicons.glyphMap;
+  icon?: false | IoniconsIconName;
   iconSide?: "right" | "left";
   size?: number;
   provider?: "native" | "gesture-handler";
@@ -103,7 +105,7 @@ export default function TexturedButton({
       >
         {icon && iconSide == "left" && !loading ? (
           <Ionicons
-            name={icon as keyof typeof Ionicons.glyphMap}
+            name={icon}
             color={textStyle?.color || colors.text}
             size={size * 1.25}
             style={{

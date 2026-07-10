@@ -79,7 +79,7 @@ const Header = memo(
           flexDirection: "row",
           alignItems: "flex-start",
           justifyContent: "space-between",
-          paddingTop: (insets?.top || 0) + 5,
+          paddingTop: insets?.top || 0,
           paddingBottom: 15,
           paddingHorizontal: 20,
           gap: 10,
@@ -377,7 +377,7 @@ export default function HomeScreen() {
     const scale = interpolate(
       panPosition.value,
       [0, MAX_PULL_HEIGHT],
-      [1, 1 + MAX_PULL_HEIGHT / 100],
+      [1, 1 + MAX_PULL_HEIGHT / 45],
       Extrapolation.CLAMP,
     );
     const rotateDeg = interpolate(rotate.value, [0, 1], [0, 360]);
@@ -510,7 +510,7 @@ export default function HomeScreen() {
           >
             {!!username ? (
               // @ts-ignore
-              (<Feed style={{ margin: 20 }} username={username} />)
+              <Feed style={{ margin: 20 }} username={username} />
             ) : (
               <SignInPrompt />
             )}
