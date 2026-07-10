@@ -13,7 +13,6 @@ import { useTheme } from "../utils/theme";
 import SquircleView from "../components/SquircleView";
 import Card from "../components/Card";
 import { Stack } from "expo-router";
-import MaterialIcons from "@react-native-vector-icons/material-icons/static";
 import Controls from "../components/Controls";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Chip from "../components/Chip";
@@ -24,6 +23,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useMultiPlayClient } from "../utils/hooks/useMultiPlayClient";
 import useiPadOSTopMargin from "utils/hooks/useiPadOSTopMargin";
 import { useIsTablet } from "utils/hooks/useIsTablet";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 
 export default function MultiPlay() {
   const [roomCode, setRoomCode] = useState("");
@@ -183,8 +183,8 @@ export default function MultiPlay() {
                 marginBottom: 8,
               }}
             >
-              <MaterialIcons
-                name="info"
+              <Ionicons
+                name="information-circle"
                 size={20}
                 color={colors.accent}
                 style={{ marginRight: 8 }}
@@ -216,7 +216,7 @@ export default function MultiPlay() {
                 marginBottom: 8,
               }}
             >
-              <MaterialIcons
+              <Ionicons
                 name="warning"
                 size={20}
                 color="#ff4750"
@@ -318,7 +318,7 @@ export default function MultiPlay() {
           {isTablet ? (
             <Card style={{ paddingHorizontal: 20, paddingVertical: 15, marginTop: 5 }}>
               <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
-                <MaterialIcons name="tablet-mac" size={20} color={colors.accent} style={{ marginRight: 8 }} />
+                <Ionicons name="tablet-landscape" size={20} color={colors.accent} style={{ marginRight: 8 }} />
                 <ItchyText style={{ color: colors.accent, fontSize: 16, fontWeight: "bold" }}>Tablet Support Coming Soon</ItchyText>
               </View>
               <ItchyText style={{ color: colors.text, lineHeight: 17, marginBottom: 5 }}>

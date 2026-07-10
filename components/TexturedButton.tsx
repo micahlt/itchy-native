@@ -23,6 +23,7 @@ export default function TexturedButton({
   size = 12,
   provider = "native",
   loading = false,
+  glassEffectStyle = "regular",
   children,
 }: {
   style?: StyleProp<ViewStyle>;
@@ -33,12 +34,14 @@ export default function TexturedButton({
   size?: number;
   provider?: "native" | "gesture-handler";
   loading?: boolean;
+  glassEffectStyle?: "clear" | "regular" | "none";
   children?: React.ReactNode;
 }) {
   const { colors, dimensions, isDark } = useTheme();
   return (
     <GlassView
       isInteractive={true}
+      glassEffectStyle={glassEffectStyle}
       style={
         Platform.OS == "ios"
           ? {

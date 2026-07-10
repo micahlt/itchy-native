@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { View, TouchableOpacity, useWindowDimensions } from "react-native";
 import ItchyText from "./ItchyText";
 import { BottomSheetView } from "@gorhom/bottom-sheet";
-import MaterialIcons from "@react-native-vector-icons/material-icons/static";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { useTheme } from "../utils/theme";
 import linkWithFallback from "../utils/linkWithFallback";
 import { useMMKVObject } from "react-native-mmkv";
@@ -163,8 +163,8 @@ export default function MultiPlayConfigSheet({
               marginBottom: 8,
             }}
           >
-            <MaterialIcons
-              name="info"
+            <Ionicons
+              name="information-circle"
               size={20}
               color={colors.accent}
               style={{ marginRight: 8 }}
@@ -219,7 +219,7 @@ export default function MultiPlayConfigSheet({
               alignItems: "center",
             }}
           >
-            <MaterialIcons name="people" size={16} color={colors.accent} />
+            <Ionicons name="people" size={16} color={colors.accent} />
             <ItchyText
               style={{
                 color: colors.accent,
@@ -301,11 +301,7 @@ export default function MultiPlayConfigSheet({
               }}
               onPress={() => disconnect()}
             >
-              <MaterialIcons
-                name="exit-to-app"
-                size={24}
-                color={colors.accent}
-              />
+              <Ionicons name="exit-outline" size={24} color={colors.accent} />
               <ItchyText
                 style={{ color: colors.accent, fontSize: 16, marginLeft: 5 }}
               >

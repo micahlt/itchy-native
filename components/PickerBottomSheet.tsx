@@ -5,19 +5,22 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { View, TextInput, useWindowDimensions } from "react-native";
-import ItchyText from "./ItchyText";
+import { View, useWindowDimensions } from "react-native";
 import { useTheme } from "../utils/theme";
-// @ts-expect-error
-import Pressable from "./Pressable";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import {
-  BottomSheetModal,
-  BottomSheetBackdrop,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
-import { getLiquidPlusPadding } from "../utils/platformUtils";
 import { TABLET_BREAKPOINT } from "utils/magicNumbers";
+import {
+  Host,
+  ScrollView,
+  TextInput,
+  BottomSheet,
+  Text,
+  Row,
+  List,
+  ListItem,
+  Column,
+  FieldGroup,
+} from "@expo/ui";
 
 interface PickerOption {
   label: string;
@@ -31,6 +34,7 @@ interface PickerBottomSheetProps {
   placeholder?: string;
   searchable?: boolean;
   isOpen: boolean;
+  height: "full" | "half";
   onClose: () => void;
 }
 
@@ -41,21 +45,13 @@ export default function PickerBottomSheet({
   placeholder = "Select an option...",
   searchable = false,
   isOpen,
+  height = "half",
   onClose,
 }: PickerBottomSheetProps) {
   const { colors } = useTheme();
-  const sheetRef = useRef<BottomSheetModal>(null);
   const insets = useSafeAreaInsets();
-  const { height, width: screenWidth } = useWindowDimensions();
+  const { width: screenWidth } = useWindowDimensions();
   const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    if (isOpen) {
-      sheetRef.current?.present();
-    } else {
-      sheetRef.current?.dismiss();
-    }
-  }, [isOpen]);
 
   const filteredOptions = useMemo(() => {
     if (!searchable || !searchQuery.trim()) {
@@ -75,126 +71,76 @@ export default function PickerBottomSheet({
     [onValueChange, onClose],
   );
 
-  const renderBackdrop = useCallback(
-    (props: any) => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        opacity={0.6}
-      />
-    ),
-    [],
-  );
-
   const marginHorizontal = useMemo(
     () => (screenWidth > TABLET_BREAKPOINT ? (screenWidth - 600) / 2 : 0),
     [screenWidth],
   );
 
+  console.log(filteredOptions);
+
   return (
-    <BottomSheetModal
-      ref={sheetRef}
-      enablePanDownToClose={true}
-      onDismiss={() => {
-        setSearchQuery("");
-        onClose();
-      }}
-      style={{
-        zIndex: 10000,
-        marginHorizontal: marginHorizontal,
-      }}
-      $modal={true}
-      backgroundStyle={{ backgroundColor: colors.backgroundSecondary }}
-      backdropComponent={renderBackdrop}
-      handleIndicatorStyle={{ backgroundColor: colors.textSecondary }}
-      enableDynamicSizing={true}
-      maxDynamicContentSize={height / 1.5}
-    >
-      <BottomSheetScrollView
-        style={{
-          flex: 1,
-          paddingTop: getLiquidPlusPadding(0, 0),
-          backgroundColor: colors.backgroundSecondary,
+    <Host>
+      <BottomSheet
+        isPresented={isOpen}
+        showDragIndicator={true}
+        onDismiss={() => {
+          setSearchQuery("");
+          onClose();
         }}
+        snapPoints={["half", "full"]}
       >
-        <ItchyText
+        <ScrollView
           style={{
-            color: colors.text,
-            fontSize: 22,
-            fontWeight: "bold",
-            marginBottom: 15,
-            paddingHorizontal: 20,
+            paddingTop: 20,
           }}
         >
-          {placeholder}
-        </ItchyText>
+          <Text
+            style={{
+              paddingBottom: 0,
+            }}
+            textStyle={{
+              fontFamily: "Inter",
+              fontWeight: "700",
+              fontSize: 20,
+            }}
+          >
+            {placeholder}
+          </Text>
 
-        {searchable && (
-          <View style={{ paddingHorizontal: 20, marginBottom: 10 }}>
+          {searchable && (
             <TextInput
               placeholder="Search..."
               placeholderTextColor={colors.textSecondary}
-              value={searchQuery}
               onChangeText={setSearchQuery}
+              textStyle={{
+                fontFamily: "Inter",
+              }}
               style={{
-                backgroundColor: colors.backgroundTertiary,
-                color: colors.text,
+                backgroundColor: colors.backgroundSecondary,
                 padding: 12,
                 borderRadius: 8,
-                fontSize: 16,
-                fontFamily: "Inter_400Regular",
               }}
             />
-          </View>
-        )}
+          )}
+          {filteredOptions.map((option, index) => {
+            const isSelected = option.value === selectedValue;
+            const isFirst = index === 0;
+            const isLast = index === filteredOptions.length - 1;
 
-        {filteredOptions.map((option, index) => {
-          const isSelected = option.value === selectedValue;
-          const isFirst = index === 0;
-          const isLast = index === filteredOptions.length - 1;
-
-          return (
-            <Pressable
-              key={option.value}
-              onPress={() => handleSelect(option.value)}
-              style={{
-                backgroundColor: isSelected
-                  ? colors.accent + "22"
-                  : colors.backgroundSecondary,
-                paddingVertical: 16,
-                paddingHorizontal: 20,
-                borderBottomWidth: isLast ? 0 : 0.5,
-                marginBottom: isLast ? insets.bottom : 0,
-                borderBottomColor: colors.backgroundTertiary,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <ItchyText
-                style={{
-                  color: isSelected ? colors.accent : colors.text,
-                  fontSize: 16,
-                  fontWeight: isSelected ? "bold" : "normal",
-                }}
-              >
-                {option.label}
-              </ItchyText>
-              {isSelected && (
-                <View
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: 4,
-                    backgroundColor: colors.accent,
-                  }}
-                />
-              )}
-            </Pressable>
-          );
-        })}
-      </BottomSheetScrollView>
-    </BottomSheetModal>
+            return (
+              <>
+                <ListItem
+                  key={option.value}
+                  onPress={() => handleSelect(option.value)}
+                  leading={<Column></Column>}
+                >
+                  {option.label}
+                </ListItem>
+              </>
+            );
+          })}
+        </ScrollView>
+      </BottomSheet>
+    </Host>
   );
 }

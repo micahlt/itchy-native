@@ -50,6 +50,7 @@ import { useLatestMultiPlayScript } from "../../../utils/hooks/useLatestMultiPla
 import webviewInject from "../../../utils/webview-inject";
 import { useIsTablet } from "../../../utils/hooks/useIsTablet";
 import { TABLET_BREAKPOINT } from "utils/magicNumbers";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 const c = getCrashlytics();
 
 function GestureDetectorOptional({ children }) {
@@ -87,6 +88,9 @@ export default function Project() {
     width: 0,
     height: 0,
   });
+  useEffect(() => {
+    console.log(width, height);
+  }, [width, height])
   const [manuallyLoaded, setManuallyLoaded] = useState(false);
   const router = useRouter();
   const twLink = useTurbowarpLink(id);
@@ -318,12 +322,14 @@ export default function Project() {
   const fullScreen = async (makeFullScreen = true) => {
     if (makeFullScreen) {
       setIsFullscreen(true);
-      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+      if (Platform.OS != "ios") {
+        ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+      }
       StatusBar.setHidden(true);
       setForceHideHomeButton(true);
       if (Platform.OS === "android") await NavigationBar.setVisibilityAsync("hidden");
     } else {
-      if (!isTablet) {
+      if (!isTablet && Platform.OS != "ios") {
         ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
       } else {
         ScreenOrientation.unlockAsync();
@@ -345,6 +351,10 @@ export default function Project() {
       };
     }, []),
   );
+
+  useEffect(() => {
+    console.log(isFullscreen);
+  }, [isFullscreen])
 
   const sheetMarginHorizontal = useMemo(
     () => (width > TABLET_BREAKPOINT ? (width - 600) / 2 : 0),
@@ -575,7 +585,7 @@ export default function Project() {
         <ScrollView
           contentContainerStyle={{
             paddingBottom: isFullscreen ? 0 : insets.bottom + 10,
-            paddingTop: isFullscreen ? 0 : getLiquidPlusPadding(0, 120),
+            paddingTop: isFullscreen ? 0 : getLiquidPlusPadding(0, 60),
           }}
           scrollEnabled={!isFullscreen}
         >
@@ -612,8 +622,10 @@ export default function Project() {
                           : width - 40,
                       height: isFullscreen ? height : undefined,
                       aspectRatio: isFullscreen ? 480 / 360 : 480 / 425,
+                      maxHeight: height,
+                      maxWidth: width,
                       margin: "auto",
-                      borderRadius: isFullscreen ? 0 : 10
+                      borderRadius: isFullscreen ? 0 : 10,
                     }}
                     androidLayerType="hardware"
                     renderToHardwareTextureAndroid={true}
@@ -686,6 +698,20 @@ export default function Project() {
                 )}
               </GestureDetectorOptional>
               {!isFullscreen && !isTablet && renderInteractions()}
+              {isFullscreen && (
+                <Ionicons
+                  onLongPress={() => fullScreen(false)}
+                  name="contract"
+                  size={24}
+                  color={colors.textSecondary}
+                  style={{
+                    position: "absolute",
+                    bottom: 30,
+                    right: 30,
+                    zIndex: 1000
+                  }}
+                />
+              )}
               <Controls
                 onControlPress={(key, type, coords) =>
                   handleControlPress(key, type, coords)
@@ -725,22 +751,6 @@ export default function Project() {
             )}
           </View>
         </ScrollView>
-        {isFullscreen && (
-          <PressableIcon
-            onPress={() => fullScreen(false)}
-            name="contract"
-            size={24}
-            color={colors.textSecondary}
-            backgroundColor="red"
-            style={{
-              position: "absolute",
-              bottom: 20,
-              left: 20,
-              zIndex: 1050,
-              elevation: 10,
-            }}
-          />
-        )}
       </View>
       <BottomSheet
         ref={onlineConfigSheetRef}
