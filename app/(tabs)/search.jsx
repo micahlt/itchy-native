@@ -12,6 +12,8 @@ import {
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import APIExplore from "../../utils/api-wrapper/explore";
+import APIProject from "../../utils/api-wrapper/project";
+import { searchForProjects } from "../../utils/searchForProjects";
 import ProjectCard from "../../components/ProjectCard";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Chip from "../../components/Chip";
@@ -102,7 +104,11 @@ export default function Search() {
 
     switch (type) {
       case "projects":
-        APIExplore.searchForProjects(queryToSearch).then((data) => {
+        searchForProjects(
+          queryToSearch,
+          APIProject.getProject,
+          APIExplore.searchForProjects,
+        ).then((data) => {
           setResults(data);
           setIsLoading(false);
         });
